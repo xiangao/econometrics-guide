@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>5&nbsp; Endogeneity – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./gmm.html" rel="next">
+<link href="./gls.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./endogeneity.html">Causal Inference &amp; IV</a></li><li class="breadcrumb-item"><a href="./endogeneity.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Causal Inference &amp; IV</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Limited Dependent Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Advanced Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#instrumental-variables-iv" id="toc-instrumental-variables-iv" class="nav-link active" data-scroll-target="#instrumental-variables-iv"><span class="header-section-number">5.1</span> Instrumental Variables (IV)</a></li>
+  <li><a href="#control-function-approach" id="toc-control-function-approach" class="nav-link" data-scroll-target="#control-function-approach"><span class="header-section-number">5.2</span> Control Function Approach</a></li>
+  <li>
+<a href="#durbin-wu-hausman-test" id="toc-durbin-wu-hausman-test" class="nav-link" data-scroll-target="#durbin-wu-hausman-test"><span class="header-section-number">5.3</span> Durbin-Wu-Hausman Test</a>
+  <ul class="collapse">
+<li><a href="#idea" id="toc-idea" class="nav-link" data-scroll-target="#idea"><span class="header-section-number">5.3.1</span> Idea</a></li>
+  <li><a href="#implementation-in-stata" id="toc-implementation-in-stata" class="nav-link" data-scroll-target="#implementation-in-stata"><span class="header-section-number">5.3.2</span> Implementation in Stata</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#identification" id="toc-identification" class="nav-link" data-scroll-target="#identification"><span class="header-section-number">5.4</span> Identification</a>
+  <ul class="collapse">
+<li><a href="#implementation-in-stata-1" id="toc-implementation-in-stata-1" class="nav-link" data-scroll-target="#implementation-in-stata-1"><span class="header-section-number">5.4.1</span> Implementation in Stata</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#weak-instruments" id="toc-weak-instruments" class="nav-link" data-scroll-target="#weak-instruments"><span class="header-section-number">5.5</span> Weak Instruments</a>
+  <ul class="collapse">
+<li><a href="#problem-with-the-cure" id="toc-problem-with-the-cure" class="nav-link" data-scroll-target="#problem-with-the-cure"><span class="header-section-number">5.5.1</span> Problem with the cure</a></li>
+  <li><a href="#weak-instrument-tests" id="toc-weak-instrument-tests" class="nav-link" data-scroll-target="#weak-instrument-tests"><span class="header-section-number">5.5.2</span> Weak Instrument Tests</a></li>
+  </ul>
+</li>
+  <li><a href="#when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression" id="toc-when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression" class="nav-link" data-scroll-target="#when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression"><span class="header-section-number">5.6</span> When is endogeneity a problem and what can we say from an IV regression</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./endogeneity.html">Causal Inference &amp; IV</a></li><li class="breadcrumb-item"><a href="./endogeneity.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>When we discuss the linear model we assume that the regressors are exogenous, meaning that they are independent of or uncorrelated with the error term. However, there could be reasons to believe that some regressors are correlated with the error term. In that case we call those regressors endogenous.</p>
+<p>Under the classical assumptions OLS estimators are unbiased and consistent. One key assumption is that the regressors have to be uncorrelated with the error term. If this condition does not hold, OLS estimators are biased and inconsistent.</p>
+<p>When one independent variable does not satisfy this condition, we say this variable is endogenous. When one variable is endogenous, the estimates of other coefficients will also be biased (or inconsistent).</p>
+<p>The most popular cure for endogeneity is to use instrumental variables.</p>
+<section id="instrumental-variables-iv" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="instrumental-variables-iv">
+<span class="header-section-number">5.1</span> Instrumental Variables (IV)</h2>
+<p>The basic idea of IV is to use an exogenous variable (or exogenous variables) which is correlated with the endogenous independent variable to as an “instrument” for the endogenous variable.</p>
+<p>Suppose the linear regression model <span class="math display">\[
+\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma^2 I,
+\]</span> at least one of the explanatory variables in the <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\(\bf X\)</span> is assumed not to be predetermined with respect to the error terms, or say, endogenous.</p>
+<p>Suppose we have a set of variables <span class="math inline">\(\bf Z\)</span>, an <span class="math inline">\(n \times l\)</span> matrix of instruments , which satisfies the moment condition <span class="math display">\[
+\bf Z'(y-X\beta)=0.
+\]</span> That is, <span class="math inline">\(\bf Z\)</span> is uncorrelated with the error term.</p>
+<p>Here is what we do for two-stage least squares (2sls):</p>
+<p>Stage 1: Regress each of the variables in the <span class="math inline">\(\bf X\)</span> matrix on <span class="math inline">\(\bf Z\)</span> to obtain a matrix of fitted values <span class="math inline">\(\bf \hat X\)</span>,</p>
+<p><span class="math display">\[
+\bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX
+\]</span></p>
+<p>This is essentially to get the part of <span class="math inline">\(\bf Z\)</span> that is correlated with <span class="math inline">\(\bf X\)</span>. Or to say, to project <span class="math inline">\(\bf X\)</span> on to <span class="math inline">\(\bf Z\)</span>.</p>
+<p>Stage 2: Regress <span class="math inline">\(\bf y\)</span> on <span class="math inline">\(\bf \hat X\)</span> to obtain the estimated <span class="math inline">\(\bf \beta\)</span></p>
+<p><span class="math display">\[
+\bf  \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'
+y)=(X'P_ZX)^{-1}(X'P_Zy)=\hat \beta_{IV}
+\]</span></p>
+<p>Standard errors:</p>
+<p><span class="math display">\[
+Var \bf [ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
+\sigma^2 (X'P_ZX)^{-1}
+\]</span> where <span class="math inline">\(\hat \sigma^2 ={\bf \hat u' \hat u} / N\)</span>.</p>
+<p>Note that <span class="math inline">\(\bf \hat u = y- X \hat \beta_{2sls}\)</span>.</p>
+<p>If we do it manually by two steps, the second step will report a wrong standard error. That is because the second stage regression will report standard errors based on <span class="math inline">\(\bf \hat u = y- \hat X \hat
+\beta_{2sls}\)</span>. Therefore, it’s always recommended to ask the statistical program to do a 2sls for you, since presumably that will give you correct standard errors.</p>
+<p>Geometry Illustration:</p>
+<p>Suppose the simplest case: $y=_0 + _1 x + u $, where <span class="math inline">\(x\)</span> can be decomposed into <span class="math inline">\(x_1\)</span>, which is exogenous and <span class="math inline">\(x_2\)</span>, which is endogenous. Therefore <span class="math inline">\(x_2\)</span> is parallel to <span class="math inline">\(u\)</span> and <span class="math inline">\(x_1\)</span> perpendicular to <span class="math inline">\(u\)</span>. Suppose <span class="math inline">\(z\)</span> is a vector that is perpendicular to <span class="math inline">\(x_2\)</span> or <span class="math inline">\(u\)</span>, but not perpendicular to <span class="math inline">\(x_1\)</span>. Then <span class="math inline">\(z\)</span> can be an instrument for <span class="math inline">\(x\)</span>. The way instrumental variable works: Regress <span class="math inline">\(x\)</span> on <span class="math inline">\(z\)</span>, suppose <span class="math inline">\(\hat x_1\)</span> is the projection. Regress <span class="math inline">\(y\)</span> on <span class="math inline">\(z\)</span>, <span class="math inline">\(\hat y_2\)</span> be the projection. Then the result of <span class="math inline">\(\beta_2 =  \hat y_2 / \hat x_1\)</span> is the same as <span class="math inline">\(\beta_1= \hat y_1 / x_1\)</span> (since the two triangles are similar). Here <span class="math inline">\(\hat y_1\)</span> is the projection of <span class="math inline">\(y\)</span> on <span class="math inline">\(x_1\)</span>, which is hypothetical since we have no way to decompose <span class="math inline">\(x\)</span> into <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>; otherwise, we would not need instrumental variables.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">66</span><span class="op">)</span></span>
+<span><span class="va">nobs</span><span class="op">=</span><span class="fl">10000</span></span>
+<span><span class="va">nDim</span> <span class="op">=</span> <span class="fl">3</span></span>
+<span><span class="va">sdxx</span> <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="va">sdww</span><span class="op">=</span><span class="fl">1</span></span>
+<span><span class="va">sdzz</span><span class="op">=</span><span class="fl">1</span></span>
+<span></span>
+<span><span class="co">## here we have three variables x,z,w.</span></span>
+<span><span class="co">## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is indepent of everything else.</span></span>
+<span><span class="va">crxz</span><span class="op">=</span><span class="fl">.6</span></span>
+<span><span class="va">crzw</span><span class="op">=</span><span class="fl">0</span></span>
+<span><span class="va">crxw</span><span class="op">=</span><span class="fl">.8</span></span>
+<span></span>
+<span><span class="va">covarMat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">sdxx</span><span class="op">^</span><span class="fl">2</span>, <span class="va">crxz</span>, <span class="va">crxw</span>, <span class="va">crxz</span>, <span class="va">sdzz</span><span class="op">^</span><span class="fl">2</span>, <span class="va">crzw</span>,  <span class="va">crxw</span>, <span class="va">crzw</span>, <span class="va">sdww</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span> , nrow<span class="op">=</span><span class="va">nDim</span> , ncol<span class="op">=</span><span class="va">nDim</span> <span class="op">)</span></span>
+<span><span class="va">covarMat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3]
+[1,]  1.0  0.6  0.8
+[2,]  0.6  1.0  0.0
+[3,]  0.8  0.0  1.0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">nobs</span>, mu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">nDim</span><span class="op">)</span>, Sigma<span class="op">=</span><span class="va">covarMat</span> <span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'x'</span>,<span class="st">'z'</span>,<span class="st">'w'</span><span class="op">)</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nobs</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co"># dgp</span></span>
+<span><span class="va">data</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span>  <span class="va">data</span><span class="op">$</span><span class="va">z</span> <span class="op">+</span> <span class="va">data</span><span class="op">$</span><span class="va">u</span></span>
+<span></span>
+<span><span class="va">lm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">lm.full</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span> <span class="va">x</span> <span class="op">+</span> <span class="va">z</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">tsls.model</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">w</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="co"># lm is biased</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-4.5738 -0.8574 -0.0150  0.8508  5.5521 
+
+Coefficients:
+              Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) -0.0009757  0.0128451  -0.076    0.939    
+x            1.6040701  0.0131145 122.312   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.284 on 9998 degrees of freedom
+Multiple R-squared:  0.5994,    Adjusted R-squared:  0.5994 
+F-statistic: 1.496e+04 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># lm.full is good</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm.full</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ x + z, data = data)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7351 -0.6647 -0.0182  0.6755  3.6026 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 0.001693   0.009973    0.17    0.865    
+x           0.994692   0.012650   78.63   &lt;2e-16 ***
+z           1.011426   0.012459   81.18   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9971 on 9997 degrees of freedom
+Multiple R-squared:  0.7586,    Adjusted R-squared:  0.7585 
+F-statistic: 1.57e+04 on 2 and 9997 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tsls is good.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+ivreg(formula = y ~ x | w, data = data)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-5.885042 -0.945863 -0.008974  0.955665  5.307483 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.01196    0.01427   0.838    0.402    
+x            0.96934    0.01837  52.766   &lt;2e-16 ***
+
+Diagnostic tests:
+                  df1  df2 statistic p-value    
+Weak instruments    1 9998     16954  &lt;2e-16 ***
+Wu-Hausman          1 9997      6590  &lt;2e-16 ***
+Sargan              0   NA        NA      NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.427 on 9998 degrees of freedom
+Multiple R-Squared: 0.5056, Adjusted R-squared: 0.5055 
+Wald test:  2784 on 1 and 9998 DF,  p-value: &lt; 2.2e-16 </code></pre>
+</div>
+</div>
+</section><section id="control-function-approach" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="control-function-approach">
+<span class="header-section-number">5.2</span> Control Function Approach</h2>
+<p>A second way to do an IV regression is also two-step approach: Regress <span class="math inline">\(\bf X\)</span> (endogenous) on <span class="math inline">\(\bf Z\)</span>, get the residual: <span class="math inline">\(\bf \hat
+v=X-Z(Z'Z)^{-1}Z'X\)</span>, then regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf X\)</span> and <span class="math inline">\(\hat v\)</span> to get <span class="math inline">\(\hat \beta_{IV}\)</span>.</p>
+<p>The difference between this approach and the 2sls approach is that in 2sls we regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf \hat X\)</span>; in the control function approach, we regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf  X\)</span> and <span class="math inline">\(\hat v\)</span>. They should both give you the same coefficient estimates. There are advantages of using the control function approach.</p>
+<p>An example to show how to do 2sls manually, or using control function approach.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<span></span>
+<span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">lm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">w</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
+<span><span class="va">tsls.manual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">lm2</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.manual</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = data$y ~ lm2$fitted.values)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.6783 -1.2636 -0.0007  1.2640  6.9871 
+
+Coefficients:
+                  Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        0.01196    0.01885   0.635    0.526    
+lm2$fitted.values  0.96934    0.02426  39.956   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.884 on 9998 degrees of freedom
+Multiple R-squared:  0.1377,    Adjusted R-squared:  0.1376 
+F-statistic:  1596 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># control function approach</span></span>
+<span><span class="va">tsls.control</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">data</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="va">lm2</span><span class="op">$</span><span class="va">residual</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.control</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = data$y ~ data$x + lm2$residual)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-3.7351 -0.6647 -0.0182  0.6755  3.6026 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.011962   0.009974   1.199     0.23    
+data$x       0.969342   0.012838  75.508   &lt;2e-16 ***
+lm2$residual 1.711061   0.021078  81.179   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9971 on 9997 degrees of freedom
+Multiple R-squared:  0.7586,    Adjusted R-squared:  0.7585 
+F-statistic: 1.57e+04 on 2 and 9997 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>This approach can be used to do a simple endogeneity test. First, you can do a simple test of endogeneity of <span class="math inline">\(\bf X\)</span>. For example:</p>
+<pre><code>reg x_endog x* z*
+predict v_x, resid
+reg y x_endog x* v_x
+test v_x</code></pre>
+<p>Obviously, this test is based on <span class="math inline">\(\bf Z\)</span> being exogenous.</p>
+<p>Secondly, it works for some non-linear models, such as logit, probit, poisson, or any other glm models. That is, if you have an endogenous variable in a glm model, you can regress that endogenous variable on instruments, get the residual, then run the glm model with the original regressors, plus the residual from the first stage. For example, the “eteffects” procedure in Stata (version 14) uses control function approach to get endogenous treatment effects for different types of outcomes.</p>
+</section><section id="durbin-wu-hausman-test" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="durbin-wu-hausman-test">
+<span class="header-section-number">5.3</span> Durbin-Wu-Hausman Test</h2>
+<section id="idea" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="idea">
+<span class="header-section-number">5.3.1</span> Idea</h3>
+<p>In econometric modeling, there are often questions on endogeneity. Do we know how to test whether an independent variable is endogenous statistically? The answer is: sort of, but not really. We cannot do endogeneity test without a valid instrument. Therefore, we have to have strong argument for a valid instrument first before we can do endogeneity test.</p>
+<p>With endogenous variables on the right-hand side of the equation, we need to use instrumental variable (IV) regression for consistent estimation. However, with IV regression, we lose efficiency: the asymptotic variance of the IV estimator is larger, and can be much larger than the OLS estimator. Therefore, we gain consistency, but lose efficiency, by using IV estimator when there is an endogeneity problem.</p>
+<p>Now we have a familiar scenario (if you are familiar with Hausman test for fixed effect and random effect estimator for panel data): Suppose we have the null hypothesis as the regressor being exogenous. We have an efficient estimator under null hypothesis yet inconsistent under alternative hypothesis (OLS estimator). We also have a consistent estimator under both null and alternative (IV estimator).</p>
+<p>Similar to panel data setting, we have the Hausman test statistic as:</p>
+<p><span class="math display">\[ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat
+\beta_e) \]</span></p>
+<p>where <span class="math inline">\(D={\rm Var} [\hat \beta_c] - {\rm Var} [\hat \beta_e]\)</span>, <span class="math inline">\(^-\)</span> is the generalized inverse, <span class="math inline">\(\hat \beta_c\)</span> is the consistent estimator (in this case the IV estimator) and <span class="math inline">\(\hat \beta_e\)</span> is the efficient estimator (in this case OLS estimator).</p>
+<p><span class="math inline">\(H\)</span> conforms to <span class="math inline">\(\chi^2_k\)</span> asymptotically, where <span class="math inline">\(k\)</span> is the number of endogenous variables.</p>
+<p>This test is to compare the IV estimator and the OLS estimator: if it’s close, then OLS estimator is fine (fail to reject null that OLS is consistent, or say the variable is exogenous). If it’s large, then IV estimator is needed, although we lose some efficiency. This test is based on the assumption that the instruments are exogenous. If that is in question, then it’s pointless to do the test, since the IV estimator cannot guarantee consistency either.</p>
+</section><section id="implementation-in-stata" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="implementation-in-stata">
+<span class="header-section-number">5.3.2</span> Implementation in Stata</h3>
+<p>In Stata, there are different ways to do it:</p>
+<p>Do a regular Hausman test:</p>
+<pre><code>ivreg y x1 (x2=x3 x4)
+estimates store iv
+reg y x1 x2
+hausman iv ., constant sigmamore</code></pre>
+<p>Or, simply use “ivendog” in Stata.</p>
+</section></section><section id="identification" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="identification">
+<span class="header-section-number">5.4</span> Identification</h2>
+<p>Identification in a regression equation means that all parameters can be uniquely estimated. A necessary condition of that is to have at least as many instruments as the number of endogenous variables. That is, <span class="math inline">\(l \ge k\)</span> in our example above. If <span class="math inline">\(l=k\)</span> we have exact-identification. If <span class="math inline">\(l&gt;k\)</span>, we have over-identification.</p>
+<p>Over-identification generates more efficient estimates, given the assumption of instruments being exogenous. The other advantage of over-identification is that over-identification tests can be done to test the adequacy of instruments.</p>
+<p>Under the null hypothesis that all the instruments are uncorrelated with the error term, an LM statistic <span class="math inline">\(N \times R^2\)</span> conforms to <span class="math inline">\(\chi^2 (r)\)</span> distribution, <span class="math inline">\(r=l-k\)</span>, the number of excess instruments, or say, the number of excluded restrictions. If we reject the null, then we should be concerned about the exogeneity of the whole set of the instruments. This test is called Sargan’s test in IV context, and (Hansen’s) J test in GMM context.</p>
+<p>What the J test or Sargan’s test does is to test the whole set of instruments being exogenous or not. There is another test for testing exogeneity for a subset of instruments. It’s call a C test or a difference-in-Sargan test. The idea is to calculate the difference between two Sargan’s statistics (or Hansen’s J in GMM setting); one is with the whole set of instruments, the other one without the suspected instruments. The null is that the suspect instruments are exogenous; or orthogonal to the error term. Obviously to conduct the C test, we’ll have to have at least one extra instrument more than the number of endogenous variables.</p>
+<p>To understand it better, we look at how to implement Sargan’s test manually: For the 2SLS estimator, the test statistic is Sargan’s statistic, typically calculated as <span class="math inline">\(N \times R^2\)</span> from a regression of the IV residuals on the full set of instruments.</p>
+<pre><code>. ivregress 2sls rent pcturban (hsngval = faminc i.region)
+. estat overid
+
+  Tests of overidentifying restrictions:
+
+  Sargan (score) chi2(3) =  11.2877  (p = 0.0103)
+  Basmann chi2(3)        =  12.8294  (p = 0.0050)
+
+. predict res, residual
+
+. reg res pcturban faminc i.region
+
+. disp e(N)*e(r2)
+11.287665</code></pre>
+<section id="implementation-in-stata-1" class="level3" data-number="5.4.1"><h3 data-number="5.4.1" class="anchored" data-anchor-id="implementation-in-stata-1">
+<span class="header-section-number">5.4.1</span> Implementation in Stata</h3>
+<p>In Stata, there are different ways to do over-identification test, ivreg2 reports a comprehensive set of tests; overid command does the over-identification test after the ivreg command.</p>
+<p>ivreg2 with gmm option returns J test; it reports Sargan’s test without this option.</p>
+<p>ivreg2 also reports C test statistic, with ortho(). If the C test rejects the null, and J test without the suspect instruments fail to reject null, then the suspect instruments are indeed the ones are not exogenous.</p>
+</section></section><section id="weak-instruments" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="weak-instruments">
+<span class="header-section-number">5.5</span> Weak Instruments</h2>
+<section id="problem-with-the-cure" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="problem-with-the-cure">
+<span class="header-section-number">5.5.1</span> Problem with the cure</h3>
+<p>An instrument needs to satisfy to criteria: orthogonality and relevance. We need instruments to be orthogonal to the error term. We can verify the orthogonality condition by Sargan’s test if there are extra instruments.</p>
+<p>It turns out instrument relevance is important too: if instruments are weak, then the regular large sample properties of IV or GMM estimators do not hold any more. The estimators are inconsistent or biased.</p>
+<p>To see the problem, suppose</p>
+<p><span class="math display">\[
+\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
+\]</span></p>
+<p><span class="math display">\[
+\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
+\]</span></p>
+<p>and <span class="math display">\[
+{\rm E}(\bf Z u )=0.
+\]</span></p>
+<p>We can see here <span class="math inline">\(\bf Z\)</span> is exogenous. However, the model does not say anything about relevance. To illustrate the problem caused by weak instrument, suppose we have only one endogenous variable and one instrument.</p>
+<p><span class="math display">\[
+\hat \beta_{2sls}=\frac{\bf Z' y}{\bf Z' X} = \frac{\bf Z'(X \beta +
+  u)}{\bf Z'
+  X}= \beta + \frac{\bf Z' u}{\bf Z' X} .
+\]</span></p>
+<p>If <span class="math inline">\(\bf Z\)</span> is irrelevant, or, <span class="math inline">\(\Pi=0\)</span>, then</p>
+<p><span class="math display">\[
+\hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}
+\sum_{i=1}^N Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^N Z_i v_i}
+\xrightarrow{d} \frac{z_u}{z_v} ,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+z_u \\z_v
+\end{bmatrix}
+\sim N(0, \begin{bmatrix}
+\sigma_u^2 \quad \sigma_{uv} \\  \sigma_{uv} \quad \sigma_v^2
+\end{bmatrix}).
+\]</span></p>
+<p>Therefore, if <span class="math inline">\(\bf Z\)</span> is irrelevant, <span class="math inline">\(\beta_{2sls}\)</span> is inconsistent. Also, the distribution of the bias is Cauchy-like (the ratio of correlated normals).</p>
+<p>This is a case where the cure might be worse than the disease itself: the bias can be big comparing to the bias an OLS estimate suffers.</p>
+</section><section id="weak-instrument-tests" class="level3" data-number="5.5.2"><h3 data-number="5.5.2" class="anchored" data-anchor-id="weak-instrument-tests">
+<span class="header-section-number">5.5.2</span> Weak Instrument Tests</h3>
+<p>There are a variety of weak-instruments tests proposed. Most of them are based on so-called weak-instruments asymptotics and a new parameter called “concentration parameter” <span class="math inline">\(\mu^2 = \Pi' Z' Z \Pi
+/ \sigma_v^2\)</span>. Sample size only enters the distribution through <span class="math inline">\(\mu^2\)</span>.</p>
+<p>With weak-instruments asymptotics, IV estimators are no longer consistent, and they are not normal asymptotically. Most test statistics (J test, etc.) do not have normal or <span class="math inline">\(\chi^2\)</span> distributions anymore.</p>
+<p>Now I list the following tests in the order of recommended level by James Stock:</p>
+<ol type="1">
+<li>Moreira (2003) conditional likelihood ratio test (CLR).</li>
+</ol>
+<p>Advantages of this test: a. Uniformly most powerful tests among valid tests. b. Implemented in Stata as condivereg.</p>
+<p>Disadvantages:</p>
+<ol type="a">
+<li>Complicated. Only developed so far for one endogenous variable case.</li>
+</ol>
+<ol start="2" type="1">
+<li>Stock-Yogo bias method and size method.</li>
+</ol>
+<p>Stock and Yogo (2005) provide critical values for both methods: one is to control the size of bias, the other one is to control the size of a Wald test of <span class="math inline">\(\beta=\beta_0\)</span>. Bias method is more frequently used. In the case of multiple endogenous variables, the Cragg-Donald statistics is used to compare with the critical values. It is implemented in Stata as part of the <em>ivreg2</em> command, but it’s only available for the situation there are at least two excluded variables (meaning the number of instruments minus the number of endogenous variables).</p>
+<ol start="2" type="1">
+<li>Anderson-Rubin confidence intervals.</li>
+</ol>
+<p>In the model of</p>
+<p><span class="math display">\[
+\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
+\]</span></p>
+<p><span class="math display">\[
+\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
+\]</span></p>
+<p>The null hypothesis <span class="math inline">\(H_0: \beta=\beta_0\)</span>. Anderson-Rubin statistic is the F statistic in the regression of <span class="math inline">\(y-X \beta_0\)</span> on <span class="math inline">\(Z\)</span>, the F test on <span class="math inline">\(\Pi\)</span> being zero:</p>
+<p><span class="math display">\[
+AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/k}{(y-X\beta_0)' M_Z
+  (y-X\beta_0)/(N-k)}
+\]</span></p>
+<p>The idea of AR confidence interval is to construct an interval for all possible values of <span class="math inline">\(\beta\)</span> to fail to reject <span class="math inline">\(\Pi=0\)</span>.</p>
+<ol start="3" type="1">
+<li>First-stage F test.</li>
+</ol>
+<p>The rule of thumb for first-stage F test is <span class="math inline">\(F&gt;10\)</span> for a single instrument case, the more instruments, the higher it gets.</p>
+<ol start="4" type="1">
+<li>Kleibergen’s LM test.</li>
+</ol>
+<p>This test is dominated by the CLR test, thus no longer the optimal test to use.</p>
+<ol start="5" type="1">
+<li>First-stage <span class="math inline">\(R^2\)</span>, or partial <span class="math inline">\(R^2\)</span>, etc., are not recommended.</li>
+</ol></section></section><section id="when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression" class="level2" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression">
+<span class="header-section-number">5.6</span> When is endogeneity a problem and what can we say from an IV regression</h2>
+<p>Let’s consider a model of housing price on no. of rooms and square footage.</p>
+<p><span class="math display">\[ P = \alpha R + \beta F + \epsilon \]</span></p>
+<p>Should square footage really be there? We are not interested in, given square footage, how much money we need to pay for an additional room. We are generally interested in how much money we need to pay for an additional footage. However, if we do not include footage, then we “sort of” have endogeneity problem due to omitted variable.</p>
+<p>Another example would be education’s impact on wage. Say IQ is an omitted variable. Do we want to say something about education’s impact on wage controlling on IQ, or not?</p>
+<p>So it depends on what questions to ask. If I am a builder and ask what an extra bedroom on the already built house would bring to me, I need to control for footage. If I am generally asking what an extra bedroom would cost, then I am implying what that bedroom and associated footage would cost me. In that case, without controlling for footage is not a problem, since the question is: what an additional bedroom (AND the associated average square footage) would cost me.</p>
+<p>In the wage and education example, if I am asking: what’s the effect of education on wage? I implicitly ask what would be my pay raise if I go to college (given IQ, of course), for example. Then we are concerned that this model of <span class="math display">\[ wage= \alpha edu + \epsilon \]</span> will generate biased estimate of <span class="math inline">\(\alpha\)</span>, because we are not controlling for IQ. But if I am an employer and interested in hiring a person, what would I have to pay extra to hire a college graduate vs.&nbsp;a high school graduate? Then I don’t have to include that IQ variable, because implicitly I am asking: what extra I need to pay for that college graduate who comes with a higher IQ, and everything else that is associated with higher education.</p>
+<p>In addition, what an IV regression really gives us is part of the causal inference of <span class="math inline">\(X\)</span> (suspected to be endogenous) on <span class="math inline">\(y\)</span>, namely the part induced by <span class="math inline">\(Z\)</span>. For example, we are interested in the relationship between college education and wage. If we use distance to college as an instrument, then our inference is the effect of college education from those who decide to go because of proximity of the college.</p>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./gls.html" class="pagination-link" aria-label="GLS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./gmm.html" class="pagination-link" aria-label="General Method of Moments (GMM)">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Endogeneity</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ivreg)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>When we discuss the linear model we assume that the regressors are</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>exogenous, meaning that they are independent of or uncorrelated with</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>the error term.  However, there could be reasons to believe that some</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>regressors are correlated with the error term.  In that case we call</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>those regressors endogenous.</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>Under the classical assumptions OLS estimators are unbiased and</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>consistent.  One key assumption is that the regressors have to be</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>uncorrelated with the error term.  If this condition does not hold,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>OLS estimators are biased and inconsistent.</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>When one independent variable does not satisfy this condition, we say</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>this variable is endogenous.  When one variable is endogenous, the</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>estimates of other coefficients will also be biased (or inconsistent).</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>The most popular cure for endogeneity is to use instrumental variables.</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## Instrumental Variables (IV)</span></span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>The basic idea of IV is to use an exogenous variable (or exogenous variables) which is correlated with the endogenous independent variable to as an "instrument" for the endogenous variable.</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>Suppose the linear regression model</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma^2 I, </span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a> at least one of the explanatory variables in the $n \times k$</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>matrix $\bf X$ is assumed not to be predetermined with respect to the</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>error terms, or say, endogenous.</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>Suppose we have a set of  variables $\bf Z$, an $n \times l$</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>matrix of instruments , which satisfies the moment</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>condition</span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>\bf Z'(y-X\beta)=0.</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>That is, $\bf Z$ is uncorrelated with the error term.</span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>Here is what we do for two-stage least squares (2sls):</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>Stage 1:  Regress each of the variables in the $\bf X$ matrix on</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>$\bf Z$ to obtain a matrix of fitted values $\bf \hat X$,</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>\bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>This is essentially to get the part of $\bf Z$ that is correlated with $\bf X$.  Or to say, to project $\bf X$ on to $\bf Z$.</span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>Stage 2:  Regress $\bf y$ on $\bf \hat X$ to obtain the estimated</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>$\bf \beta$</span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>\bf  \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'</span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>y)=(X'P_ZX)^{-1}(X'P_Zy)=\hat \beta_{IV}</span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>Standard errors:</span>
+<span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>Var \bf <span class="co">[</span><span class="ot"> \hat \beta_{2sls}</span><span class="co">]</span>= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat</span>
+<span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>\sigma^2 (X'P_ZX)^{-1}</span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>where $\hat \sigma^2 ={\bf \hat u' \hat u} / N$.</span>
+<span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>Note that $\bf \hat u = y- X \hat \beta_{2sls}$.</span>
+<span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>If we do it manually by two steps, the second step will report a wrong</span>
+<span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>standard error.  That is because the second stage regression will</span>
+<span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a>report standard errors based on $\bf \hat u = y- \hat X \hat</span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>\beta_{2sls}$.  Therefore, it's always recommended to ask the</span>
+<span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a>statistical program to do a 2sls for you, since presumably that will</span>
+<span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>give you correct standard errors.</span>
+<span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>Geometry Illustration:</span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>Suppose the simplest case:  $y=\beta_0 + \beta_1 x + u $, where $x$</span>
+<span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>can be decomposed into $x_1$, which is exogenous and $x_2$, which</span>
+<span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a>is endogenous. Therefore $x_2$ is parallel to $u$ and $x_1$</span>
+<span id="cb16-90"><a href="#cb16-90" aria-hidden="true" tabindex="-1"></a>perpendicular to $u$.  Suppose $z$ is a vector that is</span>
+<span id="cb16-91"><a href="#cb16-91" aria-hidden="true" tabindex="-1"></a>perpendicular to $x_2$ or $u$, but not perpendicular to $x_1$.</span>
+<span id="cb16-92"><a href="#cb16-92" aria-hidden="true" tabindex="-1"></a>Then $z$ can be an instrument for $x$.  The way instrumental</span>
+<span id="cb16-93"><a href="#cb16-93" aria-hidden="true" tabindex="-1"></a>variable works: Regress $x$ on $z$, suppose $\hat x_1$ is the</span>
+<span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>projection.  Regress $y$ on $z$, $\hat y_2$ be the projection.</span>
+<span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>Then the result of $\beta_2 =  \hat y_2 / \hat x_1$ is the same as</span>
+<span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a>$\beta_1= \hat y_1 / x_1$ (since the two triangles are similar).</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>Here $\hat y_1$ is the projection of $y$ on $x_1$, which is</span>
+<span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a>hypothetical since we have no way to decompose $x$ into $x_1$ and</span>
+<span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>$x_2$; otherwise, we would not need instrumental variables.</span>
+<span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-103"><a href="#cb16-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-104"><a href="#cb16-104" aria-hidden="true" tabindex="-1"></a><span class="do">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<span id="cb16-105"><a href="#cb16-105" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb16-106"><a href="#cb16-106" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
+<span id="cb16-107"><a href="#cb16-107" aria-hidden="true" tabindex="-1"></a>nobs<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb16-108"><a href="#cb16-108" aria-hidden="true" tabindex="-1"></a>nDim <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>sdxx <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>sdww<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>sdzz<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a><span class="do">## here we have three variables x,z,w.</span></span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a><span class="do">## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is indepent of everything else.</span></span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>crxz<span class="ot">=</span>.<span class="dv">6</span></span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>crzw<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>crxw<span class="ot">=</span>.<span class="dv">8</span></span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>covarMat <span class="ot">=</span> <span class="fu">matrix</span>( <span class="fu">c</span>(sdxx<span class="sc">^</span><span class="dv">2</span>, crxz, crxw, crxz, sdzz<span class="sc">^</span><span class="dv">2</span>, crzw,  crxw, crzw, sdww<span class="sc">^</span><span class="dv">2</span> ) , <span class="at">nrow=</span>nDim , <span class="at">ncol=</span>nDim )</span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>covarMat</span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>data  <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n=</span>nobs, <span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,nDim), <span class="at">Sigma=</span>covarMat ))</span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'x'</span>,<span class="st">'z'</span>,<span class="st">'w'</span>)</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a><span class="co"># dgp</span></span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>y <span class="ot">&lt;-</span> data<span class="sc">$</span>x <span class="sc">+</span>  data<span class="sc">$</span>z <span class="sc">+</span> data<span class="sc">$</span>u</span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>data)</span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>lm.full <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data=</span>data)</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>tsls.model <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(y <span class="sc">~</span> x <span class="sc">|</span> w, <span class="at">data=</span>data)</span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a><span class="co"># lm is biased</span></span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm)</span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a><span class="co"># lm.full is good</span></span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm.full)</span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a><span class="co"># tsls is good.</span></span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tsls.model)</span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Control Function Approach</span></span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>A second way to do an IV regression is also two-step approach: Regress</span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>$\bf X$ (endogenous) on $\bf Z$, get the residual: $\bf \hat</span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>v=X-Z(Z'Z)^{-1}Z'X$, then regress $y$ on $\bf X$ and $\hat v$ to get</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>$\hat \beta_{IV}$.</span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>The difference between this approach and the 2sls approach is that in</span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>2sls we regress $y$ on $\bf \hat X$; in the control function approach,</span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>we regress $y$ on $\bf  X$ and $\hat v$.  They should both give you</span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>the same coefficient estimates.  There are advantages of using the</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>control function approach.</span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>An example to show how to do 2sls manually, or using control function approach.</span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a><span class="do">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>data)</span>
+<span id="cb16-161"><a href="#cb16-161" aria-hidden="true" tabindex="-1"></a>lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(x<span class="sc">~</span>w, <span class="at">data=</span>data)</span>
+<span id="cb16-162"><a href="#cb16-162" aria-hidden="true" tabindex="-1"></a>tsls.manual <span class="ot">&lt;-</span> <span class="fu">lm</span>(data<span class="sc">$</span>y <span class="sc">~</span> lm2<span class="sc">$</span>fitted.values)</span>
+<span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tsls.manual)</span>
+<span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a><span class="co"># control function approach</span></span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>tsls.control <span class="ot">&lt;-</span> <span class="fu">lm</span>(data<span class="sc">$</span>y <span class="sc">~</span> data<span class="sc">$</span>x <span class="sc">+</span> lm2<span class="sc">$</span>residual)</span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tsls.control)</span>
+<span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>This approach can be used to do a simple endogeneity test.  First, you</span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>can do a simple test of endogeneity of $\bf X$.  For example:</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a><span class="in">    reg x_endog x* z*</span></span>
+<span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a><span class="in">    predict v_x, resid</span></span>
+<span id="cb16-176"><a href="#cb16-176" aria-hidden="true" tabindex="-1"></a><span class="in">    reg y x_endog x* v_x</span></span>
+<span id="cb16-177"><a href="#cb16-177" aria-hidden="true" tabindex="-1"></a><span class="in">    test v_x</span></span>
+<span id="cb16-178"><a href="#cb16-178" aria-hidden="true" tabindex="-1"></a><span class="in">    </span></span>
+<span id="cb16-179"><a href="#cb16-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-180"><a href="#cb16-180" aria-hidden="true" tabindex="-1"></a>Obviously, this test is based on $\bf Z$ being exogenous.</span>
+<span id="cb16-181"><a href="#cb16-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-182"><a href="#cb16-182" aria-hidden="true" tabindex="-1"></a>Secondly, it works for some non-linear models, such as logit, probit,</span>
+<span id="cb16-183"><a href="#cb16-183" aria-hidden="true" tabindex="-1"></a>poisson, or any other glm models.  That is, if you have an endogenous</span>
+<span id="cb16-184"><a href="#cb16-184" aria-hidden="true" tabindex="-1"></a>variable in a glm model, you can regress that endogenous variable on</span>
+<span id="cb16-185"><a href="#cb16-185" aria-hidden="true" tabindex="-1"></a>instruments, get the residual, then run the glm model with the</span>
+<span id="cb16-186"><a href="#cb16-186" aria-hidden="true" tabindex="-1"></a>original regressors, plus the residual from the first stage.  For</span>
+<span id="cb16-187"><a href="#cb16-187" aria-hidden="true" tabindex="-1"></a>example, the "eteffects" procedure in Stata (version 14) uses control</span>
+<span id="cb16-188"><a href="#cb16-188" aria-hidden="true" tabindex="-1"></a>function approach to get endogenous treatment effects for different</span>
+<span id="cb16-189"><a href="#cb16-189" aria-hidden="true" tabindex="-1"></a>types of outcomes.</span>
+<span id="cb16-190"><a href="#cb16-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Durbin-Wu-Hausman Test</span></span>
+<span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a><span class="fu">### Idea</span></span>
+<span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a>In econometric modeling, there are often questions on endogeneity.  Do</span>
+<span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a>we know how to test whether an independent variable is endogenous</span>
+<span id="cb16-198"><a href="#cb16-198" aria-hidden="true" tabindex="-1"></a>statistically?  The answer is: sort of, but not really.  We cannot do</span>
+<span id="cb16-199"><a href="#cb16-199" aria-hidden="true" tabindex="-1"></a>endogeneity test without a valid instrument.  Therefore, we have to</span>
+<span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a>have strong argument for a valid instrument first before we can do</span>
+<span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a>endogeneity test.</span>
+<span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a>With endogenous variables on the right-hand side of the equation, we</span>
+<span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>need to use instrumental variable (IV) regression for consistent</span>
+<span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a>estimation.  However, with IV regression, we lose efficiency: the</span>
+<span id="cb16-207"><a href="#cb16-207" aria-hidden="true" tabindex="-1"></a>asymptotic variance of the IV estimator is larger, and can be much</span>
+<span id="cb16-208"><a href="#cb16-208" aria-hidden="true" tabindex="-1"></a>larger than the OLS estimator.  Therefore, we gain consistency, but</span>
+<span id="cb16-209"><a href="#cb16-209" aria-hidden="true" tabindex="-1"></a>lose efficiency, by using IV estimator when there is an endogeneity</span>
+<span id="cb16-210"><a href="#cb16-210" aria-hidden="true" tabindex="-1"></a>problem.</span>
+<span id="cb16-211"><a href="#cb16-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-212"><a href="#cb16-212" aria-hidden="true" tabindex="-1"></a>Now we have a familiar scenario (if you are familiar with Hausman</span>
+<span id="cb16-213"><a href="#cb16-213" aria-hidden="true" tabindex="-1"></a>test for fixed effect and random effect estimator for panel data):</span>
+<span id="cb16-214"><a href="#cb16-214" aria-hidden="true" tabindex="-1"></a>Suppose we have the null hypothesis as the regressor being exogenous.</span>
+<span id="cb16-215"><a href="#cb16-215" aria-hidden="true" tabindex="-1"></a>We have an efficient estimator under null hypothesis yet inconsistent</span>
+<span id="cb16-216"><a href="#cb16-216" aria-hidden="true" tabindex="-1"></a>under alternative hypothesis (OLS estimator). We also have a</span>
+<span id="cb16-217"><a href="#cb16-217" aria-hidden="true" tabindex="-1"></a>consistent estimator under both null and alternative (IV estimator).</span>
+<span id="cb16-218"><a href="#cb16-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-219"><a href="#cb16-219" aria-hidden="true" tabindex="-1"></a>Similar to panel data setting, we have the Hausman test statistic as:</span>
+<span id="cb16-220"><a href="#cb16-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-221"><a href="#cb16-221" aria-hidden="true" tabindex="-1"></a>$$ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat</span>
+<span id="cb16-222"><a href="#cb16-222" aria-hidden="true" tabindex="-1"></a>\beta_e) $$</span>
+<span id="cb16-223"><a href="#cb16-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-224"><a href="#cb16-224" aria-hidden="true" tabindex="-1"></a>where $D={\rm Var} <span class="co">[</span><span class="ot">\hat \beta_c</span><span class="co">]</span> - {\rm Var} <span class="co">[</span><span class="ot">\hat \beta_e</span><span class="co">]</span>$, $^-$ is</span>
+<span id="cb16-225"><a href="#cb16-225" aria-hidden="true" tabindex="-1"></a>the generalized inverse, $\hat \beta_c$ is the consistent estimator (in</span>
+<span id="cb16-226"><a href="#cb16-226" aria-hidden="true" tabindex="-1"></a>this case the IV estimator) and $\hat \beta_e$ is the efficient</span>
+<span id="cb16-227"><a href="#cb16-227" aria-hidden="true" tabindex="-1"></a>estimator (in this case OLS estimator).</span>
+<span id="cb16-228"><a href="#cb16-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-229"><a href="#cb16-229" aria-hidden="true" tabindex="-1"></a>$H$ conforms to $\chi^2_k$ asymptotically, where $k$ is the number of endogenous</span>
+<span id="cb16-230"><a href="#cb16-230" aria-hidden="true" tabindex="-1"></a>variables.</span>
+<span id="cb16-231"><a href="#cb16-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-232"><a href="#cb16-232" aria-hidden="true" tabindex="-1"></a>This test is to compare the IV estimator and the OLS estimator: if</span>
+<span id="cb16-233"><a href="#cb16-233" aria-hidden="true" tabindex="-1"></a>it's close, then OLS estimator is fine (fail to reject null that OLS</span>
+<span id="cb16-234"><a href="#cb16-234" aria-hidden="true" tabindex="-1"></a>is consistent, or say the variable is exogenous).  If it's large, then</span>
+<span id="cb16-235"><a href="#cb16-235" aria-hidden="true" tabindex="-1"></a>IV estimator is needed, although we lose some efficiency.  This test</span>
+<span id="cb16-236"><a href="#cb16-236" aria-hidden="true" tabindex="-1"></a>is  based on the assumption that the instruments are exogenous.</span>
+<span id="cb16-237"><a href="#cb16-237" aria-hidden="true" tabindex="-1"></a>If that is in question, then it's pointless to do the test, since the</span>
+<span id="cb16-238"><a href="#cb16-238" aria-hidden="true" tabindex="-1"></a>IV estimator cannot guarantee consistency either.</span>
+<span id="cb16-239"><a href="#cb16-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-240"><a href="#cb16-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-241"><a href="#cb16-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-242"><a href="#cb16-242" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementation in Stata</span></span>
+<span id="cb16-243"><a href="#cb16-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-244"><a href="#cb16-244" aria-hidden="true" tabindex="-1"></a>In Stata, there are different ways to do it:</span>
+<span id="cb16-245"><a href="#cb16-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-246"><a href="#cb16-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>Do a regular Hausman test:</span>
+<span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a><span class="in">    ivreg y x1 (x2=x3 x4)</span></span>
+<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a><span class="in">    estimates store iv</span></span>
+<span id="cb16-251"><a href="#cb16-251" aria-hidden="true" tabindex="-1"></a><span class="in">    reg y x1 x2</span></span>
+<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a><span class="in">    hausman iv ., constant sigmamore</span></span>
+<span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a>Or, simply use "ivendog" in Stata.</span>
+<span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-256"><a href="#cb16-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-257"><a href="#cb16-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-258"><a href="#cb16-258" aria-hidden="true" tabindex="-1"></a><span class="fu">## Identification</span></span>
+<span id="cb16-259"><a href="#cb16-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-260"><a href="#cb16-260" aria-hidden="true" tabindex="-1"></a>Identification in a regression equation means that all parameters can</span>
+<span id="cb16-261"><a href="#cb16-261" aria-hidden="true" tabindex="-1"></a>be uniquely estimated.  A necessary condition of that is to have at</span>
+<span id="cb16-262"><a href="#cb16-262" aria-hidden="true" tabindex="-1"></a>least as many instruments as the number of endogenous variables.  That</span>
+<span id="cb16-263"><a href="#cb16-263" aria-hidden="true" tabindex="-1"></a>is, $l \ge k$ in our example above.  If $l=k$ we have</span>
+<span id="cb16-264"><a href="#cb16-264" aria-hidden="true" tabindex="-1"></a>exact-identification.  If $l&gt;k$, we have over-identification.</span>
+<span id="cb16-265"><a href="#cb16-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-266"><a href="#cb16-266" aria-hidden="true" tabindex="-1"></a>Over-identification generates more efficient estimates, given the</span>
+<span id="cb16-267"><a href="#cb16-267" aria-hidden="true" tabindex="-1"></a>assumption of instruments being exogenous.  The other advantage of</span>
+<span id="cb16-268"><a href="#cb16-268" aria-hidden="true" tabindex="-1"></a>over-identification is that over-identification tests can be done to</span>
+<span id="cb16-269"><a href="#cb16-269" aria-hidden="true" tabindex="-1"></a>test the adequacy of instruments.</span>
+<span id="cb16-270"><a href="#cb16-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-271"><a href="#cb16-271" aria-hidden="true" tabindex="-1"></a>Under the null hypothesis that all the instruments are uncorrelated</span>
+<span id="cb16-272"><a href="#cb16-272" aria-hidden="true" tabindex="-1"></a>with the error term, an LM statistic  $N \times R^2$ conforms to</span>
+<span id="cb16-273"><a href="#cb16-273" aria-hidden="true" tabindex="-1"></a>$\chi^2 (r)$ distribution, $r=l-k$, the number of excess instruments,</span>
+<span id="cb16-274"><a href="#cb16-274" aria-hidden="true" tabindex="-1"></a> or say, the number of excluded restrictions.  If we reject the null,</span>
+<span id="cb16-275"><a href="#cb16-275" aria-hidden="true" tabindex="-1"></a> then we should be concerned about the exogeneity of the whole set of</span>
+<span id="cb16-276"><a href="#cb16-276" aria-hidden="true" tabindex="-1"></a> the instruments.  This test is called Sargan's test in IV context, and</span>
+<span id="cb16-277"><a href="#cb16-277" aria-hidden="true" tabindex="-1"></a> (Hansen's) J test in GMM context.</span>
+<span id="cb16-278"><a href="#cb16-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-279"><a href="#cb16-279" aria-hidden="true" tabindex="-1"></a> What the J test or Sargan's test does is to test the whole set of</span>
+<span id="cb16-280"><a href="#cb16-280" aria-hidden="true" tabindex="-1"></a> instruments being exogenous or not.  There is another test for</span>
+<span id="cb16-281"><a href="#cb16-281" aria-hidden="true" tabindex="-1"></a> testing exogeneity for a subset of instruments.  It's call a C test</span>
+<span id="cb16-282"><a href="#cb16-282" aria-hidden="true" tabindex="-1"></a> or a difference-in-Sargan test.  The idea is to calculate the</span>
+<span id="cb16-283"><a href="#cb16-283" aria-hidden="true" tabindex="-1"></a> difference between two Sargan's statistics (or Hansen's J in GMM</span>
+<span id="cb16-284"><a href="#cb16-284" aria-hidden="true" tabindex="-1"></a> setting); one is with the whole set of instruments, the other one</span>
+<span id="cb16-285"><a href="#cb16-285" aria-hidden="true" tabindex="-1"></a> without the suspected instruments.  The null is that the suspect</span>
+<span id="cb16-286"><a href="#cb16-286" aria-hidden="true" tabindex="-1"></a> instruments are exogenous; or orthogonal to the error term.</span>
+<span id="cb16-287"><a href="#cb16-287" aria-hidden="true" tabindex="-1"></a> Obviously to conduct the C test, we'll have to have at least one</span>
+<span id="cb16-288"><a href="#cb16-288" aria-hidden="true" tabindex="-1"></a> extra instrument more than the number of endogenous variables.</span>
+<span id="cb16-289"><a href="#cb16-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-290"><a href="#cb16-290" aria-hidden="true" tabindex="-1"></a> To understand it better, we look at how to implement Sargan's test</span>
+<span id="cb16-291"><a href="#cb16-291" aria-hidden="true" tabindex="-1"></a> manually: For the 2SLS estimator, the test statistic is Sargan's</span>
+<span id="cb16-292"><a href="#cb16-292" aria-hidden="true" tabindex="-1"></a> statistic, typically calculated as $N \times R^2$ from a regression of</span>
+<span id="cb16-293"><a href="#cb16-293" aria-hidden="true" tabindex="-1"></a> the IV residuals on the full set of instruments.</span>
+<span id="cb16-294"><a href="#cb16-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-295"><a href="#cb16-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-296"><a href="#cb16-296" aria-hidden="true" tabindex="-1"></a><span class="in">    . ivregress 2sls rent pcturban (hsngval = faminc i.region)</span></span>
+<span id="cb16-297"><a href="#cb16-297" aria-hidden="true" tabindex="-1"></a><span class="in">    . estat overid</span></span>
+<span id="cb16-298"><a href="#cb16-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-299"><a href="#cb16-299" aria-hidden="true" tabindex="-1"></a><span class="in">      Tests of overidentifying restrictions:</span></span>
+<span id="cb16-300"><a href="#cb16-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-301"><a href="#cb16-301" aria-hidden="true" tabindex="-1"></a><span class="in">      Sargan (score) chi2(3) =  11.2877  (p = 0.0103)</span></span>
+<span id="cb16-302"><a href="#cb16-302" aria-hidden="true" tabindex="-1"></a><span class="in">      Basmann chi2(3)        =  12.8294  (p = 0.0050)</span></span>
+<span id="cb16-303"><a href="#cb16-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-304"><a href="#cb16-304" aria-hidden="true" tabindex="-1"></a><span class="in">    . predict res, residual</span></span>
+<span id="cb16-305"><a href="#cb16-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-306"><a href="#cb16-306" aria-hidden="true" tabindex="-1"></a><span class="in">    . reg res pcturban faminc i.region</span></span>
+<span id="cb16-307"><a href="#cb16-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-308"><a href="#cb16-308" aria-hidden="true" tabindex="-1"></a><span class="in">    . disp e(N)*e(r2)</span></span>
+<span id="cb16-309"><a href="#cb16-309" aria-hidden="true" tabindex="-1"></a><span class="in">    11.287665</span></span>
+<span id="cb16-310"><a href="#cb16-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-311"><a href="#cb16-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-312"><a href="#cb16-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-313"><a href="#cb16-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-314"><a href="#cb16-314" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementation in Stata</span></span>
+<span id="cb16-315"><a href="#cb16-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a>In Stata, there are different ways to do over-identification test,</span>
+<span id="cb16-317"><a href="#cb16-317" aria-hidden="true" tabindex="-1"></a>ivreg2 reports a comprehensive set of tests; overid command does the</span>
+<span id="cb16-318"><a href="#cb16-318" aria-hidden="true" tabindex="-1"></a>over-identification test after the ivreg command.</span>
+<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a>  ivreg2 with   gmm option returns J test; it reports</span>
+<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a>Sargan's test without this option.</span>
+<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a>  ivreg2 also reports C test statistic, with ortho().  If the C test rejects the null, and J test without the suspect instruments fail to reject null, then the suspect instruments are indeed the ones are not exogenous.</span>
+<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a><span class="fu">## Weak Instruments</span></span>
+<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a><span class="fu">### Problem with the cure</span></span>
+<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a>An instrument needs to satisfy to criteria: orthogonality and</span>
+<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a>relevance.  We need instruments to be orthogonal to the error term.</span>
+<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a>We can verify the orthogonality condition  by Sargan's test if there are extra</span>
+<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a>instruments.</span>
+<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a>It turns out instrument relevance is important too: if instruments are</span>
+<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a>weak, then the regular large sample properties of IV or GMM estimators</span>
+<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a>do not hold any more.  The estimators are inconsistent or biased.</span>
+<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a>To see the problem, suppose</span>
+<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-342"><a href="#cb16-342" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-343"><a href="#cb16-343" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I, </span>
+<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a>\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I, </span>
+<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-350"><a href="#cb16-350" aria-hidden="true" tabindex="-1"></a>and</span>
+<span id="cb16-351"><a href="#cb16-351" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-352"><a href="#cb16-352" aria-hidden="true" tabindex="-1"></a>{\rm E}(\bf Z u )=0. </span>
+<span id="cb16-353"><a href="#cb16-353" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-354"><a href="#cb16-354" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a>We can see here $\bf Z$ is exogenous.  However, the model does not say</span>
+<span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a>anything about relevance.  To illustrate the problem caused by weak</span>
+<span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a>instrument, suppose we have only one endogenous variable and one</span>
+<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a>instrument.</span>
+<span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}=\frac{\bf Z' y}{\bf Z' X} = \frac{\bf Z'(X \beta +</span>
+<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a>  u)}{\bf Z'</span>
+<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a>  X}= \beta + \frac{\bf Z' u}{\bf Z' X} . </span>
+<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a>If $\bf Z$ is irrelevant, or, $\Pi=0$, then</span>
+<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}</span>
+<span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^N Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^N Z_i v_i}</span>
+<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a>\xrightarrow{d} \frac{z_u}{z_v} ,</span>
+<span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb16-378"><a href="#cb16-378" aria-hidden="true" tabindex="-1"></a>z_u <span class="sc">\\</span>z_v</span>
+<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a>\sim N(0, \begin{bmatrix}</span>
+<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a>\sigma_u^2 \quad \sigma_{uv} <span class="sc">\\</span>  \sigma_{uv} \quad \sigma_v^2</span>
+<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}).</span>
+<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>Therefore, if $\bf Z$ is irrelevant, $\beta_{2sls}$ is inconsistent.</span>
+<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a>Also, the distribution of the bias is Cauchy-like (the ratio of</span>
+<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a>correlated normals).</span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a>This is a case where the cure might be worse than the disease itself:</span>
+<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a>the bias can be big comparing to the bias an OLS estimate suffers.</span>
+<span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a><span class="fu">### Weak Instrument Tests</span></span>
+<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a>There are a variety of weak-instruments tests proposed.  Most of them</span>
+<span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a>are based on so-called weak-instruments asymptotics and a new</span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>parameter called "concentration parameter" $\mu^2 = \Pi' Z' Z \Pi</span>
+<span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a>/ \sigma_v^2$.  Sample size only enters the distribution through</span>
+<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>$\mu^2$.</span>
+<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a>With weak-instruments asymptotics, IV estimators are no longer</span>
+<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>consistent, and they are not normal asymptotically.  Most test</span>
+<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>statistics (J test, etc.) do not have normal or $\chi^2$ distributions</span>
+<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>anymore.</span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a>Now I list the following tests in the order of recommended level by</span>
+<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a>James Stock:</span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Moreira (2003) conditional likelihood ratio test (CLR).</span>
+<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>  Advantages of this test:</span>
+<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a>      a.  Uniformly most powerful tests among valid tests.</span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>      b.  Implemented in Stata as condivereg.</span>
+<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>Disadvantages:</span>
+<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a>   a.  Complicated.  Only developed so far for one endogenous</span>
+<span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>  variable case.</span>
+<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stock-Yogo bias method and size method.</span>
+<span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>Stock and Yogo (2005) provide critical values for both methods: one is</span>
+<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>to control the size of bias, the other one is to control the size of a</span>
+<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>Wald test of $\beta=\beta_0$.  Bias method is more frequently used.</span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>In the case of multiple endogenous variables, the Cragg-Donald</span>
+<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a>statistics is used to compare with the critical values.  It is</span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>implemented in Stata as part of the *ivreg2* command, but it's</span>
+<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>only available for the situation there are at least two excluded</span>
+<span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a>variables (meaning the number of instruments minus the number of</span>
+<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a>endogenous variables).</span>
+<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a><span class="ss">2.   </span>Anderson-Rubin confidence intervals.</span>
+<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a>In the model of</span>
+<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,</span>
+<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a>\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,</span>
+<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a>The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic</span>
+<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a>is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F</span>
+<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a>test on $\Pi$ being zero:</span>
+<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a>AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/k}{(y-X\beta_0)' M_Z</span>
+<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a>  (y-X\beta_0)/(N-k)}</span>
+<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a>The idea of AR confidence interval is to construct an interval for all</span>
+<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a>possible values of $\beta$ to fail to reject $\Pi=0$.</span>
+<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>First-stage F test.</span>
+<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a>The rule of thumb for first-stage F test is $F&gt;10$ for a single</span>
+<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a>instrument case, the more instruments, the higher it gets.</span>
+<span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a><span class="ss">4.   </span>Kleibergen's LM test.</span>
+<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a>This test is dominated by the CLR test, thus no longer the optimal</span>
+<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a>test to use.</span>
+<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a><span class="ss">5.   </span>First-stage $R^2$, or partial $R^2$, etc., are not recommended.</span>
+<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a><span class="fu">## When is endogeneity a problem and what can we say from an IV regression</span></span>
+<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a>Let's consider a model of housing price on no. of rooms</span>
+<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a>and square footage.</span>
+<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>$$ P = \alpha R + \beta F + \epsilon $$</span>
+<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a>Should square footage really be there?  We are not interested in,</span>
+<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>given square footage, how much money we need to pay for an additional</span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>room.  We are generally interested in how much money we need to pay</span>
+<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a>for an additional footage.  However, if we do not include footage,</span>
+<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a>then we "sort of" have endogeneity problem due to omitted variable.</span>
+<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>Another example would be education's impact on wage.  Say IQ is an</span>
+<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>omitted variable.  Do we want to say something about education's</span>
+<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a>impact on wage controlling on IQ, or not?</span>
+<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a>So it depends on what questions to ask.  If I am a builder and ask</span>
+<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a>what an extra bedroom on the already built house would bring to me, I</span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>need to control for footage.  If I am generally asking what an extra</span>
+<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a>bedroom would cost, then I am implying what that bedroom and</span>
+<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a>associated footage would cost me.  In that case, without controlling</span>
+<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>for footage is not a problem, since the question is:  what an</span>
+<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a>additional bedroom (AND the associated average square footage) would</span>
+<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>cost me.</span>
+<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>In the wage and education example, if I am asking: what's the effect</span>
+<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a>of education on wage?  I implicitly ask what would be my pay raise if</span>
+<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a>I go to college (given IQ, of course), for example.  Then we are</span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>concerned that this model of</span>
+<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>$$ wage= \alpha edu + \epsilon $$</span>
+<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>will generate biased estimate of $\alpha$, because we are not</span>
+<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a>controlling for IQ.  But if I am an employer and interested in hiring</span>
+<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a>a person, what would I have to pay extra to hire a college graduate</span>
+<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a>vs. a high school graduate?  Then I don't have to include that IQ</span>
+<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a>variable, because implicitly I am asking: what extra I need to pay for</span>
+<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a>that college graduate who comes with a higher IQ, and everything else</span>
+<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a>that is associated with higher education.</span>
+<span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a>In addition, what an IV regression really gives us is part of the causal</span>
+<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a>inference of $X$ (suspected to be endogenous) on $y$, namely the part</span>
+<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a>induced by $Z$.  For example, we are interested in the relationship</span>
+<span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a>between college education and wage.  If we use distance to college as</span>
+<span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a>an instrument, then our inference is the effect of college education</span>
+<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a>from those who decide to go because of proximity of the college.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

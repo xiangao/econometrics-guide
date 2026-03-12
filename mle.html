@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>3&nbsp; The Method of Maximum Likelihood – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./gls.html" rel="next">
+<link href="./ols.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./mle.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Causal Inference &amp; IV</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Limited Dependent Variables</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Advanced Topics</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#basic-concepts" id="toc-basic-concepts" class="nav-link active" data-scroll-target="#basic-concepts"><span class="header-section-number">3.1</span> Basic Concepts</a></li>
+  <li><a href="#mle-for-a-linear-model" id="toc-mle-for-a-linear-model" class="nav-link" data-scroll-target="#mle-for-a-linear-model"><span class="header-section-number">3.2</span> MLE for a linear model</a></li>
+  <li><a href="#asymptotic-properties-of-mle" id="toc-asymptotic-properties-of-mle" class="nav-link" data-scroll-target="#asymptotic-properties-of-mle"><span class="header-section-number">3.3</span> Asymptotic Properties of MLE</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">3.4</span> Example</a></li>
+  <li>
+<a href="#hypotheses-testing" id="toc-hypotheses-testing" class="nav-link" data-scroll-target="#hypotheses-testing"><span class="header-section-number">3.5</span> Hypotheses Testing</a>
+  <ul class="collapse">
+<li><a href="#linear-hypotheses-testing" id="toc-linear-hypotheses-testing" class="nav-link" data-scroll-target="#linear-hypotheses-testing"><span class="header-section-number">3.5.1</span> Linear Hypotheses Testing</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#test-of-structural-change-chow-test" id="toc-test-of-structural-change-chow-test" class="nav-link" data-scroll-target="#test-of-structural-change-chow-test"><span class="header-section-number">3.6</span> Test of Structural Change (Chow test)</a>
+  <ul class="collapse">
+<li><a href="#an-example-of-chow-test-in-r" id="toc-an-example-of-chow-test-in-r" class="nav-link" data-scroll-target="#an-example-of-chow-test-in-r"><span class="header-section-number">3.6.1</span> An example of Chow test in R</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#heteroskedasticity-and-autocorrelation-consistent-standard-errors" id="toc-heteroskedasticity-and-autocorrelation-consistent-standard-errors" class="nav-link" data-scroll-target="#heteroskedasticity-and-autocorrelation-consistent-standard-errors"><span class="header-section-number">3.7</span> Heteroskedasticity and Autocorrelation Consistent Standard Errors</a>
+  <ul class="collapse">
+<li><a href="#variance-estimator-under-homoscedasticity" id="toc-variance-estimator-under-homoscedasticity" class="nav-link" data-scroll-target="#variance-estimator-under-homoscedasticity"><span class="header-section-number">3.7.1</span> Variance estimator under homoscedasticity</a></li>
+  <li><a href="#whites-estimator" id="toc-whites-estimator" class="nav-link" data-scroll-target="#whites-estimator"><span class="header-section-number">3.7.2</span> White’s estimator</a></li>
+  <li><a href="#newey-west-estimator" id="toc-newey-west-estimator" class="nav-link" data-scroll-target="#newey-west-estimator"><span class="header-section-number">3.7.3</span> Newey-West estimator</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>If we make the assumption that the error terms are normally distributed, the maximum likelihood estimators (MLE) coincide with the least square estimators. But MLE can also be applied to a wide variety of models other than regression models, and it generally generates estimators with excellent asymptotic properties. The major disadvantage of MLE is that it requires stronger distributional assumptions than does the method of moments.</p>
+<section id="basic-concepts" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="basic-concepts">
+<span class="header-section-number">3.1</span> Basic Concepts</h2>
+<p>Maximum likelihood estimation is to find the set of parameters which makes the current sample most likely given the statistical model.</p>
+<p>Suppose we have a sample of <span class="math inline">\(n\)</span> independent and identically distributed (IID) observations. Each of them comes from some distribution function <span class="math inline">\(f(\cdot, \bf \theta)\)</span>, where parameters <span class="math inline">\(\bf \theta\)</span> is fixed. The joint distribution of all the data points would be</p>
+<p><span class="math display">\[ f(x_1, x_2, \dots, x_n | \theta) = f(x_1 | \theta) \times f(x_2 | \theta) \times \dots \times f(x_n | \theta). \]</span></p>
+<p>It is referred to as the likelihood function of the model for the given data set.</p>
+<p>Then it’s natural to estimate <span class="math inline">\(\theta\)</span> by picking the <span class="math inline">\(\theta\)</span> that maximize this joint distribution function. A parameter vector <span class="math inline">\(\hat \bf \theta\)</span> at which the likelihood takes on its maximum value is called a maximum likelihood estimate, or MLE, of the parameters.</p>
+<p>Usually the log form of the likelihood function is preferred for computational purposes.</p>
+</section><section id="mle-for-a-linear-model" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="mle-for-a-linear-model">
+<span class="header-section-number">3.2</span> MLE for a linear model</h2>
+<p>Consider the classical normal linear model:</p>
+<p><span class="math display">\[
+\bf y=X\beta+u, \quad u \sim N(0, \sigma^2 I)
+\]</span></p>
+<p>In this case, we have two parameters to estimate, <span class="math inline">\(\sigma\)</span> and <span class="math inline">\(\bf \beta\)</span>. The distribution of <span class="math inline">\(\bf y | X\)</span> is</p>
+<p><span class="math display">\[ f({\bf y, \beta, \sigma | X}) = \frac{1}{\sigma \sqrt{2 \pi}} \exp(-  \frac{({\bf y- X \beta})^2}{2 \sigma^2})\]</span></p>
+<p>The log-likelihood function is</p>
+<p><span class="math display">\[ l({\bf y, \beta, \sigma}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} \sum_{t=1}^n \bf (y-X \beta)'(y-X \beta) \]</span></p>
+<p>The maximization of the log-likelihood function will lead to the same estimator as the OLS estimator, for <span class="math inline">\(\bf \beta\)</span>. For <span class="math inline">\(\sigma^2\)</span>, the MLE estimator is slightly different in limited sample, but asymptotically the same. This is strictly based on the assumption of normally distributed error term. Otherwise, these two estimators will be different.</p>
+</section><section id="asymptotic-properties-of-mle" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="asymptotic-properties-of-mle">
+<span class="header-section-number">3.3</span> Asymptotic Properties of MLE</h2>
+<ol type="1">
+<li>Consistency <span class="math display">\[
+{\rm plim} (\bf \hat \theta)=\theta.
+\]</span>
+</li>
+</ol>
+<p>This is to say that MLE estimator can get arbitrarily close to the true parameter if the sample size gets to infinity.</p>
+<ol start="2" type="1">
+<li>Asymptotic Normality <span class="math display">\[
+{\bf \hat \theta} \sim^a N(\bf \theta, I^{-1}(\theta)).
+\]</span>
+</li>
+</ol>
+<p>This states that the asymptotic distribution of <span class="math inline">\(\bf \hat \theta\)</span> is normal with mean <span class="math inline">\(\bf \theta\)</span> and variance given by the inverse of <span class="math inline">\(\bf I(\theta)\)</span>, the information matrix, defined by</p>
+<p><span class="math display">\[
+{\bf I(\theta)}=E[(\frac{\partial l}{\partial
+\theta})(\frac{\partial l}{\partial
+\theta})']=-E[(\frac{\partial^2 l}{\partial \theta \partial
+\theta'})]
+\]</span></p>
+<p>The information matrix is the expected value of the inner product of gradient of the log-likelihood function, or the negative value of the expected value of the Hessian (second derivative of the log-likelihood function.</p>
+<ol start="3" type="1">
+<li>Asymptotic efficiency.</li>
+</ol>
+<p>If <span class="math inline">\(\bf \hat \theta\)</span> is the MLE estimator of <span class="math inline">\(\theta\)</span>, <span class="math inline">\(\bf V\)</span> denotes the variance covariance matrix of <span class="math inline">\(\bf \hat \theta\)</span>, then <span class="math display">\[
+\sqrt n (\hat \theta -\theta) \rightarrow^d N(\bf 0, V)
+\]</span></p>
+<p>If <span class="math inline">\(\bf \tilde V\)</span> denotes the variance matrix of any other consistent, asymptotically normal estimator, then <span class="math inline">\(\bf \tilde V- V\)</span> is a positive semidefinite matrix. That means MLE estimator is the best (in terms of variance) consistent and asymptotically normal estimator.</p>
+<ol start="4" type="1">
+<li>Invariance.</li>
+</ol>
+<p>If <span class="math inline">\(\hat \theta\)</span> is the MLE of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(g(\theta)\)</span> is a continuous function of <span class="math inline">\(\theta\)</span>, then <span class="math inline">\(g(\hat \theta)\)</span> is the MLE of <span class="math inline">\(g(\theta)\)</span>.</p>
+</section><section id="example" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="example">
+<span class="header-section-number">3.4</span> Example</h2>
+<p>Let’s look at the example of regression of car’s mpg on disp, hp and wt. This time we use MLE. (R has a mle() function which I cannot make it work on this example. So I am using optim().)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ols.lf</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">theta</span>, <span class="va">y</span>, <span class="va">X</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">beta</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span></span>
+<span>  <span class="va">sigma2</span> <span class="op">&lt;-</span> <span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">sigma2</span> <span class="op">&lt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="cn">NA</span><span class="op">)</span></span>
+<span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span>  <span class="va">e</span> <span class="op">&lt;-</span> <span class="va">y</span> <span class="op">-</span> <span class="va">X</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span><span class="va">beta</span></span>
+<span>  <span class="va">logl</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="op">-</span><span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">pi</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="op">(</span><span class="op">(</span><span class="va">n</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">sigma2</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">e</span><span class="op">)</span><span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span><span class="va">e</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="fl">2</span><span class="op">*</span><span class="va">sigma2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="op">-</span><span class="va">logl</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fl">1</span>,<span class="va">mtcars</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'disp'</span>,<span class="st">'hp'</span>,<span class="st">'wt'</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">mtcars</span><span class="op">$</span><span class="va">mpg</span></span>
+<span></span>
+<span><span class="co"># note that I have a rough idea of the starting values from OLS esimators first; otherwise it may converge to some wrong local maximum.  Annoying.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/optim.html">optim</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span>,<span class="op">-</span><span class="fl">1</span><span class="op">)</span>, method<span class="op">=</span><span class="st">"L-BFGS-B"</span>, fn<span class="op">=</span><span class="va">ols.lf</span>, lower<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1e-6</span>,<span class="op">-</span><span class="cn">Inf</span>,<span class="op">-</span><span class="cn">Inf</span>,<span class="op">-</span><span class="cn">Inf</span>,<span class="op">-</span><span class="cn">Inf</span><span class="op">)</span>, upper<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="cn">Inf</span>,<span class="fl">5</span><span class="op">)</span>, y<span class="op">=</span><span class="va">y</span>, X<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$par
+[1]  6.0935580702 37.1058998652 -0.0009352804 -0.0311594264 -3.8010038304
+
+$value
+[1] 74.32149
+
+$counts
+function gradient 
+     126      126 
+
+$convergence
+[1] 0
+
+$message
+[1] "CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># it should match the OLS estimator</span></span>
+<span></span>
+<span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mpg</span><span class="op">~</span><span class="va">disp</span><span class="op">+</span><span class="va">hp</span><span class="op">+</span><span class="va">wt</span>, data<span class="op">=</span><span class="va">mtcars</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = mpg ~ disp + hp + wt, data = mtcars)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.891 -1.640 -0.172  1.061  5.861 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 37.105505   2.110815  17.579  &lt; 2e-16 ***
+disp        -0.000937   0.010350  -0.091  0.92851    
+hp          -0.031157   0.011436  -2.724  0.01097 *  
+wt          -3.800891   1.066191  -3.565  0.00133 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 2.639 on 28 degrees of freedom
+Multiple R-squared:  0.8268,    Adjusted R-squared:  0.8083 
+F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
+</div>
+</div>
+</section><section id="hypotheses-testing" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="hypotheses-testing">
+<span class="header-section-number">3.5</span> Hypotheses Testing</h2>
+<section id="linear-hypotheses-testing" class="level3" data-number="3.5.1"><h3 data-number="3.5.1" class="anchored" data-anchor-id="linear-hypotheses-testing">
+<span class="header-section-number">3.5.1</span> Linear Hypotheses Testing</h3>
+<p>Linear hypothesis can be framed as <span class="math display">\[
+\rm H_0: \ \ \bf R\beta -r=0,
+\]</span> where <span class="math inline">\(\bf R\)</span> is a <span class="math inline">\(q \times k\)</span> matrix of known constants, with <span class="math inline">\(q &lt;
+k\)</span>, and <span class="math inline">\(\bf r\)</span> is a <span class="math inline">\(q\)</span>-vector of known constants.</p>
+<p>We assume that <span class="math inline">\(u_i\)</span> are normally distributed.</p>
+<p><span class="math display">\[
+\bf u \sim N(0, \sigma^2 I)
+\]</span></p>
+<p>Even if this assumption does not hold, we still have asymptotic normality for <span class="math inline">\(\bf u\)</span>.</p>
+<p>Since linear combination of normal variables are also normally distributed, <span class="math display">\[
+\bf \hat \beta \sim N(\beta, \sigma^2 (X'X)^{-1})\\
+\bf R \hat \beta \sim N(R \beta, \sigma^2 R(X'X)^{-1}R')\\
+\bf R (\hat \beta - \beta) \sim N(0, \sigma^2 R(X'X)^{-1}R')
+\]</span></p>
+<p>Under null hypothesis,</p>
+<p><span class="math display">\[
+\bf (R \hat \beta - r) \sim N(0, \sigma^2 R(X'X)^{-1}R')
+\]</span></p>
+<p>Therefore, <span class="math display">\[
+{\bf (R \hat \beta - r)'[\sigma^2 R(X'X)^{-1}R']^{-1} (R \hat
+\beta - r)} \sim \chi^2(q)
+\]</span></p>
+<p>Here we don’t know <span class="math inline">\(\sigma^2\)</span>. However, it can be shown that <span class="math display">\[
+{\bf \frac{\hat u' u}{\sigma^2}} \sim \chi^2(n-k)
+\]</span></p>
+<p>Then we have <span class="math display">\[
+{\bf \frac{(R \hat \beta - r)'[ R(X'X)^{-1}R']^{-1} (R \hat \beta
+- r)/q}{\hat u' \hat u / (n-k)}} \sim F(q, n-k)
+\]</span></p>
+<p>This is an example of the <span class="math inline">\(F\)</span> test for any linear hypotheses testing. <span class="math inline">\(t\)</span> test will be a special case of this.</p>
+</section></section><section id="test-of-structural-change-chow-test" class="level2" data-number="3.6"><h2 data-number="3.6" class="anchored" data-anchor-id="test-of-structural-change-chow-test">
+<span class="header-section-number">3.6</span> Test of Structural Change (Chow test)</h2>
+<p>Chow test is a test between two groups of observations. For example, we have data on consumption function of prewar period and postwar period. It is natural to think of a test on whether consumption function parameters differ between prewar and postwar periods. The null hypothesis is that there is no difference.</p>
+<p>Let <span class="math inline">\(\bf y_i\)</span>, <span class="math inline">\(\bf X_i\)</span> (<span class="math inline">\(i=1,2)\)</span> indicate the appropriate partitioning of the data. The unrestricted model may be written</p>
+<p><span class="math display">\[\bf
+\begin{bmatrix}\bf
+y_1 \\ \bf y_2
+\end{bmatrix}=
+\begin{bmatrix}\bf
+X_1 &amp; \bf 0 \\ \bf 0 &amp; \bf X_2
+\end{bmatrix}
+\begin{bmatrix}\bf
+\beta_1 \\ \bf \beta_2
+\end{bmatrix}
++u \quad u \sim N(0, \sigma^2I)
+\]</span></p>
+<p>The null hypothesis of no structural break is</p>
+<p><span class="math display">\[
+\rm H_0: \ \ \bf \beta_1 = \beta_2.
+\]</span></p>
+<p>Running OLS on two equations separately, we have</p>
+<p><span class="math display">\[\bf
+\begin{bmatrix}\bf
+\hat \beta_1 \\ \bf \hat \beta_2
+\end{bmatrix}=
+\begin{bmatrix}\bf
+X_1' X_1 &amp; \bf 0 \\ \bf 0 &amp; \bf X_2' X_2
+\end{bmatrix}^{-1}
+\begin{bmatrix}\bf
+X_1' y_1 \\ \bf X_2' y_2
+\end{bmatrix}
+=\begin{bmatrix}\bf (X_1' X_1)^{-1}X_1'y_1 \\ \bf (X_2' X_2)^{-1}
+X_2' y_2
+\end{bmatrix}
+\]</span></p>
+<p>Restricted model under null hypothesis</p>
+<p><span class="math display">\[\bf
+\begin{bmatrix}\bf
+y_1 \\ \bf y_2
+\end{bmatrix}=
+\begin{bmatrix}\bf
+X_1 \\ \bf X_2
+\end{bmatrix}
+\bf \beta +u
+\]</span></p>
+<p>The test of the null hypothesis is given by</p>
+<p><span class="math display">\[
+{\bf F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat
+u/ (n-2k)}} \sim F(k , n-2k)
+\]</span> where <span class="math inline">\(\hat u_*\)</span> is the residual of the restricted model, <span class="math inline">\(\hat u\)</span> is the stacked residual of two unrestricted models.</p>
+<p>For example, for prewar period (suppose there is <span class="math inline">\(n\)</span> observations):</p>
+<p><span class="math display">\[
+y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2
+\]</span></p>
+<p>For postwar period (suppose there is <span class="math inline">\(m\)</span> observations):</p>
+<p><span class="math display">\[
+y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2
+\]</span></p>
+<p>The null hypothesis of no structural break is</p>
+<p><span class="math display">\[
+\rm H_0: \ \ \bf \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.
+\]</span></p>
+<p>Running OLS on two equations separately, we have two sums of squares of error (<span class="math inline">\(SSR_1\)</span> and <span class="math inline">\(SSR_2\)</span>). The unrestricted error sum of squares is <span class="math display">\[
+SSR_U = SSR_1 + SSR_2
+\]</span></p>
+<p>Then run the regression on the stacked sample of <span class="math inline">\(n+m\)</span> observations and get <span class="math inline">\(SSR_R\)</span>.</p>
+<p>Then</p>
+<p><span class="math display">\[
+\frac{(SSR_R-SSR_U)/k}{SSR_U/(n+m-2k)} \sim F_{k, n+m-2k}.
+\]</span></p>
+<p><span class="math inline">\(k\)</span> is number of restrictions; in this example, it is 3.</p>
+<p>The other way to do the same test is easier: simply include interaction terms between group dummy and dependent variables in the regression.</p>
+<p>For our earlier example, we would estimate the model:</p>
+<p><span class="math display">\[
+y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2
+x_2 d
+\]</span></p>
+<p>Here <span class="math inline">\(d\)</span> is a dummy variable for postwar period. The Chow test is simply a test on the hypothesis that all the coefficients involving <span class="math inline">\(d\)</span> are zero. A regression of the above model with <span class="math inline">\(n+m\)</span> observations and a <span class="math inline">\(F\)</span> test are easy to do.</p>
+<p><span class="math display">\[
+\rm H_0: \ \ \bf \eta_0 = \eta_1 = \eta_2 = 0.
+\]</span></p>
+<section id="an-example-of-chow-test-in-r" class="level3" data-number="3.6.1"><h3 data-number="3.6.1" class="anchored" data-anchor-id="an-example-of-chow-test-in-r">
+<span class="header-section-number">3.6.1</span> An example of Chow test in R</h3>
+<p>Here we use an example from the “strucchange” library.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## Example 7.4 from Greene (1993), "Econometric Analysis"</span></span>
+<span><span class="co">## Chow test on Longley data</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"longley"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">strucchange</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: zoo</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'zoo'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sandwich</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## use structural change test from the library.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/strucchange/man/sctest.html">sctest</a></span><span class="op">(</span><span class="va">Employed</span> <span class="op">~</span> <span class="va">Year</span> <span class="op">+</span> <span class="va">GNP.deflator</span> <span class="op">+</span> <span class="va">GNP</span> <span class="op">+</span> <span class="va">Armed.Forces</span>, data <span class="op">=</span> <span class="va">longley</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"Chow"</span>, point <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Chow test
+
+data:  Employed ~ Year + GNP.deflator + GNP + Armed.Forces
+F = 3.9268, p-value = 0.06307</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## which is equivalent to segmenting the regression via</span></span>
+<span><span class="va">fac</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">7</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">## here fac is the factor for segmenting it at point 7.</span></span>
+<span><span class="va">fm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Employed</span> <span class="op">~</span> <span class="va">Year</span> <span class="op">+</span> <span class="va">GNP.deflator</span> <span class="op">+</span> <span class="va">GNP</span> <span class="op">+</span> <span class="va">Armed.Forces</span>, data <span class="op">=</span> <span class="va">longley</span><span class="op">)</span></span>
+<span><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">Employed</span> <span class="op">~</span> <span class="va">fac</span><span class="op">/</span><span class="op">(</span><span class="va">Year</span> <span class="op">+</span> <span class="va">GNP.deflator</span> <span class="op">+</span> <span class="va">GNP</span> <span class="op">+</span> <span class="va">Armed.Forces</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">longley</span><span class="op">)</span></span>
+<span><span class="co">## Here anova is returning the F test (Chow test). Equivalent to sctest results.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">fm0</span>, <span class="va">fm1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: Employed ~ Year + GNP.deflator + GNP + Armed.Forces
+Model 2: Employed ~ fac/(Year + GNP.deflator + GNP + Armed.Forces)
+  Res.Df    RSS Df Sum of Sq      F  Pr(&gt;F)  
+1     11 4.8987                              
+2      6 1.1466  5    3.7521 3.9268 0.06307 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## estimates from Table 7.5 in Greene (1993)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fm0</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Employed ~ Year + GNP.deflator + GNP + Armed.Forces, 
+    data = longley)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.9058 -0.3427 -0.1076  0.2168  1.4377 
+
+Coefficients:
+               Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)   1.169e+03  8.359e+02   1.399  0.18949   
+Year         -5.765e-01  4.335e-01  -1.330  0.21049   
+GNP.deflator -1.977e-02  1.389e-01  -0.142  0.88940   
+GNP           6.439e-02  1.995e-02   3.227  0.00805 **
+Armed.Forces -1.015e-04  3.086e-03  -0.033  0.97436   
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.6673 on 11 degrees of freedom
+Multiple R-squared:  0.9735,    Adjusted R-squared:  0.9639 
+F-statistic: 101.1 on 4 and 11 DF,  p-value: 1.346e-08</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fm1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Employed ~ fac/(Year + GNP.deflator + GNP + Armed.Forces), 
+    data = longley)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.47717 -0.18950  0.02089  0.14836  0.56493 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)   
+(Intercept)        1.678e+03  9.390e+02   1.787  0.12413   
+fac2               2.098e+03  1.786e+03   1.174  0.28473   
+fac1:Year         -8.352e-01  4.847e-01  -1.723  0.13563   
+fac2:Year         -1.914e+00  7.913e-01  -2.419  0.05194 . 
+fac1:GNP.deflator -1.633e-01  1.762e-01  -0.927  0.38974   
+fac2:GNP.deflator -4.247e-02  2.238e-01  -0.190  0.85576   
+fac1:GNP           9.481e-02  3.815e-02   2.485  0.04747 * 
+fac2:GNP           1.123e-01  2.269e-02   4.951  0.00258 **
+fac1:Armed.Forces -2.467e-03  6.965e-03  -0.354  0.73532   
+fac2:Armed.Forces -2.579e-02  1.259e-02  -2.049  0.08635 . 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.4372 on 6 degrees of freedom
+Multiple R-squared:  0.9938,    Adjusted R-squared:  0.9845 
+F-statistic: 106.9 on 9 and 6 DF,  p-value: 6.28e-06</code></pre>
+</div>
+</div>
+</section></section><section id="heteroskedasticity-and-autocorrelation-consistent-standard-errors" class="level2" data-number="3.7"><h2 data-number="3.7" class="anchored" data-anchor-id="heteroskedasticity-and-autocorrelation-consistent-standard-errors">
+<span class="header-section-number">3.7</span> Heteroskedasticity and Autocorrelation Consistent Standard Errors</h2>
+<section id="variance-estimator-under-homoscedasticity" class="level3" data-number="3.7.1"><h3 data-number="3.7.1" class="anchored" data-anchor-id="variance-estimator-under-homoscedasticity">
+<span class="header-section-number">3.7.1</span> Variance estimator under homoscedasticity</h3>
+<p>In OLS regression, the variance-covariance matrix of <span class="math inline">\(\hat \beta\)</span> is <span class="math display">\[{\rm var} \bf (\hat \beta) = {\rm E}\bf [(\hat \beta-\beta)(\hat \beta -\beta)']
+= {\rm E}\bf [(X'X)^{-1}X'uu'X(X'X)^{-1}] = \bf \sigma^2 (X'X)^{-1} \]</span></p>
+<p>if <span class="math display">\[{\rm var} \bf (u)=\sigma^2 I\]</span>.</p>
+<p>That is, the error term has mean zero and constant variance (homoscedasticity). The pairwise correlation between error terms is always zero (no serial correlation).</p>
+<p>The estimation of <span class="math inline">\(\sigma^2\)</span>:</p>
+<p><span class="math display">\[
+s^2=\frac{ \bf \hat u' \hat u}{n-k}
+\]</span> is an unbiased estimator of <span class="math inline">\(\sigma^2\)</span> (proof omitted).</p>
+<p>The standard estimate of the variance-covariance matrix of the OLS parameter estimates under the assumption of IID errors is <span class="math display">\[
+{\rm \hat {Var}}(\hat \beta)=s^2 \bf (X'X)^{-1}
+\]</span></p>
+</section><section id="whites-estimator" class="level3" data-number="3.7.2"><h3 data-number="3.7.2" class="anchored" data-anchor-id="whites-estimator">
+<span class="header-section-number">3.7.2</span> White’s estimator</h3>
+<p>We made strong assumption that the error terms of the regression model are IID when we estimate the variance-covariance matrix of OLS estimator. Under this assumption, the usual estimator of variance-covariance matrix of <span class="math inline">\(\bf \hat \beta\)</span> is consistent. Now let’s relax this assumption to only independent but not identically distributed. Again, the linear regression models is</p>
+<p><span class="math display">\[
+\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,
+\]</span> where <span class="math inline">\(\bf \Omega\)</span> is the error variance-covariance matrix with diagonal elements being <span class="math inline">\(\sigma_t^2\)</span> for <span class="math inline">\(t^{th}\)</span> element, off-diagonal elements being zero. In other words, the error terms are heteroscedastic.</p>
+<p>The variance-covariance matrix of the OLS estimator <span class="math inline">\(\bf \hat
+\beta\)</span> is equal to <span class="math display">\[
+{\rm Var} \bf (\hat \beta) = {\rm E}\bf [(\hat \beta
+-\beta)(\hat
+\beta -\beta)'] \\
+= \bf [(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}] \\
+= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}
+\]</span></p>
+<p>If we know <span class="math inline">\(\sigma_t^2\)</span>, then we would be able to estimate this “sandwich covariance matrix”. But we don’t. <span class="math display">\[
+{\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}
+[\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X'\Omega
+X][\frac{1}{n}(X'X)]^{-1}
+\]</span></p>
+<p>Let <span class="math inline">\(y_t\)</span> denote the <span class="math inline">\(t\)</span>th observation on the dependent variable, and <span class="math inline">\(x_t'=[1 x_{2t} \cdots x_{kt}]\)</span> denote the <span class="math inline">\(t\)</span>th row of the <span class="math inline">\(\bf X\)</span> matrix. Then <span class="math display">\[
+\bf X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'
+\]</span></p>
+<p>The White estimator replaces the unknown <span class="math inline">\(\sigma_t^2\)</span> by <span class="math inline">\(\hat u_t^2\)</span>, the estimated OLS residuals. This provides a consistent estimator of the variance matrix for the OLS coefficient vector and is particularly useful since it does not require any specific assumptions about the form of the heteroscedasticity.</p>
+<p>Therefore, <span class="math display">\[
+\hat {\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}
+[\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X' \hat \Omega
+X][\frac{1}{n}(X'X)]^{-1}\\
+\bf \hat \Omega = \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
+\hat u_n^2})
+\]</span></p>
+</section><section id="newey-west-estimator" class="level3" data-number="3.7.3"><h3 data-number="3.7.3" class="anchored" data-anchor-id="newey-west-estimator">
+<span class="header-section-number">3.7.3</span> Newey-West estimator</h3>
+<p>White’s estimator deals with the situation that we have heteroskedasticity (a diagonal <span class="math inline">\(\Sigma\)</span>) of unknown form. When we have serial correlation of unknown form (a non-diagonal <span class="math inline">\(\Sigma\)</span>), we can estimate the variance-covariance matrix by a heteroskedasticity and autocorrelation consistent, or HAC, estimator. Newey-West estimator is the most popular HAC estimator.</p>
+<p>Given a time series data set, suppose we are interested in estimating the mean vector (suppose we have more than one variable) and its variance. We know that given IID data, we can apply central limit theorem: sample mean is a consistent estimator of the population mean and it’s variance can be calculated since asymptotically the sample mean conforms to a normal distribution and the variance can be estimated, relatively easily. However, in the case of time series data, autocorrelation usually exists. We may be concerned the CLT may not work in this case.</p>
+<p>Fortunately, as proved in Hamilton (1994), if <span class="math inline">\(\bf y_t\)</span> is a covariance-stationary (meaning that the covariance is not a function of time) vector process, then the sample mean satisfies:</p>
+<p><span class="math display">\[\bf \bar y_t \to \mu , \]</span> <span class="math display">\[ {\bf S} = \lim_{T \to \infty} \bf  {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . \]</span> where <span class="math inline">\(\bf \Gamma_v\)</span> is the variance-covariance matrix for <span class="math inline">\(\bf y_t\)</span> and <span class="math inline">\(\bf y_{t-v}\)</span>.</p>
+<p>The first one says for a covariance-stationary vector process, the law of large numbers still holds. The second one is used to calculate the standard error.</p>
+<p>If the data were generated by a vector MA(q) process, then</p>
+<p><span class="math display">\[ {\bf S} = \sum_{v=-q}^{q} \Gamma_v . \]</span></p>
+<p>A natural estimate is</p>
+<p><span class="math display">\[ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),\]</span></p>
+<p>where <span class="math display">\[ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y). \]</span></p>
+<p>This gives a consistent estimate of <span class="math inline">\(\bf S\)</span>; however, it sometimes is not positive semidefinite.</p>
+<p>Newey-West (1987) suggested putting in a weight:</p>
+<p><span class="math display">\[ {\bf \hat S = \hat \Gamma_0} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_v + \hat \Gamma_v' ), \]</span> where <span class="math inline">\(q\)</span> is from the MA(<span class="math inline">\(q\)</span>) process.</p>
+<p>Consider a linear regression model: <span class="math display">\[ y_t={ \bf x_t' \beta} + u_t \]</span></p>
+<p>Suppose we have the OLS estimator <span class="math inline">\(\bf b_T\)</span>, then <span class="math display">\[ \sqrt{T} ({\bf b_t - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t
+  x_t'}]^{-1} [({\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t'}] \]</span></p>
+<p>The first term converges in probability to some constant. The second term is the sample mean of the vector <span class="math inline">\(\bf x_t u_t\)</span>.</p>
+<p>Under general conditions,</p>
+<p><span class="math display">\[ \sqrt{T} ({\bf b_t - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) \]</span></p>
+<p>where <span class="math inline">\(S\)</span> can be estimated by <span class="math display">\[ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), \]</span> where <span class="math display">\[ \hat \Gamma_{v,T}'= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), \]</span> where <span class="math inline">\(\hat u_{t,T}\)</span> is the OLS residual for data <span class="math inline">\(t\)</span> in a sample of size <span class="math inline">\(T\)</span>.</p>
+<p>Overall, the variance of <span class="math inline">\(\bf b_T\)</span> is approximated by</p>
+<p><span class="math display">\[\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t'] [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1} \]</span></p>
+<p>This estimation obviously depends on the selection of <span class="math inline">\(q\)</span>, the lag length beyond which we are willing to assume that the autocorrelation of <span class="math inline">\(x_t u_t\)</span> and <span class="math inline">\(x_{t-v} u_{t-v}\)</span> is essentially zero. The rule of thumb for the selection of <span class="math inline">\(q\)</span> is <span class="math inline">\(0.75 \cdot T^{\frac{1}{3}}\)</span>. Newey-West (1994) has suggested a way to automatically select the bandwidth <span class="math inline">\(q\)</span>. Here we omitted the discussion. Both Stata and R now also implement Newey-West (1994) estimator, with no need to specify <span class="math inline">\(q\)</span>.</p>
+
+
+<!-- -->
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./ols.html" class="pagination-link" aria-label="OLS">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">OLS</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./gls.html" class="pagination-link" aria-label="GLS">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># The Method of Maximum Likelihood</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>If we make the assumption that the error terms are normally</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>distributed, the maximum likelihood estimators (MLE) coincide with</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>the  least square estimators.  But MLE can also be applied</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>to a wide variety of models other than regression models, and it</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>generally generates estimators with excellent asymptotic</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>properties.  The major disadvantage of MLE is that it requires</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>stronger distributional assumptions than does the method of</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>moments.</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## Basic Concepts</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>Maximum likelihood estimation is to find the set of parameters which makes the current sample most likely given the statistical model.</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>Suppose we have a sample of $n$ independent and identically distributed (IID) observations.  Each of them comes from some distribution function $f(\cdot, \bf \theta)$, where  parameters $\bf \theta$ is fixed.  The joint distribution of all the data points would be</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>$$ f(x_1, x_2, \dots, x_n | \theta) = f(x_1 | \theta) \times f(x_2 | \theta) \times \dots \times f(x_n | \theta). $$</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>It is referred to as the likelihood function of the model for the</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>given data set.</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>Then it's natural to estimate $\theta$ by picking the $\theta$ that maximize this joint distribution function.    A parameter vector $\hat \bf \theta$ at which the</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>likelihood takes on its maximum value is called a maximum likelihood</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>estimate, or MLE, of the parameters.</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>Usually the log form of the likelihood function is preferred for computational purposes.</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## MLE for a linear model</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>Consider the classical normal linear model:</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad u \sim N(0, \sigma^2 I)</span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>In this case, we have two parameters to estimate, $\sigma$ and $\bf \beta$.  The distribution of $\bf y | X$ is</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>$$ f({\bf y, \beta, \sigma | X}) = \frac{1}{\sigma \sqrt{2 \pi}} \exp(-  \frac{({\bf y- X \beta})^2}{2 \sigma^2})$$</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>The log-likelihood function is</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>$$ l({\bf y, \beta, \sigma}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} \sum_{t=1}^n \bf (y-X \beta)'(y-X \beta) $$</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>The maximization of the log-likelihood function will lead to the same estimator as the OLS estimator, for $\bf \beta$.  For $\sigma^2$, the MLE estimator is slightly different in limited sample, but asymptotically the same.  This is strictly based on the assumption of normally distributed error term.  Otherwise, these two estimators will be different.</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Asymptotic Properties of MLE</span></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Consistency</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>{\rm plim} (\bf \hat \theta)=\theta.</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>This is to say that MLE estimator can get arbitrarily close to the true parameter if the sample size gets to infinity.</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Asymptotic Normality</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>{\bf \hat \theta} \sim^a N(\bf \theta, I^{-1}(\theta)).</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>This states that the asymptotic distribution of $\bf \hat \theta$</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>is normal with mean $\bf \theta$ and variance given by the inverse</span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>of $\bf I(\theta)$, the information matrix, defined by</span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>{\bf I(\theta)}=E[(\frac{\partial l}{\partial</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>\theta})(\frac{\partial l}{\partial</span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>\theta})']=-E[(\frac{\partial^2 l}{\partial \theta \partial</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>\theta'})]</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a>The information matrix is the expected value of the inner product of gradient of the log-likelihood function, or the negative value of the expected value of the Hessian (second derivative of the log-likelihood function.</span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Asymptotic efficiency.</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a>If $\bf \hat \theta$ is the MLE estimator of $\theta$, $\bf V$ denotes the variance covariance matrix of $\bf \hat \theta$, then</span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>\sqrt n (\hat \theta -\theta) \rightarrow^d N(\bf 0, V)</span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>If $\bf \tilde V$ denotes the variance matrix of any other consistent,</span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a>asymptotically normal estimator, then $\bf \tilde V- V$ is a positive</span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a>semidefinite matrix. That means MLE estimator is the best (in terms of variance) consistent and asymptotically normal estimator.</span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Invariance.</span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>If $\hat \theta$ is the MLE of $\theta$ and $g(\theta)$ is a</span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a>continuous function of $\theta$, then $g(\hat \theta)$ is the MLE of</span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a>$g(\theta)$.</span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example</span></span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a>Let's look at the example of regression of car's mpg on disp, hp and wt. This time we use MLE. (R has a mle() function which I cannot make it work on this example.  So I am using optim().)</span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-98"><a href="#cb18-98" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb18-99"><a href="#cb18-99" aria-hidden="true" tabindex="-1"></a>ols.lf <span class="ot">&lt;-</span> <span class="cf">function</span>(theta, y, X) {</span>
+<span id="cb18-100"><a href="#cb18-100" aria-hidden="true" tabindex="-1"></a>  beta <span class="ot">&lt;-</span> theta[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb18-101"><a href="#cb18-101" aria-hidden="true" tabindex="-1"></a>  sigma2 <span class="ot">&lt;-</span> theta[<span class="dv">1</span>]</span>
+<span id="cb18-102"><a href="#cb18-102" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (sigma2 <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb18-103"><a href="#cb18-103" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb18-104"><a href="#cb18-104" aria-hidden="true" tabindex="-1"></a>  e <span class="ot">&lt;-</span> y <span class="sc">-</span> X<span class="sc">%*%</span>beta</span>
+<span id="cb18-105"><a href="#cb18-105" aria-hidden="true" tabindex="-1"></a>  logl <span class="ot">&lt;-</span> ((<span class="sc">-</span>n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi)) <span class="sc">-</span> ((n<span class="sc">/</span><span class="dv">2</span>)<span class="sc">*</span><span class="fu">log</span>(sigma2)) <span class="sc">-</span> ((<span class="fu">t</span>(e)<span class="sc">%*%</span>e)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sigma2))</span>
+<span id="cb18-106"><a href="#cb18-106" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="sc">-</span>logl)</span>
+<span id="cb18-107"><a href="#cb18-107" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-108"><a href="#cb18-108" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>,mtcars[,<span class="fu">c</span>(<span class="st">'disp'</span>,<span class="st">'hp'</span>,<span class="st">'wt'</span>)])</span>
+<span id="cb18-109"><a href="#cb18-109" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> mtcars<span class="sc">$</span>mpg</span>
+<span id="cb18-110"><a href="#cb18-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-111"><a href="#cb18-111" aria-hidden="true" tabindex="-1"></a><span class="co"># note that I have a rough idea of the starting values from OLS esimators first; otherwise it may converge to some wrong local maximum.  Annoying.</span></span>
+<span id="cb18-112"><a href="#cb18-112" aria-hidden="true" tabindex="-1"></a><span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>), <span class="at">method=</span><span class="st">"L-BFGS-B"</span>, <span class="at">fn=</span>ols.lf, <span class="at">lower=</span><span class="fu">c</span>(<span class="fl">1e-6</span>,<span class="sc">-</span><span class="cn">Inf</span>,<span class="sc">-</span><span class="cn">Inf</span>,<span class="sc">-</span><span class="cn">Inf</span>,<span class="sc">-</span><span class="cn">Inf</span>), <span class="at">upper=</span><span class="fu">rep</span>(<span class="cn">Inf</span>,<span class="dv">5</span>), <span class="at">y=</span>y, <span class="at">X=</span><span class="fu">as.matrix</span>(X))</span>
+<span id="cb18-113"><a href="#cb18-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-114"><a href="#cb18-114" aria-hidden="true" tabindex="-1"></a><span class="co"># it should match the OLS estimator</span></span>
+<span id="cb18-115"><a href="#cb18-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-116"><a href="#cb18-116" aria-hidden="true" tabindex="-1"></a>lm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(mpg<span class="sc">~</span>disp<span class="sc">+</span>hp<span class="sc">+</span>wt, <span class="at">data=</span>mtcars)</span>
+<span id="cb18-117"><a href="#cb18-117" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm1)</span>
+<span id="cb18-118"><a href="#cb18-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-119"><a href="#cb18-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-120"><a href="#cb18-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-121"><a href="#cb18-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-122"><a href="#cb18-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hypotheses Testing</span></span>
+<span id="cb18-123"><a href="#cb18-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-124"><a href="#cb18-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### Linear Hypotheses Testing</span></span>
+<span id="cb18-125"><a href="#cb18-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-126"><a href="#cb18-126" aria-hidden="true" tabindex="-1"></a>Linear hypothesis can be framed as</span>
+<span id="cb18-127"><a href="#cb18-127" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-128"><a href="#cb18-128" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf R\beta -r=0,</span>
+<span id="cb18-129"><a href="#cb18-129" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-130"><a href="#cb18-130" aria-hidden="true" tabindex="-1"></a>where $\bf R$ is a $q \times k$ matrix of known constants, with $q &lt;</span>
+<span id="cb18-131"><a href="#cb18-131" aria-hidden="true" tabindex="-1"></a>k$, and $\bf r$ is a $q$-vector of known constants.</span>
+<span id="cb18-132"><a href="#cb18-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-133"><a href="#cb18-133" aria-hidden="true" tabindex="-1"></a>We assume that $u_i$ are normally distributed.</span>
+<span id="cb18-134"><a href="#cb18-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-135"><a href="#cb18-135" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-136"><a href="#cb18-136" aria-hidden="true" tabindex="-1"></a>\bf u \sim N(0, \sigma^2 I)</span>
+<span id="cb18-137"><a href="#cb18-137" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-138"><a href="#cb18-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-139"><a href="#cb18-139" aria-hidden="true" tabindex="-1"></a>Even if this assumption does not hold, we still have asymptotic normality for $\bf u$.</span>
+<span id="cb18-140"><a href="#cb18-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-141"><a href="#cb18-141" aria-hidden="true" tabindex="-1"></a>Since linear combination of normal variables are also normally</span>
+<span id="cb18-142"><a href="#cb18-142" aria-hidden="true" tabindex="-1"></a>distributed,</span>
+<span id="cb18-143"><a href="#cb18-143" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-144"><a href="#cb18-144" aria-hidden="true" tabindex="-1"></a>\bf \hat \beta \sim N(\beta, \sigma^2 (X'X)^{-1})<span class="sc">\\</span></span>
+<span id="cb18-145"><a href="#cb18-145" aria-hidden="true" tabindex="-1"></a>\bf R \hat \beta \sim N(R \beta, \sigma^2 R(X'X)^{-1}R')<span class="sc">\\</span></span>
+<span id="cb18-146"><a href="#cb18-146" aria-hidden="true" tabindex="-1"></a>\bf R (\hat \beta - \beta) \sim N(0, \sigma^2 R(X'X)^{-1}R')</span>
+<span id="cb18-147"><a href="#cb18-147" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-148"><a href="#cb18-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-149"><a href="#cb18-149" aria-hidden="true" tabindex="-1"></a>Under null hypothesis,</span>
+<span id="cb18-150"><a href="#cb18-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-151"><a href="#cb18-151" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-152"><a href="#cb18-152" aria-hidden="true" tabindex="-1"></a>\bf (R \hat \beta - r) \sim N(0, \sigma^2 R(X'X)^{-1}R')</span>
+<span id="cb18-153"><a href="#cb18-153" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-154"><a href="#cb18-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-155"><a href="#cb18-155" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb18-156"><a href="#cb18-156" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-157"><a href="#cb18-157" aria-hidden="true" tabindex="-1"></a>{\bf (R \hat \beta - r)'<span class="co">[</span><span class="ot">\sigma^2 R(X'X)^{-1}R'</span><span class="co">]</span>^{-1} (R \hat</span>
+<span id="cb18-158"><a href="#cb18-158" aria-hidden="true" tabindex="-1"></a>\beta - r)} \sim \chi^2(q)</span>
+<span id="cb18-159"><a href="#cb18-159" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-160"><a href="#cb18-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-161"><a href="#cb18-161" aria-hidden="true" tabindex="-1"></a>Here we don't know $\sigma^2$.  However, it can be shown that</span>
+<span id="cb18-162"><a href="#cb18-162" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-163"><a href="#cb18-163" aria-hidden="true" tabindex="-1"></a>{\bf \frac{\hat u' u}{\sigma^2}} \sim \chi^2(n-k)</span>
+<span id="cb18-164"><a href="#cb18-164" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-165"><a href="#cb18-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-166"><a href="#cb18-166" aria-hidden="true" tabindex="-1"></a>Then we have</span>
+<span id="cb18-167"><a href="#cb18-167" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-168"><a href="#cb18-168" aria-hidden="true" tabindex="-1"></a>{\bf \frac{(R \hat \beta - r)'<span class="co">[</span><span class="ot"> R(X'X)^{-1}R'</span><span class="co">]</span>^{-1} (R \hat \beta</span>
+<span id="cb18-169"><a href="#cb18-169" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>r)/q}{\hat u' \hat u / (n-k)}} \sim F(q, n-k)</span>
+<span id="cb18-170"><a href="#cb18-170" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-171"><a href="#cb18-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-172"><a href="#cb18-172" aria-hidden="true" tabindex="-1"></a>This is an example of the $F$ test for any linear hypotheses testing.  $t$ test will be a special case of this.</span>
+<span id="cb18-173"><a href="#cb18-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-174"><a href="#cb18-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test of Structural Change (Chow test)</span></span>
+<span id="cb18-175"><a href="#cb18-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-176"><a href="#cb18-176" aria-hidden="true" tabindex="-1"></a>Chow test is a test between two groups of observations.  For example,</span>
+<span id="cb18-177"><a href="#cb18-177" aria-hidden="true" tabindex="-1"></a>we have data on consumption function of prewar period and postwar</span>
+<span id="cb18-178"><a href="#cb18-178" aria-hidden="true" tabindex="-1"></a>period.  It is natural to think of a test on whether consumption</span>
+<span id="cb18-179"><a href="#cb18-179" aria-hidden="true" tabindex="-1"></a>function parameters differ between prewar and postwar periods.  The</span>
+<span id="cb18-180"><a href="#cb18-180" aria-hidden="true" tabindex="-1"></a>null hypothesis is that there is no difference.</span>
+<span id="cb18-181"><a href="#cb18-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-182"><a href="#cb18-182" aria-hidden="true" tabindex="-1"></a>Let $\bf y_i$, $\bf X_i$ ($i=1,2)$ indicate the appropriate</span>
+<span id="cb18-183"><a href="#cb18-183" aria-hidden="true" tabindex="-1"></a>partitioning of the data.  The unrestricted model may be written</span>
+<span id="cb18-184"><a href="#cb18-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-185"><a href="#cb18-185" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb18-186"><a href="#cb18-186" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-187"><a href="#cb18-187" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
+<span id="cb18-188"><a href="#cb18-188" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb18-189"><a href="#cb18-189" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-190"><a href="#cb18-190" aria-hidden="true" tabindex="-1"></a>X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2</span>
+<span id="cb18-191"><a href="#cb18-191" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb18-192"><a href="#cb18-192" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-193"><a href="#cb18-193" aria-hidden="true" tabindex="-1"></a>\beta_1 <span class="sc">\\</span> \bf \beta_2</span>
+<span id="cb18-194"><a href="#cb18-194" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb18-195"><a href="#cb18-195" aria-hidden="true" tabindex="-1"></a>+u \quad u \sim N(0, \sigma^2I)</span>
+<span id="cb18-196"><a href="#cb18-196" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-197"><a href="#cb18-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-198"><a href="#cb18-198" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
+<span id="cb18-199"><a href="#cb18-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-200"><a href="#cb18-200" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-201"><a href="#cb18-201" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_1 = \beta_2.</span>
+<span id="cb18-202"><a href="#cb18-202" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-203"><a href="#cb18-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-204"><a href="#cb18-204" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have</span>
+<span id="cb18-205"><a href="#cb18-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-206"><a href="#cb18-206" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb18-207"><a href="#cb18-207" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-208"><a href="#cb18-208" aria-hidden="true" tabindex="-1"></a>\hat \beta_1 <span class="sc">\\</span> \bf \hat \beta_2</span>
+<span id="cb18-209"><a href="#cb18-209" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb18-210"><a href="#cb18-210" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-211"><a href="#cb18-211" aria-hidden="true" tabindex="-1"></a>X_1' X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2' X_2</span>
+<span id="cb18-212"><a href="#cb18-212" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}^{-1}</span>
+<span id="cb18-213"><a href="#cb18-213" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-214"><a href="#cb18-214" aria-hidden="true" tabindex="-1"></a>X_1' y_1 <span class="sc">\\</span> \bf X_2' y_2</span>
+<span id="cb18-215"><a href="#cb18-215" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb18-216"><a href="#cb18-216" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix}\bf (X_1' X_1)^{-1}X_1'y_1 <span class="sc">\\</span> \bf (X_2' X_2)^{-1}</span>
+<span id="cb18-217"><a href="#cb18-217" aria-hidden="true" tabindex="-1"></a>X_2' y_2</span>
+<span id="cb18-218"><a href="#cb18-218" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb18-219"><a href="#cb18-219" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-220"><a href="#cb18-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-221"><a href="#cb18-221" aria-hidden="true" tabindex="-1"></a>Restricted model under null hypothesis</span>
+<span id="cb18-222"><a href="#cb18-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-223"><a href="#cb18-223" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb18-224"><a href="#cb18-224" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-225"><a href="#cb18-225" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
+<span id="cb18-226"><a href="#cb18-226" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb18-227"><a href="#cb18-227" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb18-228"><a href="#cb18-228" aria-hidden="true" tabindex="-1"></a>X_1 <span class="sc">\\</span> \bf X_2</span>
+<span id="cb18-229"><a href="#cb18-229" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb18-230"><a href="#cb18-230" aria-hidden="true" tabindex="-1"></a>\bf \beta +u</span>
+<span id="cb18-231"><a href="#cb18-231" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-232"><a href="#cb18-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-233"><a href="#cb18-233" aria-hidden="true" tabindex="-1"></a>The test of the null hypothesis is given by</span>
+<span id="cb18-234"><a href="#cb18-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-235"><a href="#cb18-235" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-236"><a href="#cb18-236" aria-hidden="true" tabindex="-1"></a>{\bf F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat</span>
+<span id="cb18-237"><a href="#cb18-237" aria-hidden="true" tabindex="-1"></a>u/ (n-2k)}} \sim F(k , n-2k)</span>
+<span id="cb18-238"><a href="#cb18-238" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-239"><a href="#cb18-239" aria-hidden="true" tabindex="-1"></a>where $\hat u_*$ is the residual of the restricted model, $\hat u$ is the stacked residual of two unrestricted models.</span>
+<span id="cb18-240"><a href="#cb18-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-241"><a href="#cb18-241" aria-hidden="true" tabindex="-1"></a>For example, for prewar period (suppose there is $n$ observations):</span>
+<span id="cb18-242"><a href="#cb18-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-243"><a href="#cb18-243" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-244"><a href="#cb18-244" aria-hidden="true" tabindex="-1"></a>y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2</span>
+<span id="cb18-245"><a href="#cb18-245" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-246"><a href="#cb18-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-247"><a href="#cb18-247" aria-hidden="true" tabindex="-1"></a>For postwar period  (suppose there is $m$ observations):</span>
+<span id="cb18-248"><a href="#cb18-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-249"><a href="#cb18-249" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-250"><a href="#cb18-250" aria-hidden="true" tabindex="-1"></a>y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2</span>
+<span id="cb18-251"><a href="#cb18-251" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-252"><a href="#cb18-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-253"><a href="#cb18-253" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
+<span id="cb18-254"><a href="#cb18-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-255"><a href="#cb18-255" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-256"><a href="#cb18-256" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.</span>
+<span id="cb18-257"><a href="#cb18-257" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-258"><a href="#cb18-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-259"><a href="#cb18-259" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have two sums of squares</span>
+<span id="cb18-260"><a href="#cb18-260" aria-hidden="true" tabindex="-1"></a>of error ($SSR_1$ and $SSR_2$).  The unrestricted error sum of squares</span>
+<span id="cb18-261"><a href="#cb18-261" aria-hidden="true" tabindex="-1"></a>is</span>
+<span id="cb18-262"><a href="#cb18-262" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-263"><a href="#cb18-263" aria-hidden="true" tabindex="-1"></a>SSR_U = SSR_1 + SSR_2</span>
+<span id="cb18-264"><a href="#cb18-264" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-265"><a href="#cb18-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-266"><a href="#cb18-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-267"><a href="#cb18-267" aria-hidden="true" tabindex="-1"></a>Then run the regression on the stacked sample of $n+m$ observations</span>
+<span id="cb18-268"><a href="#cb18-268" aria-hidden="true" tabindex="-1"></a>and get $SSR_R$.</span>
+<span id="cb18-269"><a href="#cb18-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-270"><a href="#cb18-270" aria-hidden="true" tabindex="-1"></a>Then</span>
+<span id="cb18-271"><a href="#cb18-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-272"><a href="#cb18-272" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-273"><a href="#cb18-273" aria-hidden="true" tabindex="-1"></a>\frac{(SSR_R-SSR_U)/k}{SSR_U/(n+m-2k)} \sim F_{k, n+m-2k}.</span>
+<span id="cb18-274"><a href="#cb18-274" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-275"><a href="#cb18-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-276"><a href="#cb18-276" aria-hidden="true" tabindex="-1"></a>$k$ is number of restrictions; in this example, it is 3.</span>
+<span id="cb18-277"><a href="#cb18-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-278"><a href="#cb18-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-279"><a href="#cb18-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-280"><a href="#cb18-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-281"><a href="#cb18-281" aria-hidden="true" tabindex="-1"></a>The other way to do the same test is easier:  simply include</span>
+<span id="cb18-282"><a href="#cb18-282" aria-hidden="true" tabindex="-1"></a>interaction terms between group dummy and dependent variables in the</span>
+<span id="cb18-283"><a href="#cb18-283" aria-hidden="true" tabindex="-1"></a>regression.</span>
+<span id="cb18-284"><a href="#cb18-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-285"><a href="#cb18-285" aria-hidden="true" tabindex="-1"></a>For our earlier example, we would estimate the model:</span>
+<span id="cb18-286"><a href="#cb18-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-287"><a href="#cb18-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-288"><a href="#cb18-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-289"><a href="#cb18-289" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-290"><a href="#cb18-290" aria-hidden="true" tabindex="-1"></a>y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2</span>
+<span id="cb18-291"><a href="#cb18-291" aria-hidden="true" tabindex="-1"></a>x_2 d</span>
+<span id="cb18-292"><a href="#cb18-292" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-293"><a href="#cb18-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-294"><a href="#cb18-294" aria-hidden="true" tabindex="-1"></a>Here $d$ is a dummy variable for postwar period.  The Chow test is</span>
+<span id="cb18-295"><a href="#cb18-295" aria-hidden="true" tabindex="-1"></a>simply a test on the hypothesis that all the coefficients involving</span>
+<span id="cb18-296"><a href="#cb18-296" aria-hidden="true" tabindex="-1"></a>$d$ are zero.  A regression of the above model with $n+m$ observations</span>
+<span id="cb18-297"><a href="#cb18-297" aria-hidden="true" tabindex="-1"></a>and a $F$ test are easy to do.</span>
+<span id="cb18-298"><a href="#cb18-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-299"><a href="#cb18-299" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-300"><a href="#cb18-300" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \eta_0 = \eta_1 = \eta_2 = 0.</span>
+<span id="cb18-301"><a href="#cb18-301" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-302"><a href="#cb18-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-303"><a href="#cb18-303" aria-hidden="true" tabindex="-1"></a><span class="fu">### An example of Chow test in R</span></span>
+<span id="cb18-304"><a href="#cb18-304" aria-hidden="true" tabindex="-1"></a>Here we use an example from the "strucchange" library.</span>
+<span id="cb18-305"><a href="#cb18-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-308"><a href="#cb18-308" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb18-309"><a href="#cb18-309" aria-hidden="true" tabindex="-1"></a><span class="do">## Example 7.4 from Greene (1993), "Econometric Analysis"</span></span>
+<span id="cb18-310"><a href="#cb18-310" aria-hidden="true" tabindex="-1"></a><span class="do">## Chow test on Longley data</span></span>
+<span id="cb18-311"><a href="#cb18-311" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"longley"</span>)</span>
+<span id="cb18-312"><a href="#cb18-312" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strucchange)</span>
+<span id="cb18-313"><a href="#cb18-313" aria-hidden="true" tabindex="-1"></a><span class="do">## use structural change test from the library.</span></span>
+<span id="cb18-314"><a href="#cb18-314" aria-hidden="true" tabindex="-1"></a><span class="fu">sctest</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley,</span>
+<span id="cb18-315"><a href="#cb18-315" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"Chow"</span>, <span class="at">point =</span> <span class="dv">7</span>)</span>
+<span id="cb18-316"><a href="#cb18-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-317"><a href="#cb18-317" aria-hidden="true" tabindex="-1"></a><span class="do">## which is equivalent to segmenting the regression via</span></span>
+<span id="cb18-318"><a href="#cb18-318" aria-hidden="true" tabindex="-1"></a>fac <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">7</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">9</span>)))</span>
+<span id="cb18-319"><a href="#cb18-319" aria-hidden="true" tabindex="-1"></a><span class="do">## here fac is the factor for segmenting it at point 7.</span></span>
+<span id="cb18-320"><a href="#cb18-320" aria-hidden="true" tabindex="-1"></a>fm0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley)</span>
+<span id="cb18-321"><a href="#cb18-321" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> fac<span class="sc">/</span>(Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces), <span class="at">data =</span> longley)</span>
+<span id="cb18-322"><a href="#cb18-322" aria-hidden="true" tabindex="-1"></a><span class="do">## Here anova is returning the F test (Chow test). Equivalent to sctest results.</span></span>
+<span id="cb18-323"><a href="#cb18-323" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fm0, fm1)</span>
+<span id="cb18-324"><a href="#cb18-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-325"><a href="#cb18-325" aria-hidden="true" tabindex="-1"></a><span class="do">## estimates from Table 7.5 in Greene (1993)</span></span>
+<span id="cb18-326"><a href="#cb18-326" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm0)</span>
+<span id="cb18-327"><a href="#cb18-327" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm1)</span>
+<span id="cb18-328"><a href="#cb18-328" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-329"><a href="#cb18-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-330"><a href="#cb18-330" aria-hidden="true" tabindex="-1"></a><span class="fu">## Heteroskedasticity and Autocorrelation Consistent Standard Errors</span></span>
+<span id="cb18-331"><a href="#cb18-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-332"><a href="#cb18-332" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variance estimator under homoscedasticity</span></span>
+<span id="cb18-333"><a href="#cb18-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-334"><a href="#cb18-334" aria-hidden="true" tabindex="-1"></a>In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${\rm var} \bf (\hat \beta) = {\rm E}\bf <span class="co">[</span><span class="ot">(\hat \beta-\beta)(\hat \beta -\beta)'</span><span class="co">]</span></span>
+<span id="cb18-335"><a href="#cb18-335" aria-hidden="true" tabindex="-1"></a>= {\rm E}\bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'uu'X(X'X)^{-1}</span><span class="co">]</span> = \bf \sigma^2 (X'X)^{-1} $$</span>
+<span id="cb18-336"><a href="#cb18-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-337"><a href="#cb18-337" aria-hidden="true" tabindex="-1"></a> if $${\rm var} \bf (u)=\sigma^2 I$$.</span>
+<span id="cb18-338"><a href="#cb18-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-339"><a href="#cb18-339" aria-hidden="true" tabindex="-1"></a>That is, the error term has mean zero and constant variance</span>
+<span id="cb18-340"><a href="#cb18-340" aria-hidden="true" tabindex="-1"></a>(homoscedasticity). The pairwise correlation between error terms</span>
+<span id="cb18-341"><a href="#cb18-341" aria-hidden="true" tabindex="-1"></a>is always zero (no serial correlation).</span>
+<span id="cb18-342"><a href="#cb18-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-343"><a href="#cb18-343" aria-hidden="true" tabindex="-1"></a>The estimation of $\sigma^2$:</span>
+<span id="cb18-344"><a href="#cb18-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-345"><a href="#cb18-345" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-346"><a href="#cb18-346" aria-hidden="true" tabindex="-1"></a>s^2=\frac{ \bf \hat u' \hat u}{n-k}</span>
+<span id="cb18-347"><a href="#cb18-347" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-348"><a href="#cb18-348" aria-hidden="true" tabindex="-1"></a>is an unbiased estimator of $\sigma^2$ (proof omitted).</span>
+<span id="cb18-349"><a href="#cb18-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-350"><a href="#cb18-350" aria-hidden="true" tabindex="-1"></a>The standard estimate of the variance-covariance matrix of the OLS</span>
+<span id="cb18-351"><a href="#cb18-351" aria-hidden="true" tabindex="-1"></a>parameter estimates under the assumption of IID errors is</span>
+<span id="cb18-352"><a href="#cb18-352" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-353"><a href="#cb18-353" aria-hidden="true" tabindex="-1"></a>{\rm \hat {Var}}(\hat \beta)=s^2 \bf (X'X)^{-1}</span>
+<span id="cb18-354"><a href="#cb18-354" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-355"><a href="#cb18-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-356"><a href="#cb18-356" aria-hidden="true" tabindex="-1"></a><span class="fu">### White’s estimator</span></span>
+<span id="cb18-357"><a href="#cb18-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-358"><a href="#cb18-358" aria-hidden="true" tabindex="-1"></a>We made strong assumption that the error terms of the regression</span>
+<span id="cb18-359"><a href="#cb18-359" aria-hidden="true" tabindex="-1"></a>model are IID when we estimate the variance-covariance matrix of</span>
+<span id="cb18-360"><a href="#cb18-360" aria-hidden="true" tabindex="-1"></a>OLS estimator.  Under this assumption, the usual estimator of</span>
+<span id="cb18-361"><a href="#cb18-361" aria-hidden="true" tabindex="-1"></a>variance-covariance matrix of $\bf \hat \beta$ is consistent.  Now</span>
+<span id="cb18-362"><a href="#cb18-362" aria-hidden="true" tabindex="-1"></a>let's relax this assumption to only independent but not</span>
+<span id="cb18-363"><a href="#cb18-363" aria-hidden="true" tabindex="-1"></a>identically distributed.  Again, the linear regression models is</span>
+<span id="cb18-364"><a href="#cb18-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-365"><a href="#cb18-365" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-366"><a href="#cb18-366" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,</span>
+<span id="cb18-367"><a href="#cb18-367" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-368"><a href="#cb18-368" aria-hidden="true" tabindex="-1"></a>where $\bf \Omega$ is the error variance-covariance matrix with</span>
+<span id="cb18-369"><a href="#cb18-369" aria-hidden="true" tabindex="-1"></a>diagonal elements being $\sigma_t^2$ for $t^{th}$ element,</span>
+<span id="cb18-370"><a href="#cb18-370" aria-hidden="true" tabindex="-1"></a>off-diagonal elements being zero.  In other words, the error terms</span>
+<span id="cb18-371"><a href="#cb18-371" aria-hidden="true" tabindex="-1"></a>are heteroscedastic.</span>
+<span id="cb18-372"><a href="#cb18-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-373"><a href="#cb18-373" aria-hidden="true" tabindex="-1"></a>The variance-covariance matrix of the OLS estimator $\bf \hat</span>
+<span id="cb18-374"><a href="#cb18-374" aria-hidden="true" tabindex="-1"></a>\beta$ is equal to</span>
+<span id="cb18-375"><a href="#cb18-375" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-376"><a href="#cb18-376" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) = {\rm E}\bf [(\hat \beta</span>
+<span id="cb18-377"><a href="#cb18-377" aria-hidden="true" tabindex="-1"></a>-\beta)(\hat</span>
+<span id="cb18-378"><a href="#cb18-378" aria-hidden="true" tabindex="-1"></a>\beta -\beta)'] <span class="sc">\\</span></span>
+<span id="cb18-379"><a href="#cb18-379" aria-hidden="true" tabindex="-1"></a>= \bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb18-380"><a href="#cb18-380" aria-hidden="true" tabindex="-1"></a>= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}</span>
+<span id="cb18-381"><a href="#cb18-381" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-382"><a href="#cb18-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-383"><a href="#cb18-383" aria-hidden="true" tabindex="-1"></a>If we know $\sigma_t^2$, then we would be able to estimate this</span>
+<span id="cb18-384"><a href="#cb18-384" aria-hidden="true" tabindex="-1"></a>"sandwich covariance matrix".  But we don't.</span>
+<span id="cb18-385"><a href="#cb18-385" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-386"><a href="#cb18-386" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}</span>
+<span id="cb18-387"><a href="#cb18-387" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X'\Omega</span>
+<span id="cb18-388"><a href="#cb18-388" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}</span>
+<span id="cb18-389"><a href="#cb18-389" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-390"><a href="#cb18-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-391"><a href="#cb18-391" aria-hidden="true" tabindex="-1"></a>Let $y_t$ denote the $t$th observation on the dependent variable,</span>
+<span id="cb18-392"><a href="#cb18-392" aria-hidden="true" tabindex="-1"></a>and $x_t'=<span class="co">[</span><span class="ot">1 x_{2t} \cdots x_{kt}</span><span class="co">]</span>$ denote the $t$th row of the</span>
+<span id="cb18-393"><a href="#cb18-393" aria-hidden="true" tabindex="-1"></a>$\bf X$ matrix.  Then</span>
+<span id="cb18-394"><a href="#cb18-394" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-395"><a href="#cb18-395" aria-hidden="true" tabindex="-1"></a>\bf X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'</span>
+<span id="cb18-396"><a href="#cb18-396" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-397"><a href="#cb18-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-398"><a href="#cb18-398" aria-hidden="true" tabindex="-1"></a>The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,</span>
+<span id="cb18-399"><a href="#cb18-399" aria-hidden="true" tabindex="-1"></a>the estimated OLS residuals.  This provides a consistent estimator of</span>
+<span id="cb18-400"><a href="#cb18-400" aria-hidden="true" tabindex="-1"></a>the variance matrix for the OLS coefficient vector and is particularly</span>
+<span id="cb18-401"><a href="#cb18-401" aria-hidden="true" tabindex="-1"></a>useful since it does not require any specific assumptions about the</span>
+<span id="cb18-402"><a href="#cb18-402" aria-hidden="true" tabindex="-1"></a>form of the heteroscedasticity.</span>
+<span id="cb18-403"><a href="#cb18-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-404"><a href="#cb18-404" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb18-405"><a href="#cb18-405" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-406"><a href="#cb18-406" aria-hidden="true" tabindex="-1"></a>\hat {\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}</span>
+<span id="cb18-407"><a href="#cb18-407" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X' \hat \Omega</span>
+<span id="cb18-408"><a href="#cb18-408" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}<span class="sc">\\</span></span>
+<span id="cb18-409"><a href="#cb18-409" aria-hidden="true" tabindex="-1"></a>\bf \hat \Omega = \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,</span>
+<span id="cb18-410"><a href="#cb18-410" aria-hidden="true" tabindex="-1"></a>\hat u_n^2})</span>
+<span id="cb18-411"><a href="#cb18-411" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb18-412"><a href="#cb18-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-413"><a href="#cb18-413" aria-hidden="true" tabindex="-1"></a><span class="fu">### Newey-West estimator</span></span>
+<span id="cb18-414"><a href="#cb18-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-415"><a href="#cb18-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-416"><a href="#cb18-416" aria-hidden="true" tabindex="-1"></a>White's estimator deals with the situation that we have</span>
+<span id="cb18-417"><a href="#cb18-417" aria-hidden="true" tabindex="-1"></a>heteroskedasticity (a diagonal $\Sigma$) of unknown form.  When we</span>
+<span id="cb18-418"><a href="#cb18-418" aria-hidden="true" tabindex="-1"></a>have serial correlation of unknown form (a non-diagonal $\Sigma$), we</span>
+<span id="cb18-419"><a href="#cb18-419" aria-hidden="true" tabindex="-1"></a>can estimate the variance-covariance matrix by a heteroskedasticity</span>
+<span id="cb18-420"><a href="#cb18-420" aria-hidden="true" tabindex="-1"></a>and autocorrelation consistent, or HAC, estimator.  Newey-West</span>
+<span id="cb18-421"><a href="#cb18-421" aria-hidden="true" tabindex="-1"></a>estimator is the most popular HAC estimator.</span>
+<span id="cb18-422"><a href="#cb18-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-423"><a href="#cb18-423" aria-hidden="true" tabindex="-1"></a>Given a time series data set, suppose we are interested in estimating</span>
+<span id="cb18-424"><a href="#cb18-424" aria-hidden="true" tabindex="-1"></a>the mean vector (suppose we have more than one variable) and its</span>
+<span id="cb18-425"><a href="#cb18-425" aria-hidden="true" tabindex="-1"></a>variance.  We know that given IID data, we can apply central limit</span>
+<span id="cb18-426"><a href="#cb18-426" aria-hidden="true" tabindex="-1"></a>theorem: sample mean is a consistent estimator of the population mean</span>
+<span id="cb18-427"><a href="#cb18-427" aria-hidden="true" tabindex="-1"></a>and it's variance can be calculated since asymptotically the sample</span>
+<span id="cb18-428"><a href="#cb18-428" aria-hidden="true" tabindex="-1"></a>mean conforms to a normal distribution and the variance can be</span>
+<span id="cb18-429"><a href="#cb18-429" aria-hidden="true" tabindex="-1"></a>estimated, relatively easily.  However, in the case of time series</span>
+<span id="cb18-430"><a href="#cb18-430" aria-hidden="true" tabindex="-1"></a>data, autocorrelation usually exists.  We may be concerned the CLT may</span>
+<span id="cb18-431"><a href="#cb18-431" aria-hidden="true" tabindex="-1"></a>not work in this case.</span>
+<span id="cb18-432"><a href="#cb18-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-433"><a href="#cb18-433" aria-hidden="true" tabindex="-1"></a>Fortunately, as proved in Hamilton (1994), if $\bf y_t$ is a</span>
+<span id="cb18-434"><a href="#cb18-434" aria-hidden="true" tabindex="-1"></a>covariance-stationary (meaning that the covariance is not a function</span>
+<span id="cb18-435"><a href="#cb18-435" aria-hidden="true" tabindex="-1"></a>of time) vector process, then the sample mean satisfies:</span>
+<span id="cb18-436"><a href="#cb18-436" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-437"><a href="#cb18-437" aria-hidden="true" tabindex="-1"></a>$$\bf \bar y_t \to \mu , $$</span>
+<span id="cb18-438"><a href="#cb18-438" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \lim_{T \to \infty} \bf  {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . $$</span>
+<span id="cb18-439"><a href="#cb18-439" aria-hidden="true" tabindex="-1"></a>where $\bf \Gamma_v$ is the variance-covariance matrix for $\bf y_t$ and $\bf y_{t-v}$.</span>
+<span id="cb18-440"><a href="#cb18-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-441"><a href="#cb18-441" aria-hidden="true" tabindex="-1"></a>The first one says for a covariance-stationary vector process, the law</span>
+<span id="cb18-442"><a href="#cb18-442" aria-hidden="true" tabindex="-1"></a>of large numbers still holds.  The second one is used to calculate the</span>
+<span id="cb18-443"><a href="#cb18-443" aria-hidden="true" tabindex="-1"></a>standard error.</span>
+<span id="cb18-444"><a href="#cb18-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-445"><a href="#cb18-445" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
+<span id="cb18-446"><a href="#cb18-446" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-447"><a href="#cb18-447" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \sum_{v=-q}^{q} \Gamma_v . $$</span>
+<span id="cb18-448"><a href="#cb18-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-449"><a href="#cb18-449" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
+<span id="cb18-450"><a href="#cb18-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-451"><a href="#cb18-451" aria-hidden="true" tabindex="-1"></a>$$ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),$$</span>
+<span id="cb18-452"><a href="#cb18-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-453"><a href="#cb18-453" aria-hidden="true" tabindex="-1"></a>where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y). $$</span>
+<span id="cb18-454"><a href="#cb18-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-455"><a href="#cb18-455" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of $\bf S$; however, it sometimes is</span>
+<span id="cb18-456"><a href="#cb18-456" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
+<span id="cb18-457"><a href="#cb18-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-458"><a href="#cb18-458" aria-hidden="true" tabindex="-1"></a>Newey-West (1987) suggested putting in a weight:</span>
+<span id="cb18-459"><a href="#cb18-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-460"><a href="#cb18-460" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S = \hat \Gamma_0} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_v + \hat \Gamma_v' ), $$</span>
+<span id="cb18-461"><a href="#cb18-461" aria-hidden="true" tabindex="-1"></a>where $q$ is from the MA($q$) process.</span>
+<span id="cb18-462"><a href="#cb18-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-463"><a href="#cb18-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-464"><a href="#cb18-464" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
+<span id="cb18-465"><a href="#cb18-465" aria-hidden="true" tabindex="-1"></a>$$ y_t={ \bf x_t' \beta} + u_t $$</span>
+<span id="cb18-466"><a href="#cb18-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-467"><a href="#cb18-467" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator $\bf b_T$, then</span>
+<span id="cb18-468"><a href="#cb18-468" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_t - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t</span>
+<span id="cb18-469"><a href="#cb18-469" aria-hidden="true" tabindex="-1"></a>  x_t'}]^{-1} <span class="co">[</span><span class="ot">({\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t'}</span><span class="co">]</span> $$</span>
+<span id="cb18-470"><a href="#cb18-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-471"><a href="#cb18-471" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
+<span id="cb18-472"><a href="#cb18-472" aria-hidden="true" tabindex="-1"></a>term is the sample mean of the vector $\bf x_t u_t$.</span>
+<span id="cb18-473"><a href="#cb18-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-474"><a href="#cb18-474" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
+<span id="cb18-475"><a href="#cb18-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-476"><a href="#cb18-476" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_t - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$</span>
+<span id="cb18-477"><a href="#cb18-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-478"><a href="#cb18-478" aria-hidden="true" tabindex="-1"></a>where $S$ can be estimated by</span>
+<span id="cb18-479"><a href="#cb18-479" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), $$</span>
+<span id="cb18-480"><a href="#cb18-480" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb18-481"><a href="#cb18-481" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}'= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$</span>
+<span id="cb18-482"><a href="#cb18-482" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
+<span id="cb18-483"><a href="#cb18-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-484"><a href="#cb18-484" aria-hidden="true" tabindex="-1"></a>Overall, the variance of $\bf b_T$ is approximated by</span>
+<span id="cb18-485"><a href="#cb18-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-486"><a href="#cb18-486" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">] [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ]</span> <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} $$</span>
+<span id="cb18-487"><a href="#cb18-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-488"><a href="#cb18-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-489"><a href="#cb18-489" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
+<span id="cb18-490"><a href="#cb18-490" aria-hidden="true" tabindex="-1"></a>length beyond which we are willing to assume that the autocorrelation</span>
+<span id="cb18-491"><a href="#cb18-491" aria-hidden="true" tabindex="-1"></a>of $x_t u_t$ and $x_{t-v} u_{t-v}$ is essentially zero.  The rule of</span>
+<span id="cb18-492"><a href="#cb18-492" aria-hidden="true" tabindex="-1"></a>thumb for the selection of $q$ is $0.75 \cdot T^{\frac{1}{3}}$.</span>
+<span id="cb18-493"><a href="#cb18-493" aria-hidden="true" tabindex="-1"></a>Newey-West (1994) has suggested a way to automatically select the</span>
+<span id="cb18-494"><a href="#cb18-494" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
+<span id="cb18-495"><a href="#cb18-495" aria-hidden="true" tabindex="-1"></a>also implement Newey-West (1994) estimator, with no need to specify</span>
+<span id="cb18-496"><a href="#cb18-496" aria-hidden="true" tabindex="-1"></a>$q$.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
