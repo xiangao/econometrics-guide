@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(convert ols.eps ols.png 2>&1 && convert davidson.eps davidson.png 2>&1 && convert davidson2.eps davidson2.png 2>&1 && echo \"Converted OK\" && ls -la *.png)",
+      "Bash(source .venv/bin/activate 2>/dev/null; Rscript -e 'needed <- c\\(\"car\",\"stats4\",\"dplyr\",\"mvtnorm\",\"MASS\",\"AER\",\"ivreg\",\"gmm\",\"strucchange\",\"ggfortify\",\"survival\",\"rmarkdown\"\\); installed <- rownames\\(installed.packages\\(\\)\\); missing <- setdiff\\(needed, installed\\); if\\(length\\(missing\\)>0\\) cat\\(\"Missing:\", paste\\(missing, collapse=\", \"\\), \"\\\\n\"\\) else cat\\(\"All packages installed\\\\n\"\\)')",
+      "Bash(Rscript -e 'install.packages\\(c\\(\"ivreg\",\"gmm\"\\), repos=\"https://cloud.r-project.org\", quiet=TRUE\\)' 2>&1 | tail -5)",
+      "Bash(Rscript -e 'library\\(ivreg\\); library\\(gmm\\); cat\\(\"OK\\\\n\"\\)')",
+      "Bash(Rscript -e 'rmarkdown::render\\(\"econometrics_guide.rmd\", output_format=\"html_document\"\\)' 2>&1 | tail -20)",
+      "WebFetch(domain:iqss.github.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "Bash(which quarto:*)",
+      "Bash(ls *.qmd 2>/dev/null || echo \"No qmd files yet\")",
+      "Bash(quarto render:*)",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)"
+    ]
+  }
+}

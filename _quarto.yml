@@ -1,0 +1,43 @@
+project:
+  type: book
+
+book:
+  title: "Econometrics Guide"
+  author: "Research Computing Services, Harvard Business School"
+  date: "last-modified"
+  search: true
+  page-navigation: true
+  chapters:
+    - index.qmd
+    - ols.qmd
+    - mle.qmd
+    - gls.qmd
+
+    - part: "Causal Inference & IV"
+      chapters:
+        - endogeneity.qmd
+        - gmm.qmd
+
+    - part: "Limited Dependent Variables"
+      chapters:
+        - censored.qmd
+        - discrete.qmd
+        - count-data.qmd
+
+    - part: "Advanced Topics"
+      chapters:
+        - panel-data.qmd
+        - survival.qmd
+        - dynamic-panel.qmd
+        - missing-data.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+    code-link: true
+    callout-appearance: simple
+    code-tools: true
+
+execute:
+  freeze: auto

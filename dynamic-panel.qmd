@@ -1,0 +1,74 @@
+# Dynamic Panel Data
+
+## when is it a problem
+
+Model setup:
+$$y_{i,t} = \gamma y_{i, t-1} + X \beta + C_i + \epsilon_{i,t}$$
+
+Pooled regression is biased and inconsistent.  The problem is:
+
+$$Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}$$
+
+Random effects model is biased and inconsistent, for the same reason
+that $y_{i,t-1}$ is necessarily correlated with $C_i$, which is part
+of the composite error term in the random effect model.
+
+Fixed effect model setup:
+
+$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \bar y_i) + (\epsilon_{i,t} - \bar \epsilon_i)$$
+
+Anderson and Hsiao (1981) show that
+
+$$Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx \frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$
+
+which indicates that the correlation between the demeaned lagged $y$
+is correlated with the demeaned error term.  The correlation may be
+large if $T$ is small, but when $T$ is big, then the correlation goes
+down to near zero.  When $T$ is big, we don't have a problem with
+fixed effect model.
+
+## how big is the bias
+
+When $T$ is small, which is typically the case in many microeconomic settings, then we say the fixed effect model with a lagged dependent variable is inconsistent.  But how bad is it?
+
+The limit of $\hat \gamma - \gamma$ is approximately $-\frac{(1+\gamma)}{T-1}$.  When $T=10$ and $\gamma=.5$, the bias is about $-0.167$ which is $1/3$ of the true value.
+
+But a simulation study (Judson and Owen 1999) shows that  the bias can be as big as $20\%$  of the true coefficient even when $T=30$.
+
+## Anderson and Hsiao estimator
+
+Anderson and Hsiao (1981) suggested looking at the first difference estimator:
+
+$$ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) $$
+
+or
+
+$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$
+
+This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$, assuming error is not auto-correlated.
+
+
+## Arellano-Bond estimator
+
+Arellano and Bond (1991) expanded the idea by using additional lags of the dependent variable as instruments.  For example, both $y_{i,t-2}$ and $y_{i,t-3}$ can be used as instruments.  In fact, as $t$ increases, the number of instruments avialable also increases.  In period 3 only $y_{i,1}$ is available.  In period 4 $y_{i,1}$ and $y_{i,2}$ are available.  In period 5  $y_{i,1}$ and $y_{i,2}$ and  $y_{i,3}$ are availabe, and so on.  In other words, we'll have an instrument matrix with one row for each time period that we are instrumenting:
+
+
+$$Z_i =
+\begin{bmatrix}
+0 & \ 0 & \ 0 & \ 0 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\ y_{i,1} & \  0 & \ 0 & \ 0
+& \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\  0 & \  y_{i,1} & \ y_{i,2} &
+\ 0 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\  0 & \ 0 & \  0 & \
+y_{i,1} & \ y_{i,2} & \ y_{i,3}  & \ \cdots & \ 0 & \  0 & \ 0  \\   \vdots  & \  \vdots & \  \vdots & \  \vdots & \  \vdots & \  \ddots  & \ \cdots & \ \vdots & \  \vdots & \ \vdots \\ 0 & \  0 & \  0 & \ 0 & \ 0 & \ \cdots  & \ 0 & \ y_{i,1} & \  \cdots & \ y_{i,T-2}
+\end{bmatrix}
+$$
+
+
+This is the so called difference GMM estimator.
+
+## Blundell and Bond estimator
+
+AB model has a problem:  when the instruments are weak, the estimator is not good.  That will happen when $y$ follows random walk or near random walk.  In that case the past levels won't be a good predictor of the future changes.
+
+BB model comes in to instrument levels with differences. In stead of differencing to remove the fixed effects, it keeps the fixed effects and difference the instruments to make them exogenous to the fixed effects.  The basic idea is that $\Delta y_{i,t}$ is not correlated with $C_i$.  Therefore it can be used as instruments in the fixed effects model without demeaning the variables.
+
+This is implemented by so called system GMM.  In this case, we have fixed effects in the model, but do not attempt to purge the fixed effect by demeaning or first differencing.  Instead, we use past differences of $y$ as instruments, assuming $\Delta y_{i,t}$ is not correlated with $C_i$.  In this case, time-invariant variables can be used in the model.

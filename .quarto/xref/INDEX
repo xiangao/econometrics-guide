@@ -1,0 +1,41 @@
+{
+  "index.qmd": {
+    "index.html": "35b1e5fe"
+  },
+  "ols.qmd": {
+    "ols.html": "8c8bbabc"
+  },
+  "mle.qmd": {
+    "mle.html": "7dcd5c2d"
+  },
+  "gls.qmd": {
+    "gls.html": "b5b96639"
+  },
+  "endogeneity.qmd": {
+    "endogeneity.html": "baa0316f"
+  },
+  "gmm.qmd": {
+    "gmm.html": "f4aab610"
+  },
+  "censored.qmd": {
+    "censored.html": "25052924"
+  },
+  "discrete.qmd": {
+    "discrete.html": "db367d36"
+  },
+  "count-data.qmd": {
+    "count-data.html": "39637aed"
+  },
+  "panel-data.qmd": {
+    "panel-data.html": "2e54a555"
+  },
+  "survival.qmd": {
+    "survival.html": "66aef974"
+  },
+  "dynamic-panel.qmd": {
+    "dynamic-panel.html": "d7fdb24e"
+  },
+  "missing-data.qmd": {
+    "missing-data.html": "34233c7f"
+  }
+}
