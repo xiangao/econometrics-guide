@@ -12,3 +12,6 @@ econometrics_guide.html
 
 # OS files
 .DS_Store
+
+/.quarto/
+**/*.quarto_ipynb

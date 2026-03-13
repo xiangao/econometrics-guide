@@ -3,7 +3,7 @@ project:
 
 book:
   title: "Econometrics Guide"
-  author: "Research Computing Services, Harvard Business School"
+  author: "Xiang Ao"
   date: "last-modified"
   search: true
   page-navigation: true
@@ -12,24 +12,15 @@ book:
     - ols.qmd
     - mle.qmd
     - gls.qmd
-
-    - part: "Causal Inference & IV"
-      chapters:
-        - endogeneity.qmd
-        - gmm.qmd
-
-    - part: "Limited Dependent Variables"
-      chapters:
-        - censored.qmd
-        - discrete.qmd
-        - count-data.qmd
-
-    - part: "Advanced Topics"
-      chapters:
-        - panel-data.qmd
-        - survival.qmd
-        - dynamic-panel.qmd
-        - missing-data.qmd
+    - endogeneity.qmd
+    - gmm.qmd
+    - censored.qmd
+    - discrete.qmd
+    - count-data.qmd
+    - panel-data.qmd
+    - survival.qmd
+    - dynamic-panel.qmd
+    - missing-data.qmd
 
 format:
   html:
@@ -38,6 +29,9 @@ format:
     code-link: true
     callout-appearance: simple
     code-tools: true
+    number-sections: true
 
 execute:
   freeze: auto
+  warning: false
+  message: false

@@ -139,9 +139,11 @@ Even if this assumption does not hold, we still have asymptotic normality for $\
 Since linear combination of normal variables are also normally
 distributed,
 $$
-\bf \hat \beta \sim N(\beta, \sigma^2 (X'X)^{-1})\\
-\bf R \hat \beta \sim N(R \beta, \sigma^2 R(X'X)^{-1}R')\\
-\bf R (\hat \beta - \beta) \sim N(0, \sigma^2 R(X'X)^{-1}R')
+\begin{aligned}
+\bf \hat \beta &\sim N(\beta, \sigma^2 (X'X)^{-1})\\
+\bf R \hat \beta &\sim N(R \beta, \sigma^2 R(X'X)^{-1}R')\\
+\bf R (\hat \beta - \beta) &\sim N(0, \sigma^2 R(X'X)^{-1}R')
+\end{aligned}
 $$
 
 Under null hypothesis,
@@ -369,11 +371,13 @@ are heteroscedastic.
 The variance-covariance matrix of the OLS estimator $\bf \hat
 \beta$ is equal to
 $$
-{\rm Var} \bf (\hat \beta) = {\rm E}\bf [(\hat \beta
+\begin{aligned}
+{\rm Var} \bf (\hat \beta) &= {\rm E}\bf [(\hat \beta
 -\beta)(\hat
 \beta -\beta)'] \\
-= \bf [(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}] \\
-= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}
+&= \bf [(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}] \\
+&= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}
+\end{aligned}
 $$
 
 If we know $\sigma_t^2$, then we would be able to estimate this
@@ -399,11 +403,13 @@ form of the heteroscedasticity.
 
 Therefore,
 $$
-\hat {\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}
+\begin{aligned}
+\hat {\rm Var} \bf (\hat \beta) &= \bf \frac{1}{n}
 [\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X' \hat \Omega
 X][\frac{1}{n}(X'X)]^{-1}\\
-\bf \hat \Omega = \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
+\bf \hat \Omega &= \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
 \hat u_n^2})
+\end{aligned}
 $$
 
 ### Newey-West estimator

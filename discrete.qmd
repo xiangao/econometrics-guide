@@ -78,17 +78,21 @@ $$
 Suppose we observe $y_t$ with three values.
 
 $$
-y_t = 0 \quad \mbox{if} \ y_t^0 < \gamma_1; \\
-y_t = 1 \quad \mbox{if} \ \gamma_1 \leq y_t^0 < \gamma_2; \\
-y_t = 2 \quad \mbox{if} \ y_t^0 \geq \gamma_2.
+\begin{cases}
+y_t = 0 & \mbox{if} \ y_t^0 < \gamma_1; \\
+y_t = 1 & \mbox{if} \ \gamma_1 \leq y_t^0 < \gamma_2; \\
+y_t = 2 & \mbox{if} \ y_t^0 \geq \gamma_2.
+\end{cases}
 $$
 
 Therefore,
 $$
-\mbox{Pr}(y_t=0) = \mbox{Pr}(y_t^0 < \gamma_1)=\mbox{Pr}({\bf
+\begin{aligned}
+\mbox{Pr}(y_t=0) &= \mbox{Pr}(y_t^0 < \gamma_1)=\mbox{Pr}({\bf
 X}_t \beta < \gamma_1) \\
-= \mbox{Pr}(u_t < \gamma_1 - {\bf X}_t \beta)=\Phi ( \gamma_1
+&= \mbox{Pr}(u_t < \gamma_1 - {\bf X}_t \beta)=\Phi ( \gamma_1
 - {\bf X}_t \beta)
+\end{aligned}
 $$
 
 Similarly,
