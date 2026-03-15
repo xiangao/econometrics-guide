@@ -1,6 +1,5 @@
 # Rendered output (published via gh-pages branch)
 _book/
-_freeze/
 
 # R artifacts
 .Rhistory
