@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; Count data models – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./panel-data.html" rel="next">
+<link href="./discrete.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./count-data.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#poisson-model" id="toc-poisson-model" class="nav-link active" data-scroll-target="#poisson-model"><span class="header-section-number">9.1</span> Poisson Model</a></li>
+  <li><a href="#qmle-poisson" id="toc-qmle-poisson" class="nav-link" data-scroll-target="#qmle-poisson"><span class="header-section-number">9.2</span> QMLE Poisson</a>
+  <ul class="collapse">
+  <li><a href="#implementation" id="toc-implementation" class="nav-link" data-scroll-target="#implementation"><span class="header-section-number">9.2.1</span> Implementation</a></li>
+  </ul></li>
+  <li><a href="#fixed-effect-poisson-model" id="toc-fixed-effect-poisson-model" class="nav-link" data-scroll-target="#fixed-effect-poisson-model"><span class="header-section-number">9.3</span> Fixed-effect Poisson model</a></li>
+  <li><a href="#negative-binomial-model" id="toc-negative-binomial-model" class="nav-link" data-scroll-target="#negative-binomial-model"><span class="header-section-number">9.4</span> Negative Binomial model</a></li>
+  <li><a href="#models-for-truncated-counts" id="toc-models-for-truncated-counts" class="nav-link" data-scroll-target="#models-for-truncated-counts"><span class="header-section-number">9.5</span> Models for truncated counts</a></li>
+  <li><a href="#the-hurdle-regression-model" id="toc-the-hurdle-regression-model" class="nav-link" data-scroll-target="#the-hurdle-regression-model"><span class="header-section-number">9.6</span> The hurdle regression model</a></li>
+  <li><a href="#zero-inflated-count-models" id="toc-zero-inflated-count-models" class="nav-link" data-scroll-target="#zero-inflated-count-models"><span class="header-section-number">9.7</span> Zero-inflated count models</a></li>
+  <li><a href="#an-example-of-extra-zero-count-data-model-comparison" id="toc-an-example-of-extra-zero-count-data-model-comparison" class="nav-link" data-scroll-target="#an-example-of-extra-zero-count-data-model-comparison"><span class="header-section-number">9.8</span> An example of extra-zero count data model comparison</a></li>
+  <li><a href="#how-to-interpret-coefficients-and-calculate-marginal-effects-in-discrete-choice-models" id="toc-how-to-interpret-coefficients-and-calculate-marginal-effects-in-discrete-choice-models" class="nav-link" data-scroll-target="#how-to-interpret-coefficients-and-calculate-marginal-effects-in-discrete-choice-models"><span class="header-section-number">9.9</span> How to interpret coefficients and calculate marginal effects in Discrete Choice Models</a>
+  <ul class="collapse">
+  <li><a href="#binary-response-models" id="toc-binary-response-models" class="nav-link" data-scroll-target="#binary-response-models"><span class="header-section-number">9.9.1</span> Binary Response Models</a></li>
+  <li><a href="#marginal-effects" id="toc-marginal-effects" class="nav-link" data-scroll-target="#marginal-effects"><span class="header-section-number">9.9.2</span> Marginal Effects</a></li>
+  <li><a href="#count-data-models" id="toc-count-data-models" class="nav-link" data-scroll-target="#count-data-models"><span class="header-section-number">9.9.3</span> Count Data Models</a></li>
+  <li><a href="#how-to-calculate-marginal-effects-in-stata" id="toc-how-to-calculate-marginal-effects-in-stata" class="nav-link" data-scroll-target="#how-to-calculate-marginal-effects-in-stata"><span class="header-section-number">9.9.4</span> How to calculate marginal effects in Stata</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="poisson-model" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="poisson-model"><span class="header-section-number">9.1</span> Poisson Model</h2>
+<p>If the interested variable is a count data variable, it is natural to model it as a Poisson process. The number of occurrence follows a Poisson process:</p>
+<p><span class="math display">\[
+{\rm Pr} [Y=y]=\frac{e^{-\mu} \mu^y}{y! }
+\]</span></p>
+<p>One of Poisson’s properties is that it has equal variance as its mean:</p>
+<p><span class="math display">\[
+{\rm E} [Y]={\rm Var} [Y]=\mu
+\]</span></p>
+<p>In a count data model such as Poisson regression model, we are modeling log of the expected counts:</p>
+<p><span class="math display">\[
+\log ({\rm E}( Y) )=\bf X_i' \beta
+\]</span></p>
+<p>The log-likelihood function is <span class="math display">\[
+\log L(\beta)= \sum_{i=1}^N {- \exp (X_i' \beta) + y_i X_i' \beta - \ln y_i!}
+\]</span></p>
+<p>To maximize it, the first order condition is</p>
+<p><span class="math display">\[
+\sum_{i=1}^N (y_i - \exp (X_i' \beta) )X_i'=0
+\]</span></p>
+<p>We can use Newton-Raphson or other optimization algorithms to find the solution for the first order condition.</p>
+</section>
+<section id="qmle-poisson" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="qmle-poisson"><span class="header-section-number">9.2</span> QMLE Poisson</h2>
+<section id="model" class="level4" data-number="9.2.0.1">
+<h4 data-number="9.2.0.1" class="anchored" data-anchor-id="model"><span class="header-section-number">9.2.0.1</span> Model</h4>
+<p>Note that in equation the equation above, if <span class="math inline">\(X_i'\)</span> includes a constant, then <span class="math inline">\((y_i - \exp (X_i' \beta) )\)</span> sums to zero. If <span class="math inline">\({\rm E} [y_i|X_i] = \exp (X_i' \beta)\)</span>, then the summation on the left-hand side has expectation of zero. Hence the only specification needed to apply equation the equation above is the conditional expectation of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>. Even the data is not Poisson-distributed, the estimator by equation the equation above is still consistent. Therefore, this estimator is called quasi_ML (QML) Poisson estimator.</p>
+<p>Although the QML Poisson estimator is consistent under relatively weak condition, the regular variance estimator for the coefficients are not valid anymore.</p>
+<p>If a stronger assumption is made that the data follows a Poisson distribution, then the error term has a variance which equals to the mean of <span class="math inline">\(Y\)</span>. The estimator <span class="math inline">\(\hat \beta_P\)</span> (ML estimator) follows a normal distribution asymptotically with a variance matrix</p>
+<p><span class="math display">\[
+{\rm Var}_{ML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
+\]</span></p>
+<p>On the other hand, the variance matrix for the QML Poisson estimator <span class="math inline">\(\hat \beta_{QML}\)</span> is</p>
+<p><span class="math display">\[
+{\rm Var}_{QML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i')^{-1} (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
+\]</span> where $_i={} [y_i|X_i] $ is the conditional variance of <span class="math inline">\(y_i\)</span>.</p>
+</section>
+<section id="implementation" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="implementation"><span class="header-section-number">9.2.1</span> Implementation</h3>
+<p>Poisson estimation is implemented in almost every statistical package. However, some of them may not work if you have a continuous dependent variable.</p>
+<p>Stata’s implementation of Poisson model: “poisson” and “xtpoisson” do take continuous dependent variable. Note that standard errors reported without any specification in “vce” will be likely downward biased. Therefore, always use “robust” option at least. Bootstrapped standard errors are also preferred. However, if you intend to use it as QMLE-Poisson, standard errors need to be adjusted. Those two procedures do not adjust for standard errors. A user-written program called xtpqml calls for xtpoisson and it calculates robust standard error which is suggested by Wooldridge (1999).</p>
+</section>
+</section>
+<section id="fixed-effect-poisson-model" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="fixed-effect-poisson-model"><span class="header-section-number">9.3</span> Fixed-effect Poisson model</h2>
+<p>We specify a panel data count model as: <span class="math display">\[
+E[y_{it} | \alpha_i, X_{it}]= \alpha_i \exp(X'_{it} \beta) =
+\exp(\gamma_i + X'_{it} \beta).
+\]</span></p>
+<p>It turns out that for fixed-effect Poisson model, just like in linear regression case, there is NO incidental parameter problem. Poisson MLE is the same for conditional and unconditional likelihood.(See Cameron and Trivedi, 2005, Page 805).</p>
+<p>Therefore, the coefficient estimates are the same for conditional or unconditional fixed-effect Poisson model. That is, in Stata, “xtpoisson, fe” will return the same results as “xi: poisson i.group”, is the same as “xtpqml, fe”. The only difference is that “xtpqml, fe” returns “correct” standard errors for QMLE Poisson. You can also calculate standard errors with the other commands, using clustered standard errors, or bootstrapped standard errors.</p>
+<p>Conditional fixed effect negative binomial model is also possible to be consistent for some specifications. But Poisson fixed effect is more popular since it is QMLE.</p>
+</section>
+<section id="negative-binomial-model" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="negative-binomial-model"><span class="header-section-number">9.4</span> Negative Binomial model</h2>
+<p>The Poisson model has a restrictive property that the conditional variance equals the conditional mean. Often we’ll see “overdispersion”, that is, the variance exceeds the mean, in real data. The negative binomial model is a generalization of poisson model which allows for overdispersion by introducing an unobserved heterogeneity term. In a negative binomial model,</p>
+<p><span class="math display">\[
+{\rm E} [Y]=\mu \tau = e^{X' \beta} \cdot \tau
+\]</span></p>
+<p>This extra <span class="math inline">\(\tau\)</span> term follows a <span class="math inline">\(Gamma(\theta, \theta)\)</span> distribution, with <span class="math inline">\(E(\tau)=1\)</span> and <span class="math inline">\(Var (\tau)=1/\theta\)</span>.</p>
+<p>Conditional on <span class="math inline">\(X\)</span> and <span class="math inline">\(\tau\)</span>, the distribution of <span class="math inline">\(Y\)</span> is still poisson: <span class="math display">\[
+{\rm Pr} [Y=y | X, \tau]=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }
+\]</span></p>
+<p>Conditional on <span class="math inline">\(X\)</span> only, the distribution of <span class="math inline">\(Y\)</span> is negative binomial: <span class="math display">\[
+{\rm Pr} [Y=y | X]=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{
+  \Gamma(y+1) \Gamma(\theta) (\mu + \theta)^{\theta+y}}
+\]</span></p>
+<p>This distribution still has conditional mean of <span class="math inline">\(\mu\)</span>, but variance is <span class="math inline">\(\mu (1+(1/\theta) \mu)\)</span>.</p>
+<p>When <span class="math inline">\(\alpha=1/\theta\)</span> approaches zero, the negative binomial model converges to poisson model.</p>
+</section>
+<section id="models-for-truncated-counts" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="models-for-truncated-counts"><span class="header-section-number">9.5</span> Models for truncated counts</h2>
+<p>In some situations, all we observe are non-zero counts, because of the way data was collected. For example, we only observe people’s visits to a park, only if they visit. To model how many times they visit, based on this kind of data set, we need to use zero-truncated count models.</p>
+<p><span class="math display">\[
+{\rm Pr} [Y=y | y&gt;0, X]=\frac{{\rm Pr} (y | X) }{{\rm Pr} (y&gt;0 | X)}=
+\frac{{\rm Pr} (y | X)}{1- \exp (- \mu)}
+\]</span></p>
+<p>Thus we are modeling the counts given that we have a positive outcome. Both zero-truncated poisson (“ztp” in Stata) and zero-truncated negative binomial (“ztnb” in Stata) are estimated by Maximum-likelihood method.</p>
+<p>We need to pay extra attention to the “over-dispersion” problem when dealing with zero-truncated data. When data is not truncated, coefficients estimated by poisson model is consistent, even if data is “overdispersed”. However, if we have zero-truncated sample, then “over-dispersion” results in inconsistent coefficient estimation (Grogger and Carson, 1991). Therefore, “over-dispersion” needs to be tested before using truncated poisson model or truncated negative binomial model.</p>
+</section>
+<section id="the-hurdle-regression-model" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="the-hurdle-regression-model"><span class="header-section-number">9.6</span> The hurdle regression model</h2>
+<p>Although negative binomial model relaxes the assumption of equal mean and variance, some researchers prefer modeling the process of generating zeros differently from the process of generating other values. Suppose zero counts are generated by a binary process:</p>
+<p><span class="math display">\[
+{\rm Pr} [y=0 |  X]=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi
+\]</span></p>
+<p>Positive counts are generated by a truncated count process.</p>
+<p>In this model, zero is a “hurdle” to get past before reaching positive counts. The hurdle model is estimated by two separate equations. It is easy to estimate. However, the marginal effect is tricky to calculate, since and independent variable, if appearing in both equations, will have effect through both equations.</p>
+<p><span class="math display">\[
+{\rm E} (y | X) = [\pi \times 0 ] + {(1-\pi) \times {\rm E} (y | y&gt;0,
+  X) } = (1- \pi) \times {\rm E} (y | y&gt;0 , X)
+\]</span></p>
+<p>In stata, there are commands such as “hplogit”, which is a hurdle model with first equation logit, and second equation truncated poisson. It is the same as two separate estimations; namely “logit” first, then “ztp” on positive counts.</p>
+<p>The difference between hurdle model and a Heckman selection model is that in a Heckman model, two equations need to be jointly estimated. There must be exclusion condition to make the selection equation identifiable. That is, the second stage equation need to take account of the selection bias; therefore, some instrument for selection is needed for the first stage equation. On the other hand, a hurdle model assumes that the two processes are separate; there is no selection.</p>
+</section>
+<section id="zero-inflated-count-models" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="zero-inflated-count-models"><span class="header-section-number">9.7</span> Zero-inflated count models</h2>
+<p>A zero-inflated count model also models two different processes. One is a binary process: generating zero or non-zeros. The second one is a count model. Note there is a different between zero-inflated and hurdle model: In hurdle model, the second process is a truncated count model (positive counts). In a zero-inflated model, a zero can come from either the binary process, or from the count process.</p>
+<p>A second difference is that the estimation of zero-inflated model is a joint estimation of the two processes.</p>
+<p><span class="math display">\[
+y_i \sim \left\{
+\begin{array}{c}
+0 \  \mbox{with probability} \ \psi \\    g(y_i | X_i)   \mbox{with
+  probability} \ 1- \psi
+\end{array} \right.
+\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+P(Y_i=y_i | X_i, Z_i) = \left\{
+\begin{array}{c}
+\psi(\gamma' Z_i) + (1- \psi(\gamma' Z_i) ) g(0 | X_i)  \  \mbox{if} \ y_i=0 \\  (1- \psi(\gamma' Z_i) ) g(y_i | X_i)  \  \mbox{if} \ y_i&gt;0
+\end{array} \right.
+\]</span></p>
+<p>This says that every non-zero observation follows a count process <span class="math inline">\(g(y_i|X_i)\)</span>. Every zero observation has two possible sources: from a binary process (with probability <span class="math inline">\(\psi(\gamma' Z_i)\)</span>) and from a count process (with probability <span class="math inline">\(1- \psi(\gamma' Z_i)\)</span> into the count process and then with probability of <span class="math inline">\(g(0|X_i)\)</span> to be a zero). The count process can be a Poisson process (“zip” in Stata) or a Negative Binomial process (“zinb” in Stata).</p>
+</section>
+<section id="an-example-of-extra-zero-count-data-model-comparison" class="level2" data-number="9.8">
+<h2 data-number="9.8" class="anchored" data-anchor-id="an-example-of-extra-zero-count-data-model-comparison"><span class="header-section-number">9.8</span> An example of extra-zero count data model comparison</h2>
+<p>http://hbs-rcs.github.io/blog/2014/09/17/poisson-models/</p>
+</section>
+<section id="how-to-interpret-coefficients-and-calculate-marginal-effects-in-discrete-choice-models" class="level2" data-number="9.9">
+<h2 data-number="9.9" class="anchored" data-anchor-id="how-to-interpret-coefficients-and-calculate-marginal-effects-in-discrete-choice-models"><span class="header-section-number">9.9</span> How to interpret coefficients and calculate marginal effects in Discrete Choice Models</h2>
+<section id="binary-response-models" class="level3" data-number="9.9.1">
+<h3 data-number="9.9.1" class="anchored" data-anchor-id="binary-response-models"><span class="header-section-number">9.9.1</span> Binary Response Models</h3>
+<p>In a linear model <span class="math display">\[ y_i= X_i' \beta + \epsilon, \]</span> <span class="math display">\[E(y_i) = X_i' \beta \]</span></p>
+<p>When <span class="math inline">\(y_i\)</span> is binary (meaning it takes two values, 1 or 0), We can also do an OLS regression on it, but a more popular way is to use a non-linear model. The most popular choices for modeling binary response are logit model and probit model. Both of them use the same idea: use a link function to map the binary variable into a continuous variable which is a linear function of the predictors.</p>
+<p>Suppose <span class="math inline">\(p_t\)</span> is the probability that <span class="math inline">\(y_i=1\)</span>. Then <span class="math display">\[p_i=E(y_i) = g^{-1}(X_i' \beta), \]</span> where <span class="math inline">\(g^{-1}()\)</span> is a function that maps from the linear predictor to <span class="math inline">\(y_i\)</span>, which is often called index function or inverse link function.</p>
+<p>This says that the expectation of <span class="math inline">\(y_i\)</span> (equivalently, <span class="math inline">\(p_i\)</span>) is not a linear function of <span class="math inline">\(x_i\)</span>’s, but by using the link function, we are still able to model a transformed <span class="math inline">\(p_i\)</span> as a linear function of <span class="math inline">\(x_i\)</span>’s: <span class="math display">\[g(p_i) = X_i' \beta. \]</span></p>
+<p><span class="math inline">\(g^{-1}()\)</span> can be a normal CDF then we have a probit model: <span class="math display">\[ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {\rm exp} [-(t^2/2)] dt, \]</span></p>
+<p>or it can be a logit:</p>
+<p><span class="math display">\[ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). \]</span></p>
+</section>
+<section id="marginal-effects" class="level3" data-number="9.9.2">
+<h3 data-number="9.9.2" class="anchored" data-anchor-id="marginal-effects"><span class="header-section-number">9.9.2</span> Marginal Effects</h3>
+<p>Often times we are interested in the marginal effects of the predictors. In a linear model, it’s easy: the coefficient on <span class="math inline">\(x_1\)</span> means when <span class="math inline">\(x_1\)</span> increase by one unit, how much will <span class="math inline">\(y\)</span> increase.</p>
+<p>In a binary response model, <span class="math display">\[\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}\]</span></p>
+<p>In the case of probit:</p>
+<p><span class="math display">\[\frac{\partial p}{\partial x} = \frac{\partial \Phi (X_i'
+  \beta)}{\partial x} = \phi(X_i' \beta) \beta, \]</span></p>
+<p>where <span class="math inline">\(\phi()\)</span> is the density function of normal distribution.</p>
+<p>In the case of logit:</p>
+<p><span class="math display">\[\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, \]</span> where <span class="math inline">\(\gamma()\)</span> is the density function for logistic distribution: <span class="math display">\[\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).\]</span></p>
+<p>Therefore for logit, it’s easier to calculate the marginal effect from coefficient estimate <span class="math inline">\(\beta\)</span>, all you have to do is to plug in sample proportion mean <span class="math inline">\(\bar p\)</span> and coefficient estimate <span class="math inline">\(\hat \beta\)</span>:</p>
+<p><span class="math display">\[ \hat{ \frac{\partial p}{\partial x}} = \bar p (1- \bar p) \hat \beta \]</span></p>
+<p>The logit model can also be formulated as <span class="math display">\[
+\log (\frac{p}{1-p})=\bf X_i' \beta
+\]</span> which says the logarithm of the odds (the ratio of the two probabilities) is equal to <span class="math inline">\(\bf X_i' \beta\)</span>. Therefore, <span class="math display">\[
+p =\frac{\exp( X_i' \beta)}{1+\exp({\bf X}_t
+\beta)}=\Lambda( X_i' \beta)
+\]</span></p>
+<p>Often times we have discrete valued predictors, such as gender, or other dummy variables. In that case, it makes more sense to ask what’s the effect of gender being 1 vs.&nbsp;0 (female vs.&nbsp;male). What this question is can be formulated as:</p>
+<p><span class="math display">\[ E(p | x_1=1) - E(p | x_1=0). \]</span></p>
+<p>In empirical analysis, it’s often calculated by calculating the predicted probability by setting <span class="math inline">\(x_1\)</span> to 1 and by setting <span class="math inline">\(x_1\)</span> to 0. Then calculate the difference.</p>
+</section>
+<section id="count-data-models" class="level3" data-number="9.9.3">
+<h3 data-number="9.9.3" class="anchored" data-anchor-id="count-data-models"><span class="header-section-number">9.9.3</span> Count Data Models</h3>
+<p>In a count data model such as Poisson regression model or Negative Binomial model, we are modeling log of the expected counts:</p>
+<p><span class="math display">\[
+\log ({\rm E}( y) )=\bf X_i' \beta
+\]</span> Therefore the marginal effect of <span class="math inline">\(x_1\)</span>, for example, on <span class="math inline">\({\rm E} (y)\)</span> is</p>
+<p><span class="math display">\[ { \frac{\partial \log {\rm E} (y) }{\partial x}} = \hat \beta , \]</span></p>
+<p>which means <span class="math inline">\(\beta\)</span> is the marginal effect of <span class="math inline">\(x\)</span> on <span class="math inline">\(\log\)</span> of the expected counts. Suppose the expected counts at <span class="math inline">\(x\)</span> is <span class="math inline">\(\mu_{x}\)</span>, then</p>
+<p><span class="math display">\[ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , \]</span></p>
+<p>which says that <span class="math inline">\(\beta\)</span> represents the marginal effect of percentage change in <span class="math inline">\(\mu_x\)</span> with respect to <span class="math inline">\(x\)</span>.</p>
+<p>Another way to formulate this is to use the Incidence Rate Ratio Interpretation. Suppose the expected counts at <span class="math inline">\(x\)</span> is <span class="math inline">\(\mu_{x}\)</span>, and expected counts at <span class="math inline">\(x+1\)</span> is <span class="math inline">\(\mu_{x+1}\)</span>.</p>
+<p><span class="math display">\[  \log (\mu_x) = x' \beta. \]</span></p>
+<p>Therefore,</p>
+<p><span class="math display">\[
+\mu_{x} = \exp (x' \beta),
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\frac{\mu_{x+1}}{\mu_{x}} = \exp ( \beta).
+\]</span></p>
+<p>This says that the exponentiated <span class="math inline">\(\beta\)</span> is the incidence rate ratio of the expected counts, if <span class="math inline">\(x\)</span> increases by <span class="math inline">\(1\)</span>.</p>
+<p>To calculate the marginal effect of <span class="math inline">\(x\)</span> on <span class="math inline">\(y\)</span> (or <span class="math inline">\({\rm E} (y)\)</span>), we need to calculate</p>
+<p><span class="math display">\[\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , \]</span> if we evaluate <span class="math inline">\(\mu_x\)</span> at predicted value.</p>
+</section>
+<section id="how-to-calculate-marginal-effects-in-stata" class="level3" data-number="9.9.4">
+<h3 data-number="9.9.4" class="anchored" data-anchor-id="how-to-calculate-marginal-effects-in-stata"><span class="header-section-number">9.9.4</span> How to calculate marginal effects in Stata</h3>
+<p>Stata’s margins command is a powerful command to get the predicted value or marginal effects after an estimation command. Check Stata’s manual for more details.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./discrete.html" class="pagination-link" aria-label="Discrete and Limited Dependent Variables">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./panel-data.html" class="pagination-link" aria-label="Panel Data Models">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Count data models</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">## Poisson Model</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>If the interested variable is a count data variable, it is natural to model it as a Poisson process.  The number of occurrence follows a Poisson process:</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>{\rm Pr} <span class="co">[</span><span class="ot">Y=y</span><span class="co">]</span>=\frac{e^{-\mu} \mu^y}{y! }</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>One of Poisson's properties is that it has equal variance as its mean:</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>{\rm E} <span class="co">[</span><span class="ot">Y</span><span class="co">]</span>={\rm Var} <span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=\mu</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>In a count data model such as Poisson regression model, we are modeling log of the expected counts:</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>\log ({\rm E}( Y) )=\bf X_i' \beta</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>The log-likelihood function is</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>\log L(\beta)= \sum_{i=1}^N {- \exp (X_i' \beta) + y_i X_i' \beta - \ln y_i!}</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>To maximize it, the first order condition is</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^N (y_i - \exp (X_i' \beta) )X_i'=0 </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>We can use Newton-Raphson or other optimization algorithms to find the solution for the first order condition.</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## QMLE Poisson</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Model</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>Note that in equation the equation above, if $X_i'$ includes a constant, then $(y_i - \exp (X_i' \beta) )$ sums to zero.  If ${\rm E} <span class="co">[</span><span class="ot">y_i|X_i</span><span class="co">]</span> = \exp (X_i' \beta)$, then the summation on the left-hand side has expectation of zero.  Hence the only specification needed to apply equation the equation above is the conditional expectation of $Y$ given $X$.  Even the data is not Poisson-distributed, the estimator by equation the equation above is still consistent.  Therefore, this estimator is called quasi<span class="sc">\_</span>ML (QML) Poisson estimator.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>Although the QML Poisson estimator is consistent under relatively weak condition, the regular variance estimator for the coefficients are not valid anymore.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>If a stronger assumption is made that the data follows a Poisson distribution, then the error term has a variance which equals to the mean of $Y$.  The estimator $\hat \beta_P$ (ML estimator) follows a normal distribution asymptotically with a variance matrix</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a> {\rm Var}_{ML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1}</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>On the other hand, the variance matrix for the  QML Poisson estimator $\hat \beta_{QML}$ is</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a> {\rm Var}_{QML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i')^{-1} (\sum_{i=1}^N \mu_i X_i X_i')^{-1}</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>where $\omega_i={\rm Var} <span class="co">[</span><span class="ot">y_i|X_i</span><span class="co">]</span> $ is the conditional variance of $y_i$.</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementation</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>Poisson estimation is implemented in almost every statistical package.</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>However, some of them may not work if you have a continuous dependent</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>variable.</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>Stata's implementation of Poisson model: "poisson" and "xtpoisson" do take</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>continuous dependent variable.  Note that standard errors reported</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>without any specification in "vce" will be likely downward biased.</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>Therefore, always use "robust" option at least.  Bootstrapped</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>standard errors are also preferred.  However, if you intend to use it</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>as QMLE-Poisson, standard errors need to be adjusted.  Those two</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>procedures do not adjust for standard errors.  A user-written program</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>called xtpqml calls for xtpoisson and it calculates robust standard</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>error which is suggested by Wooldridge (1999).</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed-effect Poisson model</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>We specify a panel data count model as:</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">y_{it} | \alpha_i, X_{it}</span><span class="co">]</span>= \alpha_i \exp(X'_{it} \beta) =</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>\exp(\gamma_i + X'_{it} \beta).</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>It turns out that for fixed-effect Poisson model, just like in linear</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>regression case, there is NO incidental parameter problem.  Poisson</span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>MLE is the same for conditional and unconditional likelihood.(See</span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>Cameron and Trivedi, 2005, Page 805).</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>Therefore, the coefficient estimates are the same for conditional or</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>unconditional fixed-effect Poisson model.  That is, in Stata,</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>"xtpoisson, fe" will return the same results as "xi: poisson</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>i.group", is the same as "xtpqml, fe".  The only difference is that</span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>"xtpqml, fe" returns "correct" standard errors for QMLE Poisson.</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>You can also calculate standard errors with the other commands, using</span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>clustered standard errors, or bootstrapped standard errors.</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>Conditional fixed effect negative binomial model is also possible to</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>be consistent for some specifications.  But Poisson fixed effect is</span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>more popular since it is QMLE.</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="fu">## Negative Binomial model</span></span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>The Poisson model has a restrictive property that the conditional</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>variance equals the conditional mean.  Often we'll see</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>"overdispersion", that is, the variance exceeds the mean, in real</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>data.  The negative binomial model is a generalization of poisson</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>model which allows for overdispersion by introducing an unobserved</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>heterogeneity term.  In a negative binomial model,</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>{\rm E} <span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=\mu \tau = e^{X' \beta} \cdot \tau</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>This extra $\tau$ term follows a $Gamma(\theta, \theta)$</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>distribution, with $E(\tau)=1$ and $Var (\tau)=1/\theta$.</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ and $\tau$, the distribution of $Y$ is still poisson:</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>{\rm Pr} <span class="co">[</span><span class="ot">Y=y | X, \tau</span><span class="co">]</span>=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ only, the distribution of $Y$ is negative binomial:</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>{\rm Pr} <span class="co">[</span><span class="ot">Y=y | X</span><span class="co">]</span>=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>  \Gamma(y+1) \Gamma(\theta) (\mu + \theta)^{\theta+y}}</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>This distribution still has conditional mean of $\mu$, but variance is</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>$\mu (1+(1/\theta) \mu)$.</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>When $\alpha=1/\theta$ approaches zero, the negative binomial model</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>converges to poisson model.</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models for truncated counts</span></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>In some situations, all we observe are non-zero counts, because of the</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>way data was collected.  For example, we only observe people's visits</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>to a park, only if they visit.  To model how many times they visit,</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>based on this kind of data set, we need to use zero-truncated count</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>models.</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>{\rm Pr} <span class="co">[</span><span class="ot">Y=y | y&gt;0, X</span><span class="co">]</span>=\frac{{\rm Pr} (y | X) }{{\rm Pr} (y&gt;0 | X)}=</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>\frac{{\rm Pr} (y | X)}{1- \exp (- \mu)} </span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>Thus we are modeling the counts given that we have a positive</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>outcome.  Both zero-truncated poisson ("ztp" in Stata) and</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>zero-truncated negative binomial ("ztnb" in Stata) are estimated by</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>Maximum-likelihood method.</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>We need to pay extra attention to the "over-dispersion" problem when</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>dealing with zero-truncated data.  When data is not truncated,</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>coefficients estimated by poisson model is consistent, even if data is</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>"overdispersed".  However, if we have zero-truncated sample, then</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>"over-dispersion" results in inconsistent coefficient estimation</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>(Grogger and Carson, 1991).  Therefore, "over-dispersion" needs to be</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>tested before using truncated poisson model or truncated negative</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>binomial model.</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a><span class="fu">## The hurdle regression model</span></span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>Although negative binomial model relaxes the assumption of equal mean</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>and variance, some researchers prefer modeling the process of</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>generating zeros differently from the process of generating other</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>values.  Suppose zero counts are generated by a binary process:</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>{\rm Pr} <span class="co">[</span><span class="ot">y=0 |  X</span><span class="co">]</span>=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>Positive counts are generated by a truncated count process.</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>In this model, zero is a "hurdle" to get past before reaching</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>positive counts.  The hurdle model is estimated by two separate</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>equations.  It is easy to estimate.  However, the marginal effect is</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>tricky to calculate, since and independent variable, if appearing in</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>both equations, will have effect through both equations.</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>{\rm E} (y | X) = <span class="co">[</span><span class="ot">\pi \times 0 </span><span class="co">]</span> + {(1-\pi) \times {\rm E} (y | y&gt;0,</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>  X) } = (1- \pi) \times {\rm E} (y | y&gt;0 , X)</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>In stata, there are commands such as "hplogit", which is a hurdle</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>model with first equation logit, and second equation truncated</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>poisson.  It is the same as two separate estimations; namely "logit"</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>first, then "ztp" on positive counts.</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>The difference between hurdle model and a Heckman selection model is</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>that in a Heckman model, two equations need to be jointly estimated.</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>There must be exclusion condition to make the selection</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>equation identifiable.  That is, the second stage equation need to</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>take account of the selection bias; therefore, some instrument for</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>selection is needed for the first stage equation.  On the other hand,</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>a hurdle model assumes that the two processes are separate; there is</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>no selection.</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Zero-inflated count models</span></span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>A zero-inflated count model also models two different processes.  One</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>is a binary process: generating zero or non-zeros.  The second one is</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>a count model.  Note there is a different between zero-inflated and</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>hurdle model:  In hurdle model, the second process is a truncated</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>count model (positive counts).  In a zero-inflated model, a zero can</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>come from either the binary process, or from the count process.</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>A second difference is that the estimation of zero-inflated model is a</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>joint estimation of the two processes.</span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>y_i \sim \left<span class="sc">\{</span></span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
+<span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>0 \  \mbox{with probability} \ \psi <span class="sc">\\</span>    g(y_i | X_i)   \mbox{with</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>  probability} \ 1- \psi</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a> \end{array} \right.</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>Then</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>P(Y_i=y_i | X_i, Z_i) = \left<span class="sc">\{</span></span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>\psi(\gamma' Z_i) + (1- \psi(\gamma' Z_i) ) g(0 | X_i)  \  \mbox{if} \ y_i=0 <span class="sc">\\</span>  (1- \psi(\gamma' Z_i) ) g(y_i | X_i)  \  \mbox{if} \ y_i&gt;0</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a> \end{array} \right.</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>This says that every non-zero observation follows a count process</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>$g(y_i|X_i)$. Every zero observation has two possible sources: from a</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>binary process (with probability $\psi(\gamma' Z_i)$) and from a count</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>process (with probability $1- \psi(\gamma' Z_i)$ into the count</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>process and then with probability of $g(0|X_i)$ to be a zero).  The</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>count process can be a Poisson process ("zip" in Stata) or a</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>Negative Binomial process ("zinb" in Stata).</span>
+<span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## An example of extra-zero count data model comparison</span></span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>http://hbs-rcs.github.io/blog/2014/09/17/poisson-models/</span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to interpret coefficients and calculate marginal effects in Discrete Choice Models</span></span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a><span class="fu">### Binary Response Models</span></span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>In a linear model</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>$$ y_i= X_i' \beta + \epsilon, $$</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>$$E(y_i) = X_i' \beta $$</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a> When $y_i$ is binary (meaning it takes two values, 1 or 0), We can also do an OLS regression on it, but a more popular way is to use a non-linear model.  The most popular choices for modeling binary response are logit model and probit model.  Both of them use the same idea: use a link function to map the binary variable into a continuous variable which is a linear function of the predictors.</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>Suppose $p_t$ is the probability that $y_i=1$.  Then</span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>$$p_i=E(y_i) = g^{-1}(X_i' \beta), $$</span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>where $g^{-1}()$ is a function that maps from the linear predictor to $y_i$, which is often called index function or inverse link function.</span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>This says that the expectation of $y_i$ (equivalently, $p_i$) is not a linear function of $x_i$'s, but by using the link function, we are still able to model a transformed $p_i$ as a linear function of $x_i$'s:</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>$$g(p_i) = X_i' \beta. $$</span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>$g^{-1}()$ can be a normal CDF then we have a probit model:</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {\rm exp} <span class="co">[</span><span class="ot">-(t^2/2)</span><span class="co">]</span> dt, $$</span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>or it can be a logit:</span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a><span class="fu">### Marginal Effects</span></span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>Often times we are interested in the marginal effects of the predictors.  In a linear model, it's easy: the coefficient on $x_1$ means when $x_1$ increase by one unit, how much will $y$ increase.</span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>In a binary response model,</span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}$$</span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>In the case of probit:</span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial x} = \frac{\partial \Phi (X_i'</span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>  \beta)}{\partial x} = \phi(X_i' \beta) \beta, $$</span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>where $\phi()$ is the density function of normal distribution.</span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>In the case of logit:</span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, $$</span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>where $\gamma()$ is the density function for logistic distribution:</span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>$$\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).$$</span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>Therefore for logit, it's easier to calculate the marginal effect from</span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a>coefficient estimate $\beta$, all you have to do is to plug in sample</span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>proportion mean $\bar p$ and coefficient estimate $\hat \beta$:</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>$$ \hat{ \frac{\partial p}{\partial x}} = \bar p (1- \bar p) \hat \beta $$</span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>The logit model can also be formulated as</span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>\log (\frac{p}{1-p})=\bf X_i' \beta</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>which says the logarithm of the odds (the ratio of the two</span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>probabilities) is equal to $\bf X_i' \beta$.  Therefore,</span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>p =\frac{\exp( X_i' \beta)}{1+\exp({\bf X}_t</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>\beta)}=\Lambda( X_i' \beta)</span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  What this question is can be formulated as:</span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>$$ E(p | x_1=1) - E(p | x_1=0). $$</span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a>In empirical analysis, it's often calculated by calculating the predicted probability by setting $x_1$ to 1 and by setting $x_1$ to 0.  Then calculate the difference.</span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a><span class="fu">### Count Data Models</span></span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>In a count data model such as Poisson regression model or Negative Binomial model, we are modeling log of the expected counts:</span>
+<span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>\log ({\rm E}( y) )=\bf X_i' \beta</span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a>Therefore the marginal effect of $x_1$, for example, on ${\rm E} (y)$ is</span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>$$ { \frac{\partial \log {\rm E} (y) }{\partial x}} = \hat \beta , $$</span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a>which means $\beta$ is the marginal effect of $x$ on $\log$ of the expected counts. Suppose the expected counts at $x$ is $\mu_{x}$, then</span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a>$$ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , $$</span>
+<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a>which says that $\beta$ represents the marginal effect of percentage change in $\mu_x$ with respect to $x$.</span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a>Another way to formulate this is to use the Incidence Rate Ratio Interpretation.  Suppose the expected counts at $x$ is $\mu_{x}$, and expected counts at $x+1$ is $\mu_{x+1}$.</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>$$  \log (\mu_x) = x' \beta. $$</span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>\mu_{x} = \exp (x' \beta),</span>
+<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>and</span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>\frac{\mu_{x+1}}{\mu_{x}} = \exp ( \beta).</span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>This says that the exponentiated $\beta$ is the incidence rate ratio of the expected counts, if $x$ increases by $1$.</span>
+<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>To calculate the marginal effect of $x$ on $y$ (or ${\rm E} (y)$), we need to calculate</span>
+<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a>$$\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , $$</span>
+<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a>if we evaluate $\mu_x$ at predicted value.</span>
+<span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a><span class="fu">### How to calculate marginal effects in Stata</span></span>
+<span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

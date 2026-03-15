@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>11&nbsp; Survival Models – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./dynamic-panel.html" rel="next">
+<link href="./panel-data.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./survival.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">index.html</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#survival-function" id="toc-survival-function" class="nav-link active" data-scroll-target="#survival-function"><span class="header-section-number">11.1</span> Survival function</a></li>
+  <li><a href="#hazard-function" id="toc-hazard-function" class="nav-link" data-scroll-target="#hazard-function"><span class="header-section-number">11.2</span> Hazard function</a></li>
+  <li><a href="#log-likelihood-function" id="toc-log-likelihood-function" class="nav-link" data-scroll-target="#log-likelihood-function"><span class="header-section-number">11.3</span> Log-likelihood function</a></li>
+  <li>
+<a href="#proportional-hazard-models" id="toc-proportional-hazard-models" class="nav-link" data-scroll-target="#proportional-hazard-models"><span class="header-section-number">11.4</span> Proportional Hazard Models</a>
+  <ul class="collapse">
+<li><a href="#model-and-likelihood" id="toc-model-and-likelihood" class="nav-link" data-scroll-target="#model-and-likelihood"><span class="header-section-number">11.4.1</span> Model and likelihood</a></li>
+  <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">11.4.2</span> Interpretation</a></li>
+  <li><a href="#example-in-r" id="toc-example-in-r" class="nav-link" data-scroll-target="#example-in-r"><span class="header-section-number">11.4.3</span> Example in R</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#discrete-time-survival-models" id="toc-discrete-time-survival-models" class="nav-link" data-scroll-target="#discrete-time-survival-models"><span class="header-section-number">11.5</span> Discrete-time Survival Models</a>
+  <ul class="collapse">
+<li><a href="#do-it-in-stata" id="toc-do-it-in-stata" class="nav-link" data-scroll-target="#do-it-in-stata"><span class="header-section-number">11.5.1</span> Do it in Stata</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Survival Models</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><section id="survival-function" class="level2" data-number="11.1"><h2 data-number="11.1" class="anchored" data-anchor-id="survival-function">
+<span class="header-section-number">11.1</span> Survival function</h2>
+<p>Survival analysis is also called time to event analysis or event history analysis. We use survival models to analyze data that have the following characteristics:</p>
+<ol type="1">
+<li>the dependent variable is the waiting time till the occurrence of some event;</li>
+<li>some observations are censored; that is, some units are not in the data set anymore for some reason before an event happens. For some units we observe the event and the exact waiting time; for others it has not occurred, and all we know is that the waiting time exceeds the observation time. However, we believe if they stayed in the study, sooner or later an event would happen.</li>
+<li>we are trying to explain (predict) the occurrence of an event with some predictors (explanatory variables).</li>
+</ol>
+<p>Let <span class="math inline">\(T\)</span> denote the time variable, a nonnegative, continuous random variable with PDF <span class="math inline">\(f(t)\)</span> and CDF <span class="math inline">\(F(t)\)</span>, where <span class="math inline">\(t\)</span> is a realization of <span class="math inline">\(T\)</span>. The survival function is defined by</p>
+<p><span class="math display">\[
+S(t) = Pr(T&gt;t) = 1-F(t)
+\]</span></p>
+<p>The graph of <span class="math inline">\(S(t)\)</span> against <span class="math inline">\(t\)</span> is known as the survival curve. If there is no censoring, then the survival function is easy to estimate by the ratio of number of units survives at <span class="math inline">\(t\)</span> vs.&nbsp;total number of units at risk at <span class="math inline">\(t\)</span>. The most common method to estimate the survival function with a survival data set containing censored observations is the Kaplan-Meier method. The basic idea is to use the product of a series of conditional probabilities.</p>
+<p>First sort the event times from the smallest to the largest:</p>
+<p><span class="math display">\[
+t_{(1)} \le t_{(2)} \le ... \le t_{(r)}
+\]</span></p>
+<p>Then the survival curve is estimated by:</p>
+<p><span class="math display">\[
+\hat S(t) = \prod_{j | t{(j)} \le t} (1-\frac{d_j}{r_j}),
+\]</span></p>
+<p>where <span class="math inline">\(r_j\)</span> is the number of units at risk at <span class="math inline">\(t_{(j)}\)</span> and <span class="math inline">\(d_j\)</span> is the number of “failure” or events at <span class="math inline">\(t_{(t)}\)</span>. Note that units censored at <span class="math inline">\(t_{(j)}\)</span> are included in <span class="math inline">\(r_j\)</span>.</p>
+<p>The variance of this estimator can be estimated by:</p>
+<p><span class="math display">\[
+\hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.
+\]</span></p>
+</section><section id="hazard-function" class="level2" data-number="11.2"><h2 data-number="11.2" class="anchored" data-anchor-id="hazard-function">
+<span class="header-section-number">11.2</span> Hazard function</h2>
+<p>We are often interested in which periods have the highest or lowest change of “death” or “failure” or other events. That is, we may be interested in the probability that a state ends between <span class="math inline">\(t\)</span> and <span class="math inline">\(t+
+\Delta t\)</span> conditional on having reached <span class="math inline">\(t\)</span> in the first place.</p>
+<p>The probability is <span class="math display">\[
+\mbox{Pr} (t&lt;T \leq t+\Delta t | T \geq t)=\frac{F(t+\Delta
+t)-F(t)}{S(t)}
+\]</span></p>
+<p>The hazard function is defined by <span class="math display">\[
+h(t)=\lim_{\Delta t \rightarrow 0}\mbox{Pr} (t&lt;T \leq t+\Delta t |
+T \geq t)=\frac{f(t)}{S(t)}=\frac{f(t)}{1-F(t)}
+\]</span></p>
+<p>One of the simplest functional forms is the exponential distribution <span class="math display">\[
+f(t,\theta)=\theta e^{-\theta t}
+\]</span></p>
+<p>Therefore, the hazard function is <span class="math display">\[
+h(t)=\theta
+\]</span></p>
+<p>A much more flexible functional form is Weibull <span class="math display">\[
+f(t,\theta, \alpha)=1-\exp(-(\theta t)^{\alpha}).
+\]</span></p>
+<p>Hazard function can be shown to be <span class="math display">\[
+h(t)=\alpha \theta^{\alpha} t^{\alpha-1}
+\]</span></p>
+<p>However, Weibull distribution does not allow for the possibility that the hazard may first increase then decrease over time. Log-normal distribution does allow this.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="davidson2.png" class="img-fluid figure-img"></p>
+<figcaption>Various hazard functions from Davidson and MacKinnon</figcaption></figure>
+</div>
+</section><section id="log-likelihood-function" class="level2" data-number="11.3"><h2 data-number="11.3" class="anchored" data-anchor-id="log-likelihood-function">
+<span class="header-section-number">11.3</span> Log-likelihood function</h2>
+<p>Suppose we have <span class="math inline">\(n\)</span> units with a survival function <span class="math inline">\(S(t)\)</span>, density <span class="math inline">\(f(t)\)</span>, and hazard <span class="math inline">\(h(t)\)</span>. If for unit <span class="math inline">\(i\)</span>, the event happens at <span class="math inline">\(t_i\)</span>, it’s contribution to the likelihood function is the density at that point:</p>
+<p><span class="math display">\[
+L_i=f(t_i)=S(t_i)h(t_i)
+\]</span></p>
+<p>If no event at <span class="math inline">\(t_i\)</span>, all we know is that the lifetime exceeds <span class="math inline">\(t_i\)</span>. The probability is <span class="math display">\[
+L_i=S(t_i),
+\]</span> which is the contribution to the likelihood function from a censored observation.</p>
+<p>Therefore, if <span class="math inline">\(U\)</span> denotes the set of uncensored observations, the log-likelihood function for the entire sample can be written as <span class="math display">\[
+\ell (t, \theta)=\sum_{i \in U} \log h(t_i | {\bf X}_i,
+\theta)+\sum_{i=1}^n \log S(t_i | {\bf X}_i, \theta)
+\]</span></p>
+</section><section id="proportional-hazard-models" class="level2" data-number="11.4"><h2 data-number="11.4" class="anchored" data-anchor-id="proportional-hazard-models">
+<span class="header-section-number">11.4</span> Proportional Hazard Models</h2>
+<section id="model-and-likelihood" class="level3" data-number="11.4.1"><h3 data-number="11.4.1" class="anchored" data-anchor-id="model-and-likelihood">
+<span class="header-section-number">11.4.1</span> Model and likelihood</h3>
+<p>One class of models that is quite widely used is the proportional hazard models (based on Cox (1972)). $$ h(t | {}_i)=h_0(t)({}’_i ),</p>
+<p>$$</p>
+<p>In this model <span class="math inline">\(h_0(t)\)</span> is called baseline hazard rate; it describes the risk for units with <span class="math inline">\(\bf x_i = 0\)</span>. <span class="math inline">\(\exp ({\bf x}'_i \beta)\)</span> represents the relative risk, a proportionate increase or decrease in risk, due to <span class="math inline">\(\bf x_i\)</span>. The interpretation of <span class="math inline">\(\beta\)</span> is that <span class="math inline">\(\exp(\beta_i)\)</span> gives the relative risk change associated with an increase of one unit in <span class="math inline">\(x_i\)</span>, all other explanatory variables remaining constant.</p>
+<p><span class="math inline">\(\beta\)</span> is estimated by maximizing a partial likelihood function. It is partial likelihood function since the baseline hazard is factored out. Suppose one event happens at time <span class="math inline">\(t_j\)</span>. Conditional on this event the probability that case <span class="math inline">\(i\)</span> dies (meaning this event happened to case <span class="math inline">\(i\)</span>, not other cases in the risk set) is</p>
+<p><span class="math display">\[
+L_i=\frac{h_0(t) \exp(x_i' \beta)} {\sum_l I(T_l \ge t) h_0(t) \exp(x_l' \beta)}=\frac{ \exp(x_i' \beta)} {\sum_l I(T_l \ge t)  \exp(x_l' \beta)}
+\]</span></p>
+<p>We can see here that Cox’s model is for continuous time survival data. It is assumed there is no ties at time <span class="math inline">\(t_j\)</span> (in continuous time is not possible for two events to happen at the same time). In reality, we observe ties of event time, because in many situations, we observe grouped data. For example, we observe case <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span> have events at the same time <span class="math inline">\(j\)</span>. In that case, in the denominator, whether we include case <span class="math inline">\(m\)</span> in the calculation of the likelihood of case <span class="math inline">\(n\)</span> is ambiguous. In that case, special treatment is needed. A standard approximation (Breslow and Peto) is to let</p>
+<p><span class="math display">\[
+L_{m \in D(t_j)} \simeq \frac{ \prod_{m \in D(t_j)} \exp(x_m' \beta)} {[\sum_{l \in R(t_j)} \exp(x_l' \beta)]^{d_j}}
+\]</span></p>
+<p>where <span class="math inline">\(D(t_j)\)</span> is the set of cases that die at time <span class="math inline">\(t_j\)</span> and <span class="math inline">\(d_j\)</span> denotes the number of cases that die at time <span class="math inline">\(t_j\)</span>. This approximation works well with small number of ties relative to total number of cases at risk.</p>
+<p>One important feature (disadvantage?) for the proportional hazard model is that for all units, the effect is the same at all time <span class="math inline">\(t\)</span>. To see this:</p>
+<p><span class="math display">\[
+\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({\bf x_1}'_i \beta)}{h_0(t)\exp ({\bf x_2}'_i \beta)}= \frac{\exp ({\bf x_1}'_i \beta)}{\exp ({\bf x_2}'_i \beta)},
+\]</span> which does not depend on <span class="math inline">\(t\)</span>.</p>
+<p>One advantage of Cox’s model is that it is considered as a semi-parametric model since it does not have to specify the distribution of the survival time. The estimation process relies only on the order in which events occur, not the exact time they occur. Parameter estimates are derived assuming continuous survival times.</p>
+</section><section id="interpretation" class="level3" data-number="11.4.2"><h3 data-number="11.4.2" class="anchored" data-anchor-id="interpretation">
+<span class="header-section-number">11.4.2</span> Interpretation</h3>
+<p>In equation the equation above, if we would like to calculate the partial effect of <span class="math inline">\(x_j\)</span> on <span class="math inline">\(h\)</span>, we have:</p>
+<p><span class="math display">\[
+\partial h(t | {\bf x}_i) / \partial x_j=h_0(t)\exp ({\bf x}'_i \beta) \beta_j = \beta_j h(t | {\bf x}_i),
+\]</span></p>
+<p>If we do it the other way, plug in <span class="math inline">\(x_j + 1\)</span> will generate</p>
+<p>$$ h_0(t)({}’_i + _j) = (_j) h(t|{}’_i )</p>
+<p>$$</p>
+<p>Therefore, one unit change in <span class="math inline">\(x_j\)</span> will have a change of <span class="math inline">\(1- \exp(\beta_j)\)</span> times the original hazard.</p>
+</section><section id="example-in-r" class="level3" data-number="11.4.3"><h3 data-number="11.4.3" class="anchored" data-anchor-id="example-in-r">
+<span class="header-section-number">11.4.3</span> Example in R</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sinhrks/ggfortify">ggfortify</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival">survival</a></span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survfit.html">survfit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span>, data <span class="op">=</span> <span class="va">lung</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="survival_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Censored observations are denoted by crosses. This is the so-called Kaplan-Meier curve.</p>
+<p>Now let’s do a Cox model example.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html">coxph</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">lung</span>, method<span class="op">=</span><span class="st">"breslow"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Call:
+coxph(formula = Surv(time, status) ~ sex + age, data = lung, 
+    method = "breslow")
+
+  n= 228, number of events= 165 
+
+         coef exp(coef)  se(coef)      z Pr(&gt;|z|)   
+sex -0.512565  0.598957  0.167462 -3.061  0.00221 **
+age  0.017013  1.017158  0.009222  1.845  0.06506 . 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+    exp(coef) exp(-coef) lower .95 upper .95
+sex     0.599     1.6696    0.4314    0.8316
+age     1.017     0.9831    0.9989    1.0357
+
+Concordance= 0.603  (se = 0.025 )
+Likelihood ratio test= 14.08  on 2 df,   p=9e-04
+Wald test            = 13.44  on 2 df,   p=0.001
+Score (logrank) test = 13.69  on 2 df,   p=0.001</code></pre>
+</div>
+</div>
+<p>Examples of parametric survival models: exponential, Weibull, or loglog:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">exp</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survreg.html">survreg</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">lung</span>, dist<span class="op">=</span><span class="st">"exponential"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">exp</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+survreg(formula = Surv(time, status) ~ sex + age, data = lung, 
+    dist = "exponential")
+               Value Std. Error     z      p
+(Intercept)  6.35967    0.63547 10.01 &lt;2e-16
+sex          0.48093    0.16709  2.88  0.004
+age         -0.01562    0.00911 -1.72  0.086
+
+Scale fixed at 1 
+
+Exponential distribution
+Loglik(model)= -1156.1   Loglik(intercept only)= -1162.3
+    Chisq= 12.48 on 2 degrees of freedom, p= 0.002 
+Number of Newton-Raphson Iterations: 4 
+n= 228 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">weibull</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survreg.html">survreg</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">lung</span>, dist<span class="op">=</span><span class="st">"weibull"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">weibull</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+survreg(formula = Surv(time, status) ~ sex + age, data = lung, 
+    dist = "weibull")
+               Value Std. Error     z       p
+(Intercept)  6.27485    0.48137 13.04 &lt; 2e-16
+sex          0.38209    0.12748  3.00  0.0027
+age         -0.01226    0.00696 -1.76  0.0781
+Log(scale)  -0.28230    0.06188 -4.56 5.1e-06
+
+Scale= 0.754 
+
+Weibull distribution
+Loglik(model)= -1147.1   Loglik(intercept only)= -1153.9
+    Chisq= 13.59 on 2 degrees of freedom, p= 0.0011 
+Number of Newton-Raphson Iterations: 5 
+n= 228 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">loglog</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/pkg/survival/man/survreg.html">survreg</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">sex</span> <span class="op">+</span> <span class="va">age</span>, data <span class="op">=</span> <span class="va">lung</span>, dist<span class="op">=</span><span class="st">"loglogistic"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">loglog</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+survreg(formula = Surv(time, status) ~ sex + age, data = lung, 
+    dist = "loglogistic")
+               Value Std. Error     z       p
+(Intercept)  5.92232    0.53269 11.12 &lt; 2e-16
+sex          0.47751    0.14036  3.40 0.00067
+age         -0.01401    0.00771 -1.82 0.06946
+Log(scale)  -0.56991    0.06543 -8.71 &lt; 2e-16
+
+Scale= 0.566 
+
+Log logistic distribution
+Loglik(model)= -1152.9   Loglik(intercept only)= -1160.9
+    Chisq= 16.07 on 2 degrees of freedom, p= 0.00032 
+Number of Newton-Raphson Iterations: 4 
+n= 228 </code></pre>
+</div>
+</div>
+</section></section><section id="discrete-time-survival-models" class="level2" data-number="11.5"><h2 data-number="11.5" class="anchored" data-anchor-id="discrete-time-survival-models">
+<span class="header-section-number">11.5</span> Discrete-time Survival Models</h2>
+<p>Cox (1972) proposed a discrete-time model by modeling the odds of dying at time <span class="math inline">\(t_j\)</span> given survival up to that point.</p>
+<p><span class="math display">\[
+\frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j | {\bf x}_i)}{1- h_0(t_j | {\bf x}_i)} \exp({\bf x}'_i \beta),
+\]</span> which is similar to Cox’s proportion hazard model for continuous time. If we take logs on both sides, we have</p>
+<p><span class="math display">\[
+{\rm logit} (h(t_j | {\bf x}_i)) = \alpha_j +  {\bf x}'_i \beta,
+\]</span> This looks very similar to a logit model. In fact, we can fit a discrete-time proportional hazard model by running a logistic regression on a set of pseudo observations generated by “filling in” the observations between the start time to the event time or time at the end of the study period (censored). The outcome of this process is 0 unless there is an event, then it turns 1. It is treated as independent Bernoulli observations with probability given by hazard <span class="math inline">\(h_{ij}\)</span> for individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t_j\)</span>. The likelihood function for the discrete-time survival model coincide with the binomial likelihood of independent binomial process (Singer and Willett, 1993, has more details).</p>
+<section id="do-it-in-stata" class="level3" data-number="11.5.1"><h3 data-number="11.5.1" class="anchored" data-anchor-id="do-it-in-stata">
+<span class="header-section-number">11.5.1</span> Do it in Stata</h3>
+<p>To do a discrete-time survival model in Stata, your data set needs to be set up as by unit-time. For example, observations by company month. The event (or failure) variable needs to be set to zero until the event happens. If no event until the end of the study period, then it is censored. A data set by unit-time can be analyzed by logit model, optionally with clustered standard error. To set up a structure like this, user-written programs called <span class="math inline">\(dthaz\)</span> and <span class="math inline">\(prsnperd\)</span> (means person-period) can be used.</p>
+<p>To do a continuous-time survival model in Stata, your data can be either set up as discrete-time case (in which case you can use a time-varying explanatory variable) or a single-record-per-person data set. Stata has built-in command <span class="math inline">\(stset\)</span> to set up a survival analysis structure. Then you can run <span class="math inline">\(stcox\)</span> for Cox’s proportional hazard model.</p>
+
+
+<!-- -->
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./panel-data.html" class="pagination-link" aria-label="Panel Data Models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./dynamic-panel.html" class="pagination-link" aria-label="Dynamic Panel Data">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Survival Models</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Survival function</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>Survival analysis is also called time to event analysis or event</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>history analysis.  We use survival models to analyze data that have the following characteristics:</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>the dependent variable is the waiting time till the occurrence of some event;</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>some observations are censored; that is, some units are not in the data set anymore for some reason before an event happens.  For some units we observe the event and the exact waiting time; for others it has not occurred, and all we know is that the waiting time exceeds the observation time.  However, we believe if they stayed in the study, sooner or later an event would happen.</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>we are trying to explain (predict) the occurrence of an event with some predictors (explanatory variables).</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>Let $T$ denote the time variable, a nonnegative, continuous</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>random variable with PDF $f(t)$ and CDF $F(t)$, where $t$ is a</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>realization of $T$.  The survival function is defined by</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>S(t) = Pr(T&gt;t) = 1-F(t)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>The graph of $S(t)$ against $t$ is known as the survival curve.  If</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>there is no censoring, then the survival function is easy to estimate</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>by the ratio of number of units survives at $t$ vs. total number of</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>units at risk at $t$.  The most common method to estimate the survival</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>function with a survival data set containing censored observations is</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>the Kaplan-Meier method.  The basic idea is to use the product of a series of conditional probabilities.</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>First sort the event times from the smallest to the largest:</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>t_{(1)} \le t_{(2)} \le ... \le t_{(r)}</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>Then the survival curve is estimated by:</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>\hat S(t) = \prod_{j | t{(j)} \le t} (1-\frac{d_j}{r_j}),</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>where $r_j$ is the number of units at risk at $t_{(j)}$ and $d_j$ is</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>the number of "failure" or events at $t_{(t)}$.  Note that units</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>censored at $t_{(j)}$ are included in $r_j$.</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>The variance of this estimator can be estimated by:</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>\hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a><span class="fu">## Hazard function</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a>We are often interested in which periods have the highest or lowest</span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a>change of "death" or "failure" or other events.  That is, we may</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a>be interested in the probability that a state ends between $t$ and $t+</span>
+<span id="cb10-68"><a href="#cb10-68" aria-hidden="true" tabindex="-1"></a>\Delta t$ conditional on having reached $t$ in the first place.</span>
+<span id="cb10-69"><a href="#cb10-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-70"><a href="#cb10-70" aria-hidden="true" tabindex="-1"></a>The probability is</span>
+<span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>\mbox{Pr} (t<span class="dt">&lt;</span><span class="kw">T</span><span class="ot"> </span><span class="er">\</span><span class="ot">leq t</span><span class="er">+\</span><span class="ot">Delta t </span><span class="er">|</span><span class="ot"> T </span><span class="er">\</span><span class="ot">geq t)</span><span class="op">=</span><span class="st">\frac{F(t+\Delta</span></span>
+<span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="ot">t)-F(t)</span><span class="er">}{</span><span class="ot">S(t)</span><span class="er">}</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="ot">The hazard function is defined by</span></span>
+<span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\lim_{\Delta</span><span class="ot"> t </span><span class="er">\</span><span class="ot">rightarrow </span><span class="er">0}\</span><span class="ot">mbox</span><span class="er">{</span><span class="ot">Pr</span><span class="er">}</span><span class="ot"> (t</span><span class="er">&lt;</span><span class="ot">T </span><span class="er">\</span><span class="ot">leq t</span><span class="er">+\</span><span class="ot">Delta t </span><span class="er">|</span></span>
+<span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="ot">T </span><span class="er">\</span><span class="ot">geq t)</span><span class="op">=</span><span class="st">\frac{f(t)}{S(t)}</span><span class="er">=</span><span class="st">\frac{f(t)}{1-F(t)}</span></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="ot">One of the simplest functional forms is the exponential</span></span>
+<span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="ot">distribution</span></span>
+<span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="ot">f(t</span><span class="er">,\</span><span class="ot">theta)</span><span class="op">=</span><span class="st">\theta</span><span class="ot"> e</span><span class="er">^{-\</span><span class="ot">theta t</span><span class="er">}</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> the hazard function is</span></span>
+<span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\theta</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="ot">A much more flexible functional form is Weibull</span></span>
+<span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="ot">f(t</span><span class="er">,\</span><span class="ot">theta</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">alpha)</span><span class="op">=</span><span class="st">1-\exp(-(\theta</span><span class="ot"> t)</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}).</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a><span class="ot">Hazard function can be shown to be</span></span>
+<span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\alpha</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}</span><span class="ot"> t</span><span class="er">^{\</span><span class="ot">alpha-1</span><span class="er">}</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="ot">However</span><span class="er">,</span><span class="ot"> Weibull distribution does not allow for the possibility</span></span>
+<span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="ot">that the hazard may first increase then decrease over time.</span></span>
+<span id="cb10-105"><a href="#cb10-105" aria-hidden="true" tabindex="-1"></a><span class="ot">Log-normal distribution does allow this.</span></span>
+<span id="cb10-106"><a href="#cb10-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-107"><a href="#cb10-107" aria-hidden="true" tabindex="-1"></a><span class="er">!</span><span class="ot">[Various hazard functions from Davidson and MacKinnon](davidson2.png)</span></span>
+<span id="cb10-108"><a href="#cb10-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-109"><a href="#cb10-109" aria-hidden="true" tabindex="-1"></a><span class="ot">## Log-likelihood function</span></span>
+<span id="cb10-110"><a href="#cb10-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-111"><a href="#cb10-111" aria-hidden="true" tabindex="-1"></a><span class="ot">Suppose we have </span><span class="er">$</span><span class="ot">n</span><span class="er">$</span><span class="ot"> units with a survival function </span><span class="er">$</span><span class="ot">S(t)</span><span class="er">$,</span><span class="ot"> density </span><span class="er">$</span><span class="ot">f(t)</span><span class="er">$,</span><span class="ot"> and hazard </span><span class="er">$</span><span class="ot">h(t)</span><span class="er">$.</span></span>
+<span id="cb10-112"><a href="#cb10-112" aria-hidden="true" tabindex="-1"></a><span class="ot">If for unit </span><span class="er">$</span><span class="ot">i</span><span class="er">$,</span><span class="ot"> the event happens at </span><span class="er">$</span><span class="ot">t_i</span><span class="er">$,</span><span class="ot"> it</span><span class="er">'</span><span class="ot">s contribution to the likelihood function is the density at that point:</span></span>
+<span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">f(t_i)</span><span class="er">=</span><span class="st">S(t_i)h(t_i)</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="ot">If no event at </span><span class="er">$</span><span class="ot">t_i</span><span class="er">$,</span><span class="ot"> all we know is that the lifetime exceeds </span><span class="er">$</span><span class="ot">t_i</span><span class="er">$.</span><span class="ot">  The probability is</span></span>
+<span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">S(t_i),</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a><span class="ot">which is the contribution to the likelihood function from a censored</span></span>
+<span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="ot">observation.</span></span>
+<span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> if </span><span class="er">$</span><span class="ot">U</span><span class="er">$</span><span class="ot"> denotes the set of uncensored observations</span><span class="er">,</span><span class="ot"> the</span></span>
+<span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="ot">log-likelihood function for the entire sample can be written as</span></span>
+<span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">ell (t</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span><span class="op">=</span><span class="st">\sum_{i</span><span class="ot"> </span><span class="er">\</span><span class="ot">in U</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">log h(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf X</span><span class="er">}</span><span class="ot">_i</span><span class="er">,</span></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">theta)</span><span class="er">+\</span><span class="ot">sum_</span><span class="er">{</span><span class="ot">i</span><span class="op">=</span><span class="st">1}^n</span><span class="ot"> </span><span class="er">\</span><span class="ot">log S(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf X</span><span class="er">}</span><span class="ot">_i</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="ot">## Proportional Hazard Models</span></span>
+<span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-135"><a href="#cb10-135" aria-hidden="true" tabindex="-1"></a><span class="ot">### Model and likelihood</span></span>
+<span id="cb10-136"><a href="#cb10-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a><span class="ot">One class of models that is quite widely used is the proportional</span></span>
+<span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="ot">hazard models (based on Cox (1972)).</span></span>
+<span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="ot">In this model </span><span class="er">$</span><span class="ot">h_0(t)</span><span class="er">$</span><span class="ot"> is called baseline hazard rate</span><span class="er">;</span><span class="ot"> it describes</span></span>
+<span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="ot">the risk for units with </span><span class="er">$\</span><span class="ot">bf x_i </span><span class="op">=</span> <span class="st">0$.</span><span class="ot"> </span><span class="er">$\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">$</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="ot">represents the relative risk</span><span class="er">,</span><span class="ot"> a proportionate increase or decrease in</span></span>
+<span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="ot">risk</span><span class="er">,</span><span class="ot"> due to </span><span class="er">$\</span><span class="ot">bf x_i</span><span class="er">$.</span><span class="ot">  The interpretation of </span><span class="er">$\</span><span class="ot">beta</span><span class="er">$</span><span class="ot"> is that</span></span>
+<span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="er">$\</span><span class="ot">exp(</span><span class="er">\</span><span class="ot">beta_i)</span><span class="er">$</span><span class="ot"> gives the relative risk change associated with an</span></span>
+<span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a><span class="ot">increase of one unit in </span><span class="er">$</span><span class="ot">x_i</span><span class="er">$,</span><span class="ot"> all other explanatory variables remaining</span></span>
+<span id="cb10-150"><a href="#cb10-150" aria-hidden="true" tabindex="-1"></a><span class="ot">constant.</span></span>
+<span id="cb10-151"><a href="#cb10-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-152"><a href="#cb10-152" aria-hidden="true" tabindex="-1"></a><span class="er">$\</span><span class="ot">beta</span><span class="er">$</span><span class="ot"> is estimated by maximizing a partial likelihood function.  It</span></span>
+<span id="cb10-153"><a href="#cb10-153" aria-hidden="true" tabindex="-1"></a><span class="ot">is partial likelihood function since the baseline hazard is factored</span></span>
+<span id="cb10-154"><a href="#cb10-154" aria-hidden="true" tabindex="-1"></a><span class="ot">out.  Suppose one event happens at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$.</span><span class="ot">  Conditional on this</span></span>
+<span id="cb10-155"><a href="#cb10-155" aria-hidden="true" tabindex="-1"></a><span class="ot">event the probability that case </span><span class="er">$</span><span class="ot">i</span><span class="er">$</span><span class="ot"> dies (meaning this event happened</span></span>
+<span id="cb10-156"><a href="#cb10-156" aria-hidden="true" tabindex="-1"></a><span class="ot">to case </span><span class="er">$</span><span class="ot">i</span><span class="er">$,</span><span class="ot"> not other cases in the risk set) is</span></span>
+<span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">\frac{h_0(t)</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_i</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{\</span><span class="ot">sum_l I(T_l </span><span class="er">\</span><span class="ot">ge t) h_0(t) </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="op">=</span><span class="st">\frac{</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_i</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{\</span><span class="ot">sum_l I(T_l </span><span class="er">\</span><span class="ot">ge t)  </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span></span>
+<span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a><span class="ot">We can see here that Cox</span><span class="er">'</span><span class="ot">s model is for continuous time survival data.</span></span>
+<span id="cb10-164"><a href="#cb10-164" aria-hidden="true" tabindex="-1"></a><span class="ot">It is assumed there is no ties at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$</span><span class="ot"> (in continuous time is</span></span>
+<span id="cb10-165"><a href="#cb10-165" aria-hidden="true" tabindex="-1"></a><span class="ot">not possible for two events to happen at the same time).  In reality</span><span class="er">,</span></span>
+<span id="cb10-166"><a href="#cb10-166" aria-hidden="true" tabindex="-1"></a><span class="ot">we observe ties of event time</span><span class="er">,</span><span class="ot"> because in many situations</span><span class="er">,</span><span class="ot"> we observe</span></span>
+<span id="cb10-167"><a href="#cb10-167" aria-hidden="true" tabindex="-1"></a><span class="ot">grouped data.  For example</span><span class="er">,</span><span class="ot"> we observe case </span><span class="er">$</span><span class="ot">m</span><span class="er">$</span><span class="ot"> and </span><span class="er">$</span><span class="ot">n</span><span class="er">$</span><span class="ot"> have events at</span></span>
+<span id="cb10-168"><a href="#cb10-168" aria-hidden="true" tabindex="-1"></a><span class="ot">the same time </span><span class="er">$</span><span class="ot">j</span><span class="er">$.</span><span class="ot">  In that case</span><span class="er">,</span><span class="ot"> in the denominator</span><span class="er">,</span><span class="ot"> whether we include</span></span>
+<span id="cb10-169"><a href="#cb10-169" aria-hidden="true" tabindex="-1"></a><span class="ot">case </span><span class="er">$</span><span class="ot">m</span><span class="er">$</span><span class="ot"> in the calculation of the likelihood of case </span><span class="er">$</span><span class="ot">n</span><span class="er">$</span><span class="ot"> is</span></span>
+<span id="cb10-170"><a href="#cb10-170" aria-hidden="true" tabindex="-1"></a><span class="ot">ambiguous.  In that case</span><span class="er">,</span><span class="ot"> special treatment is needed.  A standard</span></span>
+<span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a><span class="ot">approximation (Breslow and Peto) is to let</span></span>
+<span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a><span class="ot">L_</span><span class="er">{</span><span class="ot">m </span><span class="er">\</span><span class="ot">in D(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">simeq </span><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot"> </span><span class="er">\</span><span class="ot">prod_</span><span class="er">{</span><span class="ot">m </span><span class="er">\</span><span class="ot">in D(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_m</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{</span><span class="ot">[</span><span class="er">\</span><span class="ot">sum_</span><span class="er">{</span><span class="ot">l </span><span class="er">\</span><span class="ot">in R(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)]</span><span class="er">^{</span><span class="ot">d_j</span><span class="er">}}</span></span>
+<span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="ot">where </span><span class="er">$</span><span class="ot">D(t_j)</span><span class="er">$</span><span class="ot"> is the set of cases that die at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$</span><span class="ot"> and </span><span class="er">$</span><span class="ot">d_j</span><span class="er">$</span></span>
+<span id="cb10-178"><a href="#cb10-178" aria-hidden="true" tabindex="-1"></a><span class="ot">denotes the number of cases that die at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$.</span><span class="ot">  This</span></span>
+<span id="cb10-179"><a href="#cb10-179" aria-hidden="true" tabindex="-1"></a><span class="ot">approximation works well with small number of ties relative to total</span></span>
+<span id="cb10-180"><a href="#cb10-180" aria-hidden="true" tabindex="-1"></a><span class="ot">number of cases at risk.</span></span>
+<span id="cb10-181"><a href="#cb10-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-182"><a href="#cb10-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-183"><a href="#cb10-183" aria-hidden="true" tabindex="-1"></a><span class="ot">One important feature (disadvantage</span><span class="er">?)</span><span class="ot"> for the proportional hazard</span></span>
+<span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a><span class="ot">model is that for all units</span><span class="er">,</span><span class="ot"> the effect is the same at all time </span><span class="er">$</span><span class="ot">t</span><span class="er">$.</span></span>
+<span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a><span class="ot">To see this:</span></span>
+<span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h_1(t)</span><span class="er">}{</span><span class="ot">h_2(t)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x_1</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{</span><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x_2</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="op">=</span> <span class="st">\frac{\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x_1</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x_2</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">},</span></span>
+<span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a><span class="ot">which does not depend on </span><span class="er">$</span><span class="ot">t</span><span class="er">$.</span></span>
+<span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-192"><a href="#cb10-192" aria-hidden="true" tabindex="-1"></a><span class="ot">One advantage of Cox</span><span class="er">'</span><span class="ot">s model is that it is considered as a</span></span>
+<span id="cb10-193"><a href="#cb10-193" aria-hidden="true" tabindex="-1"></a><span class="ot">semi-parametric model since it does not have to specify the</span></span>
+<span id="cb10-194"><a href="#cb10-194" aria-hidden="true" tabindex="-1"></a><span class="ot">distribution of the survival time.  The estimation process relies only</span></span>
+<span id="cb10-195"><a href="#cb10-195" aria-hidden="true" tabindex="-1"></a><span class="ot">on the order in which events occur</span><span class="er">,</span><span class="ot"> not the exact time they occur.</span></span>
+<span id="cb10-196"><a href="#cb10-196" aria-hidden="true" tabindex="-1"></a><span class="ot">Parameter estimates are derived assuming continuous survival times.</span></span>
+<span id="cb10-197"><a href="#cb10-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-198"><a href="#cb10-198" aria-hidden="true" tabindex="-1"></a><span class="ot">### Interpretation</span></span>
+<span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a><span class="ot">In equation the equation above</span><span class="er">,</span><span class="ot"> if we would like to calculate the partial effect of </span><span class="er">$</span><span class="ot">x_j</span><span class="er">$</span><span class="ot"> on </span><span class="er">$</span><span class="ot">h</span><span class="er">$,</span><span class="ot"> we have:</span></span>
+<span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">partial h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i) </span><span class="er">/</span><span class="ot"> </span><span class="er">\</span><span class="ot">partial x_j</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta) </span><span class="er">\</span><span class="ot">beta_j </span><span class="op">=</span> <span class="st">\beta_j</span><span class="ot"> h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">,</span></span>
+<span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a><span class="ot">If we do it the other way</span><span class="er">,</span><span class="ot"> plug in </span><span class="er">$</span><span class="ot">x_j </span><span class="er">+</span><span class="ot"> </span><span class="er">1$</span><span class="ot"> will generate</span></span>
+<span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta </span><span class="er">+</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta_j) </span><span class="op">=</span> <span class="st">\exp</span><span class="ot"> (</span><span class="er">\</span><span class="ot">beta_j) h(t</span><span class="er">|{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span></span>
+<span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> one unit change in </span><span class="er">$</span><span class="ot">x_j</span><span class="er">$</span><span class="ot"> will have a change of </span><span class="er">$1-</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(</span><span class="er">\</span><span class="ot">beta_j)</span><span class="er">$</span><span class="ot"> times the original hazard.</span></span>
+<span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a><span class="ot">### Example in R</span></span>
+<span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-220"><a href="#cb10-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-221"><a href="#cb10-221" aria-hidden="true" tabindex="-1"></a><span class="ot">library(ggfortify)</span></span>
+<span id="cb10-222"><a href="#cb10-222" aria-hidden="true" tabindex="-1"></a><span class="ot">library(survival)</span></span>
+<span id="cb10-223"><a href="#cb10-223" aria-hidden="true" tabindex="-1"></a><span class="ot">fit </span><span class="er">&lt;-</span><span class="ot"> survfit(Surv(time</span><span class="er">,</span><span class="ot"> status) </span><span class="er">~</span><span class="ot"> sex</span><span class="er">,</span><span class="ot"> data </span><span class="op">=</span> <span class="st">lung)</span></span>
+<span id="cb10-224"><a href="#cb10-224" aria-hidden="true" tabindex="-1"></a><span class="ot">autoplot(fit)</span></span>
+<span id="cb10-225"><a href="#cb10-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-226"><a href="#cb10-226" aria-hidden="true" tabindex="-1"></a><span class="er">```</span></span>
+<span id="cb10-227"><a href="#cb10-227" aria-hidden="true" tabindex="-1"></a><span class="ot">Censored observations are denoted by crosses.  This is the so-called Kaplan-Meier curve.</span></span>
+<span id="cb10-228"><a href="#cb10-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-229"><a href="#cb10-229" aria-hidden="true" tabindex="-1"></a><span class="ot">Now let</span><span class="er">'</span><span class="ot">s do a Cox model example.</span></span>
+<span id="cb10-230"><a href="#cb10-230" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-233"><a href="#cb10-233" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-234"><a href="#cb10-234" aria-hidden="true" tabindex="-1"></a><span class="ot">fit2 </span><span class="er">&lt;-</span><span class="ot"> coxph(Surv(time</span><span class="er">,</span><span class="ot"> status) </span><span class="er">~</span><span class="ot"> sex </span><span class="er">+</span><span class="ot"> age</span><span class="er">,</span><span class="ot"> data </span><span class="op">=</span> <span class="st">lung,</span><span class="ot"> method</span><span class="op">=</span><span class="st">"breslow"</span><span class="er">)</span></span>
+<span id="cb10-235"><a href="#cb10-235" aria-hidden="true" tabindex="-1"></a><span class="ot">summary(fit2)</span></span>
+<span id="cb10-236"><a href="#cb10-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-237"><a href="#cb10-237" aria-hidden="true" tabindex="-1"></a><span class="er">```</span></span>
+<span id="cb10-238"><a href="#cb10-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-239"><a href="#cb10-239" aria-hidden="true" tabindex="-1"></a><span class="ot">Examples of parametric survival models: exponential</span><span class="er">,</span><span class="ot"> Weibull</span><span class="er">,</span><span class="ot"> or loglog:</span></span>
+<span id="cb10-240"><a href="#cb10-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-243"><a href="#cb10-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb10-244"><a href="#cb10-244" aria-hidden="true" tabindex="-1"></a><span class="ot">exp </span><span class="er">&lt;-</span><span class="ot">  survreg(Surv(time</span><span class="er">,</span><span class="ot"> status) </span><span class="er">~</span><span class="ot"> sex </span><span class="er">+</span><span class="ot"> age</span><span class="er">,</span><span class="ot"> data </span><span class="op">=</span> <span class="st">lung,</span><span class="ot"> dist</span><span class="op">=</span><span class="st">"exponential"</span><span class="er">)</span></span>
+<span id="cb10-245"><a href="#cb10-245" aria-hidden="true" tabindex="-1"></a><span class="ot">summary(exp)</span></span>
+<span id="cb10-246"><a href="#cb10-246" aria-hidden="true" tabindex="-1"></a><span class="ot">weibull </span><span class="er">&lt;-</span><span class="ot">  survreg(Surv(time</span><span class="er">,</span><span class="ot"> status) </span><span class="er">~</span><span class="ot"> sex </span><span class="er">+</span><span class="ot"> age</span><span class="er">,</span><span class="ot"> data </span><span class="op">=</span> <span class="st">lung,</span><span class="ot"> dist</span><span class="op">=</span><span class="st">"weibull"</span><span class="er">)</span></span>
+<span id="cb10-247"><a href="#cb10-247" aria-hidden="true" tabindex="-1"></a><span class="ot">summary(weibull)</span></span>
+<span id="cb10-248"><a href="#cb10-248" aria-hidden="true" tabindex="-1"></a><span class="ot">loglog </span><span class="er">&lt;-</span><span class="ot">  survreg(Surv(time</span><span class="er">,</span><span class="ot"> status) </span><span class="er">~</span><span class="ot"> sex </span><span class="er">+</span><span class="ot"> age</span><span class="er">,</span><span class="ot"> data </span><span class="op">=</span> <span class="st">lung,</span><span class="ot"> dist</span><span class="op">=</span><span class="st">"loglogistic"</span><span class="er">)</span></span>
+<span id="cb10-249"><a href="#cb10-249" aria-hidden="true" tabindex="-1"></a><span class="ot">summary(loglog)</span></span>
+<span id="cb10-250"><a href="#cb10-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-251"><a href="#cb10-251" aria-hidden="true" tabindex="-1"></a><span class="er">```</span></span>
+<span id="cb10-252"><a href="#cb10-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-253"><a href="#cb10-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-254"><a href="#cb10-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-255"><a href="#cb10-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-256"><a href="#cb10-256" aria-hidden="true" tabindex="-1"></a><span class="ot">## Discrete-time Survival Models</span></span>
+<span id="cb10-257"><a href="#cb10-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-258"><a href="#cb10-258" aria-hidden="true" tabindex="-1"></a><span class="ot">Cox (1972)  proposed a discrete-time model by modeling the odds of dying at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$</span><span class="ot"> given survival up to that point.</span></span>
+<span id="cb10-259"><a href="#cb10-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-260"><a href="#cb10-260" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-261"><a href="#cb10-261" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}{1-</span><span class="ot"> h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t_j</span><span class="ot"> </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}{1-</span><span class="ot"> h_0(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
+<span id="cb10-262"><a href="#cb10-262" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-263"><a href="#cb10-263" aria-hidden="true" tabindex="-1"></a><span class="ot">which is similar to Cox</span><span class="er">'</span><span class="ot">s proportion hazard model for continuous time.  If we take logs on both sides</span><span class="er">,</span><span class="ot"> we have</span></span>
+<span id="cb10-264"><a href="#cb10-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-265"><a href="#cb10-265" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a><span class="er">{\</span><span class="ot">rm logit</span><span class="er">}</span><span class="ot"> (h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)) </span><span class="op">=</span> <span class="st">\alpha_j</span><span class="ot"> </span><span class="er">+</span><span class="ot">  </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta</span><span class="er">,</span></span>
+<span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a><span class="ot">This looks very similar to a logit model.  In fact</span><span class="er">,</span><span class="ot"> we can fit a</span></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="ot">discrete-time proportional hazard model by running a logistic</span></span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a><span class="ot">regression on a set of pseudo observations generated by </span><span class="er">"</span><span class="ot">filling in</span><span class="er">"</span></span>
+<span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a><span class="ot">the observations between the start time to the event time or time at</span></span>
+<span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a><span class="ot">the end of the study period (censored).  The outcome of this process</span></span>
+<span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a><span class="ot">is </span><span class="er">0</span><span class="ot"> unless there is an event</span><span class="er">,</span><span class="ot"> then it turns </span><span class="er">1.</span><span class="ot">  It is treated as</span></span>
+<span id="cb10-274"><a href="#cb10-274" aria-hidden="true" tabindex="-1"></a><span class="ot">independent Bernoulli observations with probability given by hazard</span></span>
+<span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a><span class="er">$</span><span class="ot">h_</span><span class="er">{</span><span class="ot">ij</span><span class="er">}$</span><span class="ot"> for individual </span><span class="er">$</span><span class="ot">i</span><span class="er">$</span><span class="ot"> at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$.</span><span class="ot">  The likelihood function</span></span>
+<span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a><span class="ot">for the discrete-time survival model coincide with the binomial</span></span>
+<span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a><span class="ot">likelihood of independent binomial process (Singer and Willett</span><span class="er">,</span><span class="ot"> </span><span class="er">1993,</span><span class="ot"> has more details).</span></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="ot">### Do it in Stata</span></span>
+<span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a><span class="ot">To do a discrete-time survival model in Stata</span><span class="er">,</span><span class="ot"> your data set needs to</span></span>
+<span id="cb10-283"><a href="#cb10-283" aria-hidden="true" tabindex="-1"></a><span class="ot">be set up as by unit-time.  For example</span><span class="er">,</span><span class="ot"> observations by company</span></span>
+<span id="cb10-284"><a href="#cb10-284" aria-hidden="true" tabindex="-1"></a><span class="ot">month.  The event (or failure) variable needs to be set to zero until</span></span>
+<span id="cb10-285"><a href="#cb10-285" aria-hidden="true" tabindex="-1"></a><span class="ot">the event happens.  If no event until the end of the study period</span><span class="er">,</span></span>
+<span id="cb10-286"><a href="#cb10-286" aria-hidden="true" tabindex="-1"></a><span class="ot">then it is censored.  A data set by unit-time can be analyzed by logit</span></span>
+<span id="cb10-287"><a href="#cb10-287" aria-hidden="true" tabindex="-1"></a><span class="ot">model</span><span class="er">,</span><span class="ot"> optionally with clustered standard error.  To set up a</span></span>
+<span id="cb10-288"><a href="#cb10-288" aria-hidden="true" tabindex="-1"></a><span class="ot">structure like this</span><span class="er">,</span><span class="ot"> user-written programs called </span><span class="er">$</span><span class="ot">dthaz</span><span class="er">$</span><span class="ot"> and</span></span>
+<span id="cb10-289"><a href="#cb10-289" aria-hidden="true" tabindex="-1"></a><span class="er">$</span><span class="ot">prsnperd</span><span class="er">$</span><span class="ot"> (means person-period) can be used.</span></span>
+<span id="cb10-290"><a href="#cb10-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-291"><a href="#cb10-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a><span class="ot">To do a continuous-time survival model in Stata</span><span class="er">,</span><span class="ot"> your data can be</span></span>
+<span id="cb10-293"><a href="#cb10-293" aria-hidden="true" tabindex="-1"></a><span class="ot">either set up as discrete-time case (in which case you can use a</span></span>
+<span id="cb10-294"><a href="#cb10-294" aria-hidden="true" tabindex="-1"></a><span class="ot">time-varying explanatory variable) or a single-record-per-person data</span></span>
+<span id="cb10-295"><a href="#cb10-295" aria-hidden="true" tabindex="-1"></a><span class="ot">set.  Stata has built-in command </span><span class="er">$</span><span class="ot">stset</span><span class="er">$</span><span class="ot"> to set up a survival analysis</span></span>
+<span id="cb10-296"><a href="#cb10-296" aria-hidden="true" tabindex="-1"></a><span class="ot">structure.  Then you can run </span><span class="er">$</span><span class="ot">stcox</span><span class="er">$</span><span class="ot"> for Cox</span><span class="er">'</span><span class="ot">s proportional hazard</span></span>
+<span id="cb10-297"><a href="#cb10-297" aria-hidden="true" tabindex="-1"></a><span class="ot">model.</span></span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
