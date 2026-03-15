@@ -13,7 +13,29 @@
       "Bash(ls *.qmd 2>/dev/null || echo \"No qmd files yet\")",
       "Bash(quarto render:*)",
       "Bash(gh auth:*)",
-      "Bash(git init:*)"
+      "Bash(git init:*)",
+      "Bash(gh repo:*)",
+      "Bash(quarto publish:*)",
+      "Bash(git stash:*)",
+      "Bash(grep -E \"@ref|@fig|@tbl|#\\\\s[A-Z]\" /home/xao/projects/myprojects/econometrics_guide/*.qmd | head -20)",
+      "Bash(/tmp/section_extract.txt:*)",
+      "Read(//tmp/**)",
+      "Bash(cp ~/projects/claude/causal_econometrics/data/*.csv ~/projects/claude/causal_econometrics/data/*.dta ~/projects/myprojects/causal_econometrics_guide/data/ && cp ~/projects/claude/causal_econometrics/images/*.png ~/projects/myprojects/causal_econometrics_guide/images/)",
+      "Bash(cd ~/projects/myprojects/causal_econometrics_guide && quarto render 2>&1)",
+      "Bash(cd ~/projects/myprojects/causal_econometrics_guide && gh repo create causal_econometrics_guide --public --source=. --push 2>&1)",
+      "Bash(grep -n \"^\\\\`\\\\`\\\\`{r\" *.qmd | head -50)",
+      "Bash(for file:*)",
+      "Bash(do)",
+      "Read(//^```{r}/ { found=1; line=NR; next } found && /^```/**)",
+      "Bash(done)",
+      "Bash(grep -n '\\\\\\\\\\\\\\\\$' *.qmd | head -20)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(which ghp-import:*)",
+      "Bash(cp -r _book /tmp/_book_deploy && git checkout gh-pages && rm -rf *.html *.png *.json site_libs survival_files _book _freeze .quarto .nojekyll 2>/dev/null && cp -r /tmp/_book_deploy/* . && touch .nojekyll && ls)",
+      "Bash(cp -r _book /tmp/_book_deploy && git stash -u && git checkout gh-pages)",
+      "Bash(gh run:*)",
+      "mcp__plugin_compound-engineering_context7__query-docs"
     ]
   }
 }

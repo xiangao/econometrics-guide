@@ -1,10 +1,7 @@
-This econometric guide is intended for internal use of the Research
-Computing Services at Harvard Business School.  I heavily borrowed
-materials from books, such as Davidson and MacKinnon's "Econometric
+This is a summary of what I have learned over the years from books, such as Davidson and MacKinnon's "Econometric
 Theory and Methods", Chris Baum's "An Introduction to Modern
-Econometrics using Stata", etc., and some materials from the web.  It
-is not intended for publication.
+Econometrics using Stata", etc., and some materials from the web.  
 
-I try to include some sample codes after the concepts, in R or Stata,
+I included some sample codes after the concepts, in R or Stata,
 depending on which one has the procedure implemented, or which one is
 easier to use.

@@ -30,6 +30,7 @@ format:
     callout-appearance: simple
     code-tools: true
     number-sections: true
+    toc-depth: 3
 
 execute:
   freeze: auto
