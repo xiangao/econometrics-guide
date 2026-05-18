@@ -6,8 +6,11 @@ book:
   author: "Xiang Ao"
   date: "last-modified"
   search: true
+  reader-mode: true
   page-navigation: true
   site-url: https://xiangao.github.io/econometrics-guide/
+  repo-url: https://github.com/xiangao/econometrics-guide/
+  repo-actions: [edit, issue]
   sidebar:
     tools:
       - icon: house-door-fill
@@ -34,6 +37,7 @@ format:
   html:
     theme:
       light: cosmo
+    css: style.css
     code-link: true
     callout-appearance: simple
     code-tools: true

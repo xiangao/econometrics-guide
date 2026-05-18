@@ -1,7 +1,5 @@
-This is a summary of what I have learned over the years from books, such as Davidson and MacKinnon's "Econometric
-Theory and Methods", Chris Baum's "An Introduction to Modern
-Econometrics using Stata", etc., and some materials from the web.  
+# Preface {.unnumbered}
 
-I included some sample codes after the concepts, in R or Stata,
-depending on which one has the procedure implemented, or which one is
-easier to use.
+This is a study guide rather than a textbook. The chapters summarise what I have learned over the years from Davidson and MacKinnon's *Econometric Theory and Methods*, Chris Baum's *An Introduction to Modern Econometrics Using Stata*, and a scatter of papers and lecture notes that helped me make sense of the same material from different angles. The aim is a single place where the workhorse estimators of applied econometrics — OLS, MLE, GLS, IV and GMM, models for censored, discrete, count, panel, and survival data, dynamic panels, and missing-data methods — sit side by side with the assumptions they rely on and the small code snippets needed to fit them.
+
+Examples are written in R or Stata, whichever has the cleaner implementation for the procedure at hand. The code is meant to be short enough to read and re-run rather than a packaged tutorial. For applied causal-inference material — difference-in-differences, matching, doubly robust methods, mediation, causal discovery, and the rest — see the companion books [Introduction to Causal Econometrics](https://xiangao.github.io/causal_econometrics_guide/) and [Topics on econometrics and causal inference](https://xiangao.github.io/blog_book/).
