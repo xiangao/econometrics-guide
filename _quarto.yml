@@ -36,6 +36,7 @@ format:
     theme:
       light: cosmo
     css: style.css
+    include-in-header: reader-mode-default.html
     code-link: true
     callout-appearance: simple
     code-tools: true
