@@ -16,8 +16,6 @@ book:
       - icon: house-door-fill
         text: Xiang Ao home
         href: https://xiangao.github.io/
-      - icon: github
-        href: https://github.com/xiangao/econometrics-guide
   chapters:
     - index.qmd
     - ols.qmd
