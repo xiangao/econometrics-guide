@@ -50,7 +50,7 @@ This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still c
 
 ## Arellano-Bond estimator
 
-Arellano and Bond (1991) expanded the idea by using additional lags of the dependent variable as instruments.  For example, both $y_{i,t-2}$ and $y_{i,t-3}$ can be used as instruments.  In fact, as $t$ increases, the number of instruments avialable also increases.  In period 3 only $y_{i,1}$ is available.  In period 4 $y_{i,1}$ and $y_{i,2}$ are available.  In period 5  $y_{i,1}$ and $y_{i,2}$ and  $y_{i,3}$ are availabe, and so on.  In other words, we'll have an instrument matrix with one row for each time period that we are instrumenting:
+Arellano and Bond (1991) expanded the idea by using additional lags of the dependent variable as instruments.  For example, both $y_{i,t-2}$ and $y_{i,t-3}$ can be used as instruments.  In fact, as $t$ increases, the number of instruments available also increases.  In period 3 only $y_{i,1}$ is available.  In period 4 $y_{i,1}$ and $y_{i,2}$ are available.  In period 5  $y_{i,1}$ and $y_{i,2}$ and  $y_{i,3}$ are available, and so on.  In other words, we'll have an instrument matrix with one row for each time period that we are instrumenting:
 
 
 $$Z_i =

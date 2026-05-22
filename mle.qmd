@@ -106,7 +106,7 @@ ols.lf <- function(theta, y, X) {
 X <- cbind(1,mtcars[,c('disp','hp','wt')])
 y <- mtcars$mpg
 
-# note that I have a rough idea of the starting values from OLS esimators first; otherwise it may converge to some wrong local maximum.  Annoying.
+# note that I have a rough idea of the starting values from OLS estimators first; otherwise it may converge to some wrong local maximum.  Annoying.
 optim(c(1,1,-1,-1,-1), method="L-BFGS-B", fn=ols.lf, lower=c(1e-6,-Inf,-Inf,-Inf,-Inf), upper=rep(Inf,5), y=y, X=as.matrix(X))
 
 # it should match the OLS estimator
