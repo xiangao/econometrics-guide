@@ -16,6 +16,9 @@ book:
       - icon: house-door-fill
         text: Xiang Ao home
         href: https://xiangao.github.io/
+      - icon: book
+        text: Other books
+        href: https://xiangao.github.io/books.html
   chapters:
     - index.qmd
     - ols.qmd
