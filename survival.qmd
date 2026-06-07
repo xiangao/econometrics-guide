@@ -88,9 +88,9 @@ $$
 h(t)=\theta
 $$
 
-A much more flexible functional form is Weibull
+A much more flexible functional form is Weibull, with CDF, survival, and density
 $$
-f(t,\theta, \alpha)=1-\exp(-(\theta t)^{\alpha}).
+F(t,\theta, \alpha)=1-\exp(-(\theta t)^{\alpha}), \quad S(t)=\exp(-(\theta t)^{\alpha}), \quad f(t)=\alpha \theta^{\alpha} t^{\alpha-1}\exp(-(\theta t)^{\alpha}).
 $$
 
 Hazard function can be shown to be
@@ -209,7 +209,7 @@ h_0(t)\exp ({\bf x}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{\bf x}'_i \beta)
 $$
 
 
-Therefore, one unit change in $x_j$ will have a change of $1- \exp(\beta_j)$ times the original hazard.
+Therefore, a one unit change in $x_j$ multiplies the hazard by $\exp(\beta_j)$ (a proportionate change of $\exp(\beta_j)-1$).
 
 ### Example in R
 

@@ -59,10 +59,11 @@ with respect to $\beta$.  This implies that the first-order
 conditions, or likelihood equations, uniquely define the MLE estimator
 $\hat \beta$.  These likelihood equations can be written as
 $$
-\sum_{t=1}^n \frac{(y_t-F({\bf X_t \beta}))F({\bf X_t
+\sum_{t=1}^n \frac{(y_t-F({\bf X_t \beta}))f({\bf X_t
 \beta})x_{ti}}{F({\bf X_t \beta})(1- F({\bf X_t \beta}))}=0, \
 i=1, \dots, k.
 $$
+where $f=F'$ is the density (e.g. $\phi$ for probit). For logit, $f=F(1-F)$, so the numerator cancels the denominator and the score reduces to $\sum_t (y_t-F)x_{ti}=0$.
 
 Newton's Method can be used to find $\hat \beta$.
 
@@ -123,11 +124,12 @@ Suppose there are $J+1$ responses, for $J \geq 1$.
 
 $$
 \mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}
-\beta^l)}{\sum_{j=0}^J\exp({\bf W}_{tl} \beta^l)} \quad \mbox{for}
-\ l=0, \dots, J.
+\beta^l)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta^j)} \quad \mbox{for}
+\ l=0, \dots, J,
 $$
 
 Here ${\bf W}_{tj}$ is a row vector of length $k_j$ of observations on
 variables that belong to the information set of interest, and
 $\beta^j$ is a $k_j$-vector of parameters, usually different for each
-$j=0, \dots, J.$
+$j=0, \dots, J.$ For identification one category is taken as the base
+with $\beta^0=0$ (so its numerator is $1$).

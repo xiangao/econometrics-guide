@@ -11,11 +11,11 @@ For example, Baltagi and Levin (1992) studies cigarette demand across
 46 states for the years 1963-88.  Consumption is modeled as a function
 of lagged consumption, price and income.  These variables vary across
 states and time.  However, there are other variables that may be
-state-invariant ($z_i$ or time-invariant ($w_t$).  Examples of $z_i$
+time-invariant ($z_i$) or individual-invariant ($w_t$).  Examples of $z_i$
 are religion and education.  For example, Utah, as a Mormon state, has
 very low cigarette demand due to religious reason.  Generally we
 consider it does not change over time or change very little over time.
-Examples of $w_i$ include cigarette commercials on national TV or
+Examples of $w_t$ include cigarette commercials on national TV or
 radio.  Panel data models are able to control for individual
 heterogeneity (or cross-sectional heterogeneity) while cross-sectional
 models are not.  In many (or most) social science studies, there is
@@ -35,7 +35,7 @@ y_{it}={\bf {x_{it} \beta}} + c_i + u_{it}
 $$
 
 where $i$ indexes "units" (can be people, firms, or households,
-etc.), an $t$ indexes time periods.
+etc.), and $t$ indexes time periods.
 
 Comparing to regular cross-sectional models, there is an extra term
 $c_i$.  $c_i$ can be treated as a random effect or fixed effect.
@@ -93,7 +93,7 @@ For the same model as in equation the equation above, the fixed-effect
 methods try to eliminate $c_i$ using fixed effects transformation, or
 "within transformation".  The FE transformation is to "de-mean"
 each observation by subtracting the group mean.  Basically subtracting
-equation the equation above from the following equation:
+the group-mean equation below from the unit-level equation above:
 
 $$
 \bar y_i={\bf \bar x_i \beta} + c_i + \bar u_i
@@ -107,3 +107,40 @@ average cigarette consumption across years.
 The reason for "demeaning" is to remove $c_i$ from final estimation.
 The "demeaned" regression equation is the final regression used in
 estimation:
+
+$$
+(y_{it}-\bar y_i) = ({\bf x}_{it}-{\bf \bar x}_i)\beta + (u_{it}-\bar u_i).
+$$
+
+The unit-specific effect $c_i$ cancels because it is constant over $t$
+($c_i - \bar c_i = 0$). Writing the within-transformed variables as
+$\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{\bf x}_{it}={\bf x}_{it}-{\bf \bar x}_i$,
+OLS on the demeaned data gives the **fixed-effects (within) estimator**
+
+$$
+\hat\beta_{FE} = \left(\sum_i \sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it}\right)^{-1}
+\sum_i \sum_t \ddot{\bf x}_{it}'\ddot y_{it}.
+$$
+
+This is consistent for $\beta$ even when $c_i$ is correlated with
+${\bf x}_{it}$, which is the key advantage of FE over random effects.
+The price is that any time-invariant regressor (the $z_i$ above) is also
+swept out by the demeaning and cannot be estimated. The usual variance
+estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it})^{-1}$
+with $\hat\sigma_u^2$ using degrees of freedom $NT-N-k$; in practice one
+clusters by unit to allow serial correlation within $i$.
+
+## Fixed effects or random effects: the Hausman test
+
+Random effects is more efficient (it uses both within and between
+variation) but is consistent only if $c_i$ is uncorrelated with
+${\bf x}_{it}$; fixed effects is consistent either way. The Hausman test
+compares the two estimators:
+
+$$
+H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})]^{-1}\,(\hat\beta_{FE}-\hat\beta_{RE}) \;\sim\; \chi^2_k
+$$
+
+under the null that random effects is consistent. A large $H$ (small
+$p$-value) favors fixed effects. In R this is `phtest(fe, re)` from the
+`plm` package; in Stata, `hausman fe re`.

@@ -36,11 +36,11 @@ $$
 
 In this case, we have two parameters to estimate, $\sigma$ and $\bf \beta$.  The distribution of $\bf y | X$ is
 
-$$ f({\bf y, \beta, \sigma | X}) = \frac{1}{\sigma \sqrt{2 \pi}} \exp(-  \frac{({\bf y- X \beta})^2}{2 \sigma^2})$$
+$$ f({\bf y} \mid {\bf X}, \beta, \sigma) = (2 \pi \sigma^2)^{-n/2} \exp\left(-  \frac{({\bf y- X \beta})'({\bf y- X \beta})}{2 \sigma^2}\right)$$
 
 The log-likelihood function is
 
-$$ l({\bf y, \beta, \sigma}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} \sum_{t=1}^n \bf (y-X \beta)'(y-X \beta) $$
+$$ l({\bf y, \beta, \sigma}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} \bf (y-X \beta)'(y-X \beta) $$
 
 The maximization of the log-likelihood function will lead to the same estimator as the OLS estimator, for $\bf \beta$.  For $\sigma^2$, the MLE estimator is slightly different in limited sample, but asymptotically the same.  This is strictly based on the assumption of normally distributed error term.  Otherwise, these two estimators will be different.
 
@@ -485,7 +485,7 @@ where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.
 
 Overall, the variance of $\bf b_T$ is approximated by
 
-$$\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t'] [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1} $$
+$$\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1} $$
 
 
 This estimation obviously depends on the selection of $q$, the lag

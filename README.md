@@ -26,3 +26,5 @@ quarto preview    # live preview with hot reload
 ## Sources
 
 Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, Chris Baum's *An Introduction to Modern Econometrics Using Stata*, and other sources. Not intended for publication.
+
+> **2026-06-07:** Math/code review pass — see `CLAUDE.md` (Review pass section) for the list of corrections. Audit trail in `../_review/`.

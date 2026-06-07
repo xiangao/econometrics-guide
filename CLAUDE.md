@@ -27,3 +27,15 @@ car, stats4, dplyr, mvtnorm, MASS, AER, ivreg, gmm, strucchange, ggfortify, surv
 - Each chapter with R code has a hidden setup chunk (`#| include: false`) loading its required libraries
 - `execute: freeze: auto` in `_quarto.yml` caches R output; delete `_freeze/` to force re-run
 - Images are PNG (converted from EPS for HTML compatibility)
+
+## Review pass (2026-06-07)
+Full math/code audit + fixes across 10 chapters (audit trail: ../_review/). Key corrections:
+- count-data: QML-Poisson sandwich meat matrix was inverted (`A^{-1}B^{-1}A^{-1}` → `A^{-1}BA^{-1}`).
+- discrete: probit score had CDF where the density `f` belongs; MNL denominator summed a constant index.
+- mle: joint Gaussian density `(2πσ²)^{-n/2}`; removed spurious `Σ` that multiplied the SSR by n; Newey–West bread needed `^{-1}`.
+- survival: Weibull "density" was the CDF; Cox one-unit hazard change is `exp(β)` not `1-exp(β)`.
+- ols: distinguished OLS residual `û` from structural error `u` in the fitness decomposition.
+- missing-data: MI estimate is the mean `(1/M)Σ`, not a sum.
+- panel-data: chapter was TRUNCATED mid-sentence — authored the missing FE within-estimator + Hausman section.
+- Held for author: censored.qmd Heckman `ρ` vs `ρσ` covariance parameterization (reported, not edited).
+Re-rendered clean.

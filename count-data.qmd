@@ -38,7 +38,7 @@ We can use Newton-Raphson or other optimization algorithms to find the solution 
 
 #### Model
 
-Note that in equation the equation above, if $X_i'$ includes a constant, then $(y_i - \exp (X_i' \beta) )$ sums to zero.  If ${\rm E} [y_i|X_i] = \exp (X_i' \beta)$, then the summation on the left-hand side has expectation of zero.  Hence the only specification needed to apply equation the equation above is the conditional expectation of $Y$ given $X$.  Even the data is not Poisson-distributed, the estimator by equation the equation above is still consistent.  Therefore, this estimator is called quasi\_ML (QML) Poisson estimator.
+Note that in the first-order condition above, if $X_i'$ includes a constant, then $(y_i - \exp (X_i' \beta) )$ sums to zero.  If ${\rm E} [y_i|X_i] = \exp (X_i' \beta)$, then the summation on the left-hand side has expectation of zero.  Hence the only specification needed to apply it is the conditional expectation of $Y$ given $X$.  Even if the data is not Poisson-distributed, the estimator is still consistent.  Therefore, this estimator is called the quasi-ML (QML) Poisson estimator.
 
 
 Although the QML Poisson estimator is consistent under relatively weak condition, the regular variance estimator for the coefficients are not valid anymore.
@@ -55,7 +55,7 @@ $$
 On the other hand, the variance matrix for the  QML Poisson estimator $\hat \beta_{QML}$ is
 
 $$
- {\rm Var}_{QML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i')^{-1} (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
+ {\rm Var}_{QML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i') (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
 $$
 where $\omega_i={\rm Var} [y_i|X_i] $ is the conditional variance of $y_i$.
 

@@ -19,7 +19,7 @@ $$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \bar 
 
 Anderson and Hsiao (1981) show that
 
-$$Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx \frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$
+$$Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$
 
 which indicates that the correlation between the demeaned lagged $y$
 is correlated with the demeaned error term.  The correlation may be

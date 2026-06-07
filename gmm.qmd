@@ -102,9 +102,9 @@ The standardized kurtosis is
 
 For a normal distribution, $k=3.$
 
-For a $t$ distribution with $v \geq 5$ degrees of freedom,
-$k=3+6/(v-4) > 4.$  i.e., the $t$ distribution has fatter tails
-than a normal distribution.
+For a $t$ distribution with $v > 4$ degrees of freedom,
+$k=3+6/(v-4) > 3$, i.e., the $t$ distribution has fatter tails
+than a normal distribution (the excess kurtosis $6/(v-4)$ shrinks toward 0 as $v$ grows).
 
 The distribution function of a random variable captures all
 information about the random variable.  It can be shown using all

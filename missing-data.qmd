@@ -70,7 +70,7 @@ Main model:  $y = \beta_0 + \beta_1 x + \beta_2 z$
 
 2. predict $m$ values of the missing values, creating $m$ data sets.
 
-3. calculate $m$ new estimates of $\tilde \beta  = \sum_{m=1}^M \tilde \beta_m$ using each of the imputed data sets.  then calculate the standard error of $\tilde \beta$.
+3. calculate $m$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the standard error of $\tilde \beta$.
 
 $V_{\beta}=W + (1+1/m) B$
 

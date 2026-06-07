@@ -322,7 +322,7 @@ Sargan's test without this option.
 
 ### Problem with the cure
 
-An instrument needs to satisfy to criteria: orthogonality and
+An instrument needs to satisfy two criteria: orthogonality and
 relevance.  We need instruments to be orthogonal to the error term.
 We can verify the orthogonality condition  by Sargan's test if there are extra
 instruments.
@@ -423,7 +423,7 @@ only available for the situation there are at least two excluded
 variables (meaning the number of instruments minus the number of
 endogenous variables).
 
-2.   Anderson-Rubin confidence intervals.
+3.   Anderson-Rubin confidence intervals.
 
 In the model of
 

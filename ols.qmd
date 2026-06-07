@@ -21,14 +21,15 @@ $$\bf \hat \beta=(X'X)^{-1}X'y$$
 ## Fitness of OLS
 
 We can see $y$ vector as the part explained by the regression
-and the unexplained part,
-$$ \bf y=\hat y+u=X\beta+u$$
-Therefore
-$$\bf y'y=(\hat y+u)'(\hat y +u)=\hat y' \hat y +u'u=\beta'X'X\beta +u'u $$
+and the unexplained (residual) part,
+$$ \bf y=\hat y+\hat u=X\hat\beta+\hat u$$
+where $\hat u$ is the OLS residual. Because the residual is orthogonal to the
+fitted values, $\bf \hat y' \hat u=0$, so the cross term drops:
+$$\bf y'y=(\hat y+\hat u)'(\hat y +\hat u)=\hat y' \hat y +\hat u'\hat u=\hat\beta'X'X\hat\beta +\hat u'\hat u $$
 
 Subtracting $n\bar y^2$ ($\bar y$ is the sample mean) from both
 sides,
-$$ \bf y'y-n\bar y^2=(\beta'X'X\beta-n\bar y^2) +u'u $$
+$$ \bf y'y-n\bar y^2=(\hat\beta'X'X\hat\beta-n\bar y^2) +\hat u'\hat u $$
 
 
 We decompose the total sum of squares into two parts:  sum of
@@ -38,7 +39,7 @@ linear regression.
 The $R^2$ is defined by
 $$R^2=1-\frac{SSR}{SST}$$
 
-$SST$ is the total sum of squares, which is the total variance of $y$, $\bf y'y-n\bar y^2$.
+$SST$ is the total (centered) sum of squares of $y$, $\bf y'y-n\bar y^2 = \sum_t (y_t-\bar y)^2$.
 
 $R^2$ is simply the proportion of the variation of $Y$ that can be
 attributed to the variation of $X$.  $R^2$, however, will never
