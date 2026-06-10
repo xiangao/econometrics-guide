@@ -98,7 +98,7 @@ The fourth centered moment measures the kurtosis of the
 distribution.  Interpreted as a measure of "fatness of tails".
 
 The standardized kurtosis is
-\[k=\frac{E[(Y-E(Y))^4]}{E[(Y-E(Y))^2]^2}.\]
+$$k=\frac{E[(Y-E(Y))^4]}{E[(Y-E(Y))^2]^2}.$$
 
 For a normal distribution, $k=3.$
 
@@ -107,8 +107,10 @@ $k=3+6/(v-4) > 3$, i.e., the $t$ distribution has fatter tails
 than a normal distribution (the excess kurtosis $6/(v-4)$ shrinks toward 0 as $v$ grows).
 
 The distribution function of a random variable captures all
-information about the random variable.  It can be shown using all
-moments also captures all information.
+information about the random variable.  If the moment generating
+function exists in a neighborhood of zero, the full set of moments
+also determines the distribution (without such a condition this can
+fail: the lognormal distribution is not determined by its moments).
 
 This distinction underlies the relative strengths and weaknesses
 of ML and GMM.
@@ -177,7 +179,7 @@ sdzz=1
 ## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is independent of everything else.
 crxz=.6
 crzw=0
-crxw=.8
+crxw=.5
 
 covarMat = matrix( c(sdxx^2, crxz, crxw, crxz, sdzz^2, crzw,  crxw, crzw, sdww^2 ) , nrow=nDim , ncol=nDim )
 covarMat

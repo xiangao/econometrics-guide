@@ -26,7 +26,7 @@ The most popular cure for endogeneity is to use instrumental variables.
 
 ## Instrumental Variables (IV)
 
-The basic idea of IV is to use an exogenous variable (or exogenous variables) which is correlated with the endogenous independent variable to as an "instrument" for the endogenous variable.
+The basic idea of IV is to use an exogenous variable (or exogenous variables) which is correlated with the endogenous independent variable as an "instrument" for the endogenous variable.
 
 Suppose the linear regression model
 $$
@@ -40,7 +40,7 @@ Suppose we have a set of  variables $\bf Z$, an $n \times l$
 matrix of instruments , which satisfies the moment
 condition
 $$
-\bf Z'(y-X\beta)=0.
+{\rm E} [\bf Z'(y-X\beta)]=0.
 $$
 That is, $\bf Z$ is uncorrelated with the error term.
 
@@ -53,7 +53,7 @@ $$
 \bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX
 $$
 
-This is essentially to get the part of $\bf Z$ that is correlated with $\bf X$.  Or to say, to project $\bf X$ on to $\bf Z$.
+This is essentially to get the part of $\bf X$ that is correlated with $\bf Z$.  Or to say, to project $\bf X$ on to $\bf Z$.
 
 Stage 2:  Regress $\bf y$ on $\bf \hat X$ to obtain the estimated
 $\bf \beta$
@@ -110,7 +110,7 @@ sdzz=1
 ## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is independent of everything else.
 crxz=.6
 crzw=0
-crxw=.8
+crxw=.5
 
 covarMat = matrix( c(sdxx^2, crxz, crxw, crxz, sdzz^2, crzw,  crxw, crzw, sdww^2 ) , nrow=nDim , ncol=nDim )
 covarMat
@@ -265,7 +265,7 @@ test the adequacy of instruments.
 Under the null hypothesis that all the instruments are uncorrelated
 with the error term, an LM statistic  $N \times R^2$ conforms to
 $\chi^2 (r)$ distribution, $r=l-k$, the number of excess instruments,
- or say, the number of excluded restrictions.  If we reject the null,
+ or say, the number of overidentifying restrictions.  If we reject the null,
  then we should be concerned about the exogeneity of the whole set of
  the instruments.  This test is called Sargan's test in IV context, and
  (Hansen's) J test in GMM context.
@@ -361,11 +361,12 @@ If $\bf Z$ is irrelevant, or, $\Pi=0$, then
 
 $$
 \hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}
-\sum_{i=1}^N Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^N Z_i v_i}
+\sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}
 \xrightarrow{d} \frac{z_u}{z_v} ,
 $$
 
-where
+where (normalizing ${\rm Var}(Z_i)=1$, which is harmless since any
+common scale factor cancels in the ratio)
 
 $$
 \begin{bmatrix}
@@ -403,8 +404,8 @@ James Stock:
 
 
   Advantages of this test:
-      a.  Uniformly most powerful tests among valid tests.
-      b.  Implemented in Stata as condivereg.
+      a.  Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006).
+      b.  Implemented in Stata as condivreg.
 
 Disadvantages:
 
@@ -437,28 +438,31 @@ $$
 
 The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic
 is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F
-test on $\Pi$ being zero:
+test that the coefficient vector on $Z$ is zero (under the model that
+coefficient equals $\Pi (\beta - \beta_0)$, so it is zero exactly when
+$\beta=\beta_0$):
 
 
 $$
-AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/k}{(y-X\beta_0)' M_Z
-  (y-X\beta_0)/(N-k)}
+AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
+  (y-X\beta_0)/(N-l)}
 $$
 
-The idea of AR confidence interval is to construct an interval for all
-possible values of $\beta$ to fail to reject $\Pi=0$.
+where $l$ is the number of instruments.  The idea of AR confidence
+interval is to collect all values of $\beta_0$ at which we fail to
+reject $H_0: \beta=\beta_0$.
 
-3.  First-stage F test.
+4.  First-stage F test.
 
 The rule of thumb for first-stage F test is $F>10$ for a single
 instrument case, the more instruments, the higher it gets.
 
-4.   Kleibergen's LM test.
+5.   Kleibergen's LM test.
 
 This test is dominated by the CLR test, thus no longer the optimal
 test to use.
 
-5.   First-stage $R^2$, or partial $R^2$, etc., are not recommended.
+6.   First-stage $R^2$, or partial $R^2$, etc., are not recommended.
 
 
 ## When is endogeneity a problem and what can we say from an IV regression

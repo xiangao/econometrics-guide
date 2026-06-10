@@ -3,7 +3,7 @@
 ## when is it a problem
 
 Model setup:
-$$y_{i,t} = \gamma y_{i, t-1} + X \beta + C_i + \epsilon_{i,t}$$
+$$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$
 
 Pooled regression is biased and inconsistent.  The problem is:
 
@@ -17,11 +17,11 @@ Fixed effect model setup:
 
 $$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \bar y_i) + (\epsilon_{i,t} - \bar \epsilon_i)$$
 
-Anderson and Hsiao (1981) show that
+Nickell (1981) shows that (see also Anderson and Hsiao 1981)
 
 $$Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$
 
-which indicates that the correlation between the demeaned lagged $y$
+which indicates that the demeaned lagged $y$
 is correlated with the demeaned error term.  The correlation may be
 large if $T$ is small, but when $T$ is big, then the correlation goes
 down to near zero.  When $T$ is big, we don't have a problem with
@@ -55,7 +55,7 @@ Arellano and Bond (1991) expanded the idea by using additional lags of the depen
 
 $$Z_i =
 \begin{bmatrix}
-0 & \ 0 & \ 0 & \ 0 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\ y_{i,1} & \  0 & \ 0 & \ 0
+y_{i,1} & \  0 & \ 0 & \ 0
 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\  0 & \  y_{i,1} & \ y_{i,2} &
 \ 0 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\  0 & \ 0 & \  0 & \
 y_{i,1} & \ y_{i,2} & \ y_{i,3}  & \ \cdots & \ 0 & \  0 & \ 0  \\   \vdots  & \  \vdots & \  \vdots & \  \vdots & \  \vdots & \  \ddots  & \ \cdots & \ \vdots & \  \vdots & \ \vdots \\ 0 & \  0 & \  0 & \ 0 & \ 0 & \ \cdots  & \ 0 & \ y_{i,1} & \  \cdots & \ y_{i,T-2}
@@ -69,6 +69,6 @@ This is the so called difference GMM estimator.
 
 AB model has a problem:  when the instruments are weak, the estimator is not good.  That will happen when $y$ follows random walk or near random walk.  In that case the past levels won't be a good predictor of the future changes.
 
-BB model comes in to instrument levels with differences. In stead of differencing to remove the fixed effects, it keeps the fixed effects and difference the instruments to make them exogenous to the fixed effects.  The basic idea is that $\Delta y_{i,t}$ is not correlated with $C_i$.  Therefore it can be used as instruments in the fixed effects model without demeaning the variables.
+BB model comes in to instrument levels with differences. Instead of differencing to remove the fixed effects, it keeps the fixed effects and difference the instruments to make them exogenous to the fixed effects.  The basic idea is that $\Delta y_{i,t}$ is not correlated with $C_i$.  Therefore it can be used as instruments in the fixed effects model without demeaning the variables.
 
 This is implemented by so called system GMM.  In this case, we have fixed effects in the model, but do not attempt to purge the fixed effect by demeaning or first differencing.  Instead, we use past differences of $y$ as instruments, assuming $\Delta y_{i,t}$ is not correlated with $C_i$.  In this case, time-invariant variables can be used in the model.

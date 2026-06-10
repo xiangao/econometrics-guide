@@ -14,9 +14,10 @@ in a truncated sample, you don't have observations which have been
 truncated; while in a censored sample, you do have observations but
 you don't have full information.  The idea of "censoring" is that some
 data above or below a threshold are mis-reported at the threshold.  If
-we use the same example of people's income, if we don't observe
-people's income ($y$) and education($x$) with income lower than
-\$20,000 per year, then we have a truncated sample.  If we have
+we use the same example of people's income, if people with income
+lower than \$20,000 per year do not appear in the sample at all---we
+have no observations of either $y$ or $x$ for them---then we have a
+truncated sample.  If we have
 observations of $x$ for people whose income above AND below that
 limit, but no information on exactly how much their income is for
 those whose income below the limit (only thing we know is that it's
@@ -61,7 +62,7 @@ observe, $u_t$ does not have conditional mean 0 and is not
 uncorrelated with $x_t$.  OLS using truncated or censored samples (OLS
 of $y_t$ on $x_t$) yields biased and inconsistent estimators.
 Normally we would like to draw inference on the population which is
-represented by the full sample.  Shown in figure 1, ideally we would
+represented by the full sample.  Shown in the figure below, ideally we would
 have the OLS regression line (if we had the full sample), which is
 very close to the "true" regression line (which is the mechanism
 generates the data).  We would have the "OLS censored sample" line
@@ -141,7 +142,7 @@ $$
 The log-likelihood function of the tobit model is
 $$
 \sum_{y_t=0} \log \Phi (-{\bf X}_t \beta/\sigma) + \sum_{y_t>0}
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma )))
+\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma ))
 $$
 
 This can be estimated by MLE. In Stata, tobit or intreg can be used
@@ -166,9 +167,13 @@ y_t^0 \\ z_t^0
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix} \sim NID({\bf 0},
-\begin{bmatrix} \sigma^2 & \rho  \\ \rho  & 1
+\begin{bmatrix} \sigma^2 & \rho\sigma  \\ \rho\sigma  & 1
 \end{bmatrix})
 $$
+
+Here $\rho$ is the correlation between $u_t$ and $v_t$; since
+$\mbox{Var}(u_t)=\sigma^2$ and $\mbox{Var}(v_t)=1$, their covariance
+is $\rho\sigma$.
 
 We observe $y_t$ and $z_t$:
 $$
@@ -187,9 +192,10 @@ $$
 
 Under the normality assumption,
 $$
-u_t=\rho v_t+e_t
+u_t=\rho\sigma v_t+e_t
 $$
-where $e_t$ is independent of $v_t \sim N(0,1)$.  A useful fact
+where $e_t$ is independent of $v_t \sim N(0,1)$, with
+$\mbox{Var}(e_t)=\sigma^2(1-\rho^2)$.  A useful fact
 about the standard normal distribution is that
 $$
 {\rm E} (v_t | v_t>-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}
@@ -211,7 +217,7 @@ It is also popular to use Heckman's two-step method.
 Heckman's method is based on the fact that the original latent
 model can be rewritten as
 $$
-y_t={\bf X}_t \beta + \rho v_t +e_t
+y_t={\bf X}_t \beta + \rho\sigma v_t +e_t
 $$
 
 Here the error term $u_t$ is divided into two parts, one
@@ -227,14 +233,19 @@ selectivity regressor $\frac{\phi({\bf W}_t \hat
 
 Therefore, the regression becomes
 $$
-y_t={\bf X}_t \beta + \rho \frac{\phi({\bf W}_t \hat
+y_t={\bf X}_t \beta + \rho\sigma \frac{\phi({\bf W}_t \hat
 \gamma)}{\Phi({\bf W}_t \hat \gamma)} + e_t
 $$
 
 Or,
 $$
-y_t={\bf X}_t \beta + \rho \hat \lambda_t + e_t
+y_t={\bf X}_t \beta + \rho\sigma \hat \lambda_t + e_t
 $$
+
+(Strictly, conditional on selection the error also contains
+$\rho\sigma(v_t-\lambda_t)$, which is why the second-step OLS standard
+errors require correction; the coefficient $\rho\sigma$ on $\hat
+\lambda_t$ is unaffected.)
 
 One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with $\bf X_t$, if $\bf W_t$ is the same as $\bf X_t$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require $\bf W_t$ contains at least one extra variable than $\bf X_t$, which is sometimes called exclusion restriction.  In many situations, $\bf W_t$ contains all $\bf X_t$ variables, and at least one more variable.  The reason to contain all $\bf X_t$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the $\bf X_t$'s.
 
@@ -251,8 +262,8 @@ we observe $y$ for $z=1$ and $z=0$.  In the example of effect of
 education on income, we observe both union member's income and
 non-member's income.  In this case, we have switching regression model
 or treatment-effect model.  The treatment effect model estimates the
-effect of an endogenous binary treatment$z_t$ (treatment, program
-participation, etc.) on a continuous, fully-observed variable,$y_t$,
+effect of an endogenous binary treatment $z_t$ (treatment, program
+participation, etc.) on a continuous, fully-observed variable, $y_t$,
 conditional on the independent variables $x_t$ and $w_t$.
 
 Suppose $z_t^0$ is a latent variable.
@@ -268,7 +279,7 @@ y_t \\ z_t^0
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix} \sim NID({\bf 0},
-\begin{bmatrix} \sigma^2 & \rho  \\ \rho  & 1
+\begin{bmatrix} \sigma^2 & \rho\sigma  \\ \rho\sigma  & 1
 \end{bmatrix})
 $$
 

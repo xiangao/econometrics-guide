@@ -7,7 +7,7 @@ $$ \bf y=X\beta+u $$
 The idea of  least-squares is to choose $\beta$ to minimize the
 residual sum of squares ($SSR$),
 
-$$ SSR  =  \bf u'u = \bf (y-X\beta)'(y-X\beta) =  \bf y'y-2\beta'X'y+\beta'X'X\beta $$
+$$ SSR(\beta)  =  \bf (y-X\beta)'(y-X\beta) =  \bf y'y-2\beta'X'y+\beta'X'X\beta $$
 
 The first-order condition to minimize $SSR$ are:
 $$ \frac{\partial (SSR)}{\partial \beta} = \bf -2X'y+2X'X\beta=0$$
@@ -44,8 +44,10 @@ $SST$ is the total (centered) sum of squares of $y$, $\bf y'y-n\bar y^2 = \sum_t
 $R^2$ is simply the proportion of the variation of $Y$ that can be
 attributed to the variation of $X$.  $R^2$, however, will never
 decrease with the addition of any variable to the set of
-regressors.  If the added variable is totally irrelevant then
-$R^2$ will stay the same.  The adjusted $R^2$, however, takes
+regressors.  $R^2$ stays exactly the same only in the knife-edge case
+that the added variable is orthogonal to the current residuals; in
+practice it always rises a little, even for an irrelevant variable.
+The adjusted $R^2$, however, takes
 account of the addition of any new regressors:
 
 $$\bar R^2=1-\frac{SSR/(n-k)}{SST/(n-1)}$$
@@ -114,13 +116,12 @@ $$
 
 This makes
 $$
-{\rm E} \bf (\hat \beta)=\beta + (X'X)^{-1}X'{\rm E} (u|X).
+{\rm E} \bf (\hat \beta | X)=\beta + (X'X)^{-1}X'{\rm E} (u|X).
 $$
 
 The condition that makes the OLS estimator unbiased is:
 $$
 {\rm E} \bf (u|X)=0,
-
 $$
 
 that is, all explanatory variables which form the columns of $\bf X$
@@ -151,7 +152,6 @@ $u_{t-2}$ and so on.
 There is a weaker condition:
 $$
 {\rm E} \bf (X u)=0,
-
 $$
 
 Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.
@@ -161,7 +161,6 @@ Once we know that the model is correctly specified, then this equation can be us
 For OLS estimator to be consistent, a much weaker condition is needed:
 $$
 {\rm E} (u_t|X_t)=0,
-
 $$
 
 This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called predeterminedness condition, or say regressors are predetermined.  So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.

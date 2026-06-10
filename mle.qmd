@@ -70,7 +70,7 @@ $$
 \theta'})]
 $$
 
-The information matrix is the expected value of the inner product of gradient of the log-likelihood function, or the negative value of the expected value of the Hessian (second derivative of the log-likelihood function.
+The information matrix is the expected value of the outer product of the gradient of the log-likelihood function, or the negative value of the expected value of the Hessian (second derivative of the log-likelihood function).
 
 3.  Asymptotic efficiency.
 
@@ -134,7 +134,7 @@ $$
 \bf u \sim N(0, \sigma^2 I)
 $$
 
-Even if this assumption does not hold, we still have asymptotic normality for $\bf u$.
+Even if this assumption does not hold, we still have asymptotic normality for $\bf \hat \beta$, so the tests below remain valid asymptotically.
 
 Since linear combination of normal variables are also normally
 distributed,
@@ -160,7 +160,7 @@ $$
 
 Here we don't know $\sigma^2$.  However, it can be shown that
 $$
-{\bf \frac{\hat u' u}{\sigma^2}} \sim \chi^2(n-k)
+{\bf \frac{\hat u' \hat u}{\sigma^2}} \sim \chi^2(n-k)
 $$
 
 Then we have
@@ -238,13 +238,13 @@ u/ (n-2k)}} \sim F(k , n-2k)
 $$
 where $\hat u_*$ is the residual of the restricted model, $\hat u$ is the stacked residual of two unrestricted models.
 
-For example, for prewar period (suppose there is $n$ observations):
+For example, for prewar period (suppose there is $n_1$ observations):
 
 $$
 y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2
 $$
 
-For postwar period  (suppose there is $m$ observations):
+For postwar period  (suppose there is $n_2$ observations):
 
 $$
 y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2
@@ -264,13 +264,13 @@ SSR_U = SSR_1 + SSR_2
 $$
 
 
-Then run the regression on the stacked sample of $n+m$ observations
+Then run the regression on the stacked sample of $n_1+n_2$ observations
 and get $SSR_R$.
 
 Then
 
 $$
-\frac{(SSR_R-SSR_U)/k}{SSR_U/(n+m-2k)} \sim F_{k, n+m-2k}.
+\frac{(SSR_R-SSR_U)/k}{SSR_U/(n_1+n_2-2k)} \sim F_{k, n_1+n_2-2k}.
 $$
 
 $k$ is number of restrictions; in this example, it is 3.
@@ -279,7 +279,7 @@ $k$ is number of restrictions; in this example, it is 3.
 
 
 The other way to do the same test is easier:  simply include
-interaction terms between group dummy and dependent variables in the
+interaction terms between group dummy and explanatory variables in the
 regression.
 
 For our earlier example, we would estimate the model:
@@ -416,8 +416,8 @@ $$
 
 
 White's estimator deals with the situation that we have
-heteroskedasticity (a diagonal $\Sigma$) of unknown form.  When we
-have serial correlation of unknown form (a non-diagonal $\Sigma$), we
+heteroskedasticity (a diagonal $\Omega$) of unknown form.  When we
+have serial correlation of unknown form (a non-diagonal $\Omega$), we
 can estimate the variance-covariance matrix by a heteroskedasticity
 and autocorrelation consistent, or HAC, estimator.  Newey-West
 estimator is the most popular HAC estimator.
@@ -452,7 +452,7 @@ A natural estimate is
 
 $$ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),$$
 
-where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y). $$
+where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. $$
 
 This gives a consistent estimate of $\bf S$; however, it sometimes is
 not positive semidefinite.
@@ -467,20 +467,21 @@ Consider a linear regression model:
 $$ y_t={ \bf x_t' \beta} + u_t $$
 
 Suppose we have the OLS estimator $\bf b_T$, then
-$$ \sqrt{T} ({\bf b_t - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t
-  x_t'}]^{-1} [({\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t'}] $$
+$$ \sqrt{T} ({\bf b_T - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t
+  x_t'}]^{-1} [(1/{\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t}] $$
 
 The first term converges in probability to some constant.  The second
-term is the sample mean of the vector $\bf x_t u_t$.
+term is $\sqrt{T}$ times the sample mean of the vector $\bf x_t u_t$,
+which is exactly the form to which a central limit theorem applies.
 
 Under general conditions,
 
-$$ \sqrt{T} ({\bf b_t - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$
+$$ \sqrt{T} ({\bf b_T - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$
 
-where $S$ can be estimated by
+where $Q = {\rm plim} \, (1/T)\sum_{t=1}^T {\bf x_t x_t'} = {\rm E}[{\bf x_t x_t'}]$, and $S$ can be estimated by
 $$ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), $$
 where
-$$ \hat \Gamma_{v,T}'= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$
+$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$
 where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.
 
 Overall, the variance of $\bf b_T$ is approximated by

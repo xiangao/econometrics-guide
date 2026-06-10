@@ -27,8 +27,8 @@ $$
 
 The graph of $S(t)$ against $t$ is known as the survival curve.  If
 there is no censoring, then the survival function is easy to estimate
-by the ratio of number of units survives at $t$ vs. total number of
-units at risk at $t$.  The most common method to estimate the survival
+by the ratio of the number of units surviving beyond $t$ to the total
+number of units in the sample.  The most common method to estimate the survival
 function with a survival data set containing censored observations is
 the Kaplan-Meier method.  The basic idea is to use the product of a series of conditional probabilities.
 
@@ -43,17 +43,17 @@ $$
 Then the survival curve is estimated by:
 
 $$
-\hat S(t) = \prod_{j | t{(j)} \le t} (1-\frac{d_j}{r_j}),
+\hat S(t) = \prod_{j | t_{(j)} \le t} (1-\frac{d_j}{r_j}),
 $$
 
 where $r_j$ is the number of units at risk at $t_{(j)}$ and $d_j$ is
-the number of "failure" or events at $t_{(t)}$.  Note that units
+the number of "failure" or events at $t_{(j)}$.  Note that units
 censored at $t_{(j)}$ are included in $r_j$.
 
 The variance of this estimator can be estimated by:
 
 $$
-\hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.
+\hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t_{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.
 $$
 
 
@@ -73,8 +73,8 @@ $$
 
 The hazard function is defined by
 $$
-h(t)=\lim_{\Delta t \rightarrow 0}\mbox{Pr} (t<T \leq t+\Delta t |
-T \geq t)=\frac{f(t)}{S(t)}=\frac{f(t)}{1-F(t)}
+h(t)=\lim_{\Delta t \rightarrow 0}\frac{\mbox{Pr} (t<T \leq t+\Delta t |
+T \geq t)}{\Delta t}=\frac{f(t)}{S(t)}=\frac{f(t)}{1-F(t)}
 $$
 
 One of the simplest functional forms is the exponential
@@ -136,7 +136,6 @@ One class of models that is quite widely used is the proportional
 hazard models (based on Cox (1972)).
 $$
 h(t | {\bf x}_i)=h_0(t)\exp ({\bf x}'_i \beta),
-
 $$
 
 In this model $h_0(t)$ is called baseline hazard rate; it describes
@@ -155,7 +154,7 @@ to case $i$, not other cases in the risk set) is
 
 
 $$
-L_i=\frac{h_0(t) \exp(x_i' \beta)} {\sum_l I(T_l \ge t) h_0(t) \exp(x_l' \beta)}=\frac{ \exp(x_i' \beta)} {\sum_l I(T_l \ge t)  \exp(x_l' \beta)}
+L_i=\frac{h_0(t_j) \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j) h_0(t_j) \exp(x_l' \beta)}=\frac{ \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j)  \exp(x_l' \beta)}
 $$
 
 We can see here that Cox's model is for continuous time survival data.
@@ -183,7 +182,7 @@ model is that for all units, the effect is the same at all time $t$.
 To see this:
 
 $$
-\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({\bf x_1}'_i \beta)}{h_0(t)\exp ({\bf x_2}'_i \beta)}= \frac{\exp ({\bf x_1}'_i \beta)}{\exp ({\bf x_2}'_i \beta)},
+\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({\bf x}_1' \beta)}{h_0(t)\exp ({\bf x}_2' \beta)}= \frac{\exp ({\bf x}_1' \beta)}{\exp ({\bf x}_2' \beta)},
 $$
 which does not depend on $t$.
 
@@ -195,7 +194,7 @@ Parameter estimates are derived assuming continuous survival times.
 
 ### Interpretation
 
-In equation the equation above, if we would like to calculate the partial effect of $x_j$ on $h$, we have:
+In the equation above, if we would like to calculate the partial effect of $x_j$ on $h$, we have:
 
 $$
 \partial h(t | {\bf x}_i) / \partial x_j=h_0(t)\exp ({\bf x}'_i \beta) \beta_j = \beta_j h(t | {\bf x}_i),
@@ -204,8 +203,7 @@ $$
 If we do it the other way, plug in $x_j + 1$ will generate
 
 $$
-h_0(t)\exp ({\bf x}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{\bf x}'_i \beta)
-
+h_0(t)\exp ({\bf x}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{\bf x}_i)
 $$
 
 

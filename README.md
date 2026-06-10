@@ -28,3 +28,5 @@ quarto preview    # live preview with hot reload
 Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, Chris Baum's *An Introduction to Modern Econometrics Using Stata*, and other sources. Not intended for publication.
 
 > **2026-06-07:** Math/code review pass — see `CLAUDE.md` (Review pass section) for the list of corrections. Audit trail in `../_review/`.
+
+> **2026-06-10:** Second independent review pass (all 13 chapters): Heckman selection re-parameterized consistently (`ρσ` covariance), hazard-function definition corrected (`/Δt`), Newey–West scaling fixed, several equations that rendered as literal text repaired (blank lines inside `$$` blocks), degenerate IV simulation DGP fixed, plus ~30 smaller corrections. Audit trail in `../_review2/`.

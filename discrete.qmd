@@ -51,7 +51,7 @@ n-vector with typical element $y_t$, the loglikelihood function for
 $\bf y$ can be written as
 $$
 {\ell}({\bf y, \beta})=\sum_{t=1}^n(y_t \log F({\bf X_t
-\beta})+(1-y_t) \log(1- F({\bf X_t \beta}))
+\beta})+(1-y_t) \log(1- F({\bf X_t \beta})))
 $$
 
 For the logit and probit models, this function is globally concave
@@ -90,7 +90,7 @@ Therefore,
 $$
 \begin{aligned}
 \mbox{Pr}(y_t=0) &= \mbox{Pr}(y_t^0 < \gamma_1)=\mbox{Pr}({\bf
-X}_t \beta < \gamma_1) \\
+X}_t \beta + u_t < \gamma_1) \\
 &= \mbox{Pr}(u_t < \gamma_1 - {\bf X}_t \beta)=\Phi ( \gamma_1
 - {\bf X}_t \beta)
 \end{aligned}

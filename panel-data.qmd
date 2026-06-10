@@ -31,7 +31,6 @@ cross-sectional units.
 The basic unobserved effects model can be written as:
 $$
 y_{it}={\bf {x_{it} \beta}} + c_i + u_{it}
-
 $$
 
 where $i$ indexes "units" (can be people, firms, or households,
@@ -45,7 +44,7 @@ distinguish by the correlation between $c_i$ and ${\bf {x_{it}}}$.
 If there is no correlation between $c_i$ and ${\bf {x_{it}}}$,
 then it's a random effect; otherwise, it's a fixed effect.
 
-It is true that in some cases it is hard to justify that If there is
+It is true that in some cases it is hard to justify that there is
 no correlation between $c_i$ and ${\bf {x_{it}}}$, which is one reason
 that people in economics tend to use fixed-effect models.  However,
 fixed-effect models have its own limitations.  One of them is: It is
@@ -80,7 +79,9 @@ $$ \bf \hat \beta_{RE} = (\sum_{i=1}^N X_i' \hat \Omega^{-1} X_i)^{-1} (\sum_{i=
 
 It is a special case of GLS.  Before calculating $\hat \beta_{RE}$, $
 \sigma_{c}^2$ and $ \sigma_{u}^2$ need to be estimated.  This is
-generally done by using pooled OLS estimates.
+generally done by using residuals from within and between regressions
+(the Swamy-Arora method, the default in most software), or from pooled
+OLS.
 
 ## Fixed Effect Methods
 
@@ -89,7 +90,7 @@ In many applications, the whole point of using panel data is to allow
 $c_i$ be correlated with $\bf x_{it}$.  We need fixed-effect models in
 those cases.
 
-For the same model as in equation the equation above, the fixed-effect
+For the same model as in the equation above, the fixed-effect
 methods try to eliminate $c_i$ using fixed effects transformation, or
 "within transformation".  The FE transformation is to "de-mean"
 each observation by subtracting the group mean.  Basically subtracting

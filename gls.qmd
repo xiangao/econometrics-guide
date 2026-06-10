@@ -8,7 +8,6 @@ in limiting our attention to the simpler linear case.
 
 $$
 \bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,
-
 $$
 where $\bf \Omega$, the variance-covariance matrix of the error
 term, is a positive definite $n \times n$ matrix.  If $\bf \Omega$
@@ -70,12 +69,12 @@ matrix with $t$th diagonal element $\omega_t^{-1}$.  For a typical
 observation, regression can be written as
 $$
 \omega_t^{-1}y_t=\omega_t^{-1} {\bf X_t \beta}+ \omega_t^{-1} u_t.
-
 $$
 This is called weighted least squares, or WLS.  The weight given
 to each observation is $\omega_t^{-1}$.  Observations of which
 variance of the error term is large are given low weights, and
 observations for which it is small are given high weights.
+
 ### Feasible Generalized Least Squares
 
 In many cases it is reasonable to suppose that $\bf \Omega$ depends in a known way on a vector of unknown parameters $\bf \gamma$.  If so, it may be possible to estimate $\mathbf{\gamma}$ consistently, so as to obtain $\bf \Omega (\hat \gamma)$.  This type of procedure is called feasible generalized least squares, or feasible GLS.  But we'll

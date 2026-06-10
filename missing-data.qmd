@@ -2,17 +2,13 @@
 
 Data set like:
 
-y x z w q
-
-1 4 2 ? ?
-
-4 ? 1 2 ?
-
-2 ? ?
-
-? 2 1
-
-? ? ?
+| y | x | z | w | q |
+|---|---|---|---|---|
+| 1 | 4 | 2 | ? | ? |
+| 4 | ? | 1 | 2 | ? |
+| 2 | ? | ? | ? | ? |
+| ? | 2 | 1 | ? | ? |
+| ? | ? | ? | ? | ? |
 
 
 ## Different cases under different assumptions
@@ -28,7 +24,7 @@ The MAR case is the one we are interested in.
 For MCAR:  you lose efficiency if you simply drop the data.
 For MAR:  if you don't model it, you suffer bias and efficiency.
 
-If we model missingness, for both MCAR, you gain efficiency.  For MAR, you correct bias and gain efficiency.
+If we model missingness, for MCAR, you gain efficiency.  For MAR, you correct bias and gain efficiency.
 
 ## Old methods
 
@@ -66,15 +62,15 @@ Imputation model:  $x=\alpha_0+\alpha_1 z + \alpha_2 y$
 
 Main model:  $y = \beta_0 + \beta_1 x + \beta_2 z$
 
-1.  Pick m values of $\alpha$ out of the asymptotic distribution, the multivariate normal, using $\alpha$ and VCV $\hat \Sigma$ for the mean and VCV of the distribution $\Phi (\alpha \Sigma)$.
+1.  Pick $M$ values of $\alpha$ out of the asymptotic distribution, the multivariate normal $N(\hat \alpha, \hat \Sigma)$, using the estimate $\hat \alpha$ and its VCV $\hat \Sigma$ as the mean and VCV of the distribution.
 
-2. predict $m$ values of the missing values, creating $m$ data sets.
+2. predict $M$ values of the missing values, creating $M$ data sets.
 
-3. calculate $m$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the standard error of $\tilde \beta$.
+3. calculate $M$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the variance of $\tilde \beta$:
 
-$V_{\beta}=W + (1+1/m) B$
+$V_{\beta}=W + (1+1/M) B$
 
-where $W=\frac{1}{m} \sum_{m=1}^M s_m^2$, $B=\frac{1}{m-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.
+where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.  The standard error is $\sqrt{V_{\beta}}$.
 
 ### MI through Chained Equations (MICE) (by Buuren)
 
@@ -96,9 +92,9 @@ Many ways to implement MICE.
 
   a. create predicted value
 
-  b. pick three cases that have the closed predicted values in terms of Euclidean distance.
+  b. pick a small set of donor cases that have the closest predicted values (the number of donors is software-specific; e.g., three or five).
 
-  c. randomly choose one of the three values to impute.
+  c. randomly choose one of those donors' observed values to impute.
 
 ### Bayesian Data Augmentation
 
@@ -106,7 +102,7 @@ Many ways to implement MICE.
 
 * Build a missing data model into a Bayesian model, treating missing values as another parameter to estimate by drawing out of its posterior distribution.
 
-$f(\beta, y_{miss}|y_{obs}) \sim f(y_{obs} | \beta, y_{miss}) f(\beta, y_{miss})$
+$f(\beta, y_{miss}|y_{obs}) \propto f(y_{obs} | \beta, y_{miss}) f(\beta, y_{miss})$
 
 
 * We integrate out the missing values by sampling from the total distribution, then averaging out the beta distributions over the space of missing data points.
