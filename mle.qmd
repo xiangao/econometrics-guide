@@ -56,12 +56,23 @@ This is to say that MLE estimator can get arbitrarily close to the true paramete
 
 2.  Asymptotic Normality
 $$
-{\bf \hat \theta} \sim^a N(\bf \theta, I^{-1}(\theta)).
+{\bf \sqrt{n}(\hat \theta - \theta)} \xrightarrow{d} N(\bf 0, I^{-1}(\theta)),
 $$
+where $\bf I(\theta)$ below is the *per-observation* information.
+Equivalently, in finite-sample terms,
+$$
+{\bf \hat \theta} \approx N(\bf \theta, I_n^{-1}(\theta)), \qquad I_n(\theta) = n\, I(\theta),
+$$
+with $\bf I_n(\theta)$ the *full-sample* information.  The $\sqrt{n}$
+scaling (equivalently, dividing the full-sample information by $n$) is
+what makes the statement well-defined; writing
+$\hat\theta \sim N(\theta, I^{-1}(\theta))$ without specifying which
+information is meant is ambiguous.
 
 This states that the asymptotic distribution of $\bf \hat \theta$
 is normal with mean $\bf \theta$ and variance given by the inverse
-of $\bf I(\theta)$, the information matrix, defined by
+of the information, where the per-observation information matrix
+$\bf I(\theta)$ is defined by
 
 $$
 {\bf I(\theta)}=E[(\frac{\partial l}{\partial
@@ -106,7 +117,8 @@ ols.lf <- function(theta, y, X) {
 X <- cbind(1,mtcars[,c('disp','hp','wt')])
 y <- mtcars$mpg
 
-# note that I have a rough idea of the starting values from OLS estimators first; otherwise it may converge to some wrong local maximum.  Annoying.
+# Use OLS estimates as starting values; good starting values reduce the
+# risk of the optimizer converging to a spurious local maximum.
 optim(c(1,1,-1,-1,-1), method="L-BFGS-B", fn=ols.lf, lower=c(1e-6,-Inf,-Inf,-Inf,-Inf), upper=rep(Inf,5), y=y, X=as.matrix(X))
 
 # it should match the OLS estimator

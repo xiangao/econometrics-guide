@@ -68,15 +68,20 @@ Poisson estimation is implemented in almost every statistical package.
 However, some of them may not work if you have a continuous dependent
 variable.
 
-Stata's implementation of Poisson model: "poisson" and "xtpoisson" do take
-continuous dependent variable.  Note that standard errors reported
-without any specification in "vce" will be likely downward biased.
-Therefore, always use "robust" option at least.  Bootstrapped
-standard errors are also preferred.  However, if you intend to use it
-as QMLE-Poisson, standard errors need to be adjusted.  Those two
-procedures do not adjust for standard errors.  A user-written program
-called xtpqml calls for xtpoisson and it calculates robust standard
-error which is suggested by Wooldridge (1999).
+Stata's implementation of the Poisson model: "poisson" and "xtpoisson"
+do take a continuous dependent variable.  Standard errors reported
+without any "vce" specification assume the Poisson variance equals the
+mean and are likely too small under overdispersion.  For a
+cross-sectional Poisson treated as QMLE, the robust (sandwich)
+standard errors -- the "robust" option -- *are* exactly the
+adjustment needed for a misspecified variance, so they are valid even
+when the equidispersion assumption fails; the conditional mean only
+needs to be correctly specified.  In the panel fixed-effects case,
+serial correlation within a unit is a separate issue that requires
+*clustered* standard errors.  Older versions of "xtpoisson" did not
+offer a cluster-robust option, which is why the user-written program
+xtpqml was written to supply the cluster-robust standard errors of
+Wooldridge (1999) after xtpoisson.
 
 
 ## Fixed-effect Poisson model
@@ -200,14 +205,17 @@ model with first equation logit, and second equation truncated
 poisson.  It is the same as two separate estimations; namely "logit"
 first, then "ztp" on positive counts.
 
-The difference between hurdle model and a Heckman selection model is
-that in a Heckman model, two equations need to be jointly estimated.
-There must be exclusion condition to make the selection
-equation identifiable.  That is, the second stage equation need to
-take account of the selection bias; therefore, some instrument for
-selection is needed for the first stage equation.  On the other hand,
-a hurdle model assumes that the two processes are separate; there is
-no selection.
+The difference between a hurdle model and a Heckman selection model is
+that in a Heckman model the two equations are jointly estimated and
+the outcome equation must account for selection bias.  An exclusion
+restriction -- a variable that affects selection but not the outcome
+-- is strongly recommended for the selection equation.  Strictly
+speaking, under joint normality the model is identified by the
+nonlinearity of the inverse Mills ratio even without an excluded
+variable, but identification then rests entirely on functional form
+and is fragile, so an exclusion restriction is recommended in
+practice.  On the other hand, a hurdle model assumes the two processes
+are separate; there is no selection.
 
 ## Zero-inflated count models
 
@@ -251,7 +259,13 @@ Negative Binomial process ("zinb" in Stata).
 http://hbs-rcs.github.io/blog/2014/09/17/poisson-models/
 
 
-## How to interpret coefficients and calculate marginal effects in Discrete Choice Models
+## Interpreting Coefficients and Marginal Effects in Nonlinear Models
+
+This section is broader than count data: it covers how to read
+coefficients and compute marginal effects in nonlinear models
+generally, including the binary discrete-choice models of the
+[Discrete and Limited Dependent Variables](discrete.qmd) chapter as
+well as the count models above.
 
 ### Binary Response Models
 

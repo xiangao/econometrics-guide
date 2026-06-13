@@ -1,6 +1,6 @@
 # Dynamic Panel Data
 
-## when is it a problem
+## When Is It a Problem
 
 Model setup:
 $$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$
@@ -15,7 +15,13 @@ of the composite error term in the random effect model.
 
 Fixed effect model setup:
 
-$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \bar y_i) + (\epsilon_{i,t} - \bar \epsilon_i)$$
+$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$
+
+where $\overline{y_{i,-1}}$ is the unit mean of the *lagged* dependent
+variable.  This is not exactly $\bar y_i$ (the mean of current
+$y_{i,t}$): the two differ at the first and last usable periods,
+though they coincide asymptotically and under the usual balanced-sample
+convention.
 
 Nickell (1981) shows that (see also Anderson and Hsiao 1981)
 
@@ -27,7 +33,7 @@ large if $T$ is small, but when $T$ is big, then the correlation goes
 down to near zero.  When $T$ is big, we don't have a problem with
 fixed effect model.
 
-## how big is the bias
+## How Big Is the Bias
 
 When $T$ is small, which is typically the case in many microeconomic settings, then we say the fixed effect model with a lagged dependent variable is inconsistent.  But how bad is it?
 
@@ -69,6 +75,26 @@ This is the so called difference GMM estimator.
 
 AB model has a problem:  when the instruments are weak, the estimator is not good.  That will happen when $y$ follows random walk or near random walk.  In that case the past levels won't be a good predictor of the future changes.
 
-BB model comes in to instrument levels with differences. Instead of differencing to remove the fixed effects, it keeps the fixed effects and difference the instruments to make them exogenous to the fixed effects.  The basic idea is that $\Delta y_{i,t}$ is not correlated with $C_i$.  Therefore it can be used as instruments in the fixed effects model without demeaning the variables.
+BB add a second set of moment conditions in *levels*.  The basic idea
+is that lagged differences $\Delta y_{i,t-1}$ are uncorrelated with the
+composite error $C_i + \epsilon_{i,t}$ under an additional
+initial-condition/stationarity restriction, so they can instrument the
+level equation.
 
-This is implemented by so called system GMM.  In this case, we have fixed effects in the model, but do not attempt to purge the fixed effect by demeaning or first differencing.  Instead, we use past differences of $y$ as instruments, assuming $\Delta y_{i,t}$ is not correlated with $C_i$.  In this case, time-invariant variables can be used in the model.
+This is implemented by so-called *system GMM*, which stacks two
+equations and estimates them jointly:
+
+- the **differenced equation** ($\Delta y_{i,t}$), instrumented by
+  lagged *levels* $y_{i,t-2}, y_{i,t-3}, \dots$ (the Arellano--Bond
+  moments); and
+- the **level equation** ($y_{i,t}$ in levels, keeping $C_i$),
+  instrumented by lagged *differences* $\Delta y_{i,t-1}$.
+
+The level-equation moments are valid only under the extra assumption
+that the initial deviations from the long-run mean are uncorrelated
+with $C_i$ (mean stationarity of the process).  System GMM is more
+efficient than difference GMM when $y$ is persistent (near a random
+walk), and it allows time-invariant regressors.  A practical warning:
+the instrument count grows with $T^2$, so *instrument proliferation*
+can overfit the endogenous regressors and weaken the Hansen $J$ test;
+lags should be collapsed or capped in practice.

@@ -117,6 +117,8 @@ The unit-specific effect $c_i$ cancels because it is constant over $t$
 ($c_i - \bar c_i = 0$). Writing the within-transformed variables as
 $\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{\bf x}_{it}={\bf x}_{it}-{\bf \bar x}_i$,
 OLS on the demeaned data gives the **fixed-effects (within) estimator**
+(here ${\bf x}_{it}$ is a $1\times k$ *row* vector, so
+$\ddot{\bf x}_{it}'\ddot{\bf x}_{it}$ is the $k\times k$ outer product)
 
 $$
 \hat\beta_{FE} = \left(\sum_i \sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it}\right)^{-1}

@@ -76,10 +76,22 @@ $$
 \frac{1}{n} \bf Z'(y-X \hat \beta)=0.
 $$
 
-That gives us the IV estimator
+When the model is *exactly identified* -- the number of instruments
+equals the number of regressors, so $\bf Z'X$ is square and
+nonsingular -- the sample moment condition has a unique solution, the
+simple IV estimator
 $$
 \bf \hat \beta=(Z'X)^{-1}Z'y.
 $$
+When the model is *overidentified* -- more instruments than regressors
+-- $\bf Z'X$ is no longer square and we cannot set all sample moments
+to zero simultaneously.  We instead minimize a quadratic form in the
+moments, which gives the two-stage least squares (2SLS) estimator
+$$
+\bf \hat \beta=(X'P_Z X)^{-1}X'P_Z y, \qquad P_Z = Z(Z'Z)^{-1}Z',
+$$
+the special case of the GMM estimator below with weighting matrix
+$(\bf Z'Z)^{-1}$.
 
 ## The Generalized Method of Moments
 

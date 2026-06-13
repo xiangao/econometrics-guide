@@ -28,7 +28,10 @@ fitted values, $\bf \hat y' \hat u=0$, so the cross term drops:
 $$\bf y'y=(\hat y+\hat u)'(\hat y +\hat u)=\hat y' \hat y +\hat u'\hat u=\hat\beta'X'X\hat\beta +\hat u'\hat u $$
 
 Subtracting $n\bar y^2$ ($\bar y$ is the sample mean) from both
-sides,
+sides, **and assuming the regression includes an intercept** (so that
+$\bar{\hat y}=\bar y$ and the residuals sum to zero, which is what
+makes this centered decomposition and the $R^2$ interpretation below
+hold),
 $$ \bf y'y-n\bar y^2=(\hat\beta'X'X\hat\beta-n\bar y^2) +\hat u'\hat u $$
 
 
@@ -55,7 +58,7 @@ $$\bar R^2=1-\frac{SSR/(n-k)}{SST/(n-1)}$$
 ## Example
 Let's look at an example of OLS of car's mpg on disp, hp and wt.
 ```{r}
-# load libraries I'll need later.
+# Load the packages used in this chapter.
 library(car)
 library(stats4)
 library(dplyr)

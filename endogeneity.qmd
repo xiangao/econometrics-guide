@@ -69,7 +69,12 @@ $$
 Var \bf [ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
 \sigma^2 (X'P_ZX)^{-1}
 $$
-where $\hat \sigma^2 ={\bf \hat u' \hat u} / N$.
+where $\hat \sigma^2 ={\bf \hat u' \hat u} / N$.  This is the
+homoskedastic large-sample variance; finite-sample formulas typically
+apply a degrees-of-freedom correction ($N-k$ in place of $N$), and
+when errors are heteroskedastic or clustered the robust/clustered IV
+covariance matrix replaces $\hat\sigma^2 (X'P_ZX)^{-1}$ with a
+sandwich form.
 
 Note that $\bf \hat u = y- X \hat \beta_{2sls}$.
 
@@ -173,14 +178,19 @@ can do a simple test of endogeneity of $\bf X$.  For example:
 
 Obviously, this test is based on $\bf Z$ being exogenous.
 
-Secondly, it works for some non-linear models, such as logit, probit,
-poisson, or any other glm models.  That is, if you have an endogenous
-variable in a glm model, you can regress that endogenous variable on
-instruments, get the residual, then run the glm model with the
-original regressors, plus the residual from the first stage.  For
-example, the "eteffects" procedure in Stata (version 14) uses control
-function approach to get endogenous treatment effects for different
-types of outcomes.
+Residual inclusion extends to *some* non-linear models -- logit,
+probit, Poisson -- under additional control-function assumptions, but
+it is not automatically valid for "any glm".  The construction is
+model-specific: the appropriate first-stage residual (a plain linear
+residual or a generalized residual), the identification conditions,
+and the standard errors all differ for continuous, binary, and
+nonlinear endogenous regressors, and inserting a linear first-stage
+residual into an arbitrary GLM is generally not correct.  The
+generated-regressor step also inflates uncertainty, so standard errors
+need to account for the estimated first stage (e.g. by bootstrap).
+For example, the "eteffects" procedure in Stata (version 14) uses a
+control-function approach to get endogenous treatment effects for
+several outcome types.
 
 
 ## Durbin-Wu-Hausman Test
@@ -252,10 +262,16 @@ Or, simply use "ivendog" in Stata.
 ## Identification
 
 Identification in a regression equation means that all parameters can
-be uniquely estimated.  A necessary condition of that is to have at
-least as many instruments as the number of endogenous variables.  That
-is, $l \ge k$ in our example above.  If $l=k$ we have
-exact-identification.  If $l>k$, we have over-identification.
+be uniquely estimated.  The relevant counting rule (the *order
+condition*) is most cleanly stated in terms of *excluded* instruments.
+Let $k_e$ be the number of endogenous regressors and $l_e$ the number
+of excluded instruments (instruments not already included as
+exogenous regressors).  A necessary condition is $l_e \ge k_e$:
+there must be at least as many excluded instruments as endogenous
+regressors.  (Equivalently, counting the included exogenous regressors
+as their own instruments, the total number of instruments must be at
+least the total number of regressors.)  If $l_e=k_e$ we have
+exact-identification.  If $l_e>k_e$, we have over-identification.
 
 Over-identification generates more efficient estimates, given the
 assumption of instruments being exogenous.  The other advantage of
@@ -264,7 +280,7 @@ test the adequacy of instruments.
 
 Under the null hypothesis that all the instruments are uncorrelated
 with the error term, an LM statistic  $N \times R^2$ conforms to
-$\chi^2 (r)$ distribution, $r=l-k$, the number of excess instruments,
+$\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,
  or say, the number of overidentifying restrictions.  If we reject the null,
  then we should be concerned about the exogeneity of the whole set of
  the instruments.  This test is called Sargan's test in IV context, and
@@ -328,8 +344,15 @@ We can verify the orthogonality condition  by Sargan's test if there are extra
 instruments.
 
 It turns out instrument relevance is important too: if instruments are
-weak, then the regular large sample properties of IV or GMM estimators
-do not hold any more.  The estimators are inconsistent or biased.
+weak, the usual large-sample approximations are poor.  It helps to
+keep three cases apart.  With fixed, nonzero first-stage relevance, IV
+remains *consistent* but can be badly *biased* in finite samples (and
+biased toward OLS), with the normal approximation working poorly.
+Under weak-instrument (local-to-zero) asymptotics, the limiting
+distribution is *nonstandard* and not centered in the usual way, so
+conventional standard errors and $t$-statistics mislead.  Only in the
+limiting case of complete irrelevance ($\Pi=0$) is the parameter
+unidentified.
 
 To see the problem, suppose
 

@@ -13,8 +13,12 @@ $$
 P_t \equiv \mbox{Pr}(y_t=1 | \Omega_t)=\mbox{E}(y_t | \Omega_t).
 $$
 
-Since $0 \le P_t \le 1$, $X_t \hat \beta$ needs to be in this interval
-too, $X_t$ is a set of regressors.
+Here $X_t$ is a set of regressors.  A linear probability model would
+set $P_t = X_t \beta$ directly, which requires the fitted values to
+stay in $[0,1]$ -- an awkward constraint, since the linear index
+$X_t \beta$ is unbounded.  Logit and probit avoid this problem by
+modeling $P_t = F(X_t \beta)$, mapping the unbounded index through a
+CDF-valued transformation into $[0,1]$.
 
 We ensure that $0 \le P_t \le 1$ by specifying that
 $$

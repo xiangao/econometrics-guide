@@ -33,6 +33,7 @@ book:
     - survival.qmd
     - dynamic-panel.qmd
     - missing-data.qmd
+    - references.qmd
 
 format:
   html:

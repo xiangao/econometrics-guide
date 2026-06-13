@@ -70,10 +70,13 @@ observation, regression can be written as
 $$
 \omega_t^{-1}y_t=\omega_t^{-1} {\bf X_t \beta}+ \omega_t^{-1} u_t.
 $$
-This is called weighted least squares, or WLS.  The weight given
-to each observation is $\omega_t^{-1}$.  Observations of which
-variance of the error term is large are given low weights, and
-observations for which it is small are given high weights.
+This is called weighted least squares, or WLS.  It is worth keeping
+two notions of "weight" distinct.  The transformed variables $y_t$ and
+$\bf X_t$ are *scaled* by $\omega_t^{-1}$; equivalently, the WLS
+objective weights each squared residual by the inverse variance
+$\omega_t^{-2}$ (the square of the scaling factor).  Either way,
+observations whose error variance is large are given low weight, and
+observations for which it is small are given high weight.
 
 ### Feasible Generalized Least Squares
 

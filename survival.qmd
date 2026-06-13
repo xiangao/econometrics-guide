@@ -248,12 +248,19 @@ summary(loglog)
 
 ## Discrete-time Survival Models
 
-Cox (1972)  proposed a discrete-time model by modeling the odds of dying at time $t_j$ given survival up to that point.
+Cox (1972) is the *continuous-time* proportional hazards model; the
+discrete-time analogue models the odds of an event at time $t_j$ given
+survival up to that point.  This proportional-odds specification for
+the discrete hazard,
 
 $$
 \frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j | {\bf x}_i)}{1- h_0(t_j | {\bf x}_i)} \exp({\bf x}'_i \beta),
 $$
-which is similar to Cox's proportion hazard model for continuous time.  If we take logs on both sides, we have
+is a discrete-time *proportional-odds* hazard model rather than a
+direct discretization of Cox's continuous-time proportional hazards
+model.  (The complementary log-log link is the discrete-time form that
+corresponds more directly to a grouped continuous-time proportional
+hazards model.)  If we take logs on both sides, we have
 
 $$
 {\rm logit} (h(t_j | {\bf x}_i)) = \alpha_j +  {\bf x}'_i \beta,

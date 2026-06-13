@@ -1,0 +1,40 @@
+# References {.unnumbered}
+
+This guide draws on a handful of textbooks, the original papers behind
+the estimators discussed, and package documentation. The list below
+collects the works cited across the chapters.
+
+## Textbooks and lecture notes
+
+- Baltagi, B. H. *Econometric Analysis of Panel Data.* Wiley.
+- Baum, C. F. *An Introduction to Modern Econometrics Using Stata.* Stata Press.
+- Davidson, R., and J. G. MacKinnon. *Econometric Theory and Methods.* Oxford University Press.
+- Greene, W. H. *Econometric Analysis.* Prentice Hall.
+- Hamilton, J. D. (1994). *Time Series Analysis.* Princeton University Press.
+- Wooldridge, J. M. *Econometric Analysis of Cross Section and Panel Data.* MIT Press.
+
+## Core papers
+
+- Anderson, T. W., and C. Hsiao (1981). "Estimation of Dynamic Models with Error Components." *Journal of the American Statistical Association* 76: 598–606.
+- Arellano, M., and S. Bond (1991). "Some Tests of Specification for Panel Data." *Review of Economic Studies* 58: 277–297.
+- Blundell, R., and S. Bond (1998). "Initial Conditions and Moment Restrictions in Dynamic Panel Data Models." *Journal of Econometrics* 87: 115–143.
+- Cox, D. R. (1972). "Regression Models and Life-Tables." *Journal of the Royal Statistical Society B* 34: 187–220.
+- Heckman, J. J. (1979). "Sample Selection Bias as a Specification Error." *Econometrica* 47: 153–161.
+- Judson, R. A., and A. L. Owen (1999). "Estimating Dynamic Panel Data Models: A Guide for Macroeconomists." *Economics Letters* 65: 9–15.
+- Moreira, M. J. (2003). "A Conditional Likelihood Ratio Test for Structural Models." *Econometrica* 71: 1027–1048.
+- Newey, W. K., and K. D. West (1987). "A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix." *Econometrica* 55: 703–708.
+- Nickell, S. (1981). "Biases in Dynamic Models with Fixed Effects." *Econometrica* 49: 1417–1426.
+- Sargan, J. D. (1958). "The Estimation of Economic Relationships Using Instrumental Variables." *Econometrica* 26: 393–415.
+- Singer, J. D., and J. B. Willett (1993). "It's About Time: Using Discrete-Time Survival Analysis to Study Duration and the Timing of Events." *Journal of Educational Statistics* 18: 155–195.
+- Stock, J. H., and M. Yogo (2005). "Testing for Weak Instruments in Linear IV Regression." In *Identification and Inference for Econometric Models*, ed. Andrews and Stock. Cambridge University Press.
+- Wooldridge, J. M. (1999). "Distribution-Free Estimation of Some Nonlinear Panel Data Models." *Journal of Econometrics* 90: 77–97.
+
+## Missing data
+
+- Rubin, D. B. (1987). *Multiple Imputation for Nonresponse in Surveys.* Wiley.
+- van Buuren, S. (2018). *Flexible Imputation of Missing Data.* 2nd ed. CRC Press. (MICE.)
+
+## Software
+
+- R Core Team. *R: A Language and Environment for Statistical Computing.* R packages used in the code examples include `AER`, `ivreg`, `gmm`, `survival`, `MASS`, `mvtnorm`, `strucchange`, and `car`.
+- StataCorp. *Stata Statistical Software.*
