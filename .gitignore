@@ -1,6 +1,3 @@
-# Rendered output (published via gh-pages branch)
-_book/
-
 # R artifacts
 .Rhistory
 .RData

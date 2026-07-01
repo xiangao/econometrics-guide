@@ -1,0 +1,30 @@
+/* Slightly more readable measure for body text */
+main {
+    max-width: 760px;
+}
+
+/* Calmer code blocks: less neon, more paper */
+div.sourceCode {
+    background-color: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 4px;
+}
+
+/* Block quotes: a clean left rule rather than the default beige block */
+blockquote {
+    border-left: 3px solid #ccc;
+    color: #555;
+    padding-left: 1em;
+    margin-left: 0;
+    font-style: normal;
+}
+
+/* Section headings: a touch more breathing room above */
+h2, h3 {
+    margin-top: 2em;
+}
+
+/* Suppress warning/deprecation noise in cell output (errors render elsewhere). */
+.cell-output-stderr {
+    display: none;
+}
