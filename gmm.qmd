@@ -124,6 +124,20 @@ function exists in a neighborhood of zero, the full set of moments
 also determines the distribution (without such a condition this can
 fail: the lognormal distribution is not determined by its moments).
 
+This matters directly for GMM: GMM only ever matches a finite set of
+moment conditions, and if the underlying distribution is not uniquely
+pinned down by its (even infinite) sequence of moments, then no amount
+of moment-matching -- however many moment conditions we add -- can
+recover the full data-generating distribution. This is precisely the
+sense in which GMM asks for less than MLE: MLE assumes we know the
+full distributional family and estimates its parameters (recovering
+the whole distribution when correctly specified), while GMM only
+requires correctly specified moment conditions and only ever identifies
+the parameters entering those moments, not the full distribution. When
+the distributional assumption behind MLE is correct, MLE is efficient
+and gives you more (the whole distribution); when it is not, GMM's
+weaker requirements make it more robust.
+
 This distinction underlies the relative strengths and weaknesses
 of ML and GMM.
 
@@ -201,7 +215,7 @@ data$u <- rnorm(nobs,0,1)
 # dgp
 data$y <- data$x +  data$z + data$u
 
-gmm.fit = gmm(data$y~data$x, data$w)
+gmm.fit = gmm(y ~ x, x = ~w, data = data)
 summary(gmm.fit)
 
 # It returns the same estimates as the 2sls results.
@@ -214,7 +228,7 @@ In OLS case, it would be $E(X u) = 0$.
 
 
 ```{r}
-gmm.ols = gmm(data$y~data$x, data$x)
+gmm.ols = gmm(y ~ x, x = ~x, data = data)
 summary(gmm.ols)
 
 # It returns the same estimates as the OLS results.

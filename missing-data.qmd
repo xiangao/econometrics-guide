@@ -129,6 +129,9 @@ $L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu_i, \Sigma_i)$
     clear
     set more off
 
+    * set matsize is obsolete since Stata 16 (matrix sizes are now dynamic)
+    * and can be safely omitted on modern Stata; kept here only because the
+    * original script targeted an older Stata version.
     set matsize 4000
 
     use "CROSSED_ContestUserActivity FEB 2014 temp.dta", clear

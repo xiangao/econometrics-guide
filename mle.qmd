@@ -72,16 +72,18 @@ information is meant is ambiguous.
 This states that the asymptotic distribution of $\bf \hat \theta$
 is normal with mean $\bf \theta$ and variance given by the inverse
 of the information, where the per-observation information matrix
-$\bf I(\theta)$ is defined by
+$\bf I(\theta)$ is defined using the single-observation log-likelihood
+contribution $l_t$ (so that the full-sample log-likelihood is
+$l=\sum_{t=1}^n l_t$):
 
 $$
-{\bf I(\theta)}=E[(\frac{\partial l}{\partial
-\theta})(\frac{\partial l}{\partial
-\theta})']=-E[(\frac{\partial^2 l}{\partial \theta \partial
+{\bf I(\theta)}=E[(\frac{\partial l_t}{\partial
+\theta})(\frac{\partial l_t}{\partial
+\theta})']=-E[(\frac{\partial^2 l_t}{\partial \theta \partial
 \theta'})]
 $$
 
-The information matrix is the expected value of the outer product of the gradient of the log-likelihood function, or the negative value of the expected value of the Hessian (second derivative of the log-likelihood function).
+The information matrix is the expected value of the outer product of the gradient of a single observation's log-likelihood contribution, or the negative value of the expected value of its Hessian (second derivative). Using the *full-sample* $l$ here instead of $l_t$ would give the full-sample information $I_n(\theta) = n\,I(\theta)$, not $I(\theta)$ itself.
 
 3.  Asymptotic efficiency.
 
@@ -108,7 +110,11 @@ Let's look at the example of regression of car's mpg on disp, hp and wt. This ti
 ols.lf <- function(theta, y, X) {
   beta <- theta[-1]
   sigma2 <- theta[1]
-  if (sigma2 <= 0) return(NA)
+  # Return a large penalty rather than NA: L-BFGS-B's line search can
+  # transiently evaluate points that violate the box constraint, and
+  # `fn` returning NA there causes a fatal "L-BFGS-B needs finite values
+  # of 'fn'" error. A finite penalty keeps the optimizer on track instead.
+  if (sigma2 <= 0) return(1e10)
   n <- nrow(X)
   e <- y - X%*%beta
   logl <- ((-n/2)*log(2*pi)) - ((n/2)*log(sigma2)) - ((t(e)%*%e)/(2*sigma2))

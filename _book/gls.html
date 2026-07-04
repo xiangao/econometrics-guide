@@ -350,11 +350,17 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <section id="weighted-least-squares" class="level2" data-number="3.3">
 <h2 data-number="3.3" class="anchored" data-anchor-id="weighted-least-squares"><span class="header-section-number">3.3</span> Weighted Least Squares</h2>
 <p>It is easy to obtain GLS estimates when the error terms are heteroscedastic but uncorrelated, which means <span class="math inline">\(\bf \Omega\)</span> is diagonal. Let <span class="math inline">\(\omega_t^2\)</span> denote the <span class="math inline">\(t\)</span>th diagonal element of <span class="math inline">\(\bf \Omega\)</span>. Then <span class="math inline">\(\bf \Psi\)</span> can be chosen as the diagonal matrix with <span class="math inline">\(t\)</span>th diagonal element <span class="math inline">\(\omega_t^{-1}\)</span>. For a typical observation, regression can be written as <span class="math display">\[
-\omega_t^{-1}y_t=\omega_t^{-1} {\bf X_t \beta}+ \omega_t^{-1} u_t.
-\]</span> This is called weighted least squares, or WLS. It is worth keeping two notions of “weight” distinct. The transformed variables <span class="math inline">\(y_t\)</span> and <span class="math inline">\(\bf X_t\)</span> are <em>scaled</em> by <span class="math inline">\(\omega_t^{-1}\)</span>; equivalently, the WLS objective weights each squared residual by the inverse variance <span class="math inline">\(\omega_t^{-2}\)</span> (the square of the scaling factor). Either way, observations whose error variance is large are given low weight, and observations for which it is small are given high weight.</p>
+\omega_t^{-1}y_t=\omega_t^{-1} {\bf x}_t' \boldsymbol{\beta}+ \omega_t^{-1} u_t.
+\]</span> This is called weighted least squares, or WLS. It is worth keeping two notions of “weight” distinct. The transformed variables <span class="math inline">\(y_t\)</span> and <span class="math inline">\(\bf x_t'\)</span> are <em>scaled</em> by <span class="math inline">\(\omega_t^{-1}\)</span>; equivalently, the WLS objective weights each squared residual by the inverse variance <span class="math inline">\(\omega_t^{-2}\)</span> (the square of the scaling factor). Either way, observations whose error variance is large are given low weight, and observations for which it is small are given high weight.</p>
 <section id="feasible-generalized-least-squares" class="level3" data-number="3.3.1">
 <h3 data-number="3.3.1" class="anchored" data-anchor-id="feasible-generalized-least-squares"><span class="header-section-number">3.3.1</span> Feasible Generalized Least Squares</h3>
 <p>In many cases it is reasonable to suppose that <span class="math inline">\(\bf \Omega\)</span> depends in a known way on a vector of unknown parameters <span class="math inline">\(\bf \gamma\)</span>. If so, it may be possible to estimate <span class="math inline">\(\mathbf{\gamma}\)</span> consistently, so as to obtain <span class="math inline">\(\bf \Omega (\hat \gamma)\)</span>. This type of procedure is called feasible generalized least squares, or feasible GLS. But we’ll have to specify the error term as some function of some known variables.</p>
+<p>A typical FGLS procedure has three steps. First, run OLS and obtain the residuals <span class="math inline">\(\hat u_t\)</span>. Second, use those residuals to estimate the parameters <span class="math inline">\(\gamma\)</span> of the assumed error structure – for example:</p>
+<ul>
+<li><strong>Heteroscedasticity of known form</strong>, e.g.&nbsp;<span class="math inline">\(\omega_t^2 = \exp({\bf z}_t' \gamma)\)</span>: regress <span class="math inline">\(\log(\hat u_t^2)\)</span> on <span class="math inline">\(\bf z_t\)</span> to estimate <span class="math inline">\(\gamma\)</span>, then set <span class="math inline">\(\hat\omega_t^2 = \exp({\bf z}_t' \hat\gamma)\)</span> and apply WLS as above.</li>
+<li><strong>AR(1) serial correlation</strong>, <span class="math inline">\(u_t = \rho u_{t-1} + \epsilon_t\)</span>: regress <span class="math inline">\(\hat u_t\)</span> on <span class="math inline">\(\hat u_{t-1}\)</span> to get <span class="math inline">\(\hat\rho\)</span>, then apply the Cochrane-Orcutt (or Prais-Winsten) transformation – quasi-differencing each variable as <span class="math inline">\(\tilde y_t = y_t - \hat\rho y_{t-1}\)</span> (and similarly for <span class="math inline">\(X\)</span>) – so that the transformed error is approximately i.i.d.</li>
+</ul>
+<p>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator <span class="math inline">\(\hat\beta_{FGLS}\)</span>. FGLS is consistent and asymptotically efficient as long as <span class="math inline">\(\hat\gamma\)</span> is a consistent estimator of <span class="math inline">\(\gamma\)</span>, even though it is generally biased in finite samples (since <span class="math inline">\(\hat\Omega\)</span> depends on the first-stage OLS residuals).</p>
 
 
 <!-- -->
@@ -896,11 +902,11 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>matrix with $t$th diagonal element $\omega_t^{-1}$.  For a typical</span>
 <span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>observation, regression can be written as</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>\omega_t^{-1}y_t=\omega_t^{-1} {\bf X_t \beta}+ \omega_t^{-1} u_t.</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>\omega_t^{-1}y_t=\omega_t^{-1} {\bf x}_t' \boldsymbol{\beta}+ \omega_t^{-1} u_t.</span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>This is called weighted least squares, or WLS.  It is worth keeping</span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>two notions of "weight" distinct.  The transformed variables $y_t$ and</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>$\bf X_t$ are *scaled* by $\omega_t^{-1}$; equivalently, the WLS</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>$\bf x_t'$ are *scaled* by $\omega_t^{-1}$; equivalently, the WLS</span>
 <span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>objective weights each squared residual by the inverse variance</span>
 <span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>$\omega_t^{-2}$ (the square of the scaling factor).  Either way,</span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>observations whose error variance is large are given low weight, and</span>
@@ -910,7 +916,14 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>In many cases it is reasonable to suppose that $\bf \Omega$ depends in a known way on a vector of unknown parameters $\bf \gamma$.  If so, it may be possible to estimate $\mathbf{\gamma}$ consistently, so as to obtain $\bf \Omega (\hat \gamma)$.  This type of procedure is called feasible generalized least squares, or feasible GLS.  But we'll</span>
 <span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>have to specify the error term as some function of some known</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>variables.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>variables.</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>A typical FGLS procedure has three steps. First, run OLS and obtain the residuals $\hat u_t$. Second, use those residuals to estimate the parameters $\gamma$ of the assumed error structure -- for example:</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({\bf z}_t' \gamma)$: regress $\log(\hat u_t^2)$ on $\bf z_t$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({\bf z}_t' \hat\gamma)$ and apply WLS as above.</span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then apply the Cochrane-Orcutt (or Prais-Winsten) transformation -- quasi-differencing each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ (and similarly for $X$) -- so that the transformed error is approximately i.i.d.</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

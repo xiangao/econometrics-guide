@@ -394,14 +394,22 @@ X}_t \beta ) -\Phi ( \gamma_1  - {\bf X}_t \beta ))
 </section>
 <section id="the-multinomial-logit" class="level3" data-number="7.2.2">
 <h3 data-number="7.2.2" class="anchored" data-anchor-id="the-multinomial-logit"><span class="header-section-number">7.2.2</span> The Multinomial Logit</h3>
-<p>When responses are unordered, the popular choice is multinomial logit.</p>
-<p>Suppose there are <span class="math inline">\(J+1\)</span> responses, for <span class="math inline">\(J \geq 1\)</span>.</p>
+<p>When responses are unordered, two popular choices are multinomial logit and conditional logit. They are easy to conflate because they share the same softmax form, but they differ in what varies across the <span class="math inline">\(J+1\)</span> alternatives <span class="math inline">\(l=0,\dots,J\)</span>: in multinomial logit the <em>regressors</em> are individual-specific and only the <em>coefficients</em> vary by alternative; in conditional logit it’s the reverse.</p>
+<p><strong>Multinomial logit.</strong> Here the regressor vector <span class="math inline">\(\bf X_t\)</span> (individual-specific characteristics, e.g.&nbsp;age, income) is the same for every alternative, and it is the coefficient vector that is alternative-specific:</p>
 <p><span class="math display">\[
-\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}
-\beta^l)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta^j)} \quad \mbox{for}
+\mbox{Pr}(y_t=l)=\frac{\exp({\bf X}_t
+\beta^l)}{\sum_{j=0}^J\exp({\bf X}_t \beta^j)} \quad \mbox{for}
 \ l=0, \dots, J,
 \]</span></p>
-<p>Here <span class="math inline">\({\bf W}_{tj}\)</span> is a row vector of length <span class="math inline">\(k_j\)</span> of observations on variables that belong to the information set of interest, and <span class="math inline">\(\beta^j\)</span> is a <span class="math inline">\(k_j\)</span>-vector of parameters, usually different for each <span class="math inline">\(j=0, \dots, J.\)</span> For identification one category is taken as the base with <span class="math inline">\(\beta^0=0\)</span> (so its numerator is <span class="math inline">\(1\)</span>).</p>
+<p>Here <span class="math inline">\(\bf X_t\)</span> is a row vector of length <span class="math inline">\(k\)</span> of individual-specific covariates, and <span class="math inline">\(\beta^l\)</span> is a <span class="math inline">\(k\)</span>-vector of alternative-specific parameters. For identification one category is taken as the base with <span class="math inline">\(\beta^0=0\)</span> (so its numerator is <span class="math inline">\(1\)</span>).</p>
+<p><strong>Conditional logit.</strong> Here it is the regressors that vary by alternative (e.g.&nbsp;the price or characteristics of choice <span class="math inline">\(j\)</span> itself), while the coefficient vector is common across alternatives:</p>
+<p><span class="math display">\[
+\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}
+\beta)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta)} \quad \mbox{for}
+\ l=0, \dots, J,
+\]</span></p>
+<p>Here <span class="math inline">\({\bf W}_{tj}\)</span> is a row vector of length <span class="math inline">\(k\)</span> of alternative-<span class="math inline">\(j\)</span>-specific variables, and <span class="math inline">\(\beta\)</span> is a single <span class="math inline">\(k\)</span>-vector of parameters shared across all alternatives <span class="math inline">\(j=0,\dots,J\)</span>.</p>
+<p>Having <em>both</em> choice-varying regressors <span class="math inline">\({\bf W}_{tl}\)</span> <em>and</em> choice-specific coefficients <span class="math inline">\(\beta^l\)</span> in the same formula, as in some treatments, conflates the two models and is not separately identified: the two sources of alternative-variation (in <span class="math inline">\(W\)</span> and in <span class="math inline">\(\beta\)</span>) cannot be told apart from data on <span class="math inline">\(\Pr(y_t=l)\)</span> alone.</p>
 
 
 <!-- -->
@@ -997,21 +1005,31 @@ X}_t \beta ) -\Phi ( \gamma_1  - {\bf X}_t \beta ))
 <span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Multinomial Logit</span></span>
 <span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>When responses are unordered, the popular choice is multinomial logit.</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>When responses are unordered, two popular choices are multinomial logit and conditional logit. They are easy to conflate because they share the same softmax form, but they differ in what varies across the $J+1$ alternatives $l=0,\dots,J$: in multinomial logit the *regressors* are individual-specific and only the *coefficients* vary by alternative; in conditional logit it's the reverse.</span>
 <span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>Suppose there are $J+1$ responses, for $J \geq 1$.</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>**Multinomial logit.** Here the regressor vector $\bf X_t$ (individual-specific characteristics, e.g. age, income) is the same for every alternative, and it is the coefficient vector that is alternative-specific:</span>
 <span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}</span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>\beta^l)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta^j)} \quad \mbox{for}</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({\bf X}_t</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>\beta^l)}{\sum_{j=0}^J\exp({\bf X}_t \beta^j)} \quad \mbox{for}</span>
 <span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
 <span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>Here ${\bf W}_{tj}$ is a row vector of length $k_j$ of observations on</span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>variables that belong to the information set of interest, and</span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>$\beta^j$ is a $k_j$-vector of parameters, usually different for each</span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>$j=0, \dots, J.$ For identification one category is taken as the base</span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>with $\beta^0=0$ (so its numerator is $1$).</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>Here $\bf X_t$ is a row vector of length $k$ of individual-specific covariates, and $\beta^l$ is a $k$-vector of alternative-specific parameters. For identification one category is taken as the base with $\beta^0=0$ (so its numerator is $1$).</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>**Conditional logit.** Here it is the regressors that vary by alternative (e.g. the price or characteristics of choice $j$ itself), while the coefficient vector is common across alternatives:</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>\beta)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta)} \quad \mbox{for}</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>Here ${\bf W}_{tj}$ is a row vector of length $k$ of alternative-$j$-specific</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>variables, and $\beta$ is a single $k$-vector of parameters shared across</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>all alternatives $j=0,\dots,J$.</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>Having *both* choice-varying regressors ${\bf W}_{tl}$ *and* choice-specific coefficients $\beta^l$ in the same formula, as in some treatments, conflates the two models and is not separately identified: the two sources of alternative-variation (in $W$ and in $\beta$) cannot be told apart from data on $\Pr(y_t=l)$ alone.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

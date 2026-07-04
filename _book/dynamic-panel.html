@@ -324,7 +324,7 @@ window.Quarto = {
 <p><span class="math display">\[ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)\]</span></p>
 <p>where <span class="math inline">\(\overline{y_{i,-1}}\)</span> is the unit mean of the <em>lagged</em> dependent variable. This is not exactly <span class="math inline">\(\bar y_i\)</span> (the mean of current <span class="math inline">\(y_{i,t}\)</span>): the two differ at the first and last usable periods, though they coincide asymptotically and under the usual balanced-sample convention.</p>
 <p>Nickell (1981) shows that (see also Anderson and Hsiao 1981)</p>
-<p><span class="math display">\[Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]\]</span></p>
+<p><span class="math display">\[Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]\]</span></p>
 <p>which indicates that the demeaned lagged <span class="math inline">\(y\)</span> is correlated with the demeaned error term. The correlation may be large if <span class="math inline">\(T\)</span> is small, but when <span class="math inline">\(T\)</span> is big, then the correlation goes down to near zero. When <span class="math inline">\(T\)</span> is big, we don’t have a problem with fixed effect model.</p>
 </section>
 <section id="how-big-is-the-bias" class="level2" data-number="11.2">
@@ -861,7 +861,7 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Nickell (1981) shows that (see also Anderson and Hsiao 1981)</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>$$Cov( (y_{i,t-1}- \bar y_i),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} <span class="co">[</span><span class="ot">\frac{(T-1)-T \gamma + \gamma^T}{T}</span><span class="co">]</span>$$</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>$$Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} <span class="co">[</span><span class="ot">\frac{(T-1)-T \gamma + \gamma^T}{T}</span><span class="co">]</span>$$</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>which indicates that the demeaned lagged $y$</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>is correlated with the demeaned error term.  The correlation may be</span>

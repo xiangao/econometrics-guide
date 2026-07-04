@@ -230,7 +230,7 @@ summary(fit2)
 
 ```
 
-Examples of parametric survival models: exponential, Weibull, or loglog:
+Examples of parametric survival models: exponential, Weibull, or log-logistic:
 
 ```{r}
 
@@ -254,7 +254,7 @@ survival up to that point.  This proportional-odds specification for
 the discrete hazard,
 
 $$
-\frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j | {\bf x}_i)}{1- h_0(t_j | {\bf x}_i)} \exp({\bf x}'_i \beta),
+\frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j)}{1- h_0(t_j)} \exp({\bf x}'_i \beta),
 $$
 is a discrete-time *proportional-odds* hazard model rather than a
 direct discretization of Cox's continuous-time proportional hazards

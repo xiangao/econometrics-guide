@@ -58,16 +58,6 @@ $$\bar R^2=1-\frac{SSR/(n-k)}{SST/(n-1)}$$
 ## Example
 Let's look at an example of OLS of car's mpg on disp, hp and wt.
 ```{r}
-# Load the packages used in this chapter.
-library(car)
-library(stats4)
-library(dplyr)
-library(mvtnorm)
-library(MASS)
-library(AER)
-library(ivreg)
-library(gmm)
-
 lm1 <- lm(mpg~disp+hp+wt, data=mtcars)
 summary(lm1)
 ```
@@ -166,4 +156,6 @@ $$
 {\rm E} (u_t|X_t)=0,
 $$
 
-This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called predeterminedness condition, or say regressors are predetermined.  So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.
+This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity** (regressors are contemporaneously uncorrelated with the error). This is distinct from and weaker than strict exogeneity $E[u \mid X] = 0$, but it is itself stronger than **predeterminedness**, which only requires $X_t$ to be orthogonal to the *current and future* errors ($E[u_t \mid \mathcal F_{t-1}] = 0$ where $X_t$ is measurable with respect to $\mathcal F_{t-1}$) while allowing correlation with *past* errors -- the relevant condition, for example, in models with a lagged dependent variable.  So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.
+
+Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the [Maximum Likelihood chapter](mle.qmd) alongside this guide's other estimation-inference material rather than repeated here.

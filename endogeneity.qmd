@@ -89,9 +89,13 @@ Geometry Illustration:
 
 Suppose the simplest case:  $y=\beta_0 + \beta_1 x + u $, where $x$
 can be decomposed into $x_1$, which is exogenous and $x_2$, which
-is endogenous. Therefore $x_2$ is parallel to $u$ and $x_1$
-perpendicular to $u$.  Suppose $z$ is a vector that is
-perpendicular to $x_2$ or $u$, but not perpendicular to $x_1$.
+is endogenous. Endogeneity of $x_2$ means $x_2$ has a non-orthogonal
+(non-zero) projection onto $u$ -- not that $x_2$ is literally parallel
+to $u$, which would be a knife-edge special case -- while $x_1$ remains
+perpendicular to $u$. Suppose $z$ is a vector that is perpendicular to
+$u$ (exogeneity: $z$ is uncorrelated with the error) but has a
+non-orthogonal projection onto $x$, in particular onto its endogenous
+part $x_2$ (relevance: $z$ actually predicts the endogenous regressor).
 Then $z$ can be an instrument for $x$.  The way instrumental
 variable works: Regress $x$ on $z$, suppose $\hat x_1$ is the
 projection.  Regress $y$ on $z$, $\hat y_2$ be the projection.
@@ -162,7 +166,7 @@ tsls.manual <- lm(data$y ~ lm2$fitted.values)
 summary(tsls.manual)
 
 # control function approach
-tsls.control <- lm(data$y ~ data$x + lm2$residual)
+tsls.control <- lm(data$y ~ data$x + lm2$residuals)
 summary(tsls.control)
 ```
 

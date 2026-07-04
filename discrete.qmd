@@ -122,18 +122,28 @@ $$
 
 ### The Multinomial Logit
 
-When responses are unordered, the popular choice is multinomial logit.
+When responses are unordered, two popular choices are multinomial logit and conditional logit. They are easy to conflate because they share the same softmax form, but they differ in what varies across the $J+1$ alternatives $l=0,\dots,J$: in multinomial logit the *regressors* are individual-specific and only the *coefficients* vary by alternative; in conditional logit it's the reverse.
 
-Suppose there are $J+1$ responses, for $J \geq 1$.
+**Multinomial logit.** Here the regressor vector $\bf X_t$ (individual-specific characteristics, e.g. age, income) is the same for every alternative, and it is the coefficient vector that is alternative-specific:
 
 $$
-\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}
-\beta^l)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta^j)} \quad \mbox{for}
+\mbox{Pr}(y_t=l)=\frac{\exp({\bf X}_t
+\beta^l)}{\sum_{j=0}^J\exp({\bf X}_t \beta^j)} \quad \mbox{for}
 \ l=0, \dots, J,
 $$
 
-Here ${\bf W}_{tj}$ is a row vector of length $k_j$ of observations on
-variables that belong to the information set of interest, and
-$\beta^j$ is a $k_j$-vector of parameters, usually different for each
-$j=0, \dots, J.$ For identification one category is taken as the base
-with $\beta^0=0$ (so its numerator is $1$).
+Here $\bf X_t$ is a row vector of length $k$ of individual-specific covariates, and $\beta^l$ is a $k$-vector of alternative-specific parameters. For identification one category is taken as the base with $\beta^0=0$ (so its numerator is $1$).
+
+**Conditional logit.** Here it is the regressors that vary by alternative (e.g. the price or characteristics of choice $j$ itself), while the coefficient vector is common across alternatives:
+
+$$
+\mbox{Pr}(y_t=l)=\frac{\exp({\bf W}_{tl}
+\beta)}{\sum_{j=0}^J\exp({\bf W}_{tj} \beta)} \quad \mbox{for}
+\ l=0, \dots, J,
+$$
+
+Here ${\bf W}_{tj}$ is a row vector of length $k$ of alternative-$j$-specific
+variables, and $\beta$ is a single $k$-vector of parameters shared across
+all alternatives $j=0,\dots,J$.
+
+Having *both* choice-varying regressors ${\bf W}_{tl}$ *and* choice-specific coefficients $\beta^l$ in the same formula, as in some treatments, conflates the two models and is not separately identified: the two sources of alternative-variation (in $W$ and in $\beta$) cannot be told apart from data on $\Pr(y_t=l)$ alone.
