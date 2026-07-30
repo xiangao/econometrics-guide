@@ -142,7 +142,8 @@ is not satisfied: $y_{t-1}$ depends on $u_{t-1}$,
 $u_{t-2}$ and so on.
 
 
-There is a weaker condition:
+There is a weaker condition -- weaker than the strict exogeneity above, and in fact
+the weakest of the conditions in this chapter:
 $$
 {\rm E} \bf (X u)=0,
 $$
@@ -170,6 +171,14 @@ one to invoke for consistency:
   errors.  This is the relevant condition in models with a lagged dependent
   variable.
 - **Contemporaneous exogeneity**, $E[u_t \mid X_t]=0$.
+- **Contemporaneous orthogonality**, $E[X_t u_t]=0$ -- mere zero correlation. This
+  is weakest of all, and it is what consistency actually needs: together with a
+  rank condition and a law of large numbers it gives
+  $\mathrm{plim}\, n^{-1}\bf X'u = 0$ and hence
+  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a
+  strictly stronger, sufficient condition -- it constrains the whole conditional
+  mean rather than a single covariance -- so the $E[\bf Xu]=0$ introduced under
+  unbiasedness above sits at the *bottom* of this ladder, not between the others.
 
 Each condition implies the next, because conditioning on a larger information set
 is a more restrictive requirement, not a less restrictive one.  In particular, by

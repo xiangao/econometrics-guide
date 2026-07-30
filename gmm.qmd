@@ -245,6 +245,18 @@ summary(tsls.model)
 
 ```
 
+Two things about that agreement are worth being explicit about, because it is easy
+to over-generalise from it. First, GMM and 2SLS coincide *numerically* here because
+the model is just-identified: one instrument (`w`) for one endogenous regressor
+(`x`), so $\bf Z'X$ is square and the sample moments can be set to zero exactly,
+whatever the weighting matrix. The output says so -- the $J$-test reports
+"degrees of freedom is 0", and its value ($\sim 10^{-26}$) is numerical noise
+rather than evidence. Second, `gmm()` is using an optimal two-step weighting with a
+heteroskedasticity-and-autocorrelation-consistent kernel (note `Method: twoStep` and
+`Kernel: Quadratic Spectral` in the output). Under *over*-identification that
+choice would generally **not** reproduce 2SLS, for exactly the reason given above:
+$W = (\bf Z'Z)^{-1}$ is the efficient weighting only under homoskedasticity.
+
 In OLS case, it would be $E(X u) = 0$.
 
 
@@ -305,6 +317,16 @@ $E[Y|X]=0$:
 $$
 Cov[g(X),Y]=0
 $$
+
+These are listed in decreasing strength, and the implications run one way only:
+independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The
+middle condition is what regression actually needs. Neither converse holds: $X$ and
+$Y$ can be uncorrelated with $E[Y \mid X] \neq 0$ (take $Y = X^2 - 1$ with
+$X \sim N(0,1)$, so $Cov[X,Y] = E[X^3] = 0$ while $E[Y \mid X] = X^2 - 1$), and
+mean independence permits dependence through higher moments (any pure
+heteroskedasticity, $Y = X\epsilon$ with $\epsilon$ independent of $X$ and mean
+zero). Keeping the three apart matters because the moment conditions below need only
+the middle one.
 
 
 ### Regression

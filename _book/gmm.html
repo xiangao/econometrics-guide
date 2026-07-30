@@ -470,6 +470,7 @@ Multiple R-Squared: 0.5007, Adjusted R-squared: 0.5006
 Wald test:  1001 on 1 and 9998 DF,  p-value: &lt; 2.2e-16 </code></pre>
 </div>
 </div>
+<p>Two things about that agreement are worth being explicit about, because it is easy to over-generalise from it. First, GMM and 2SLS coincide <em>numerically</em> here because the model is just-identified: one instrument (<code>w</code>) for one endogenous regressor (<code>x</code>), so <span class="math inline">\(\bf Z'X\)</span> is square and the sample moments can be set to zero exactly, whatever the weighting matrix. The output says so – the <span class="math inline">\(J\)</span>-test reports “degrees of freedom is 0”, and its value (<span class="math inline">\(\sim 10^{-26}\)</span>) is numerical noise rather than evidence. Second, <code>gmm()</code> is using an optimal two-step weighting with a heteroskedasticity-and-autocorrelation-consistent kernel (note <code>Method: twoStep</code> and <code>Kernel: Quadratic Spectral</code> in the output). Under <em>over</em>-identification that choice would generally <strong>not</strong> reproduce 2SLS, for exactly the reason given above: <span class="math inline">\(W = (\bf Z'Z)^{-1}\)</span> is the efficient weighting only under homoskedasticity.</p>
 <p>In OLS case, it would be <span class="math inline">\(E(X u) = 0\)</span>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gmm.ols</span> <span class="op">=</span> <span class="fu">gmm</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, x <span class="op">=</span> <span class="op">~</span><span class="va">x</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span></span>
@@ -548,6 +549,7 @@ Cov[X,Y]=0
 <p><span class="math display">\[
 Cov[g(X),Y]=0
 \]</span></p>
+<p>These are listed in decreasing strength, and the implications run one way only: independence <span class="math inline">\(\Rightarrow\)</span> mean independence <span class="math inline">\(\Rightarrow\)</span> uncorrelatedness. The middle condition is what regression actually needs. Neither converse holds: <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be uncorrelated with <span class="math inline">\(E[Y \mid X] \neq 0\)</span> (take <span class="math inline">\(Y = X^2 - 1\)</span> with <span class="math inline">\(X \sim N(0,1)\)</span>, so <span class="math inline">\(Cov[X,Y] = E[X^3] = 0\)</span> while <span class="math inline">\(E[Y \mid X] = X^2 - 1\)</span>), and mean independence permits dependence through higher moments (any pure heteroskedasticity, <span class="math inline">\(Y = X\epsilon\)</span> with <span class="math inline">\(\epsilon\)</span> independent of <span class="math inline">\(X\)</span> and mean zero). Keeping the three apart matters because the moment conditions below need only the middle one.</p>
 </section><section id="regression" class="level3" data-number="5.6.4"><h3 data-number="5.6.4" class="anchored" data-anchor-id="regression">
 <span class="header-section-number">5.6.4</span> Regression</h3>
 <p>A regression model is a model of <span class="math inline">\(E[Y_i|X_i]\)</span>. For example, <span class="math display">\[
@@ -1285,113 +1287,135 @@ E[X_i(Y_i-\beta_0-\beta_1X_i)]=0
 <span id="cb11-249"><a href="#cb11-249" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-250"><a href="#cb11-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb11-251"><a href="#cb11-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-252"><a href="#cb11-252" aria-hidden="true" tabindex="-1"></a>In OLS case, it would be $E(X u) = 0$.</span>
-<span id="cb11-253"><a href="#cb11-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-254"><a href="#cb11-254" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-257"><a href="#cb11-257" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb11-258"><a href="#cb11-258" aria-hidden="true" tabindex="-1"></a>gmm.ols <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>x, <span class="at">data =</span> data)</span>
-<span id="cb11-259"><a href="#cb11-259" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.ols)</span>
-<span id="cb11-260"><a href="#cb11-260" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-261"><a href="#cb11-261" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the OLS results.</span></span>
-<span id="cb11-262"><a href="#cb11-262" aria-hidden="true" tabindex="-1"></a>ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data=</span>data)</span>
-<span id="cb11-263"><a href="#cb11-263" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols)</span>
-<span id="cb11-264"><a href="#cb11-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-265"><a href="#cb11-265" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-252"><a href="#cb11-252" aria-hidden="true" tabindex="-1"></a>Two things about that agreement are worth being explicit about, because it is easy</span>
+<span id="cb11-253"><a href="#cb11-253" aria-hidden="true" tabindex="-1"></a>to over-generalise from it. First, GMM and 2SLS coincide *numerically* here because</span>
+<span id="cb11-254"><a href="#cb11-254" aria-hidden="true" tabindex="-1"></a>the model is just-identified: one instrument (<span class="in">`w`</span>) for one endogenous regressor</span>
+<span id="cb11-255"><a href="#cb11-255" aria-hidden="true" tabindex="-1"></a>(<span class="in">`x`</span>), so $\bf Z'X$ is square and the sample moments can be set to zero exactly,</span>
+<span id="cb11-256"><a href="#cb11-256" aria-hidden="true" tabindex="-1"></a>whatever the weighting matrix. The output says so -- the $J$-test reports</span>
+<span id="cb11-257"><a href="#cb11-257" aria-hidden="true" tabindex="-1"></a>"degrees of freedom is 0", and its value ($\sim 10^{-26}$) is numerical noise</span>
+<span id="cb11-258"><a href="#cb11-258" aria-hidden="true" tabindex="-1"></a>rather than evidence. Second, <span class="in">`gmm()`</span> is using an optimal two-step weighting with a</span>
+<span id="cb11-259"><a href="#cb11-259" aria-hidden="true" tabindex="-1"></a>heteroskedasticity-and-autocorrelation-consistent kernel (note <span class="in">`Method: twoStep`</span> and</span>
+<span id="cb11-260"><a href="#cb11-260" aria-hidden="true" tabindex="-1"></a><span class="in">`Kernel: Quadratic Spectral`</span> in the output). Under *over*-identification that</span>
+<span id="cb11-261"><a href="#cb11-261" aria-hidden="true" tabindex="-1"></a>choice would generally **not** reproduce 2SLS, for exactly the reason given above:</span>
+<span id="cb11-262"><a href="#cb11-262" aria-hidden="true" tabindex="-1"></a>$W = (\bf Z'Z)^{-1}$ is the efficient weighting only under homoskedasticity.</span>
+<span id="cb11-263"><a href="#cb11-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-264"><a href="#cb11-264" aria-hidden="true" tabindex="-1"></a>In OLS case, it would be $E(X u) = 0$.</span>
+<span id="cb11-265"><a href="#cb11-265" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-266"><a href="#cb11-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-267"><a href="#cb11-267" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-268"><a href="#cb11-268" aria-hidden="true" tabindex="-1"></a><span class="fu">## A few concepts of conditioning</span></span>
-<span id="cb11-269"><a href="#cb11-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-270"><a href="#cb11-270" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence</span></span>
-<span id="cb11-271"><a href="#cb11-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-272"><a href="#cb11-272" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
-<span id="cb11-273"><a href="#cb11-273" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-274"><a href="#cb11-274" aria-hidden="true" tabindex="-1"></a>f(x,y)=f(x)f(y)</span>
-<span id="cb11-275"><a href="#cb11-275" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-276"><a href="#cb11-276" aria-hidden="true" tabindex="-1"></a>and hence</span>
-<span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-278"><a href="#cb11-278" aria-hidden="true" tabindex="-1"></a>f(y|x)=f(y).</span>
-<span id="cb11-279"><a href="#cb11-279" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-280"><a href="#cb11-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-281"><a href="#cb11-281" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
-<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-283"><a href="#cb11-283" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">g(X)h(Y)</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">g(X)</span><span class="co">]</span>\cdot E<span class="co">[</span><span class="ot">h(Y)</span><span class="co">]</span></span>
-<span id="cb11-284"><a href="#cb11-284" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-285"><a href="#cb11-285" aria-hidden="true" tabindex="-1"></a>and hence</span>
-<span id="cb11-286"><a href="#cb11-286" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-287"><a href="#cb11-287" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0.</span>
-<span id="cb11-288"><a href="#cb11-288" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-289"><a href="#cb11-289" aria-hidden="true" tabindex="-1"></a>i.e. all functions of $X$ and $Y$ are uncorrelated.</span>
-<span id="cb11-290"><a href="#cb11-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-291"><a href="#cb11-291" aria-hidden="true" tabindex="-1"></a><span class="fu">###  Law of Iterated Expectations</span></span>
-<span id="cb11-292"><a href="#cb11-292" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-293"><a href="#cb11-293" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">E(Y|X)</span><span class="co">]</span>.</span>
+<span id="cb11-269"><a href="#cb11-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-270"><a href="#cb11-270" aria-hidden="true" tabindex="-1"></a>gmm.ols <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>x, <span class="at">data =</span> data)</span>
+<span id="cb11-271"><a href="#cb11-271" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.ols)</span>
+<span id="cb11-272"><a href="#cb11-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-273"><a href="#cb11-273" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the OLS results.</span></span>
+<span id="cb11-274"><a href="#cb11-274" aria-hidden="true" tabindex="-1"></a>ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data=</span>data)</span>
+<span id="cb11-275"><a href="#cb11-275" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols)</span>
+<span id="cb11-276"><a href="#cb11-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-277"><a href="#cb11-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb11-278"><a href="#cb11-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-279"><a href="#cb11-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-280"><a href="#cb11-280" aria-hidden="true" tabindex="-1"></a><span class="fu">## A few concepts of conditioning</span></span>
+<span id="cb11-281"><a href="#cb11-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-282"><a href="#cb11-282" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence</span></span>
+<span id="cb11-283"><a href="#cb11-283" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-284"><a href="#cb11-284" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
+<span id="cb11-285"><a href="#cb11-285" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-286"><a href="#cb11-286" aria-hidden="true" tabindex="-1"></a>f(x,y)=f(x)f(y)</span>
+<span id="cb11-287"><a href="#cb11-287" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-288"><a href="#cb11-288" aria-hidden="true" tabindex="-1"></a>and hence</span>
+<span id="cb11-289"><a href="#cb11-289" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-290"><a href="#cb11-290" aria-hidden="true" tabindex="-1"></a>f(y|x)=f(y).</span>
+<span id="cb11-291"><a href="#cb11-291" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-292"><a href="#cb11-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-293"><a href="#cb11-293" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
 <span id="cb11-294"><a href="#cb11-294" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-295"><a href="#cb11-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-296"><a href="#cb11-296" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dependence Concepts</span></span>
-<span id="cb11-297"><a href="#cb11-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-298"><a href="#cb11-298" aria-hidden="true" tabindex="-1"></a> $X$, $Y$ independent:</span>
-<span id="cb11-299"><a href="#cb11-299" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-300"><a href="#cb11-300" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0</span>
-<span id="cb11-301"><a href="#cb11-301" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-295"><a href="#cb11-295" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">g(X)h(Y)</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">g(X)</span><span class="co">]</span>\cdot E<span class="co">[</span><span class="ot">h(Y)</span><span class="co">]</span></span>
+<span id="cb11-296"><a href="#cb11-296" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-297"><a href="#cb11-297" aria-hidden="true" tabindex="-1"></a>and hence</span>
+<span id="cb11-298"><a href="#cb11-298" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-299"><a href="#cb11-299" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0.</span>
+<span id="cb11-300"><a href="#cb11-300" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-301"><a href="#cb11-301" aria-hidden="true" tabindex="-1"></a>i.e. all functions of $X$ and $Y$ are uncorrelated.</span>
 <span id="cb11-302"><a href="#cb11-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-303"><a href="#cb11-303" aria-hidden="true" tabindex="-1"></a>$X$, $Y$ uncorrelated:</span>
+<span id="cb11-303"><a href="#cb11-303" aria-hidden="true" tabindex="-1"></a><span class="fu">###  Law of Iterated Expectations</span></span>
 <span id="cb11-304"><a href="#cb11-304" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-305"><a href="#cb11-305" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span>=0</span>
+<span id="cb11-305"><a href="#cb11-305" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">E(Y|X)</span><span class="co">]</span>.</span>
 <span id="cb11-306"><a href="#cb11-306" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb11-307"><a href="#cb11-307" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-308"><a href="#cb11-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-309"><a href="#cb11-309" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>=0$:</span>
-<span id="cb11-310"><a href="#cb11-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-308"><a href="#cb11-308" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dependence Concepts</span></span>
+<span id="cb11-309"><a href="#cb11-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-310"><a href="#cb11-310" aria-hidden="true" tabindex="-1"></a> $X$, $Y$ independent:</span>
 <span id="cb11-311"><a href="#cb11-311" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-312"><a href="#cb11-312" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),Y</span><span class="co">]</span>=0</span>
+<span id="cb11-312"><a href="#cb11-312" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0</span>
 <span id="cb11-313"><a href="#cb11-313" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb11-314"><a href="#cb11-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-315"><a href="#cb11-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-316"><a href="#cb11-316" aria-hidden="true" tabindex="-1"></a><span class="fu">### Regression</span></span>
-<span id="cb11-317"><a href="#cb11-317" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-318"><a href="#cb11-318" aria-hidden="true" tabindex="-1"></a>A regression model is a model of $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>$.  For example,</span>
-<span id="cb11-319"><a href="#cb11-319" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-320"><a href="#cb11-320" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i</span>
-<span id="cb11-321"><a href="#cb11-321" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-322"><a href="#cb11-322" aria-hidden="true" tabindex="-1"></a>where $E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0$.</span>
-<span id="cb11-323"><a href="#cb11-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-324"><a href="#cb11-324" aria-hidden="true" tabindex="-1"></a><span class="fu">### GMM regression</span></span>
-<span id="cb11-325"><a href="#cb11-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-326"><a href="#cb11-326" aria-hidden="true" tabindex="-1"></a>The regression model</span>
-<span id="cb11-327"><a href="#cb11-327" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-328"><a href="#cb11-328" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i, \quad E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0</span>
-<span id="cb11-329"><a href="#cb11-329" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-330"><a href="#cb11-330" aria-hidden="true" tabindex="-1"></a>implies the moment condition</span>
-<span id="cb11-331"><a href="#cb11-331" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-332"><a href="#cb11-332" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_i</span><span class="co">]</span>=0 \quad  \mbox{and} \quad  E<span class="co">[</span><span class="ot">X_i u_i</span><span class="co">]</span>=0</span>
-<span id="cb11-333"><a href="#cb11-333" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-334"><a href="#cb11-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-335"><a href="#cb11-335" aria-hidden="true" tabindex="-1"></a>That is,</span>
-<span id="cb11-336"><a href="#cb11-336" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y_i-\beta_0-\beta_1X_i</span><span class="co">]</span>=0</span>
-<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">X_i(Y_i-\beta_0-\beta_1X_i)</span><span class="co">]</span>=0</span>
+<span id="cb11-315"><a href="#cb11-315" aria-hidden="true" tabindex="-1"></a>$X$, $Y$ uncorrelated:</span>
+<span id="cb11-316"><a href="#cb11-316" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-317"><a href="#cb11-317" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span>=0</span>
+<span id="cb11-318"><a href="#cb11-318" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-319"><a href="#cb11-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-320"><a href="#cb11-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-321"><a href="#cb11-321" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>=0$:</span>
+<span id="cb11-322"><a href="#cb11-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-323"><a href="#cb11-323" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-324"><a href="#cb11-324" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),Y</span><span class="co">]</span>=0</span>
+<span id="cb11-325"><a href="#cb11-325" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-326"><a href="#cb11-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-327"><a href="#cb11-327" aria-hidden="true" tabindex="-1"></a>These are listed in decreasing strength, and the implications run one way only:</span>
+<span id="cb11-328"><a href="#cb11-328" aria-hidden="true" tabindex="-1"></a>independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The</span>
+<span id="cb11-329"><a href="#cb11-329" aria-hidden="true" tabindex="-1"></a>middle condition is what regression actually needs. Neither converse holds: $X$ and</span>
+<span id="cb11-330"><a href="#cb11-330" aria-hidden="true" tabindex="-1"></a>$Y$ can be uncorrelated with $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> \neq 0$ (take $Y = X^2 - 1$ with</span>
+<span id="cb11-331"><a href="#cb11-331" aria-hidden="true" tabindex="-1"></a>$X \sim N(0,1)$, so $Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">X^3</span><span class="co">]</span> = 0$ while $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> = X^2 - 1$), and</span>
+<span id="cb11-332"><a href="#cb11-332" aria-hidden="true" tabindex="-1"></a>mean independence permits dependence through higher moments (any pure</span>
+<span id="cb11-333"><a href="#cb11-333" aria-hidden="true" tabindex="-1"></a>heteroskedasticity, $Y = X\epsilon$ with $\epsilon$ independent of $X$ and mean</span>
+<span id="cb11-334"><a href="#cb11-334" aria-hidden="true" tabindex="-1"></a>zero). Keeping the three apart matters because the moment conditions below need only</span>
+<span id="cb11-335"><a href="#cb11-335" aria-hidden="true" tabindex="-1"></a>the middle one.</span>
+<span id="cb11-336"><a href="#cb11-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a><span class="fu">### Regression</span></span>
+<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a>A regression model is a model of $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>$.  For example,</span>
 <span id="cb11-341"><a href="#cb11-341" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a>The sample moment conditions are</span>
-<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
-<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}x_i(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
+<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i</span>
+<span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a>where $E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0$.</span>
+<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a><span class="fu">### GMM regression</span></span>
+<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>The regression model</span>
 <span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>These are just normal equations for OLS.</span>
-<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>A characteristic of GMM:  the specification of the model generates</span>
-<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>the estimator.  i.e. only $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>=\beta_0+\beta_1 X_i$ is</span>
-<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a>assumed.</span>
+<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i, \quad E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0</span>
+<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-352"><a href="#cb11-352" aria-hidden="true" tabindex="-1"></a>implies the moment condition</span>
+<span id="cb11-353"><a href="#cb11-353" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-354"><a href="#cb11-354" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_i</span><span class="co">]</span>=0 \quad  \mbox{and} \quad  E<span class="co">[</span><span class="ot">X_i u_i</span><span class="co">]</span>=0</span>
+<span id="cb11-355"><a href="#cb11-355" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb11-356"><a href="#cb11-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a>Note there are no assumptions that $u_i$ is homoscedastic, not</span>
-<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a>autocorrelated or normally distributed.  These properties affect</span>
-<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>the statistical properties of the GMM estimator, not its</span>
-<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>definition.</span>
+<span id="cb11-357"><a href="#cb11-357" aria-hidden="true" tabindex="-1"></a>That is,</span>
+<span id="cb11-358"><a href="#cb11-358" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-359"><a href="#cb11-359" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y_i-\beta_0-\beta_1X_i</span><span class="co">]</span>=0</span>
+<span id="cb11-360"><a href="#cb11-360" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-361"><a href="#cb11-361" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-362"><a href="#cb11-362" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">X_i(Y_i-\beta_0-\beta_1X_i)</span><span class="co">]</span>=0</span>
+<span id="cb11-363"><a href="#cb11-363" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-364"><a href="#cb11-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-365"><a href="#cb11-365" aria-hidden="true" tabindex="-1"></a>The sample moment conditions are</span>
+<span id="cb11-366"><a href="#cb11-366" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-367"><a href="#cb11-367" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
+<span id="cb11-368"><a href="#cb11-368" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-369"><a href="#cb11-369" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-370"><a href="#cb11-370" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}x_i(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
+<span id="cb11-371"><a href="#cb11-371" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb11-372"><a href="#cb11-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-373"><a href="#cb11-373" aria-hidden="true" tabindex="-1"></a>These are just normal equations for OLS.</span>
+<span id="cb11-374"><a href="#cb11-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-375"><a href="#cb11-375" aria-hidden="true" tabindex="-1"></a>A characteristic of GMM:  the specification of the model generates</span>
+<span id="cb11-376"><a href="#cb11-376" aria-hidden="true" tabindex="-1"></a>the estimator.  i.e. only $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>=\beta_0+\beta_1 X_i$ is</span>
+<span id="cb11-377"><a href="#cb11-377" aria-hidden="true" tabindex="-1"></a>assumed.</span>
+<span id="cb11-378"><a href="#cb11-378" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-379"><a href="#cb11-379" aria-hidden="true" tabindex="-1"></a>Note there are no assumptions that $u_i$ is homoscedastic, not</span>
+<span id="cb11-380"><a href="#cb11-380" aria-hidden="true" tabindex="-1"></a>autocorrelated or normally distributed.  These properties affect</span>
+<span id="cb11-381"><a href="#cb11-381" aria-hidden="true" tabindex="-1"></a>the statistical properties of the GMM estimator, not its</span>
+<span id="cb11-382"><a href="#cb11-382" aria-hidden="true" tabindex="-1"></a>definition.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

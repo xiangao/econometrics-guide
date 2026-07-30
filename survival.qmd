@@ -280,8 +280,8 @@ the end of the study period (censored).  The outcome of this process
 is 0 unless there is an event, then it turns 1.  It is treated as
 independent Bernoulli observations with probability given by hazard
 $h_{ij}$ for individual $i$ at time $t_j$.  The likelihood function
-for the discrete-time survival model coincide with the binomial
-likelihood of independent binomial process (Singer and Willett, 1993, has more details).
+for the discrete-time survival model coincides with the likelihood of a
+sequence of independent Bernoulli trials (Singer and Willett, 1993, has more details).
 
 
 ### Do it in Stata

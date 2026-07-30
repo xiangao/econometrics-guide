@@ -461,7 +461,13 @@ y_t \\ z_t^0
 <p>We observe <span class="math inline">\(y_t\)</span> and <span class="math inline">\(z_t\)</span>: <span class="math display">\[
 z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.
 \]</span></p>
-<p>Notice that the only difference between the switching regression and selection model is that we observe <span class="math inline">\(y_t\)</span> when <span class="math inline">\(z_t=0\)</span> and <span class="math inline">\(z_t=1\)</span>. It’s not a selection, but a regime switching.</p>
+<p>Notice that the only difference between this model and the selection model is that we observe <span class="math inline">\(y_t\)</span> when <span class="math inline">\(z_t=0\)</span> and <span class="math inline">\(z_t=1\)</span>. It’s not a selection, but a regime switching.</p>
+<p>One caveat about the name. The specification above lets treatment shift only the <em>intercept</em>: there is a single <span class="math inline">\(\beta\)</span> and a single <span class="math inline">\(\delta\)</span>, so the treatment effect is <span class="math inline">\(\delta\)</span> for everyone. That is the treatment-effects model. A <strong>switching regression</strong> in the fuller sense lets the whole coefficient vector differ by regime,</p>
+<p><span class="math display">\[
+y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
+\qquad z_t^0 = {\bf W}_t \gamma + v_t,
+\]</span></p>
+<p>with <span class="math inline">\(u_{1t}\)</span> and <span class="math inline">\(u_{0t}\)</span> each allowed to correlate with <span class="math inline">\(v_t\)</span> (two selection parameters, <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_0\)</span>, rather than one). This is the Roy model, and the treatment effect <span class="math inline">\({\bf X}_t(\beta_1-\beta_0)\)</span> then varies with <span class="math inline">\(\bf X_t\)</span> instead of being a constant. The distinction matters in practice: if the returns to education genuinely differ between union and non-union jobs, the common-slope model above will report a single <span class="math inline">\(\delta\)</span> that is some average of them and will not reveal the heterogeneity. Fitting it requires two outcome equations rather than one intercept shift.</p>
 <p>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching regression. The default is by MLE.</p>
 
 
@@ -1223,12 +1229,32 @@ z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.
 <span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.</span>
 <span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>Notice that the only difference between the switching regression and</span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>Notice that the only difference between this model and the</span>
 <span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.</span>
 <span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>It's not a selection, but a regime switching.</span>
 <span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching</span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>regression.  The default is by MLE.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>One caveat about the name. The specification above lets treatment shift only the</span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>*intercept*: there is a single $\beta$ and a single $\delta$, so the treatment</span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>effect is $\delta$ for everyone. That is the treatment-effects model. A</span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>**switching regression** in the fuller sense lets the whole coefficient vector</span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>differ by regime,</span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),</span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>\qquad z_t^0 = {\bf W}_t \gamma + v_t,</span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection</span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>treatment effect ${\bf X}_t(\beta_1-\beta_0)$ then varies with $\bf X_t$ instead</span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>of being a constant. The distinction matters in practice: if the returns to</span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>education genuinely differ between union and non-union jobs, the common-slope model</span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>above will report a single $\delta$ that is some average of them and will not reveal</span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>the heterogeneity. Fitting it requires two outcome equations rather than one</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>intercept shift.</span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching</span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>regression.  The default is by MLE.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

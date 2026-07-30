@@ -86,7 +86,18 @@ variables.
 
 A typical FGLS procedure has three steps. First, run OLS and obtain the residuals $\hat u_t$. Second, use those residuals to estimate the parameters $\gamma$ of the assumed error structure -- for example:
 
-- **Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({\bf z}_t' \gamma)$: regress $\log(\hat u_t^2)$ on $\bf z_t$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({\bf z}_t' \hat\gamma)$ and apply WLS as above.
-- **AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then apply the Cochrane-Orcutt (or Prais-Winsten) transformation -- quasi-differencing each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ (and similarly for $X$) -- so that the transformed error is approximately i.i.d.
+- **Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({\bf z}_t' \gamma)$: regress $\log(\hat u_t^2)$ on $\bf z_t$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({\bf z}_t' \hat\gamma)$ and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because $E[\log(u_t^2/\omega_t^2)] \neq 0$ -- it is about $-1.27$ for normal errors. This does not matter for WLS: a constant added to every $\log \hat\omega_t^2$ scales all weights by a common factor, which leaves $\hat\beta$ unchanged. It does matter if the fitted $\hat\omega_t^2$ are wanted as variance estimates in their own right.)
+- **AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then quasi-difference each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ for $t = 2, \dots, n$ (and similarly for $X$), so that the transformed error is approximately i.i.d.
+
+  The first observation is where **Cochrane-Orcutt** and **Prais-Winsten** part
+  company, and the $\bf \Psi$ framework above says which is right. For AR(1)
+  errors $\bf \Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]$,
+  and its Cholesky factor makes the first row of $\bf \Psi'$ equal to
+  $\sqrt{1-\rho^2}$ times the first unit vector. Full GLS therefore keeps
+  observation 1, rescaled as $\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1$; that is
+  Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent
+  and asymptotically equivalent, but Cochrane-Orcutt throws away a data point, and
+  the loss is not negligible in short time series or when $|\rho|$ is close to 1 --
+  precisely the case where the correction matters most. Prefer Prais-Winsten.
 
 Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).

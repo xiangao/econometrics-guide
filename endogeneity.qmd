@@ -87,7 +87,9 @@ give you correct standard errors.
 
 Geometry Illustration:
 
-Suppose the simplest case: $y=\beta_0 + \beta_1 x + u$.  Split $x$ into the part
+Suppose the simplest case: $y=\beta_0 + \beta_1 x + u$.  Take all variables in
+deviations from their means, so the intercept drops out and $z'\iota = 0$; this
+keeps the algebra below about the slope alone.  Split $x$ into the part
 that lies along the error and the part that does not,
 
 $$ x = x^{\perp} + x^{\parallel}, $$

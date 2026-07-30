@@ -288,9 +288,29 @@ $$
 z_t = 1 \ \mbox{if} \ z_t^0 > 0; \ z_t=0 \ \mbox{otherwise}.
 $$
 
-Notice that the only difference between the switching regression and
+Notice that the only difference between this model and the
 selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.
 It's not a selection, but a regime switching.
+
+One caveat about the name. The specification above lets treatment shift only the
+*intercept*: there is a single $\beta$ and a single $\delta$, so the treatment
+effect is $\delta$ for everyone. That is the treatment-effects model. A
+**switching regression** in the fuller sense lets the whole coefficient vector
+differ by regime,
+
+$$
+y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
+\qquad z_t^0 = {\bf W}_t \gamma + v_t,
+$$
+
+with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection
+parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the
+treatment effect ${\bf X}_t(\beta_1-\beta_0)$ then varies with $\bf X_t$ instead
+of being a constant. The distinction matters in practice: if the returns to
+education genuinely differ between union and non-union jobs, the common-slope model
+above will report a single $\delta$ that is some average of them and will not reveal
+the heterogeneity. Fitting it requires two outcome equations rather than one
+intercept shift.
 
 Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching
 regression.  The default is by MLE.
