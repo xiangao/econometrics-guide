@@ -270,6 +270,7 @@ window.Quarto = {
 <a href="#hypotheses-testing" id="toc-hypotheses-testing" class="nav-link" data-scroll-target="#hypotheses-testing"><span class="header-section-number">2.5</span> Hypotheses Testing</a>
   <ul class="collapse">
 <li><a href="#linear-hypotheses-testing" id="toc-linear-hypotheses-testing" class="nav-link" data-scroll-target="#linear-hypotheses-testing"><span class="header-section-number">2.5.1</span> Linear Hypotheses Testing</a></li>
+  <li><a href="#the-three-classical-tests-lr-wald-and-lm" id="toc-the-three-classical-tests-lr-wald-and-lm" class="nav-link" data-scroll-target="#the-three-classical-tests-lr-wald-and-lm"><span class="header-section-number">2.5.2</span> The three classical tests: LR, Wald and LM</a></li>
   </ul>
 </li>
   <li>
@@ -467,6 +468,20 @@ k\)</span>, and <span class="math inline">\(\bf r\)</span> is a <span class="mat
 - r)/q}{\hat u' \hat u / (n-k)}} \sim F(q, n-k)
 \]</span></p>
 <p>This is an example of the <span class="math inline">\(F\)</span> test for any linear hypotheses testing. <span class="math inline">\(t\)</span> test will be a special case of this.</p>
+</section><section id="the-three-classical-tests-lr-wald-and-lm" class="level3" data-number="2.5.2"><h3 data-number="2.5.2" class="anchored" data-anchor-id="the-three-classical-tests-lr-wald-and-lm">
+<span class="header-section-number">2.5.2</span> The three classical tests: LR, Wald and LM</h3>
+<p>The <span class="math inline">\(F\)</span> test above leans on normal errors. The general machinery for testing <span class="math inline">\(\rm H_0: \bf R\theta - r = 0\)</span> after maximum likelihood needs only the asymptotic results already established, and it comes in three forms. Write <span class="math inline">\(\hat\theta_u\)</span> for the unrestricted MLE, <span class="math inline">\(\hat\theta_r\)</span> for the MLE subject to the restriction, <span class="math inline">\(s(\theta) = \partial \ell / \partial \theta\)</span> for the score, and <span class="math inline">\(\bf I_n(\theta) = n\,I(\theta)\)</span> for the full-sample information.</p>
+<p><strong>Likelihood ratio.</strong> Compare the two maximized log-likelihoods: <span class="math display">\[
+LR = 2\bigl[\ell(\hat\theta_u) - \ell(\hat\theta_r)\bigr] \xrightarrow{d} \chi^2(q).
+\]</span></p>
+<p><strong>Wald.</strong> Ask whether the <em>unrestricted</em> estimate is far from satisfying the restriction, measuring distance in units of its own estimated variance: <span class="math display">\[
+W = ({\bf R}\hat\theta_u - {\bf r})' \bigl[{\bf R\, I}_n^{-1}(\hat\theta_u)\,{\bf R}'\bigr]^{-1} ({\bf R}\hat\theta_u - {\bf r}) \xrightarrow{d} \chi^2(q).
+\]</span></p>
+<p><strong>Lagrange multiplier (score).</strong> Ask whether the score, evaluated at the <em>restricted</em> estimate, is far from zero – if the restriction is harmless, the restricted point should already be nearly a maximum: <span class="math display">\[
+LM = s(\hat\theta_r)'\, {\bf I}_n^{-1}(\hat\theta_r)\, s(\hat\theta_r) \xrightarrow{d} \chi^2(q).
+\]</span></p>
+<p>The three are asymptotically equivalent under the null and have the same local power, so the choice among them is one of convenience: <strong>Wald needs only the unrestricted fit, LM needs only the restricted fit, and LR needs both.</strong> That is why LM is the natural choice for specification testing, where the restricted model is the easy one to estimate (White’s heteroskedasticity test and the Breusch-Godfrey serial-correlation test are both LM tests run as auxiliary regressions), while Wald is what software reports by default, since the unrestricted fit is what was just computed.</p>
+<p>In the classical normal linear model the three are monotone transformations of the same <span class="math inline">\(F\)</span> statistic above, so nothing is lost by using <span class="math inline">\(F\)</span> there. Two cautions otherwise. In finite samples the three can disagree, sometimes enough to straddle a conventional critical value, and there is a known ordering <span class="math inline">\(W \ge LR \ge LM\)</span> in the linear model under normality. And the Wald statistic is <strong>not invariant to nonlinear reparameterization</strong>: testing <span class="math inline">\(\gamma = 1\)</span> and testing <span class="math inline">\(\log\gamma = 0\)</span> are the same hypothesis but give different Wald statistics, whereas <span class="math inline">\(LR\)</span> is invariant because it compares likelihood <em>values</em>, which reparameterization does not change. When a hypothesis can be written several algebraically equivalent ways, prefer <span class="math inline">\(LR\)</span>.</p>
 </section></section><section id="test-of-structural-change-chow-test" class="level2" data-number="2.6"><h2 data-number="2.6" class="anchored" data-anchor-id="test-of-structural-change-chow-test">
 <span class="header-section-number">2.6</span> Test of Structural Change (Chow test)</h2>
 <p>Chow test is a test between two groups of observations. For example, we have data on consumption function of prewar period and postwar period. It is natural to think of a test on whether consumption function parameters differ between prewar and postwar periods. The null hypothesis is that there is no difference.</p>
@@ -1382,332 +1397,379 @@ X][\frac{1}{n}(X'X)]^{-1}\\
 <span id="cb13-202"><a href="#cb13-202" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-203"><a href="#cb13-203" aria-hidden="true" tabindex="-1"></a>This is an example of the $F$ test for any linear hypotheses testing.  $t$ test will be a special case of this.</span>
 <span id="cb13-204"><a href="#cb13-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-205"><a href="#cb13-205" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test of Structural Change (Chow test)</span></span>
+<span id="cb13-205"><a href="#cb13-205" aria-hidden="true" tabindex="-1"></a><span class="fu">### The three classical tests: LR, Wald and LM</span></span>
 <span id="cb13-206"><a href="#cb13-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a>Chow test is a test between two groups of observations.  For example,</span>
-<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a>we have data on consumption function of prewar period and postwar</span>
-<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a>period.  It is natural to think of a test on whether consumption</span>
-<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a>function parameters differ between prewar and postwar periods.  The</span>
-<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a>null hypothesis is that there is no difference.</span>
-<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a>Let $\bf y_i$, $\bf X_i$ ($i=1,2)$ indicate the appropriate</span>
-<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a>partitioning of the data.  The unrestricted model may be written</span>
-<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
-<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
-<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
-<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a>X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2</span>
-<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a>\beta_1 <span class="sc">\\</span> \bf \beta_2</span>
-<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>+u \quad u \sim N(0, \sigma^2I)</span>
-<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
-<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_1 = \beta_2.</span>
-<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have</span>
-<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
-<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a>\hat \beta_1 <span class="sc">\\</span> \bf \hat \beta_2</span>
-<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
-<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a>X_1' X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2' X_2</span>
-<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}^{-1}</span>
-<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a>X_1' y_1 <span class="sc">\\</span> \bf X_2' y_2</span>
-<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix}\bf (X_1' X_1)^{-1}X_1'y_1 <span class="sc">\\</span> \bf (X_2' X_2)^{-1}</span>
-<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a>X_2' y_2</span>
-<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-207"><a href="#cb13-207" aria-hidden="true" tabindex="-1"></a>The $F$ test above leans on normal errors.  The general machinery for testing</span>
+<span id="cb13-208"><a href="#cb13-208" aria-hidden="true" tabindex="-1"></a>$\rm H_0: \bf R\theta - r = 0$ after maximum likelihood needs only the asymptotic</span>
+<span id="cb13-209"><a href="#cb13-209" aria-hidden="true" tabindex="-1"></a>results already established, and it comes in three forms.  Write $\hat\theta_u$ for</span>
+<span id="cb13-210"><a href="#cb13-210" aria-hidden="true" tabindex="-1"></a>the unrestricted MLE, $\hat\theta_r$ for the MLE subject to the restriction,</span>
+<span id="cb13-211"><a href="#cb13-211" aria-hidden="true" tabindex="-1"></a>$s(\theta) = \partial \ell / \partial \theta$ for the score, and</span>
+<span id="cb13-212"><a href="#cb13-212" aria-hidden="true" tabindex="-1"></a>$\bf I_n(\theta) = n\,I(\theta)$ for the full-sample information.</span>
+<span id="cb13-213"><a href="#cb13-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-214"><a href="#cb13-214" aria-hidden="true" tabindex="-1"></a>**Likelihood ratio.** Compare the two maximized log-likelihoods:</span>
+<span id="cb13-215"><a href="#cb13-215" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-216"><a href="#cb13-216" aria-hidden="true" tabindex="-1"></a>LR = 2\bigl<span class="co">[</span><span class="ot">\ell(\hat\theta_u) - \ell(\hat\theta_r)\bigr</span><span class="co">]</span> \xrightarrow{d} \chi^2(q).</span>
+<span id="cb13-217"><a href="#cb13-217" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-218"><a href="#cb13-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-219"><a href="#cb13-219" aria-hidden="true" tabindex="-1"></a>**Wald.** Ask whether the *unrestricted* estimate is far from satisfying the</span>
+<span id="cb13-220"><a href="#cb13-220" aria-hidden="true" tabindex="-1"></a>restriction, measuring distance in units of its own estimated variance:</span>
+<span id="cb13-221"><a href="#cb13-221" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-222"><a href="#cb13-222" aria-hidden="true" tabindex="-1"></a>W = ({\bf R}\hat\theta_u - {\bf r})' \bigl<span class="co">[</span><span class="ot">{\bf R\, I}_n^{-1}(\hat\theta_u)\,{\bf R}'\bigr</span><span class="co">]</span>^{-1} ({\bf R}\hat\theta_u - {\bf r}) \xrightarrow{d} \chi^2(q).</span>
+<span id="cb13-223"><a href="#cb13-223" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-224"><a href="#cb13-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-225"><a href="#cb13-225" aria-hidden="true" tabindex="-1"></a>**Lagrange multiplier (score).** Ask whether the score, evaluated at the</span>
+<span id="cb13-226"><a href="#cb13-226" aria-hidden="true" tabindex="-1"></a>*restricted* estimate, is far from zero -- if the restriction is harmless, the</span>
+<span id="cb13-227"><a href="#cb13-227" aria-hidden="true" tabindex="-1"></a>restricted point should already be nearly a maximum:</span>
+<span id="cb13-228"><a href="#cb13-228" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-229"><a href="#cb13-229" aria-hidden="true" tabindex="-1"></a>LM = s(\hat\theta_r)'\, {\bf I}_n^{-1}(\hat\theta_r)\, s(\hat\theta_r) \xrightarrow{d} \chi^2(q).</span>
+<span id="cb13-230"><a href="#cb13-230" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-231"><a href="#cb13-231" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-232"><a href="#cb13-232" aria-hidden="true" tabindex="-1"></a>The three are asymptotically equivalent under the null and have the same local</span>
+<span id="cb13-233"><a href="#cb13-233" aria-hidden="true" tabindex="-1"></a>power, so the choice among them is one of convenience: **Wald needs only the</span>
+<span id="cb13-234"><a href="#cb13-234" aria-hidden="true" tabindex="-1"></a>unrestricted fit, LM needs only the restricted fit, and LR needs both.** That is</span>
+<span id="cb13-235"><a href="#cb13-235" aria-hidden="true" tabindex="-1"></a>why LM is the natural choice for specification testing, where the restricted model</span>
+<span id="cb13-236"><a href="#cb13-236" aria-hidden="true" tabindex="-1"></a>is the easy one to estimate (White's heteroskedasticity test and the</span>
+<span id="cb13-237"><a href="#cb13-237" aria-hidden="true" tabindex="-1"></a>Breusch-Godfrey serial-correlation test are both LM tests run as auxiliary</span>
+<span id="cb13-238"><a href="#cb13-238" aria-hidden="true" tabindex="-1"></a>regressions), while Wald is what software reports by default, since the</span>
+<span id="cb13-239"><a href="#cb13-239" aria-hidden="true" tabindex="-1"></a>unrestricted fit is what was just computed.</span>
+<span id="cb13-240"><a href="#cb13-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-241"><a href="#cb13-241" aria-hidden="true" tabindex="-1"></a>In the classical normal linear model the three are monotone transformations of the</span>
+<span id="cb13-242"><a href="#cb13-242" aria-hidden="true" tabindex="-1"></a>same $F$ statistic above, so nothing is lost by using $F$ there. Two cautions</span>
+<span id="cb13-243"><a href="#cb13-243" aria-hidden="true" tabindex="-1"></a>otherwise. In finite samples the three can disagree, sometimes enough to straddle</span>
+<span id="cb13-244"><a href="#cb13-244" aria-hidden="true" tabindex="-1"></a>a conventional critical value, and there is a known ordering</span>
+<span id="cb13-245"><a href="#cb13-245" aria-hidden="true" tabindex="-1"></a>$W \ge LR \ge LM$ in the linear model under normality. And the Wald statistic is</span>
+<span id="cb13-246"><a href="#cb13-246" aria-hidden="true" tabindex="-1"></a>**not invariant to nonlinear reparameterization**: testing $\gamma = 1$ and</span>
+<span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a>testing $\log\gamma = 0$ are the same hypothesis but give different Wald</span>
+<span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a>statistics, whereas $LR$ is invariant because it compares likelihood *values*,</span>
+<span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a>which reparameterization does not change. When a hypothesis can be written several</span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a>algebraically equivalent ways, prefer $LR$.</span>
 <span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a>Restricted model under null hypothesis</span>
+<span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test of Structural Change (Chow test)</span></span>
 <span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
-<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
-<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
-<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
-<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a>X_1 <span class="sc">\\</span> \bf X_2</span>
-<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a>\bf \beta +u</span>
-<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a>The test of the null hypothesis is given by</span>
-<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a>{\bf F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat</span>
-<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a>u/ (n-2k)}} \sim F(k , n-2k)</span>
-<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a>where $\hat u_*$ is the residual of the restricted model, $\hat u$ is the stacked residual of two unrestricted models.</span>
-<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a>For example, for prewar period (suppose there is $n_1$ observations):</span>
-<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a>Chow test is a test between two groups of observations.  For example,</span>
+<span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a>we have data on consumption function of prewar period and postwar</span>
+<span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a>period.  It is natural to think of a test on whether consumption</span>
+<span id="cb13-257"><a href="#cb13-257" aria-hidden="true" tabindex="-1"></a>function parameters differ between prewar and postwar periods.  The</span>
+<span id="cb13-258"><a href="#cb13-258" aria-hidden="true" tabindex="-1"></a>null hypothesis is that there is no difference.</span>
+<span id="cb13-259"><a href="#cb13-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-260"><a href="#cb13-260" aria-hidden="true" tabindex="-1"></a>Let $\bf y_i$, $\bf X_i$ ($i=1,2)$ indicate the appropriate</span>
+<span id="cb13-261"><a href="#cb13-261" aria-hidden="true" tabindex="-1"></a>partitioning of the data.  The unrestricted model may be written</span>
+<span id="cb13-262"><a href="#cb13-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-263"><a href="#cb13-263" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb13-264"><a href="#cb13-264" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-265"><a href="#cb13-265" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
+<span id="cb13-266"><a href="#cb13-266" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb13-267"><a href="#cb13-267" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-268"><a href="#cb13-268" aria-hidden="true" tabindex="-1"></a>X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2</span>
+<span id="cb13-269"><a href="#cb13-269" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb13-270"><a href="#cb13-270" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-271"><a href="#cb13-271" aria-hidden="true" tabindex="-1"></a>\beta_1 <span class="sc">\\</span> \bf \beta_2</span>
+<span id="cb13-272"><a href="#cb13-272" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb13-273"><a href="#cb13-273" aria-hidden="true" tabindex="-1"></a>+u \quad u \sim N(0, \sigma^2I)</span>
 <span id="cb13-274"><a href="#cb13-274" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a>y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2</span>
-<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-275"><a href="#cb13-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-276"><a href="#cb13-276" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
 <span id="cb13-277"><a href="#cb13-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>For postwar period  (suppose there is $n_2$ observations):</span>
-<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-278"><a href="#cb13-278" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-279"><a href="#cb13-279" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_1 = \beta_2.</span>
 <span id="cb13-280"><a href="#cb13-280" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a>y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2</span>
-<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-281"><a href="#cb13-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-282"><a href="#cb13-282" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have</span>
 <span id="cb13-283"><a href="#cb13-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
-<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.</span>
-<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have two sums of squares</span>
-<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a>of error ($SSR_1$ and $SSR_2$).  The unrestricted error sum of squares</span>
-<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a>is</span>
-<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a>SSR_U = SSR_1 + SSR_2</span>
-<span id="cb13-295"><a href="#cb13-295" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-296"><a href="#cb13-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a>Then run the regression on the stacked sample of $n_1+n_2$ observations</span>
-<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a>and get $SSR_R$.</span>
+<span id="cb13-284"><a href="#cb13-284" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb13-285"><a href="#cb13-285" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-286"><a href="#cb13-286" aria-hidden="true" tabindex="-1"></a>\hat \beta_1 <span class="sc">\\</span> \bf \hat \beta_2</span>
+<span id="cb13-287"><a href="#cb13-287" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb13-288"><a href="#cb13-288" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-289"><a href="#cb13-289" aria-hidden="true" tabindex="-1"></a>X_1' X_1 &amp; \bf 0 <span class="sc">\\</span> \bf 0 &amp; \bf X_2' X_2</span>
+<span id="cb13-290"><a href="#cb13-290" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}^{-1}</span>
+<span id="cb13-291"><a href="#cb13-291" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-292"><a href="#cb13-292" aria-hidden="true" tabindex="-1"></a>X_1' y_1 <span class="sc">\\</span> \bf X_2' y_2</span>
+<span id="cb13-293"><a href="#cb13-293" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb13-294"><a href="#cb13-294" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix}\bf (X_1' X_1)^{-1}X_1'y_1 <span class="sc">\\</span> \bf (X_2' X_2)^{-1}</span>
+<span id="cb13-295"><a href="#cb13-295" aria-hidden="true" tabindex="-1"></a>X_2' y_2</span>
+<span id="cb13-296"><a href="#cb13-296" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb13-297"><a href="#cb13-297" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-298"><a href="#cb13-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-299"><a href="#cb13-299" aria-hidden="true" tabindex="-1"></a>Restricted model under null hypothesis</span>
 <span id="cb13-300"><a href="#cb13-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a>Then</span>
-<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a>\frac{(SSR_R-SSR_U)/k}{SSR_U/(n_1+n_2-2k)} \sim F_{k, n_1+n_2-2k}.</span>
-<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a>$k$ is number of restrictions; in this example, it is 3.</span>
-<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-301"><a href="#cb13-301" aria-hidden="true" tabindex="-1"></a>$$\bf</span>
+<span id="cb13-302"><a href="#cb13-302" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-303"><a href="#cb13-303" aria-hidden="true" tabindex="-1"></a>y_1 <span class="sc">\\</span> \bf y_2</span>
+<span id="cb13-304"><a href="#cb13-304" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}=</span>
+<span id="cb13-305"><a href="#cb13-305" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}\bf</span>
+<span id="cb13-306"><a href="#cb13-306" aria-hidden="true" tabindex="-1"></a>X_1 <span class="sc">\\</span> \bf X_2</span>
+<span id="cb13-307"><a href="#cb13-307" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb13-308"><a href="#cb13-308" aria-hidden="true" tabindex="-1"></a>\bf \beta +u</span>
+<span id="cb13-309"><a href="#cb13-309" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-310"><a href="#cb13-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a>The other way to do the same test is easier:  simply include</span>
-<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>interaction terms between group dummy and explanatory variables in the</span>
-<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a>regression.</span>
-<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a>For our earlier example, we would estimate the model:</span>
-<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-311"><a href="#cb13-311" aria-hidden="true" tabindex="-1"></a>The test of the null hypothesis is given by</span>
+<span id="cb13-312"><a href="#cb13-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-313"><a href="#cb13-313" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-314"><a href="#cb13-314" aria-hidden="true" tabindex="-1"></a>{\bf F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat</span>
+<span id="cb13-315"><a href="#cb13-315" aria-hidden="true" tabindex="-1"></a>u/ (n-2k)}} \sim F(k , n-2k)</span>
+<span id="cb13-316"><a href="#cb13-316" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-317"><a href="#cb13-317" aria-hidden="true" tabindex="-1"></a>where $\hat u_*$ is the residual of the restricted model, $\hat u$ is the stacked residual of two unrestricted models.</span>
 <span id="cb13-318"><a href="#cb13-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a>y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2</span>
-<span id="cb13-322"><a href="#cb13-322" aria-hidden="true" tabindex="-1"></a>x_2 d</span>
+<span id="cb13-319"><a href="#cb13-319" aria-hidden="true" tabindex="-1"></a>For example, for prewar period (suppose there is $n_1$ observations):</span>
+<span id="cb13-320"><a href="#cb13-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-321"><a href="#cb13-321" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-322"><a href="#cb13-322" aria-hidden="true" tabindex="-1"></a>y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2</span>
 <span id="cb13-323"><a href="#cb13-323" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-324"><a href="#cb13-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a>Here $d$ is a dummy variable for postwar period.  The Chow test is</span>
-<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a>simply a test on the hypothesis that all the coefficients involving</span>
-<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a>$d$ are zero.  A regression of the above model with $n+m$ observations</span>
-<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a>and a $F$ test are easy to do.</span>
-<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \eta_0 = \eta_1 = \eta_2 = 0.</span>
-<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a><span class="fu">### An example of Chow test in R</span></span>
-<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a>Here we use an example from the "strucchange" library.</span>
+<span id="cb13-325"><a href="#cb13-325" aria-hidden="true" tabindex="-1"></a>For postwar period  (suppose there is $n_2$ observations):</span>
+<span id="cb13-326"><a href="#cb13-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-327"><a href="#cb13-327" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-328"><a href="#cb13-328" aria-hidden="true" tabindex="-1"></a>y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2</span>
+<span id="cb13-329"><a href="#cb13-329" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-330"><a href="#cb13-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-331"><a href="#cb13-331" aria-hidden="true" tabindex="-1"></a>The null hypothesis of no structural break is</span>
+<span id="cb13-332"><a href="#cb13-332" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-333"><a href="#cb13-333" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-334"><a href="#cb13-334" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.</span>
+<span id="cb13-335"><a href="#cb13-335" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-336"><a href="#cb13-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a><span class="do">## Example 7.4 from Greene (1993), "Econometric Analysis"</span></span>
-<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a><span class="do">## Chow test on Longley data</span></span>
-<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"longley"</span>)</span>
-<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strucchange)</span>
-<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a><span class="do">## use structural change test from the library.</span></span>
-<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a><span class="fu">sctest</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley,</span>
-<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"Chow"</span>, <span class="at">point =</span> <span class="dv">7</span>)</span>
+<span id="cb13-337"><a href="#cb13-337" aria-hidden="true" tabindex="-1"></a>Running OLS on two equations separately, we have two sums of squares</span>
+<span id="cb13-338"><a href="#cb13-338" aria-hidden="true" tabindex="-1"></a>of error ($SSR_1$ and $SSR_2$).  The unrestricted error sum of squares</span>
+<span id="cb13-339"><a href="#cb13-339" aria-hidden="true" tabindex="-1"></a>is</span>
+<span id="cb13-340"><a href="#cb13-340" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-341"><a href="#cb13-341" aria-hidden="true" tabindex="-1"></a>SSR_U = SSR_1 + SSR_2</span>
+<span id="cb13-342"><a href="#cb13-342" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-343"><a href="#cb13-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-344"><a href="#cb13-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-345"><a href="#cb13-345" aria-hidden="true" tabindex="-1"></a>Then run the regression on the stacked sample of $n_1+n_2$ observations</span>
+<span id="cb13-346"><a href="#cb13-346" aria-hidden="true" tabindex="-1"></a>and get $SSR_R$.</span>
 <span id="cb13-347"><a href="#cb13-347" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a><span class="do">## which is equivalent to segmenting the regression via</span></span>
-<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a>fac <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">7</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">9</span>)))</span>
-<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a><span class="do">## here fac is the factor for segmenting it at point 7.</span></span>
-<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a>fm0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley)</span>
-<span id="cb13-352"><a href="#cb13-352" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> fac<span class="sc">/</span>(Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces), <span class="at">data =</span> longley)</span>
-<span id="cb13-353"><a href="#cb13-353" aria-hidden="true" tabindex="-1"></a><span class="do">## Here anova is returning the F test (Chow test). Equivalent to sctest results.</span></span>
-<span id="cb13-354"><a href="#cb13-354" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fm0, fm1)</span>
+<span id="cb13-348"><a href="#cb13-348" aria-hidden="true" tabindex="-1"></a>Then</span>
+<span id="cb13-349"><a href="#cb13-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-350"><a href="#cb13-350" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-351"><a href="#cb13-351" aria-hidden="true" tabindex="-1"></a>\frac{(SSR_R-SSR_U)/k}{SSR_U/(n_1+n_2-2k)} \sim F_{k, n_1+n_2-2k}.</span>
+<span id="cb13-352"><a href="#cb13-352" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-353"><a href="#cb13-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-354"><a href="#cb13-354" aria-hidden="true" tabindex="-1"></a>$k$ is number of restrictions; in this example, it is 3.</span>
 <span id="cb13-355"><a href="#cb13-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-356"><a href="#cb13-356" aria-hidden="true" tabindex="-1"></a><span class="do">## estimates from Table 7.5 in Greene (1993)</span></span>
-<span id="cb13-357"><a href="#cb13-357" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm0)</span>
-<span id="cb13-358"><a href="#cb13-358" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm1)</span>
-<span id="cb13-359"><a href="#cb13-359" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-360"><a href="#cb13-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-361"><a href="#cb13-361" aria-hidden="true" tabindex="-1"></a><span class="fu">## Heteroskedasticity and Autocorrelation Consistent Standard Errors</span></span>
+<span id="cb13-356"><a href="#cb13-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-357"><a href="#cb13-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-358"><a href="#cb13-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-359"><a href="#cb13-359" aria-hidden="true" tabindex="-1"></a>The other way to do the same test is easier:  simply include</span>
+<span id="cb13-360"><a href="#cb13-360" aria-hidden="true" tabindex="-1"></a>interaction terms between group dummy and explanatory variables in the</span>
+<span id="cb13-361"><a href="#cb13-361" aria-hidden="true" tabindex="-1"></a>regression.</span>
 <span id="cb13-362"><a href="#cb13-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-363"><a href="#cb13-363" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variance estimator under homoscedasticity</span></span>
+<span id="cb13-363"><a href="#cb13-363" aria-hidden="true" tabindex="-1"></a>For our earlier example, we would estimate the model:</span>
 <span id="cb13-364"><a href="#cb13-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-365"><a href="#cb13-365" aria-hidden="true" tabindex="-1"></a>In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${\rm var} \bf (\hat \beta) = {\rm E}\bf <span class="co">[</span><span class="ot">(\hat \beta-\beta)(\hat \beta -\beta)'</span><span class="co">]</span></span>
-<span id="cb13-366"><a href="#cb13-366" aria-hidden="true" tabindex="-1"></a>= {\rm E}\bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'uu'X(X'X)^{-1}</span><span class="co">]</span> = \bf \sigma^2 (X'X)^{-1} $$</span>
-<span id="cb13-367"><a href="#cb13-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-368"><a href="#cb13-368" aria-hidden="true" tabindex="-1"></a> if $${\rm var} \bf (u)=\sigma^2 I$$.</span>
-<span id="cb13-369"><a href="#cb13-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-370"><a href="#cb13-370" aria-hidden="true" tabindex="-1"></a>That is, the error term has mean zero and constant variance</span>
-<span id="cb13-371"><a href="#cb13-371" aria-hidden="true" tabindex="-1"></a>(homoscedasticity). The pairwise correlation between error terms</span>
-<span id="cb13-372"><a href="#cb13-372" aria-hidden="true" tabindex="-1"></a>is always zero (no serial correlation).</span>
-<span id="cb13-373"><a href="#cb13-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-374"><a href="#cb13-374" aria-hidden="true" tabindex="-1"></a>The estimation of $\sigma^2$:</span>
-<span id="cb13-375"><a href="#cb13-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-376"><a href="#cb13-376" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-377"><a href="#cb13-377" aria-hidden="true" tabindex="-1"></a>s^2=\frac{ \bf \hat u' \hat u}{n-k}</span>
-<span id="cb13-378"><a href="#cb13-378" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-379"><a href="#cb13-379" aria-hidden="true" tabindex="-1"></a>is an unbiased estimator of $\sigma^2$ (proof omitted).</span>
+<span id="cb13-365"><a href="#cb13-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-366"><a href="#cb13-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-367"><a href="#cb13-367" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-368"><a href="#cb13-368" aria-hidden="true" tabindex="-1"></a>y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2</span>
+<span id="cb13-369"><a href="#cb13-369" aria-hidden="true" tabindex="-1"></a>x_2 d</span>
+<span id="cb13-370"><a href="#cb13-370" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-371"><a href="#cb13-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-372"><a href="#cb13-372" aria-hidden="true" tabindex="-1"></a>Here $d$ is a dummy variable for postwar period.  The Chow test is</span>
+<span id="cb13-373"><a href="#cb13-373" aria-hidden="true" tabindex="-1"></a>simply a test on the hypothesis that all the coefficients involving</span>
+<span id="cb13-374"><a href="#cb13-374" aria-hidden="true" tabindex="-1"></a>$d$ are zero.  A regression of the above model with $n+m$ observations</span>
+<span id="cb13-375"><a href="#cb13-375" aria-hidden="true" tabindex="-1"></a>and a $F$ test are easy to do.</span>
+<span id="cb13-376"><a href="#cb13-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-377"><a href="#cb13-377" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-378"><a href="#cb13-378" aria-hidden="true" tabindex="-1"></a>\rm H_0: \ \ \bf \eta_0 = \eta_1 = \eta_2 = 0.</span>
+<span id="cb13-379"><a href="#cb13-379" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-380"><a href="#cb13-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-381"><a href="#cb13-381" aria-hidden="true" tabindex="-1"></a>The standard estimate of the variance-covariance matrix of the OLS</span>
-<span id="cb13-382"><a href="#cb13-382" aria-hidden="true" tabindex="-1"></a>parameter estimates under the assumption of IID errors is</span>
-<span id="cb13-383"><a href="#cb13-383" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-384"><a href="#cb13-384" aria-hidden="true" tabindex="-1"></a>{\rm \hat {Var}}(\hat \beta)=s^2 \bf (X'X)^{-1}</span>
-<span id="cb13-385"><a href="#cb13-385" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-386"><a href="#cb13-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-387"><a href="#cb13-387" aria-hidden="true" tabindex="-1"></a><span class="fu">### White’s estimator</span></span>
-<span id="cb13-388"><a href="#cb13-388" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-389"><a href="#cb13-389" aria-hidden="true" tabindex="-1"></a>We made strong assumption that the error terms of the regression</span>
-<span id="cb13-390"><a href="#cb13-390" aria-hidden="true" tabindex="-1"></a>model are IID when we estimate the variance-covariance matrix of</span>
-<span id="cb13-391"><a href="#cb13-391" aria-hidden="true" tabindex="-1"></a>OLS estimator.  Under this assumption, the usual estimator of</span>
-<span id="cb13-392"><a href="#cb13-392" aria-hidden="true" tabindex="-1"></a>variance-covariance matrix of $\bf \hat \beta$ is consistent.  Now</span>
-<span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a>let's relax this assumption to only independent but not</span>
-<span id="cb13-394"><a href="#cb13-394" aria-hidden="true" tabindex="-1"></a>identically distributed.  Again, the linear regression models is</span>
-<span id="cb13-395"><a href="#cb13-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-396"><a href="#cb13-396" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,</span>
-<span id="cb13-398"><a href="#cb13-398" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-399"><a href="#cb13-399" aria-hidden="true" tabindex="-1"></a>where $\bf \Omega$ is the error variance-covariance matrix with</span>
-<span id="cb13-400"><a href="#cb13-400" aria-hidden="true" tabindex="-1"></a>diagonal elements being $\sigma_t^2$ for $t^{th}$ element,</span>
-<span id="cb13-401"><a href="#cb13-401" aria-hidden="true" tabindex="-1"></a>off-diagonal elements being zero.  In other words, the error terms</span>
-<span id="cb13-402"><a href="#cb13-402" aria-hidden="true" tabindex="-1"></a>are heteroscedastic.</span>
-<span id="cb13-403"><a href="#cb13-403" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-404"><a href="#cb13-404" aria-hidden="true" tabindex="-1"></a>The variance-covariance matrix of the OLS estimator $\bf \hat</span>
-<span id="cb13-405"><a href="#cb13-405" aria-hidden="true" tabindex="-1"></a>\beta$ is equal to</span>
-<span id="cb13-406"><a href="#cb13-406" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-407"><a href="#cb13-407" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb13-408"><a href="#cb13-408" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) &amp;= {\rm E}\bf [(\hat \beta</span>
-<span id="cb13-409"><a href="#cb13-409" aria-hidden="true" tabindex="-1"></a>-\beta)(\hat</span>
-<span id="cb13-410"><a href="#cb13-410" aria-hidden="true" tabindex="-1"></a>\beta -\beta)'] <span class="sc">\\</span></span>
-<span id="cb13-411"><a href="#cb13-411" aria-hidden="true" tabindex="-1"></a>&amp;= \bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}</span><span class="co">]</span> <span class="sc">\\</span></span>
-<span id="cb13-412"><a href="#cb13-412" aria-hidden="true" tabindex="-1"></a>&amp;= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}</span>
-<span id="cb13-413"><a href="#cb13-413" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb13-414"><a href="#cb13-414" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-415"><a href="#cb13-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-416"><a href="#cb13-416" aria-hidden="true" tabindex="-1"></a>If we know $\sigma_t^2$, then we would be able to estimate this</span>
-<span id="cb13-417"><a href="#cb13-417" aria-hidden="true" tabindex="-1"></a>"sandwich covariance matrix".  But we don't.</span>
-<span id="cb13-418"><a href="#cb13-418" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-419"><a href="#cb13-419" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}</span>
-<span id="cb13-420"><a href="#cb13-420" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X'\Omega</span>
-<span id="cb13-421"><a href="#cb13-421" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}</span>
-<span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>Let $y_t$ denote the $t$th observation on the dependent variable,</span>
-<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>and $x_t'=<span class="co">[</span><span class="ot">1 x_{2t} \cdots x_{kt}</span><span class="co">]</span>$ denote the $t$th row of the</span>
-<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a>$\bf X$ matrix.  Then</span>
-<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>\bf X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'</span>
-<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a>The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,</span>
-<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a>the estimated OLS residuals.  This provides a consistent estimator of</span>
-<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a>the variance matrix for the OLS coefficient vector and is particularly</span>
-<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a>useful since it does not require any specific assumptions about the</span>
-<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a>form of the heteroscedasticity.</span>
-<span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-437"><a href="#cb13-437" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
-<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-439"><a href="#cb13-439" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a>\hat {\rm Var} \bf (\hat \beta) &amp;= \bf \frac{1}{n}</span>
-<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X' \hat \Omega</span>
-<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}<span class="sc">\\</span></span>
-<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a>\bf \hat \Omega &amp;= \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,</span>
-<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a>\hat u_n^2})</span>
-<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-447"><a href="#cb13-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-448"><a href="#cb13-448" aria-hidden="true" tabindex="-1"></a><span class="fu">### Newey-West estimator</span></span>
-<span id="cb13-449"><a href="#cb13-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-381"><a href="#cb13-381" aria-hidden="true" tabindex="-1"></a><span class="fu">### An example of Chow test in R</span></span>
+<span id="cb13-382"><a href="#cb13-382" aria-hidden="true" tabindex="-1"></a>Here we use an example from the "strucchange" library.</span>
+<span id="cb13-383"><a href="#cb13-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-386"><a href="#cb13-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-387"><a href="#cb13-387" aria-hidden="true" tabindex="-1"></a><span class="do">## Example 7.4 from Greene (1993), "Econometric Analysis"</span></span>
+<span id="cb13-388"><a href="#cb13-388" aria-hidden="true" tabindex="-1"></a><span class="do">## Chow test on Longley data</span></span>
+<span id="cb13-389"><a href="#cb13-389" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"longley"</span>)</span>
+<span id="cb13-390"><a href="#cb13-390" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(strucchange)</span>
+<span id="cb13-391"><a href="#cb13-391" aria-hidden="true" tabindex="-1"></a><span class="do">## use structural change test from the library.</span></span>
+<span id="cb13-392"><a href="#cb13-392" aria-hidden="true" tabindex="-1"></a><span class="fu">sctest</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley,</span>
+<span id="cb13-393"><a href="#cb13-393" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"Chow"</span>, <span class="at">point =</span> <span class="dv">7</span>)</span>
+<span id="cb13-394"><a href="#cb13-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-395"><a href="#cb13-395" aria-hidden="true" tabindex="-1"></a><span class="do">## which is equivalent to segmenting the regression via</span></span>
+<span id="cb13-396"><a href="#cb13-396" aria-hidden="true" tabindex="-1"></a>fac <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">7</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">9</span>)))</span>
+<span id="cb13-397"><a href="#cb13-397" aria-hidden="true" tabindex="-1"></a><span class="do">## here fac is the factor for segmenting it at point 7.</span></span>
+<span id="cb13-398"><a href="#cb13-398" aria-hidden="true" tabindex="-1"></a>fm0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces, <span class="at">data =</span> longley)</span>
+<span id="cb13-399"><a href="#cb13-399" aria-hidden="true" tabindex="-1"></a>fm1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Employed <span class="sc">~</span> fac<span class="sc">/</span>(Year <span class="sc">+</span> GNP.deflator <span class="sc">+</span> GNP <span class="sc">+</span> Armed.Forces), <span class="at">data =</span> longley)</span>
+<span id="cb13-400"><a href="#cb13-400" aria-hidden="true" tabindex="-1"></a><span class="do">## Here anova is returning the F test (Chow test). Equivalent to sctest results.</span></span>
+<span id="cb13-401"><a href="#cb13-401" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(fm0, fm1)</span>
+<span id="cb13-402"><a href="#cb13-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-403"><a href="#cb13-403" aria-hidden="true" tabindex="-1"></a><span class="do">## estimates from Table 7.5 in Greene (1993)</span></span>
+<span id="cb13-404"><a href="#cb13-404" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm0)</span>
+<span id="cb13-405"><a href="#cb13-405" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fm1)</span>
+<span id="cb13-406"><a href="#cb13-406" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-407"><a href="#cb13-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-408"><a href="#cb13-408" aria-hidden="true" tabindex="-1"></a><span class="fu">## Heteroskedasticity and Autocorrelation Consistent Standard Errors</span></span>
+<span id="cb13-409"><a href="#cb13-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-410"><a href="#cb13-410" aria-hidden="true" tabindex="-1"></a><span class="fu">### Variance estimator under homoscedasticity</span></span>
+<span id="cb13-411"><a href="#cb13-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-412"><a href="#cb13-412" aria-hidden="true" tabindex="-1"></a>In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${\rm var} \bf (\hat \beta) = {\rm E}\bf <span class="co">[</span><span class="ot">(\hat \beta-\beta)(\hat \beta -\beta)'</span><span class="co">]</span></span>
+<span id="cb13-413"><a href="#cb13-413" aria-hidden="true" tabindex="-1"></a>= {\rm E}\bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'uu'X(X'X)^{-1}</span><span class="co">]</span> = \bf \sigma^2 (X'X)^{-1} $$</span>
+<span id="cb13-414"><a href="#cb13-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-415"><a href="#cb13-415" aria-hidden="true" tabindex="-1"></a> if $${\rm var} \bf (u)=\sigma^2 I$$.</span>
+<span id="cb13-416"><a href="#cb13-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-417"><a href="#cb13-417" aria-hidden="true" tabindex="-1"></a>That is, the error term has mean zero and constant variance</span>
+<span id="cb13-418"><a href="#cb13-418" aria-hidden="true" tabindex="-1"></a>(homoscedasticity). The pairwise correlation between error terms</span>
+<span id="cb13-419"><a href="#cb13-419" aria-hidden="true" tabindex="-1"></a>is always zero (no serial correlation).</span>
+<span id="cb13-420"><a href="#cb13-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-421"><a href="#cb13-421" aria-hidden="true" tabindex="-1"></a>The estimation of $\sigma^2$:</span>
+<span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>s^2=\frac{ \bf \hat u' \hat u}{n-k}</span>
+<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a>is an unbiased estimator of $\sigma^2$ (proof omitted).</span>
+<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>The standard estimate of the variance-covariance matrix of the OLS</span>
+<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a>parameter estimates under the assumption of IID errors is</span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a>{\rm \hat {Var}}(\hat \beta)=s^2 \bf (X'X)^{-1}</span>
+<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a><span class="fu">### White’s estimator</span></span>
+<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a>We made strong assumption that the error terms of the regression</span>
+<span id="cb13-437"><a href="#cb13-437" aria-hidden="true" tabindex="-1"></a>model are IID when we estimate the variance-covariance matrix of</span>
+<span id="cb13-438"><a href="#cb13-438" aria-hidden="true" tabindex="-1"></a>OLS estimator.  Under this assumption, the usual estimator of</span>
+<span id="cb13-439"><a href="#cb13-439" aria-hidden="true" tabindex="-1"></a>variance-covariance matrix of $\bf \hat \beta$ is consistent.  Now</span>
+<span id="cb13-440"><a href="#cb13-440" aria-hidden="true" tabindex="-1"></a>let's relax this assumption to only independent but not</span>
+<span id="cb13-441"><a href="#cb13-441" aria-hidden="true" tabindex="-1"></a>identically distributed.  Again, the linear regression models is</span>
+<span id="cb13-442"><a href="#cb13-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-443"><a href="#cb13-443" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-444"><a href="#cb13-444" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,</span>
+<span id="cb13-445"><a href="#cb13-445" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-446"><a href="#cb13-446" aria-hidden="true" tabindex="-1"></a>where $\bf \Omega$ is the error variance-covariance matrix with</span>
+<span id="cb13-447"><a href="#cb13-447" aria-hidden="true" tabindex="-1"></a>diagonal elements being $\sigma_t^2$ for $t^{th}$ element,</span>
+<span id="cb13-448"><a href="#cb13-448" aria-hidden="true" tabindex="-1"></a>off-diagonal elements being zero.  In other words, the error terms</span>
+<span id="cb13-449"><a href="#cb13-449" aria-hidden="true" tabindex="-1"></a>are heteroscedastic.</span>
 <span id="cb13-450"><a href="#cb13-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-451"><a href="#cb13-451" aria-hidden="true" tabindex="-1"></a>White's estimator deals with the situation that we have</span>
-<span id="cb13-452"><a href="#cb13-452" aria-hidden="true" tabindex="-1"></a>heteroskedasticity (a diagonal $\Omega$) of unknown form.  When we</span>
-<span id="cb13-453"><a href="#cb13-453" aria-hidden="true" tabindex="-1"></a>have serial correlation of unknown form (a non-diagonal $\Omega$), we</span>
-<span id="cb13-454"><a href="#cb13-454" aria-hidden="true" tabindex="-1"></a>can estimate the variance-covariance matrix by a heteroskedasticity</span>
-<span id="cb13-455"><a href="#cb13-455" aria-hidden="true" tabindex="-1"></a>and autocorrelation consistent, or HAC, estimator.  Newey-West</span>
-<span id="cb13-456"><a href="#cb13-456" aria-hidden="true" tabindex="-1"></a>estimator is the most popular HAC estimator.</span>
-<span id="cb13-457"><a href="#cb13-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-458"><a href="#cb13-458" aria-hidden="true" tabindex="-1"></a>Given a time series data set, suppose we are interested in estimating</span>
-<span id="cb13-459"><a href="#cb13-459" aria-hidden="true" tabindex="-1"></a>the mean vector (suppose we have more than one variable) and its</span>
-<span id="cb13-460"><a href="#cb13-460" aria-hidden="true" tabindex="-1"></a>variance.  We know that given IID data, we can apply central limit</span>
-<span id="cb13-461"><a href="#cb13-461" aria-hidden="true" tabindex="-1"></a>theorem: sample mean is a consistent estimator of the population mean</span>
-<span id="cb13-462"><a href="#cb13-462" aria-hidden="true" tabindex="-1"></a>and it's variance can be calculated since asymptotically the sample</span>
-<span id="cb13-463"><a href="#cb13-463" aria-hidden="true" tabindex="-1"></a>mean conforms to a normal distribution and the variance can be</span>
-<span id="cb13-464"><a href="#cb13-464" aria-hidden="true" tabindex="-1"></a>estimated, relatively easily.  However, in the case of time series</span>
-<span id="cb13-465"><a href="#cb13-465" aria-hidden="true" tabindex="-1"></a>data, autocorrelation usually exists.  We may be concerned the CLT may</span>
-<span id="cb13-466"><a href="#cb13-466" aria-hidden="true" tabindex="-1"></a>not work in this case.</span>
-<span id="cb13-467"><a href="#cb13-467" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-468"><a href="#cb13-468" aria-hidden="true" tabindex="-1"></a>Fortunately, as proved in Hamilton (1994), if $\bf y_t$ is a</span>
-<span id="cb13-469"><a href="#cb13-469" aria-hidden="true" tabindex="-1"></a>covariance-stationary (meaning that the covariance is not a function</span>
-<span id="cb13-470"><a href="#cb13-470" aria-hidden="true" tabindex="-1"></a>of time) vector process, then the sample mean satisfies:</span>
-<span id="cb13-471"><a href="#cb13-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-472"><a href="#cb13-472" aria-hidden="true" tabindex="-1"></a>$$\bf \bar y_t \to \mu , $$</span>
-<span id="cb13-473"><a href="#cb13-473" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \lim_{T \to \infty} \bf  {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . $$</span>
-<span id="cb13-474"><a href="#cb13-474" aria-hidden="true" tabindex="-1"></a>where $\bf \Gamma_v$ is the variance-covariance matrix for $\bf y_t$ and $\bf y_{t-v}$.</span>
-<span id="cb13-475"><a href="#cb13-475" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-476"><a href="#cb13-476" aria-hidden="true" tabindex="-1"></a>The first one says for a covariance-stationary vector process, the law</span>
-<span id="cb13-477"><a href="#cb13-477" aria-hidden="true" tabindex="-1"></a>of large numbers still holds.  The second one is used to calculate the</span>
-<span id="cb13-478"><a href="#cb13-478" aria-hidden="true" tabindex="-1"></a>standard error.</span>
-<span id="cb13-479"><a href="#cb13-479" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
-<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \sum_{v=-q}^{q} \Gamma_v . $$</span>
+<span id="cb13-451"><a href="#cb13-451" aria-hidden="true" tabindex="-1"></a>The variance-covariance matrix of the OLS estimator $\bf \hat</span>
+<span id="cb13-452"><a href="#cb13-452" aria-hidden="true" tabindex="-1"></a>\beta$ is equal to</span>
+<span id="cb13-453"><a href="#cb13-453" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-454"><a href="#cb13-454" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb13-455"><a href="#cb13-455" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) &amp;= {\rm E}\bf [(\hat \beta</span>
+<span id="cb13-456"><a href="#cb13-456" aria-hidden="true" tabindex="-1"></a>-\beta)(\hat</span>
+<span id="cb13-457"><a href="#cb13-457" aria-hidden="true" tabindex="-1"></a>\beta -\beta)'] <span class="sc">\\</span></span>
+<span id="cb13-458"><a href="#cb13-458" aria-hidden="true" tabindex="-1"></a>&amp;= \bf <span class="co">[</span><span class="ot">(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}</span><span class="co">]</span> <span class="sc">\\</span></span>
+<span id="cb13-459"><a href="#cb13-459" aria-hidden="true" tabindex="-1"></a>&amp;= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}</span>
+<span id="cb13-460"><a href="#cb13-460" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb13-461"><a href="#cb13-461" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-462"><a href="#cb13-462" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-463"><a href="#cb13-463" aria-hidden="true" tabindex="-1"></a>If we know $\sigma_t^2$, then we would be able to estimate this</span>
+<span id="cb13-464"><a href="#cb13-464" aria-hidden="true" tabindex="-1"></a>"sandwich covariance matrix".  But we don't.</span>
+<span id="cb13-465"><a href="#cb13-465" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-466"><a href="#cb13-466" aria-hidden="true" tabindex="-1"></a>{\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}</span>
+<span id="cb13-467"><a href="#cb13-467" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X'\Omega</span>
+<span id="cb13-468"><a href="#cb13-468" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}</span>
+<span id="cb13-469"><a href="#cb13-469" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-470"><a href="#cb13-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-471"><a href="#cb13-471" aria-hidden="true" tabindex="-1"></a>Let $y_t$ denote the $t$th observation on the dependent variable,</span>
+<span id="cb13-472"><a href="#cb13-472" aria-hidden="true" tabindex="-1"></a>and $x_t'=<span class="co">[</span><span class="ot">1 x_{2t} \cdots x_{kt}</span><span class="co">]</span>$ denote the $t$th row of the</span>
+<span id="cb13-473"><a href="#cb13-473" aria-hidden="true" tabindex="-1"></a>$\bf X$ matrix.  Then</span>
+<span id="cb13-474"><a href="#cb13-474" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-475"><a href="#cb13-475" aria-hidden="true" tabindex="-1"></a>\bf X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'</span>
+<span id="cb13-476"><a href="#cb13-476" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-477"><a href="#cb13-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-478"><a href="#cb13-478" aria-hidden="true" tabindex="-1"></a>The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,</span>
+<span id="cb13-479"><a href="#cb13-479" aria-hidden="true" tabindex="-1"></a>the estimated OLS residuals.  This provides a consistent estimator of</span>
+<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a>the variance matrix for the OLS coefficient vector and is particularly</span>
+<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a>useful since it does not require any specific assumptions about the</span>
+<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a>form of the heteroscedasticity.</span>
 <span id="cb13-483"><a href="#cb13-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
-<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a>$$ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),$$</span>
-<span id="cb13-487"><a href="#cb13-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a>where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. $$</span>
-<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of $\bf S$; however, it sometimes is</span>
-<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
-<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a>Newey-West (1987) suggested putting in a weight:</span>
+<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb13-487"><a href="#cb13-487" aria-hidden="true" tabindex="-1"></a>\hat {\rm Var} \bf (\hat \beta) &amp;= \bf \frac{1}{n}</span>
+<span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X' \hat \Omega</span>
+<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}<span class="sc">\\</span></span>
+<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a>\bf \hat \Omega &amp;= \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,</span>
+<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>\hat u_n^2})</span>
+<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S = \hat \Gamma_0} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_v + \hat \Gamma_v' ), $$</span>
-<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a>where $q$ is from the MA($q$) process.</span>
+<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a><span class="fu">### Newey-West estimator</span></span>
+<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-497"><a href="#cb13-497" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
-<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a>$$ y_t={ \bf x_t' \beta} + u_t $$</span>
-<span id="cb13-501"><a href="#cb13-501" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-502"><a href="#cb13-502" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator $\bf b_T$, then</span>
-<span id="cb13-503"><a href="#cb13-503" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_T - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t</span>
-<span id="cb13-504"><a href="#cb13-504" aria-hidden="true" tabindex="-1"></a>  x_t'}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t}</span><span class="co">]</span> $$</span>
-<span id="cb13-505"><a href="#cb13-505" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-506"><a href="#cb13-506" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
-<span id="cb13-507"><a href="#cb13-507" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector $\bf x_t u_t$,</span>
-<span id="cb13-508"><a href="#cb13-508" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
-<span id="cb13-509"><a href="#cb13-509" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-510"><a href="#cb13-510" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
-<span id="cb13-511"><a href="#cb13-511" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-512"><a href="#cb13-512" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_T - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$</span>
-<span id="cb13-513"><a href="#cb13-513" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-514"><a href="#cb13-514" aria-hidden="true" tabindex="-1"></a>where $Q = {\rm plim} \, (1/T)\sum_{t=1}^T {\bf x_t x_t'} = {\rm E}<span class="co">[</span><span class="ot">{\bf x_t x_t'}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
-<span id="cb13-515"><a href="#cb13-515" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), $$</span>
-<span id="cb13-516"><a href="#cb13-516" aria-hidden="true" tabindex="-1"></a>where</span>
-<span id="cb13-517"><a href="#cb13-517" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$</span>
-<span id="cb13-518"><a href="#cb13-518" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
-<span id="cb13-519"><a href="#cb13-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-520"><a href="#cb13-520" aria-hidden="true" tabindex="-1"></a>Overall, the variance of $\bf b_T$ is approximated by</span>
-<span id="cb13-521"><a href="#cb13-521" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-522"><a href="#cb13-522" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$</span>
-<span id="cb13-523"><a href="#cb13-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-524"><a href="#cb13-524" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-525"><a href="#cb13-525" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
-<span id="cb13-526"><a href="#cb13-526" aria-hidden="true" tabindex="-1"></a>length beyond which we are willing to assume that the autocorrelation</span>
-<span id="cb13-527"><a href="#cb13-527" aria-hidden="true" tabindex="-1"></a>of $x_t u_t$ and $x_{t-v} u_{t-v}$ is essentially zero.  The rule of</span>
-<span id="cb13-528"><a href="#cb13-528" aria-hidden="true" tabindex="-1"></a>thumb for the selection of $q$ is $0.75 \cdot T^{\frac{1}{3}}$.</span>
-<span id="cb13-529"><a href="#cb13-529" aria-hidden="true" tabindex="-1"></a>Newey-West (1994) has suggested a way to automatically select the</span>
-<span id="cb13-530"><a href="#cb13-530" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
-<span id="cb13-531"><a href="#cb13-531" aria-hidden="true" tabindex="-1"></a>also implement Newey-West (1994) estimator, with no need to specify</span>
-<span id="cb13-532"><a href="#cb13-532" aria-hidden="true" tabindex="-1"></a>$q$.</span>
+<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a>White's estimator deals with the situation that we have</span>
+<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a>heteroskedasticity (a diagonal $\Omega$) of unknown form.  When we</span>
+<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a>have serial correlation of unknown form (a non-diagonal $\Omega$), we</span>
+<span id="cb13-501"><a href="#cb13-501" aria-hidden="true" tabindex="-1"></a>can estimate the variance-covariance matrix by a heteroskedasticity</span>
+<span id="cb13-502"><a href="#cb13-502" aria-hidden="true" tabindex="-1"></a>and autocorrelation consistent, or HAC, estimator.  Newey-West</span>
+<span id="cb13-503"><a href="#cb13-503" aria-hidden="true" tabindex="-1"></a>estimator is the most popular HAC estimator.</span>
+<span id="cb13-504"><a href="#cb13-504" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-505"><a href="#cb13-505" aria-hidden="true" tabindex="-1"></a>Given a time series data set, suppose we are interested in estimating</span>
+<span id="cb13-506"><a href="#cb13-506" aria-hidden="true" tabindex="-1"></a>the mean vector (suppose we have more than one variable) and its</span>
+<span id="cb13-507"><a href="#cb13-507" aria-hidden="true" tabindex="-1"></a>variance.  We know that given IID data, we can apply central limit</span>
+<span id="cb13-508"><a href="#cb13-508" aria-hidden="true" tabindex="-1"></a>theorem: sample mean is a consistent estimator of the population mean</span>
+<span id="cb13-509"><a href="#cb13-509" aria-hidden="true" tabindex="-1"></a>and it's variance can be calculated since asymptotically the sample</span>
+<span id="cb13-510"><a href="#cb13-510" aria-hidden="true" tabindex="-1"></a>mean conforms to a normal distribution and the variance can be</span>
+<span id="cb13-511"><a href="#cb13-511" aria-hidden="true" tabindex="-1"></a>estimated, relatively easily.  However, in the case of time series</span>
+<span id="cb13-512"><a href="#cb13-512" aria-hidden="true" tabindex="-1"></a>data, autocorrelation usually exists.  We may be concerned the CLT may</span>
+<span id="cb13-513"><a href="#cb13-513" aria-hidden="true" tabindex="-1"></a>not work in this case.</span>
+<span id="cb13-514"><a href="#cb13-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-515"><a href="#cb13-515" aria-hidden="true" tabindex="-1"></a>Fortunately, as proved in Hamilton (1994), if $\bf y_t$ is a</span>
+<span id="cb13-516"><a href="#cb13-516" aria-hidden="true" tabindex="-1"></a>covariance-stationary (meaning that the covariance is not a function</span>
+<span id="cb13-517"><a href="#cb13-517" aria-hidden="true" tabindex="-1"></a>of time) vector process, then the sample mean satisfies:</span>
+<span id="cb13-518"><a href="#cb13-518" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-519"><a href="#cb13-519" aria-hidden="true" tabindex="-1"></a>$$\bf \bar y_t \to \mu , $$</span>
+<span id="cb13-520"><a href="#cb13-520" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \lim_{T \to \infty} \bf  {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . $$</span>
+<span id="cb13-521"><a href="#cb13-521" aria-hidden="true" tabindex="-1"></a>where $\bf \Gamma_v$ is the variance-covariance matrix for $\bf y_t$ and $\bf y_{t-v}$.</span>
+<span id="cb13-522"><a href="#cb13-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-523"><a href="#cb13-523" aria-hidden="true" tabindex="-1"></a>The first one says for a covariance-stationary vector process, the law</span>
+<span id="cb13-524"><a href="#cb13-524" aria-hidden="true" tabindex="-1"></a>of large numbers still holds.  The second one is used to calculate the</span>
+<span id="cb13-525"><a href="#cb13-525" aria-hidden="true" tabindex="-1"></a>standard error.</span>
+<span id="cb13-526"><a href="#cb13-526" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-527"><a href="#cb13-527" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
+<span id="cb13-528"><a href="#cb13-528" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-529"><a href="#cb13-529" aria-hidden="true" tabindex="-1"></a>$$ {\bf S} = \sum_{v=-q}^{q} \Gamma_v . $$</span>
+<span id="cb13-530"><a href="#cb13-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-531"><a href="#cb13-531" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
+<span id="cb13-532"><a href="#cb13-532" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-533"><a href="#cb13-533" aria-hidden="true" tabindex="-1"></a>$$ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),$$</span>
+<span id="cb13-534"><a href="#cb13-534" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-535"><a href="#cb13-535" aria-hidden="true" tabindex="-1"></a>where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. $$</span>
+<span id="cb13-536"><a href="#cb13-536" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-537"><a href="#cb13-537" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of $\bf S$; however, it sometimes is</span>
+<span id="cb13-538"><a href="#cb13-538" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
+<span id="cb13-539"><a href="#cb13-539" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-540"><a href="#cb13-540" aria-hidden="true" tabindex="-1"></a>Newey-West (1987) suggested putting in a weight:</span>
+<span id="cb13-541"><a href="#cb13-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-542"><a href="#cb13-542" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S = \hat \Gamma_0} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_v + \hat \Gamma_v' ), $$</span>
+<span id="cb13-543"><a href="#cb13-543" aria-hidden="true" tabindex="-1"></a>where $q$ is from the MA($q$) process.</span>
+<span id="cb13-544"><a href="#cb13-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-545"><a href="#cb13-545" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-546"><a href="#cb13-546" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
+<span id="cb13-547"><a href="#cb13-547" aria-hidden="true" tabindex="-1"></a>$$ y_t={ \bf x_t' \beta} + u_t $$</span>
+<span id="cb13-548"><a href="#cb13-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-549"><a href="#cb13-549" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator $\bf b_T$, then</span>
+<span id="cb13-550"><a href="#cb13-550" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_T - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t</span>
+<span id="cb13-551"><a href="#cb13-551" aria-hidden="true" tabindex="-1"></a>  x_t'}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t}</span><span class="co">]</span> $$</span>
+<span id="cb13-552"><a href="#cb13-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-553"><a href="#cb13-553" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
+<span id="cb13-554"><a href="#cb13-554" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector $\bf x_t u_t$,</span>
+<span id="cb13-555"><a href="#cb13-555" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
+<span id="cb13-556"><a href="#cb13-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-557"><a href="#cb13-557" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
+<span id="cb13-558"><a href="#cb13-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-559"><a href="#cb13-559" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({\bf b_T - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$</span>
+<span id="cb13-560"><a href="#cb13-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-561"><a href="#cb13-561" aria-hidden="true" tabindex="-1"></a>where $Q = {\rm plim} \, (1/T)\sum_{t=1}^T {\bf x_t x_t'} = {\rm E}<span class="co">[</span><span class="ot">{\bf x_t x_t'}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
+<span id="cb13-562"><a href="#cb13-562" aria-hidden="true" tabindex="-1"></a>$$ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), $$</span>
+<span id="cb13-563"><a href="#cb13-563" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb13-564"><a href="#cb13-564" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$</span>
+<span id="cb13-565"><a href="#cb13-565" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
+<span id="cb13-566"><a href="#cb13-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-567"><a href="#cb13-567" aria-hidden="true" tabindex="-1"></a>Overall, the variance of $\bf b_T$ is approximated by</span>
+<span id="cb13-568"><a href="#cb13-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-569"><a href="#cb13-569" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$</span>
+<span id="cb13-570"><a href="#cb13-570" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-571"><a href="#cb13-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-572"><a href="#cb13-572" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
+<span id="cb13-573"><a href="#cb13-573" aria-hidden="true" tabindex="-1"></a>length beyond which we are willing to assume that the autocorrelation</span>
+<span id="cb13-574"><a href="#cb13-574" aria-hidden="true" tabindex="-1"></a>of $x_t u_t$ and $x_{t-v} u_{t-v}$ is essentially zero.  The rule of</span>
+<span id="cb13-575"><a href="#cb13-575" aria-hidden="true" tabindex="-1"></a>thumb for the selection of $q$ is $0.75 \cdot T^{\frac{1}{3}}$.</span>
+<span id="cb13-576"><a href="#cb13-576" aria-hidden="true" tabindex="-1"></a>Newey-West (1994) has suggested a way to automatically select the</span>
+<span id="cb13-577"><a href="#cb13-577" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
+<span id="cb13-578"><a href="#cb13-578" aria-hidden="true" tabindex="-1"></a>also implement Newey-West (1994) estimator, with no need to specify</span>
+<span id="cb13-579"><a href="#cb13-579" aria-hidden="true" tabindex="-1"></a>$q$.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
