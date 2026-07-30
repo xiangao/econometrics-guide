@@ -65,3 +65,42 @@ Fresh sweep of all 12 substantive chapters — the book had had no commits since
 **Smaller items:** `mle` asymptotic-efficiency item — `V` was called the variance of `θ̂` then used as the variance of the limit of `√n(θ̂−θ)`; fixed, and the *regular*-CAN qualifier added (Hodges' estimator named, since without it the claim is false). `gmm` — `W` denoted both the weighting matrix and the instrument (and the data column is `w`); disambiguated, `gmm()`'s arguments described correctly, and the chapter's gap filled: optimal `W = S^{-1}`, asymptotic variance `(G'S^{-1}G)^{-1}`, two-step GMM, and 2SLS as efficient GMM only under homoskedasticity. `endogeneity` — the geometry passage asserted a similar-triangles identity requiring `x₁ ⊥ x₂` while explicitly ruling out the one construction that delivers it; rewritten around `x = x^⊥ + x^∥` (projection onto `u`), which makes both orthogonalities hold by construction, and the infeasible-regression algebra is now shown. `survival` — `exp <- survreg(...)` shadowed base `exp()` (renamed `exp_fit`), and an AFT-vs-PH sign-convention warning was added for reading `survreg` beside `coxph`. `missing-data` — the MI recipe drew `α` but never a residual, i.e. improper imputation, the very defect charged against single regression imputation two sections earlier. `panel-data` — education is not time-invariant in general.
 
 **Verified correct by re-derivation or execution (no action).** `censored`'s full-information Heckman likelihood, including the `Φ[(Wγ+ρ(y−Xβ)/σ)/√(1−ρ²)]` term re-derived from `v|u ~ N(ρu/σ, 1−ρ²)`; `count-data`'s NB2 pmf re-derived from the Gamma mixture; `dynamic-panel`'s `Cov(y_{i,t−1},C_i) = σ_c²/(1−γ)` and Nickell's covariance (the chapter's form equals `−σ_ε²[(T−1)−Tγ+γ^T]/[T²(1−γ)²]`), and the `−(1+γ)/(T−1)` approximation giving exactly the claimed −0.1667 at T=10, γ=0.5; `survival`'s Greenwood formula and Weibull hazard; `gls`'s `Ψ'ΩΨ = I`. Executed: `sctest(type="Chow")` and `anova(fm0,fm1)` give identical F=3.9268, p=0.06307; `ivreg` = manual 2SLS = control function to 1.9e-15; `gmm` = `ivreg` to 5.8e-15 and `gmm` = `lm` to 2.0e-15; OLS omitting z gives 1.5961 against the theoretical 1.6.
+
+## Deep read (2026-07-30) — 12/12 chapters, no mathematical errors
+
+Full-depth pass over every chapter. Log:
+`~/projects/books/_review3/deepread_econometrics_guide.md`.
+
+**This is a derivation book**: 7 of the 12 chapters (`gls`, `panel-data`,
+`dynamic-panel`, `missing-data`, `discrete`, `count-data`, `censored`) contain no
+executable code at all, and `ols` has one chunk. So the review lever here is
+re-deriving the mathematics and simulating it where possible — not re-executing and
+diffing output, which is what works for the other three books.
+
+**No mathematical errors were found.** Everything re-derived came out correct,
+including the Heckman selection log-likelihood (the third term follows from
+`E[v|u] = (rho/sigma)u` with `Var(v|u) = 1-rho^2`), Greenwood's variance, the Cox
+partial likelihood with Breslow ties, Rubin's rules, the NB2 pmf and its
+`mu(1+mu/theta)` variance, and the full Newey-West sandwich (the T factors cancel
+exactly). The Nickell bias formula was checked by simulation at N=40,000 across six
+(T, gamma) pairs and matches to about three decimals.
+
+What was left to find were precision and completeness gaps:
+
+- `ols` introduced `E(Xu)=0` as "weaker" and then `E(u_t|X_t)=0` as "much weaker" two
+  paragraphs later, which reads as though mean independence were weaker than zero
+  covariance. Added contemporaneous orthogonality as the explicit bottom rung.
+- `censored`'s section titled "Switching Regression" shows a model with one beta and
+  one delta — a constant effect. Added the distinction from the Roy model.
+- `gls` attributed one transformation to both Cochrane-Orcutt and Prais-Winsten;
+  they differ exactly in the first observation, which the chapter's own Psi framework
+  supplies.
+- `gmm`'s worked example reproduces 2SLS only because it is just-identified (the
+  J-test in its own output reports df 0), not in general.
+- `mle` built the information matrix and the efficiency bound but never presented
+  LR/Wald/LM. Added.
+
+**If you extend this book, the failure mode to watch is prose that drifts from the
+algebra** — every issue found in two passes has been of that kind (an inverted
+hierarchy, a mis-titled model, an elided intercept, a normalization left unstated),
+not a wrong formula.

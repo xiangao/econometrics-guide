@@ -42,3 +42,16 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 
 > **2026-07-30:** Fresh sweep of all 12 substantive chapters (report in `../_review3/review_20260730.md`). Four real corrections: the exogeneity hierarchy in `ols` was inverted (contemporaneous exogeneity is the *weakest* of strict/predetermined/contemporaneous, not stronger than predeterminedness — predeterminedness implies it by iterated expectations); `discrete` claimed that choice-varying regressors with choice-specific coefficients are not separately identified, which is false (verified by simulation — MLE recovers all coefficients with a non-singular information matrix, and it is what Stata's `asclogit` fits); a comment in `mle` claimed OLS starting values the code did not use; and a dead external link in `count-data` was removed. Eight smaller items: the ordered-probit location and scale normalizations, the asymptotic-variance scaling and regularity qualifier in the MLE efficiency claim, GMM's optimal weighting matrix and asymptotic variance (previously absent) plus a notation clash between the weighting matrix and the instrument, a rewrite of the IV geometry passage around an orthogonal decomposition that actually supports its similar-triangles argument, an AFT-vs-PH sign-convention warning for `survreg` beside `coxph`, the missing residual draw in the multiple-imputation recipe, and a time-invariance example. Rendered clean.
 
+> **2026-07-30 (deep read):** Full-depth pass over all 12 chapters; log at
+> `../_review3/deepread_econometrics_guide.md`. **No mathematical errors found** —
+> every likelihood, variance formula and asymptotic result re-derived correctly, and
+> the Nickell bias was additionally confirmed by simulation across six (T, gamma)
+> pairs. The corrections were precision and completeness ones: the exogeneity ladder
+> in `ols` listed zero-covariance and mean-independence in an order that implied the
+> wrong ranking; `censored`'s "Switching Regression" section presents a constant-effect
+> treatment model rather than the Roy model it names; `gls` attributed a single
+> transformation to both Cochrane-Orcutt and Prais-Winsten, which differ precisely in
+> the first observation; `gmm`'s example coincides with 2SLS only because it is
+> just-identified; and `mle` — the book's inference chapter — developed the information
+> matrix and efficiency bound without ever presenting the LR, Wald and LM tests, which
+> are now included.
