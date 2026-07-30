@@ -87,23 +87,35 @@ give you correct standard errors.
 
 Geometry Illustration:
 
-Suppose the simplest case:  $y=\beta_0 + \beta_1 x + u $, where $x$
-can be decomposed into $x_1$, which is exogenous and $x_2$, which
-is endogenous. Endogeneity of $x_2$ means $x_2$ has a non-orthogonal
-(non-zero) projection onto $u$ -- not that $x_2$ is literally parallel
-to $u$, which would be a knife-edge special case -- while $x_1$ remains
-perpendicular to $u$. Suppose $z$ is a vector that is perpendicular to
-$u$ (exogeneity: $z$ is uncorrelated with the error) but has a
-non-orthogonal projection onto $x$, in particular onto its endogenous
-part $x_2$ (relevance: $z$ actually predicts the endogenous regressor).
-Then $z$ can be an instrument for $x$.  The way instrumental
-variable works: Regress $x$ on $z$, suppose $\hat x_1$ is the
-projection.  Regress $y$ on $z$, $\hat y_2$ be the projection.
-Then the result of $\beta_2 =  \hat y_2 / \hat x_1$ is the same as
-$\beta_1= \hat y_1 / x_1$ (since the two triangles are similar).
-Here $\hat y_1$ is the projection of $y$ on $x_1$, which is
-hypothetical since we have no way to decompose $x$ into $x_1$ and
-$x_2$; otherwise, we would not need instrumental variables.
+Suppose the simplest case: $y=\beta_0 + \beta_1 x + u$.  Split $x$ into the part
+that lies along the error and the part that does not,
+
+$$ x = x^{\perp} + x^{\parallel}, $$
+
+where $x^{\parallel}$ is the orthogonal projection of $x$ onto $u$ and
+$x^{\perp}$ is what is left over.  Two facts hold *by construction* and are what
+make the picture work: $x^{\perp}$ is perpendicular to $u$, and $x^{\perp}$ is
+perpendicular to $x^{\parallel}$.  Endogeneity is simply the statement that
+$x^{\parallel} \neq 0$.  (This is a decomposition of $x$, not an extra
+assumption about it -- every $x$ admits it.)
+
+Now let $z$ be a vector perpendicular to $u$ (exogeneity: $z$ is uncorrelated
+with the error) with a non-zero projection onto $x$ (relevance: $z$ actually
+predicts the regressor).  Project both $y$ and $x$ onto $z$, and write $\hat
+y_z$ and $\hat x_z$ for those two projections.  The instrumental variables
+estimator is the ratio of their lengths,
+
+$$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$
+
+since $z'y = \beta_1 z'x + z'u = \beta_1 z'x$.  Because the two right triangles
+involved are similar, this is the same number you would get from the *infeasible*
+regression of $y$ on the exogenous part alone: that regression returns
+$$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$
+where the second term vanishes because $x^{\perp} \perp u$ and the first
+collapses to $\beta_1$ because $x^{\perp} \perp x^{\parallel}$, so
+$x^{\perp\prime}x = x^{\perp\prime}x^{\perp}$.  That infeasible regression is the
+one we would run if we could observe the decomposition.  We cannot -- which is
+exactly why we need the instrument.
 
 ```{r}
 ## DGP: data$y <- data$x + data$z + data$u

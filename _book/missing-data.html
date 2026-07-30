@@ -410,7 +410,7 @@ window.Quarto = {
 <p>Main model: <span class="math inline">\(y = \beta_0 + \beta_1 x + \beta_2 z\)</span></p>
 <ol type="1">
 <li><p>Pick <span class="math inline">\(M\)</span> values of <span class="math inline">\(\alpha\)</span> out of the asymptotic distribution, the multivariate normal <span class="math inline">\(N(\hat \alpha, \hat \Sigma)\)</span>, using the estimate <span class="math inline">\(\hat \alpha\)</span> and its VCV <span class="math inline">\(\hat \Sigma\)</span> as the mean and VCV of the distribution.</p></li>
-<li><p>predict <span class="math inline">\(M\)</span> values of the missing values, creating <span class="math inline">\(M\)</span> data sets.</p></li>
+<li><p>For each of the <span class="math inline">\(M\)</span> draws, predict the missing values <em>and add a random residual</em> drawn from the imputation model’s estimated error distribution, creating <span class="math inline">\(M\)</span> data sets. Both draws are needed: the draw of <span class="math inline">\(\alpha\)</span> carries parameter uncertainty, and the residual draw carries the irreducible scatter around the prediction. Dropping the residual draw gives what is called “improper” imputation, and reintroduces precisely the understated-variability problem that sank mean imputation and single regression imputation above.</p></li>
 <li><p>calculate <span class="math inline">\(M\)</span> new estimates and combine them by averaging, <span class="math inline">\(\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m\)</span>, using each of the imputed data sets. then calculate the variance of <span class="math inline">\(\tilde \beta\)</span>:</p></li>
 </ol>
 <p><span class="math inline">\(V_{\beta}=W + (1+1/M) B\)</span></p>
@@ -1016,90 +1016,96 @@ mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_t
 <span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Pick $M$ values of $\alpha$ out of the asymptotic distribution, the multivariate normal $N(\hat \alpha, \hat \Sigma)$, using the estimate $\hat \alpha$ and its VCV $\hat \Sigma$ as the mean and VCV of the distribution.</span>
 <span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>predict $M$ values of the missing values, creating $M$ data sets.</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>calculate $M$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the variance of $\tilde \beta$:</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>$V_{\beta}=W + (1+1/M) B$</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.  The standard error is $\sqrt{V_{\beta}}$.  These formulas (Rubin's rules) are written here for a single scalar coefficient $\beta$; for the full coefficient vector, $W$ is the average of the within-imputation covariance matrices, $B$ is the between-imputation covariance matrix $\frac{1}{M-1}\sum_m (\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})(\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})'$, and $V_{\boldsymbol\beta}=W+(1+1/M)B$ is the total covariance matrix.</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>For each of the $M$ draws, predict the missing values *and add a random</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>residual* drawn from the imputation model's estimated error distribution,</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>creating $M$ data sets.  Both draws are needed: the draw of $\alpha$ carries</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>parameter uncertainty, and the residual draw carries the irreducible scatter</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>around the prediction.  Dropping the residual draw gives what is called</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>"improper" imputation, and reintroduces precisely the understated-variability</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>problem that sank mean imputation and single regression imputation above.</span>
 <span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">### MI through Chained Equations (MICE) (by Buuren)</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>calculate $M$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the variance of $\tilde \beta$:</span>
 <span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Discard observations with all missing.</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>$V_{\beta}=W + (1+1/M) B$</span>
 <span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fill in the missing data with random draws from the observed values.</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.  The standard error is $\sqrt{V_{\beta}}$.  These formulas (Rubin's rules) are written here for a single scalar coefficient $\beta$; for the full coefficient vector, $W$ is the average of the within-imputation covariance matrices, $B$ is the between-imputation covariance matrix $\frac{1}{M-1}\sum_m (\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})(\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})'$, and $V_{\boldsymbol\beta}=W+(1+1/M)B$ is the total covariance matrix.</span>
 <span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Move through the columns and perform single-variable imputation using some method.</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### MI through Chained Equations (MICE) (by Buuren)</span></span>
 <span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Replace the original replacements with the fitted replacements.  Repeat 3 for a large number of times, or with a convergence criteria.</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Discard observations with all missing.</span>
 <span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Do 1-4 $m$ times to create $m$ imputed data sets.</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Fill in the missing data with random draws from the observed values.</span>
 <span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>Many ways to implement MICE.</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Move through the columns and perform single-variable imputation using some method.</span>
 <span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Regression (linear, logit, multinomial), get $\hat w$ or $f(\hat w)$ sample.</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Replace the original replacements with the fitted replacements.  Repeat 3 for a large number of times, or with a convergence criteria.</span>
 <span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The default is Predictive Mean Matching (PMM)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>Do 1-4 $m$ times to create $m$ imputed data sets.</span>
 <span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  a. create predicted value</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>Many ways to implement MICE.</span>
 <span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>  b. pick a small set of donor cases that have the closest predicted values (the number of donors is software-specific; e.g., three or five).</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Regression (linear, logit, multinomial), get $\hat w$ or $f(\hat w)$ sample.</span>
 <span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>  c. randomly choose one of those donors' observed values to impute.</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The default is Predictive Mean Matching (PMM)</span>
 <span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bayesian Data Augmentation</span></span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>  a. create predicted value</span>
 <span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>MICE is Markov Chain</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>  b. pick a small set of donor cases that have the closest predicted values (the number of donors is software-specific; e.g., three or five).</span>
 <span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Build a missing data model into a Bayesian model, treating missing values as another parameter to estimate by drawing out of its posterior distribution.</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>  c. randomly choose one of those donors' observed values to impute.</span>
 <span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a>$f(\beta, y_{miss}|y_{obs}) \propto f(y_{obs} | \beta, y_{miss}) f(\beta, y_{miss})$</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a><span class="fu">### Bayesian Data Augmentation</span></span>
 <span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>We integrate out the missing values by sampling from the total distribution, then averaging out the beta distributions over the space of missing data points.</span>
-<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>As long as data is MAR, the likelihood of missingness is not related to $\beta$ (ignorability), this is fine.</span>
-<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>MICE is Markov Chain</span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Build a missing data model into a Bayesian model, treating missing values as another parameter to estimate by drawing out of its posterior distribution.</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>$f(\beta, y_{miss}|y_{obs}) \propto f(y_{obs} | \beta, y_{miss}) f(\beta, y_{miss})$</span>
 <span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a><span class="fu">### FIML</span></span>
-<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a> If there are no missing data, the likelihood function is</span>
-<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>$L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu, \Sigma)$</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>We integrate out the missing values by sampling from the total distribution, then averaging out the beta distributions over the space of missing data points.</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>As long as data is MAR, the likelihood of missingness is not related to $\beta$ (ignorability), this is fine.</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>If there are missing value,</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a><span class="fu">### FIML</span></span>
 <span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a>$L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu_i, \Sigma_i)$</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a> If there are no missing data, the likelihood function is</span>
 <span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a><span class="fu">### mi in stata</span></span>
-<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-123"><a href="#cb2-123" aria-hidden="true" tabindex="-1"></a>$L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu, \Sigma)$</span>
+<span id="cb2-124"><a href="#cb2-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-125"><a href="#cb2-125" aria-hidden="true" tabindex="-1"></a>If there are missing value,</span>
 <span id="cb2-126"><a href="#cb2-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a><span class="in">    log using mi_10_model2.log, replace</span></span>
+<span id="cb2-127"><a href="#cb2-127" aria-hidden="true" tabindex="-1"></a>$L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu_i, \Sigma_i)$</span>
 <span id="cb2-128"><a href="#cb2-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a><span class="in">    clear</span></span>
-<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="in">    set more off</span></span>
+<span id="cb2-129"><a href="#cb2-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-130"><a href="#cb2-130" aria-hidden="true" tabindex="-1"></a><span class="fu">### mi in stata</span></span>
 <span id="cb2-131"><a href="#cb2-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a><span class="in">    * set matsize is obsolete since Stata 16 (matrix sizes are now dynamic)</span></span>
-<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="in">    * and can be safely omitted on modern Stata; kept here only because the</span></span>
-<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a><span class="in">    * original script targeted an older Stata version.</span></span>
-<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="in">    set matsize 4000</span></span>
-<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a><span class="in">    use "CROSSED_ContestUserActivity FEB 2014 temp.dta", clear</span></span>
-<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="in">    *sample 10</span></span>
-<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="in">    mi set flong</span></span>
-<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="in">    *local dummies "x1 x2"</span></span>
-<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a><span class="in">    local continuous "CulturalDist_KS5D_ctr tight_ctr targ_tight_ctr user_country_opennessValue_ctr targetcntropennes2010_ctr"</span></span>
-<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="in">    mi register imputed `continuous'</span></span>
-<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a><span class="in">    mi impute chained  (regress) `continuous' , add(10) rseed(1)</span></span>
-<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="in">    mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_tight_ctr gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count, select (has_submitted = c.CulturalDist_KS5D_ctr##c.tight_ctr log_cash_000 gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count ave_numConcurrentContest) vce (cluster user_id) difficult nonrtol</span></span>
-<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-132"><a href="#cb2-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-133"><a href="#cb2-133" aria-hidden="true" tabindex="-1"></a><span class="in">    log using mi_10_model2.log, replace</span></span>
+<span id="cb2-134"><a href="#cb2-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-135"><a href="#cb2-135" aria-hidden="true" tabindex="-1"></a><span class="in">    clear</span></span>
+<span id="cb2-136"><a href="#cb2-136" aria-hidden="true" tabindex="-1"></a><span class="in">    set more off</span></span>
+<span id="cb2-137"><a href="#cb2-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-138"><a href="#cb2-138" aria-hidden="true" tabindex="-1"></a><span class="in">    * set matsize is obsolete since Stata 16 (matrix sizes are now dynamic)</span></span>
+<span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a><span class="in">    * and can be safely omitted on modern Stata; kept here only because the</span></span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a><span class="in">    * original script targeted an older Stata version.</span></span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a><span class="in">    set matsize 4000</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a><span class="in">    use "CROSSED_ContestUserActivity FEB 2014 temp.dta", clear</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a><span class="in">    *sample 10</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a><span class="in">    mi set flong</span></span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a><span class="in">    *local dummies "x1 x2"</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a><span class="in">    local continuous "CulturalDist_KS5D_ctr tight_ctr targ_tight_ctr user_country_opennessValue_ctr targetcntropennes2010_ctr"</span></span>
 <span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a>This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb2-150"><a href="#cb2-150" aria-hidden="true" tabindex="-1"></a><span class="in">    mi register imputed `continuous'</span></span>
+<span id="cb2-151"><a href="#cb2-151" aria-hidden="true" tabindex="-1"></a><span class="in">    mi impute chained  (regress) `continuous' , add(10) rseed(1)</span></span>
+<span id="cb2-152"><a href="#cb2-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-153"><a href="#cb2-153" aria-hidden="true" tabindex="-1"></a><span class="in">    mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_tight_ctr gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count, select (has_submitted = c.CulturalDist_KS5D_ctr##c.tight_ctr log_cash_000 gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count ave_numConcurrentContest) vce (cluster user_id) difficult nonrtol</span></span>
+<span id="cb2-154"><a href="#cb2-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-155"><a href="#cb2-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-156"><a href="#cb2-156" aria-hidden="true" tabindex="-1"></a>This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

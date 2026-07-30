@@ -64,7 +64,13 @@ Main model:  $y = \beta_0 + \beta_1 x + \beta_2 z$
 
 1.  Pick $M$ values of $\alpha$ out of the asymptotic distribution, the multivariate normal $N(\hat \alpha, \hat \Sigma)$, using the estimate $\hat \alpha$ and its VCV $\hat \Sigma$ as the mean and VCV of the distribution.
 
-2. predict $M$ values of the missing values, creating $M$ data sets.
+2. For each of the $M$ draws, predict the missing values *and add a random
+residual* drawn from the imputation model's estimated error distribution,
+creating $M$ data sets.  Both draws are needed: the draw of $\alpha$ carries
+parameter uncertainty, and the residual draw carries the irreducible scatter
+around the prediction.  Dropping the residual draw gives what is called
+"improper" imputation, and reintroduces precisely the understated-variability
+problem that sank mean imputation and single regression imputation above.
 
 3. calculate $M$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the variance of $\tilde \beta$:
 

@@ -112,6 +112,16 @@ $$
 These probabilities depend solely on the value of the index function
 and on the two threshold parameters.
 
+Two normalizations are needed before any of this can be estimated, and they are
+easy to pass over.  First, the *location*: an intercept in ${\bf X}_t \beta$ and
+both thresholds cannot be identified together, since adding a constant to the
+index and the same constant to $\gamma_1$ and $\gamma_2$ leaves every probability
+unchanged.  Software resolves this by dropping the intercept or by fixing
+$\gamma_1 = 0$.  Second, the *scale*: that is what setting
+$\mbox{Var}(u_t) = 1$ above does, since multiplying the index, the thresholds and
+$u_t$ by any positive constant is likewise unobservable.  The analogous
+restriction for the multinomial logit below is $\beta^0 = 0$.
+
 The loglikelihood function is
 $$
 \ell (\beta, \gamma_1, \gamma_2) = \sum_{y_t=0} \log(\Phi
@@ -146,4 +156,6 @@ Here ${\bf W}_{tj}$ is a row vector of length $k$ of alternative-$j$-specific
 variables, and $\beta$ is a single $k$-vector of parameters shared across
 all alternatives $j=0,\dots,J$.
 
-Having *both* choice-varying regressors ${\bf W}_{tl}$ *and* choice-specific coefficients $\beta^l$ in the same formula, as in some treatments, conflates the two models and is not separately identified: the two sources of alternative-variation (in $W$ and in $\beta$) cannot be told apart from data on $\Pr(y_t=l)$ alone.
+Writing *both* choice-varying regressors ${\bf W}_{tl}$ *and* choice-specific coefficients $\beta^l$ into the same formula, as some treatments do, conflates the two models.  It is worth being precise about what that costs, because the usual complaint -- that such a specification is not identified -- is not true.  Choice probabilities depend only on utility *differences*, so $\Pr(y_t=l)$ is governed by ${\bf W}_{tj}\beta^j - {\bf W}_{tl}\beta^l$; when the ${\bf W}_{tj}$ vary independently across alternatives, those differences pin down each $\beta^j$ separately, with no normalization required.  It is a perfectly estimable model -- it is what Stata's `asclogit` fits when alternative-specific coefficients are requested.
+
+What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.

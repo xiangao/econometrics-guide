@@ -156,6 +156,29 @@ $$
 {\rm E} (u_t|X_t)=0,
 $$
 
-This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity** (regressors are contemporaneously uncorrelated with the error). This is distinct from and weaker than strict exogeneity $E[u \mid X] = 0$, but it is itself stronger than **predeterminedness**, which only requires $X_t$ to be orthogonal to the *current and future* errors ($E[u_t \mid \mathcal F_{t-1}] = 0$ where $X_t$ is measurable with respect to $\mathcal F_{t-1}$) while allowing correlation with *past* errors -- the relevant condition, for example, in models with a lagged dependent variable.  So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.
+This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of
+three exogeneity conditions worth keeping apart, which is precisely why it is the
+one to invoke for consistency:
+
+- **Strict exogeneity**, $E[u_t \mid X_1, \dots, X_n]=0$: the error in every
+  period is mean-independent of the regressors in *every* period.  This is what
+  unbiasedness requires, and what the lagged-dependent-variable example above
+  violates.
+- **Predeterminedness**, $E[u_t \mid \mathcal F_{t-1}]=0$ with $X_t$ measurable
+  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the
+  current and all *future* errors, while being allowed to correlate with *past*
+  errors.  This is the relevant condition in models with a lagged dependent
+  variable.
+- **Contemporaneous exogeneity**, $E[u_t \mid X_t]=0$.
+
+Each condition implies the next, because conditioning on a larger information set
+is a more restrictive requirement, not a less restrictive one.  In particular, by
+the law of iterated expectations,
+$$
+E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
+$$
+so predeterminedness delivers contemporaneous exogeneity but not conversely.  In
+the time series example, then, the OLS estimator is biased, but can still be
+consistent, if we are willing to assume no contemporaneous correlation.
 
 Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the [Maximum Likelihood chapter](mle.qmd) alongside this guide's other estimation-inference material rather than repeated here.

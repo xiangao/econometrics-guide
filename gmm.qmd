@@ -57,7 +57,7 @@ $$
 \bf y=X\beta+u, \quad u \sim IID(0, \sigma^2).
 $$
 
-If the model is mis-specified, then
+If one or more of the regressors is endogenous, then
 $$
 \rm E (\bf X'u)\neq 0.
 $$
@@ -178,17 +178,38 @@ zero as possible.
 More generally, $\hat \theta_{GMM}$ is chosen to minimize $\bar
 m(\theta)'W \bar m(\theta)$ for some weighting matrix $W$.
 
+The choice of $W$ matters only under overidentification.  With as many moment
+conditions as parameters, all sample moments can be driven to zero exactly and
+$W$ drops out -- which is why the just-identified IV estimator above did not
+need one.  When there are more moments than parameters, the efficient choice is
+$W = S^{-1}$, where $S$ is the asymptotic variance of the sample moments,
+$S = \lim_{n \to \infty} \mbox{Var} \bigl( \sqrt n \, \bar m (\theta_0) \bigr)$.
+With that weighting,
+$$
+\sqrt n (\hat \theta_{GMM} - \theta_0) \xrightarrow{d} N \bigl( 0, (G'S^{-1}G)^{-1} \bigr),
+\qquad G = {\rm E} \left[ \frac{\partial m (Y_i ; \theta_0)}{\partial \theta'} \right],
+$$
+which is the GMM counterpart of the information-matrix bound of the previous
+chapter.  Since $S$ depends on $\theta_0$, in practice one starts from any
+consistent weighting (often the identity, or $(\bf Z'Z)^{-1}$), estimates $\hat
+S$ from the resulting residuals, and re-minimizes: two-step GMM.  Stopping at
+$W = (\bf Z'Z)^{-1}$ is exactly 2SLS, which is therefore efficient GMM only
+under homoskedasticity.
+
 ### An example
 
 Let's see an example with GMM, using the same simulated data as
 before.  We have the same situation as before, $X$ is endogenous.  We
 are doing GMM version of 2sls.
 
-Here I use R's "gmm" library which makes things easy.  It expects two
-arguments: "g" and "x", which corresponds to $u$ and $W$ here.  The
-moment condition is $E(W u) = 0$ in this example.  $W$ is the
-instrument, and $u$ is the residual from regressing $y$ on endogenous
-$X$.
+Here I use R's "gmm" library, which makes things easy.  Its first two arguments
+are `g` and `x`: with the formula interface, `g` is the model formula whose
+residual forms the moment function, and `x` is a formula giving the instruments.
+The moment condition in this example is $E(\bf z' u) = 0$, where $\bf z$ is the
+instrument -- the variable `w` in the simulated data -- and $u$ is the residual
+from the structural equation.  Note that $\bf W$ above denotes the *weighting
+matrix* in $\bar m' W \bar m$, which is a different object entirely, so the
+instrument is written $\bf z$ here.
 
 
 ```{r}

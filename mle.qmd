@@ -87,14 +87,22 @@ The information matrix is the expected value of the outer product of the gradien
 
 3.  Asymptotic efficiency.
 
-If $\bf \hat \theta$ is the MLE estimator of $\theta$, $\bf V$ denotes the variance covariance matrix of $\bf \hat \theta$, then
+If $\bf \hat \theta$ is the MLE estimator of $\theta$ and $\bf V$ denotes its
+*asymptotic* variance matrix -- the variance of the limiting distribution of
+$\sqrt n (\hat \theta - \theta)$, not of $\bf \hat \theta$ itself, the two
+differing by a factor of $n$ exactly as with the information matrix above --
+then
 $$
-\sqrt n (\hat \theta -\theta) \rightarrow^d N(\bf 0, V)
+\sqrt n (\hat \theta -\theta) \rightarrow^d N(\bf 0, V), \qquad \bf V = I^{-1}(\theta).
 $$
 
-If $\bf \tilde V$ denotes the variance matrix of any other consistent,
-asymptotically normal estimator, then $\bf \tilde V- V$ is a positive
-semidefinite matrix. That means MLE estimator is the best (in terms of variance) consistent and asymptotically normal estimator.
+If $\bf \tilde V$ denotes the asymptotic variance matrix of any other *regular*
+consistent, asymptotically normal estimator, then $\bf \tilde V- V$ is a positive
+semidefinite matrix.  That is, the MLE is the best estimator, in terms of
+asymptotic variance, in that class.  The regularity qualifier is not pedantry:
+without it the statement is false, since superefficient estimators such as
+Hodges' can beat the bound at a single point of the parameter space, at the cost
+of much worse behaviour in a neighbourhood of it.
 
 4.  Invariance.
 
@@ -123,8 +131,11 @@ ols.lf <- function(theta, y, X) {
 X <- cbind(1,mtcars[,c('disp','hp','wt')])
 y <- mtcars$mpg
 
-# Use OLS estimates as starting values; good starting values reduce the
-# risk of the optimizer converging to a spurious local maximum.
+# Deliberately naive starting values (sigma2 = 1, slopes at +/-1): the point
+# of the exercise is that the optimizer finds the OLS solution without being
+# handed it. For harder likelihoods than this one, good starting values matter
+# a great deal -- they reduce the risk of converging to a spurious local
+# maximum, or of failing to converge at all.
 optim(c(1,1,-1,-1,-1), method="L-BFGS-B", fn=ols.lf, lower=c(1e-6,-Inf,-Inf,-Inf,-Inf), upper=rep(Inf,5), y=y, X=as.matrix(X))
 
 # it should match the OLS estimator

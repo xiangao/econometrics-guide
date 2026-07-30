@@ -12,7 +12,7 @@ For example, Baltagi and Levin (1992) studies cigarette demand across
 of lagged consumption, price and income.  These variables vary across
 states and time.  However, there are other variables that may be
 time-invariant ($z_i$) or individual-invariant ($w_t$).  Examples of $z_i$
-are religion and education.  For example, Utah, as a Mormon state, has
+are religion and, in a panel of adults, completed education.  For example, Utah, as a Mormon state, has
 very low cigarette demand due to religious reason.  Generally we
 consider it does not change over time or change very little over time.
 Examples of $w_t$ include cigarette commercials on national TV or

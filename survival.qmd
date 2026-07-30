@@ -234,14 +234,21 @@ Examples of parametric survival models: exponential, Weibull, or log-logistic:
 
 ```{r}
 
-exp <-  survreg(Surv(time, status) ~ sex + age, data = lung, dist="exponential")
-summary(exp)
+exp_fit <-  survreg(Surv(time, status) ~ sex + age, data = lung, dist="exponential")
+summary(exp_fit)
 weibull <-  survreg(Surv(time, status) ~ sex + age, data = lung, dist="weibull")
 summary(weibull)
 loglog <-  survreg(Surv(time, status) ~ sex + age, data = lung, dist="loglogistic")
 summary(loglog)
 
 ```
+
+One caveat when reading these next to the Cox fit above.  `survreg` estimates
+*accelerated failure time* models, parameterized on log survival time, whereas
+`coxph` estimates proportional hazards.  The coefficients therefore carry
+*opposite* signs for the same underlying effect: a covariate that raises the
+hazard shortens expected survival time.  A sign flip between the two tables is
+the expected result of the differing parameterizations, not a contradiction.
 
 
 

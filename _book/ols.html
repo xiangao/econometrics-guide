@@ -382,7 +382,18 @@ X\)</span>.</p>
 <p>For OLS estimator to be consistent, a much weaker condition is needed: <span class="math display">\[
 {\rm E} (u_t|X_t)=0,
 \]</span></p>
-<p>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors. Even a model with lagged dependent variable can easily satisfy this condition. This condition is called <strong>contemporaneous exogeneity</strong> (regressors are contemporaneously uncorrelated with the error). This is distinct from and weaker than strict exogeneity <span class="math inline">\(E[u \mid X] = 0\)</span>, but it is itself stronger than <strong>predeterminedness</strong>, which only requires <span class="math inline">\(X_t\)</span> to be orthogonal to the <em>current and future</em> errors (<span class="math inline">\(E[u_t \mid \mathcal F_{t-1}] = 0\)</span> where <span class="math inline">\(X_t\)</span> is measurable with respect to <span class="math inline">\(\mathcal F_{t-1}\)</span>) while allowing correlation with <em>past</em> errors – the relevant condition, for example, in models with a lagged dependent variable. So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.</p>
+<p>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors. Even a model with lagged dependent variable can easily satisfy this condition. This condition is called <strong>contemporaneous exogeneity</strong>. It is the weakest of three exogeneity conditions worth keeping apart, which is precisely why it is the one to invoke for consistency:</p>
+<ul>
+<li>
+<strong>Strict exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_1, \dots, X_n]=0\)</span>: the error in every period is mean-independent of the regressors in <em>every</em> period. This is what unbiasedness requires, and what the lagged-dependent-variable example above violates.</li>
+<li>
+<strong>Predeterminedness</strong>, <span class="math inline">\(E[u_t \mid \mathcal F_{t-1}]=0\)</span> with <span class="math inline">\(X_t\)</span> measurable with respect to <span class="math inline">\(\mathcal F_{t-1}\)</span> – equivalently, <span class="math inline">\(X_t\)</span> is orthogonal to the current and all <em>future</em> errors, while being allowed to correlate with <em>past</em> errors. This is the relevant condition in models with a lagged dependent variable.</li>
+<li>
+<strong>Contemporaneous exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_t]=0\)</span>.</li>
+</ul>
+<p>Each condition implies the next, because conditioning on a larger information set is a more restrictive requirement, not a less restrictive one. In particular, by the law of iterated expectations, <span class="math display">\[
+E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
+\]</span> so predeterminedness delivers contemporaneous exogeneity but not conversely. In the time series example, then, the OLS estimator is biased, but can still be consistent, if we are willing to assume no contemporaneous correlation.</p>
 <p>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <a href="./mle.html">Maximum Likelihood chapter</a> alongside this guide’s other estimation-inference material rather than repeated here.</p>
 
 
@@ -1007,9 +1018,32 @@ X\)</span>.</p>
 <span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>{\rm E} (u_t|X_t)=0,</span>
 <span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity** (regressors are contemporaneously uncorrelated with the error). This is distinct from and weaker than strict exogeneity $E[u \mid X] = 0$, but it is itself stronger than **predeterminedness**, which only requires $X_t$ to be orthogonal to the *current and future* errors ($E[u_t \mid \mathcal F_{t-1}] = 0$ where $X_t$ is measurable with respect to $\mathcal F_{t-1}$) while allowing correlation with *past* errors -- the relevant condition, for example, in models with a lagged dependent variable.  So in the time series example, OLS estimator is biased, but can be consistent, if we are willing to assume no contemporaneous correlation.</span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>three exogeneity conditions worth keeping apart, which is precisely why it is the</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>one to invoke for consistency:</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strict exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_1, \dots, X_n</span><span class="co">]</span>=0$: the error in every</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>  violates.</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_{t-1}</span><span class="co">]</span>=0$ with $X_t$ measurable</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>  variable.</span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  In particular, by</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>the law of iterated expectations,</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
