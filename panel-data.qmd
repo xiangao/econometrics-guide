@@ -453,11 +453,21 @@ round(cbind(value = c(
 
 The average slope is one and the regression reports 1.98.  The reason is
 in the third line: the five hundred steady units hold under half of one
-percent of the weight.  Their $x$ hardly moves, so squared deviations
-put them almost nowhere in the sum, and the estimate is very nearly a
-report on the wobbly half alone.  Nothing has gone wrong in the
-arithmetic.  The units with a slope of zero were never really in the
-regression.
+percent of the weight.
+
+Be precise about which deviation that is.  The regression above carries
+unit effects, so $\tilde x$ is the deviation from each unit's *own*
+mean, and a steady unit's six observations sit almost on top of that
+mean.  Squaring puts them nowhere in the sum, and the estimate becomes
+very nearly a report on the wobbly half alone.  Nothing has gone wrong
+in the arithmetic.  The units with a slope of zero were never really in
+the regression.
+
+Note that this is a statement about the *within-unit* deviation, not
+about distance from the grand mean.  Plain OLS uses the latter, and
+they are not the same quantity --- as the next subsection shows, they
+happen to coincide here only because both halves were built around
+zero.
 
 Before going further, a warning about what this example does *not*
 show.  The section is called "How OLS weights the data" and the
