@@ -384,37 +384,83 @@ is closest to a coin flip.  Same rule, different regressor.
 
 The weighting is always happening.  It changes the answer only when the
 effect is heterogeneous *and* the heterogeneity lines up with the
-weight.  We can see both cases at once.  Give every unit its own slope,
-let units differ in how much $x$ moves, and compare the fixed-effects
-estimate to two averages of the true slopes.
+weight.  The claim to be checked is this: a regression does not report
+*the* effect, it reports a weighted average of the effects, and those
+are two different numbers.
+
+We cannot check that on real data, because the individual effects are
+never observed.  So we plant them.  Give every unit $i$ its own slope
+$\beta_i$, generate $y$ from those slopes, run one regression, and see
+which average of the planted slopes the estimate lands on.  Only one
+estimator is run below; the other two columns are not estimates at all,
+but the true slopes averaged two different ways.  Fixed effects is used
+because in a panel the natural place for heterogeneity is across units,
+and it is still OLS --- OLS with the unit dummies partialled out --- so
+the rule above applies to it unchanged.
+
+Two designs.  In both, units differ in how much $x$ moves for them.  In
+(A) the slopes are unrelated to that movement.  In (B) the slope is
+larger for units whose $x$ moves more.  Both have an average slope near
+one, so the designs differ *only* in whether the heterogeneity lines up
+with the weight.
 
 ```{r}
 set.seed(7)
-sdX <- runif(N, 0.2, 3)
+sdX <- runif(N, 0.2, 3)          # how much x moves, unit by unit
 
-demo <- function(b) {
+panel <- function(b) {           # build a panel whose unit slopes are b
   h   <- data.frame(id = rep(1:N, each = T),
                     x  = rnorm(N * T, 0, rep(sdX, each = T)))
   h$y <- rep(b, each = T) * h$x + rep(rnorm(N), each = T) + rnorm(N * T)
-  w   <- tapply(resid(feols(x ~ 1 | id, h))^2, h$id, sum)
-  c(FE = coef(feols(y ~ x | id, h))[["x"]],
-    `plain avg` = mean(b), `weighted avg` = sum(w * b) / sum(w))
+  h
+}
+compare <- function(h, b) {
+  w <- tapply(resid(feols(x ~ 1 | id, h))^2, h$id, sum)   # the weights
+  c(`FE estimate`            = coef(feols(y ~ x | id, h))[["x"]],
+    `true slopes, plain avg` = mean(b),
+    `true slopes, weighted`  = sum(w * b) / sum(w))
 }
 
-round(rbind(`slope unrelated to how much x moves` = demo(rnorm(N, 1, 1)),
-            `slope larger where x moves more`     = demo(1 + 0.8 * (sdX - 1.6))), 4)
+b1 <- rnorm(N, 1, 1)             # (A) slopes unrelated to movement
+b2 <- 1 + 0.8 * (sdX - 1.6)      # (B) slopes larger where x moves more
+h1 <- panel(b1); h2 <- panel(b2)
+
+round(cbind(`(A) unrelated` = compare(h1, b1),
+            `(B) aligned`   = compare(h2, b2)), 4)
 ```
 
-Read the two rows.  In the first the slopes are drawn independently of
-how much $x$ moves, and all three numbers agree to within sampling
-noise.  The weighting is there, and it costs nothing.
+Read down each column.  In (A) all three numbers agree to within
+sampling noise: the weighting happens, and it costs nothing.  In (B) the
+estimate is 1.53 while the plain average of the true slopes is 1.01.
+The estimate has not gone wrong --- it matches the weighted average,
+1.54, which is what it was reporting all along.  We were reading it as
+an average.
 
-In the second the slope is larger exactly where $x$ moves more.  Now
-fixed effects reports 1.53 while the plain average of the true slopes
-is 1.01, and the weighted average, 1.54, is what the estimator was
-tracking all along.  The estimator is not wrong about what it reports.
-It reports a variance-weighted average, and we were reading it as an
-average.
+Why the gap is so large is worth seeing.  Sort the units by how much
+$x$ moves and compare the two ends.
+
+```{r}
+w2  <- tapply(resid(feols(x ~ 1 | id, h2))^2, h2$id, sum)
+o   <- order(sdX)
+grp <- function(ix) c(`avg true slope`    = mean(b2[ix]),
+                      `share of weight %` = 100 * sum(w2[ix]) / sum(w2))
+
+round(rbind(`100 steadiest units` = grp(o[1:100]),
+            `100 wobbliest units` = grp(o[(N-99):N])), 2)
+```
+
+The hundred steadiest units have slopes near zero and command a third of
+one percent of the weight.  The hundred wobbliest have slopes near two
+and command more than a quarter of it.  Squaring is what does this: a
+unit whose $x$ moves fifteen times as much counts for roughly two
+hundred times as much.  So the estimate reports what the wobbly units
+are doing, and the steady units are almost absent from it.
+
+None of this is a defect.  A unit whose $x$ barely moves genuinely
+carries little information about how $y$ responds to $x$, and leaning on
+the units that do move is the efficient thing to do.  It becomes a
+problem only when the slope itself is related to the movement, which is
+what (B) imposes and (A) does not.
 
 Słoczyński ([2022](https://doi.org/10.1162/rest_a_00953)) makes the
 same point for a binary treatment: the OLS coefficient is a convex

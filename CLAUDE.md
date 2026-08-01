@@ -216,3 +216,29 @@ form is the one-regressor special case rather than the general one.
 
 Cross-chapter links render as `href="./chapter.html"`. No `{#sec-}` labels exist in
 this book, so cross-references are chapter-level only.
+
+## Rewrite (2026-08-01f) — the heterogeneous-slopes demo in `panel-data`
+
+The demo was misread in review as "fixed effects versus no fixed effects". It is not:
+**one** estimator is run, and the other two columns are the planted true slopes averaged
+two ways. The columns were named `FE` / `plain avg` / `weighted avg`, which invited
+reading three estimators side by side. Rewritten:
+
+- columns renamed `FE estimate` / `true slopes, plain avg` / `true slopes, weighted`,
+  and transposed to `cbind` so the two designs are columns `(A) unrelated` /
+  `(B) aligned` — also fixes output wrapping at book width
+- `demo()` split into `panel()` (build data) and `compare()` (run one regression,
+  return it beside the two benchmarks), so the single estimator is visible
+- prose now states the claim *before* the code, says explicitly that only one
+  estimator is run, and says FE is OLS with unit dummies partialled out — a reader
+  asked why FE was used to illustrate a claim about OLS
+- new second chunk: sort units by how much `x` moves, compare the 100 steadiest
+  (avg slope 0.01, 0.35% of weight) with the 100 wobbliest (avg slope 2.01, 28.26%).
+  This is what makes the 1.53-vs-1.01 gap concrete
+- closes by saying the weighting is not a defect — leaning on units where `x` moves is
+  efficient; it only misleads when slope correlates with movement
+
+**Row (A) numbers changed** (0.9813/0.9716/0.9816, was 1.0019/1.0179/0.9841). Cause:
+the old code passed `rnorm(N,1,1)` as a function argument, and R's lazy evaluation drew
+it *after* `x` inside the body. Assigning `b1` first draws it before. Row (B) is
+unchanged because its slopes use no RNG. No prose quoted row (A)'s values.
