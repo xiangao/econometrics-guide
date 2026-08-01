@@ -424,11 +424,45 @@ We cannot check that on real data, because the individual effects are
 never observed.  So we plant them.  Give every unit $i$ its own slope
 $\beta_i$, generate $y$ from those slopes, run one regression, and see
 which average of the planted slopes the estimate lands on.  Only one
-estimator is run below; the other two columns are not estimates at all,
-but the true slopes averaged two different ways.  Fixed effects is used
-because in a panel the natural place for heterogeneity is across units,
-and it is still OLS --- OLS with the unit dummies partialled out --- so
-the rule above applies to it unchanged.
+estimator is run in what follows; anything else reported is not an
+estimate at all, but the planted slopes averaged some way.  Fixed
+effects is used because in a panel the natural place for heterogeneity
+is across units, and it is still OLS --- OLS with the unit dummies
+partialled out --- so the rule above applies to it unchanged.
+
+Start with the extreme case, where there is nothing to disentangle.
+Half the units barely move and have a true slope of zero.  The other
+half move a great deal and have a true slope of two.  The average unit's
+slope is therefore one.
+
+```{r}
+set.seed(1)
+half <- N / 2
+g <- data.frame(id   = rep(1:N, each = T),
+                move = rep(c(rep(0.2, half), rep(3, half)), each = T),
+                b    = rep(c(rep(0,   half), rep(2, half)), each = T))
+g$x <- rnorm(N * T, 0, g$move)
+g$y <- g$b * g$x + rep(rnorm(N), each = T) + rnorm(N * T)
+
+wg <- tapply(resid(feols(x ~ 1 | id, g))^2, g$id, sum)
+round(cbind(value = c(
+  `average of the two true slopes`      = mean(c(0, 2)),
+  `FE estimate`                         = coef(feols(y ~ x | id, g))[["x"]],
+  `weight held by the steady half (%)`  = 100 * sum(wg[1:half]) / sum(wg))), 3)
+```
+
+The average slope is one and the regression reports 1.98.  The reason is
+in the third line: the five hundred steady units hold under half of one
+percent of the weight.  Their $x$ hardly moves, so squared deviations
+put them almost nowhere in the sum, and the estimate is very nearly a
+report on the wobbly half alone.  Nothing has gone wrong in the
+arithmetic.  The units with a slope of zero were never really in the
+regression.
+
+That is the mechanism in its starkest form.  A continuous version makes
+the same point, and adds the control case the extreme example cannot
+show --- what happens when the slope has nothing to do with the
+movement.
 
 Two designs.  In both, units differ in how much $x$ moves for them.  In
 (A) the slopes are unrelated to that movement.  In (B) the slope is
@@ -468,25 +502,9 @@ The estimate has not gone wrong --- it matches the weighted average,
 1.54, which is what it was reporting all along.  We were reading it as
 an average.
 
-Why the gap is so large is worth seeing.  Sort the units by how much
-$x$ moves and compare the two ends.
-
-```{r}
-w2  <- tapply(resid(feols(x ~ 1 | id, h2))^2, h2$id, sum)
-o   <- order(sdX)
-grp <- function(ix) c(`avg true slope`    = mean(b2[ix]),
-                      `share of weight %` = 100 * sum(w2[ix]) / sum(w2))
-
-round(rbind(`100 steadiest units` = grp(o[1:100]),
-            `100 wobbliest units` = grp(o[(N-99):N])), 2)
-```
-
-The hundred steadiest units have slopes near zero and command a third of
-one percent of the weight.  The hundred wobbliest have slopes near two
-and command more than a quarter of it.  Squaring is what does this: a
-unit whose $x$ moves fifteen times as much counts for roughly two
-hundred times as much.  So the estimate reports what the wobbly units
-are doing, and the steady units are almost absent from it.
+The same mechanism as the two-group case, spread over a continuum.
+Squaring is what drives it: a unit whose $x$ moves fifteen times as much
+as another counts for roughly two hundred times as much.
 
 None of this is a defect.  A unit whose $x$ barely moves genuinely
 carries little information about how $y$ responds to $x$, and leaning on

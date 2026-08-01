@@ -270,3 +270,23 @@ in the signed first-power object and cannot appear in the squared one.
 Also checked: Słoczyński (2022) uses only the effect-weight representation ("a convex
 combination" of ATT and ATU) and never discusses per-observation signed weights, so
 there is no conflict with him — he is answering a different question.
+
+## Rewrite (2026-08-01h) — lead the weighting demo with the extreme two-group case
+
+The continuous heterogeneous-slopes demo did not land in review even after 2026-08-01f.
+What worked in discussion was the degenerate version, so it now comes first:
+
+- half the units barely move (`sd 0.2`) with true slope **0**, half move a lot
+  (`sd 3`) with true slope **2**, so the average unit's slope is exactly 1
+- FE returns **1.984**, and the steady half holds **0.473%** of the weight
+- no averaging subtleties, no second design, nothing to decode — the units with
+  slope 0 simply were not in the regression
+
+The continuous (A)/(B) demo follows, justified as showing the control case the extreme
+example cannot: what happens when slope and movement are *unrelated*. The
+steadiest-vs-wobbliest diagnostic chunk was **removed** — the two-group case makes the
+same point more starkly, and it was the third table in a row.
+
+Chunk ordering note: the new chunk sits *before* the (A)/(B) chunk but does not disturb
+it, because that chunk opens with its own `set.seed(7)`. Verified — (A)/(B) output is
+byte-identical. Any future chunk inserted there must preserve that seed call.
