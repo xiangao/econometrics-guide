@@ -189,29 +189,30 @@ They are the same identity read at two granularities — verified numerically: O
 `sum omega_i y_i`, Angrist's `dhat(1-dhat)P(x)` and `sum_x Dtilde^2` all returned
 1.96680501, with the last two differing by exactly the constant `n`.
 
-## Notation convention (2026-08-01d) — `panel-data.qmd`
+## Notation (2026-08-01d, superseded 2026-08-01e) — `panel-data.qmd`
 
-**Chapter-wide symbol remap, applied to pre-existing material as well as the new
-sections.** The role convention is now `X` = regressors of interest, `W` = other
-covariates, `Z` = instruments; the subscript, not the letter, carries the time
-variation (`X_it` varies over both, `X_i` over units only, `X_t` over time only). A
-short notation paragraph in Background states this and links to Endogeneity, GMM and
-Dynamic Panel Data.
+An X/W/Z remap (X = regressor of interest, W = covariates, Z = instruments) was
+applied chapter-wide and then **reverted at the author's request**. The chapter keeps
+its original scheme. Do not reapply it.
 
-Why this needed care: the chapter's original notation encoded a *different* axis —
-`z_i` meant time-invariant and `w_t` meant individual-invariant — so it collided with
-the new convention on both `W` and `Z`. Resolution:
+The scheme, now stated explicitly in a Background paragraph rather than left implicit:
 
-- `x_it` (and all its decorated forms: `\bf x_{it}`, `\bar x_i`, `\ddot{\bf x}_{it}`) → `X`
-- `z_i` where it meant a time-invariant **covariate** (Background, and the FE "swept
-  out" sentence) → `W_i`
-- `z_i` where it meant the **regressor of interest** (both new sections) → `X_i`
-- `w_t` → `W_t`
-- the generic `V` in the FWL weighting rule → `X`. **Do not** touch `\hat V(...)`, which
-  is the variance operator in the FE and Hausman formulas.
-- R code in the first two chunks: variable `z` renamed to `x`
+- `x_it` — varies across units *and* time (price, income, usually the treatment)
+- `z_i`  — varies across units only; fixed within a unit over time (religion, education)
+- `w_t`  — varies across time only; common to all units in a period (a national TV campaign)
+- instruments are `Z`, a different object from `z_i`, and appear only once the panel
+  turns dynamic; the paragraph says so and links to Endogeneity, GMM, Dynamic Panel Data
 
-Verified after the remap: all four chunk outputs byte-identical to before, so the code
-rename did not disturb the shared RNG stream. Cross-chapter links render as
-`href="./chapter.html"`, matching the existing `count-data.qmd` → `discrete.qmd` link.
-This book has no `{#sec-}` labels, so cross-references are chapter-level only.
+Why the remap failed: the chapter's letters encode *time variation*, while X/W/Z
+encodes *role*. Two different axes, colliding on both W and Z. If notation is ever
+revisited, that is the conflict to solve first.
+
+**Correction to the weighting table.** The first version listed four parallel rows,
+one of which ("`z_i` with a time-varying `W_it`") was not a case at all — it was the
+general rule with no simplification available, since `Vtilde_it` carries both
+subscripts even when `V` does not. The table now lists only the three models where
+`sum_t Vtilde_it^2` actually simplifies, and the prose says plainly that the `T_i`
+form is the one-regressor special case rather than the general one.
+
+Cross-chapter links render as `href="./chapter.html"`. No `{#sec-}` labels exist in
+this book, so cross-references are chapter-level only.

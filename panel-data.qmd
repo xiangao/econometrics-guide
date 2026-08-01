@@ -16,11 +16,11 @@ For example, Baltagi and Levin (1992) studies cigarette demand across
 46 states for the years 1963-88.  Consumption is modeled as a function
 of lagged consumption, price and income.  These variables vary across
 states and time.  However, there are other variables that may be
-time-invariant ($W_i$) or individual-invariant ($W_t$).  Examples of $W_i$
+time-invariant ($z_i$) or individual-invariant ($w_t$).  Examples of $z_i$
 are religion and, in a panel of adults, completed education.  For example, Utah, as a Mormon state, has
 very low cigarette demand due to religious reason.  Generally we
 consider it does not change over time or change very little over time.
-Examples of $W_t$ include cigarette commercials on national TV or
+Examples of $w_t$ include cigarette commercials on national TV or
 radio.  Panel data models are able to control for individual
 heterogeneity (or cross-sectional heterogeneity) while cross-sectional
 models are not.  In many (or most) social science studies, there is
@@ -35,30 +35,38 @@ cross-sectional units.
 
 The basic unobserved effects model can be written as:
 $$
-y_{it}={\bf {X_{it} \beta}} + c_i + u_{it}
+y_{it}={\bf {x_{it} \beta}} + c_i + u_{it}
 $$
 
 where $i$ indexes "units" (can be people, firms, or households,
 etc.), and $t$ indexes time periods.
 
-Notation in this chapter follows the usual roles.  ${\bf X}$ collects
-the regressors we care about, ${\bf W}$ the other covariates, and
-${\bf Z}$ the instruments.  Subscripts carry the variation rather than
-the role: $X_{it}$ moves across both units and time, $X_i$ only across
-units, $X_t$ only across time.  Instruments play no part until the
-panel turns dynamic --- see the [Endogeneity](endogeneity.qmd),
-[GMM](gmm.qmd) and [Dynamic Panel Data](dynamic-panel.qmd) chapters.
+Three kinds of regressor appear in this chapter, and it pays to name
+them once.  ${\bf x}_{it}$ varies across units *and* time --- price,
+income, and in most applications the treatment itself.  $z_i$ varies
+across units only, so within a unit it is fixed over time; religion and
+completed education above are the examples.  $w_t$ varies across time
+only, so in any period it is common to every unit; the national TV
+campaign is one.  Which group a variable falls into is what decides
+almost everything that follows, including which coefficients fixed
+effects can estimate and how OLS weights the data.
+
+Instruments do not appear until the panel turns dynamic.  When they do,
+they are written ${\bf Z}$, which is a different object from the
+time-invariant $z_i$ here --- see the
+[Endogeneity](endogeneity.qmd), [GMM](gmm.qmd) and
+[Dynamic Panel Data](dynamic-panel.qmd) chapters.
 
 Comparing to regular cross-sectional models, there is an extra term
 $c_i$.  $c_i$ can be treated as a random effect or fixed effect.
 Traditionally it is distinguished by whether it is estimated as a
 random variable or a parameter.  Modern econometrics tends to
-distinguish by the correlation between $c_i$ and ${\bf {X_{it}}}$.
-If there is no correlation between $c_i$ and ${\bf {X_{it}}}$,
+distinguish by the correlation between $c_i$ and ${\bf {x_{it}}}$.
+If there is no correlation between $c_i$ and ${\bf {x_{it}}}$,
 then it's a random effect; otherwise, it's a fixed effect.
 
 It is true that in some cases it is hard to justify that there is
-no correlation between $c_i$ and ${\bf {X_{it}}}$, which is one reason
+no correlation between $c_i$ and ${\bf {x_{it}}}$, which is one reason
 that people in economics tend to use fixed-effect models.  However,
 fixed-effect models have its own limitations.  One of them is: It is
 hard to justify that ALL the cross-sectional units' characteristics
@@ -98,9 +106,9 @@ OLS.
 
 ## Fixed Effect Methods
 
-Random effect methods assume that $c_i$ be orthogonal to $\bf X_{it}$.
+Random effect methods assume that $c_i$ be orthogonal to $\bf x_{it}$.
 In many applications, the whole point of using panel data is to allow
-$c_i$ be correlated with $\bf X_{it}$.  We need fixed-effect models in
+$c_i$ be correlated with $\bf x_{it}$.  We need fixed-effect models in
 those cases.
 
 For the same model as in the equation above, the fixed-effect
@@ -110,7 +118,7 @@ each observation by subtracting the group mean.  Basically subtracting
 the group-mean equation below from the unit-level equation above:
 
 $$
-\bar y_i={\bf \bar X_i \beta} + c_i + \bar u_i
+\bar y_i={\bf \bar x_i \beta} + c_i + \bar u_i
 $$
 
 where $\bar y_i $, etc., means group means.  For example, if we have 50 states
@@ -123,26 +131,26 @@ The "demeaned" regression equation is the final regression used in
 estimation:
 
 $$
-(y_{it}-\bar y_i) = ({\bf X}_{it}-{\bf \bar X}_i)\beta + (u_{it}-\bar u_i).
+(y_{it}-\bar y_i) = ({\bf x}_{it}-{\bf \bar x}_i)\beta + (u_{it}-\bar u_i).
 $$
 
 The unit-specific effect $c_i$ cancels because it is constant over $t$
 ($c_i - \bar c_i = 0$). Writing the within-transformed variables as
-$\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{\bf X}_{it}={\bf X}_{it}-{\bf \bar X}_i$,
+$\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{\bf x}_{it}={\bf x}_{it}-{\bf \bar x}_i$,
 OLS on the demeaned data gives the **fixed-effects (within) estimator**
-(here ${\bf X}_{it}$ is a $1\times k$ *row* vector, so
-$\ddot{\bf X}_{it}'\ddot{\bf X}_{it}$ is the $k\times k$ outer product)
+(here ${\bf x}_{it}$ is a $1\times k$ *row* vector, so
+$\ddot{\bf x}_{it}'\ddot{\bf x}_{it}$ is the $k\times k$ outer product)
 
 $$
-\hat\beta_{FE} = \left(\sum_i \sum_t \ddot{\bf X}_{it}'\ddot{\bf X}_{it}\right)^{-1}
-\sum_i \sum_t \ddot{\bf X}_{it}'\ddot y_{it}.
+\hat\beta_{FE} = \left(\sum_i \sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it}\right)^{-1}
+\sum_i \sum_t \ddot{\bf x}_{it}'\ddot y_{it}.
 $$
 
 This is consistent for $\beta$ even when $c_i$ is correlated with
-${\bf X}_{it}$, which is the key advantage of FE over random effects.
-The price is that any time-invariant regressor (the $W_i$ above) is also
+${\bf x}_{it}$, which is the key advantage of FE over random effects.
+The price is that any time-invariant regressor (the $z_i$ above) is also
 swept out by the demeaning and cannot be estimated. The usual variance
-estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{\bf X}_{it}'\ddot{\bf X}_{it})^{-1}$
+estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it})^{-1}$
 with $\hat\sigma_u^2$ using degrees of freedom $NT-N-k$; in practice one
 clusters by unit to allow serial correlation within $i$.
 
@@ -150,7 +158,7 @@ clusters by unit to allow serial correlation within $i$.
 
 Random effects is more efficient (it uses both within and between
 variation) but is consistent only if $c_i$ is uncorrelated with
-${\bf X}_{it}$; fixed effects is consistent either way. The Hausman test
+${\bf x}_{it}$; fixed effects is consistent either way. The Hausman test
 compares the two estimators:
 
 $$
@@ -175,7 +183,7 @@ the regressors live.
 Take the case where every regressor is time-invariant.  The model is
 
 $$
-y_{it}={\bf X}_i \gamma + c_i + u_{it}
+y_{it}={\bf z}_i \gamma + c_i + u_{it}
 $$
 
 and we have two options: pooled OLS on the $NT$ rows, or OLS on the
@@ -186,7 +194,7 @@ $c_i$ is there, new observations within a unit carry no information
 about $\gamma$ beyond how they move the unit average $\bar y_i$.  In
 effect we only have $N$ useful pieces of information.
 
-In other words, averaging discards nothing, because ${\bf X}_i$ is
+In other words, averaging discards nothing, because ${\bf z}_i$ is
 already constant over $t$ and the within variation was never available
 to $\gamma$ in the first place.
 
@@ -198,9 +206,9 @@ the size right.  Clustering by unit repairs the standard error when $N$
 is large, but it does not repair the degrees of freedom when $N$ is
 small.
 
-Now put a time-varying ${\bf X}_{it}$ into the model.  The two options
-stop agreeing, and not only for the coefficient on ${\bf X}_{it}$.
-Every coefficient moves, the one on ${\bf X}_i$ included.
+Now put a time-varying ${\bf x}_{it}$ into the model.  The two options
+stop agreeing, and not only for the coefficient on ${\bf x}_{it}$.
+Every coefficient moves, the one on ${\bf z}_i$ included.
 
 The reason is the between-within split from the sections above.
 Averaging to unit means throws away all within variation, so what
@@ -214,14 +222,14 @@ is the FE-versus-RE question in different clothes.
 | Situation | Collapsed vs long |
 |---|---|
 | All regressors time-invariant, balanced panel | Same coefficients; only the degrees of freedom differ |
-| Any time-varying regressor | All coefficients differ, including those on ${\bf X}_i$ |
+| Any time-varying regressor | All coefficients differ, including those on ${\bf z}_i$ |
 | Unbalanced panel | Differ regardless, since pooled OLS weights each unit by $T_i$ |
 
 The reconciliation is Mundlak's device, the same one used just above
 for the regression-based Hausman test.  Add the unit means
-${\bf \bar X}_i$ to the long regression alongside ${\bf X}_{it}$.  The
+${\bf \bar x}_i$ to the long regression alongside ${\bf x}_{it}$.  The
 within and between variation then carry separate coefficients, and the
-coefficient on ${\bf \bar X}_i$ reproduces what the collapsed
+coefficient on ${\bf \bar x}_i$ reproduces what the collapsed
 regression estimates.  We keep the within variation and we recover the
 between answer, in one regression.
 
@@ -238,35 +246,35 @@ in Stata the same three regressions are `regress`, `xtreg, fe` and
 
 ### First, the equivalence
 
-Take 1000 units over 6 periods, one time-invariant regressor $X_i$, and
+Take 1000 units over 6 periods, one time-invariant regressor $z_i$, and
 a true $\gamma=2$.
 
 ```{r}
 set.seed(42)
 N <- 1000; T <- 6
 
-x   <- rnorm(N)
+z   <- rnorm(N)
 bal <- data.frame(id = rep(1:N, each = T), t = rep(1:T, N),
-                  x  = rep(x, each = T), c = rep(rnorm(N), each = T))
-bal$y <- 2 * bal$x + bal$c + rnorm(N * T)
-agg   <- aggregate(cbind(y, x) ~ id, data = bal, FUN = mean)
+                  z  = rep(z, each = T), c = rep(rnorm(N), each = T))
+bal$y <- 2 * bal$z + bal$c + rnorm(N * T)
+agg   <- aggregate(cbind(y, z) ~ id, data = bal, FUN = mean)
 
-print(c(long      = coef(feols(y ~ x, bal))[["x"]],
-        collapsed = coef(feols(y ~ x, agg))[["x"]]), digits = 12)
+print(c(long      = coef(feols(y ~ z, bal))[["z"]],
+        collapsed = coef(feols(y ~ z, agg))[["z"]]), digits = 12)
 ```
 
 The two agree to every digit printed.  That is the result quoted above,
 not an accident of the seed.
 
 Now break the balance.  We drop the later periods for units with high
-$X_i$, so $T_i$ varies, and varies with the regressor.
+$z_i$, so $T_i$ varies, and varies with the regressor.
 
 ```{r}
-unb  <- bal[!(bal$x > 0.5 & bal$t > 2), ]
-agg2 <- aggregate(cbind(y, x) ~ id, data = unb, FUN = mean)
+unb  <- bal[!(bal$z > 0.5 & bal$t > 2), ]
+agg2 <- aggregate(cbind(y, z) ~ id, data = unb, FUN = mean)
 
-print(c(long      = coef(feols(y ~ x, unb))[["x"]],
-        collapsed = coef(feols(y ~ x, agg2))[["x"]]), digits = 12)
+print(c(long      = coef(feols(y ~ z, unb))[["z"]],
+        collapsed = coef(feols(y ~ z, agg2))[["z"]]), digits = 12)
 ```
 
 They no longer agree.  Pooled OLS weights each unit by $T_i$; the
@@ -277,8 +285,8 @@ section of this chapter sets out.
 
 ### Then, what collapsing costs
 
-Now the case that matters.  We let $X_{it}$ vary over time, and we make
-$c_i$ correlated with $\bar X_i$.  That is the situation fixed effects
+Now the case that matters.  We let $x_{it}$ vary over time, and we make
+$c_i$ correlated with $\bar x_i$.  That is the situation fixed effects
 exists for.  The truth is $\beta=1$.
 
 ```{r}
@@ -306,15 +314,15 @@ round(tab, 3)
 ```
 
 Read the table down.  The collapsed regression returns about 1.85,
-badly biased, because it is the between estimator and $\bar X_i$
+badly biased, because it is the between estimator and $\bar x_i$
 carries $c_i$ with it.  Pooled OLS returns about 1.48 -- better, since
 some within variation is mixed in, but still inconsistent.  The within
 estimator returns about 0.99.  Only the long format can compute it.
 Once we collapse there is nothing left to demean.
 
 Mundlak's regression delivers both at once.  The coefficient on
-$X_{it}$ reproduces the within estimate to three decimals.  The
-coefficient on $\bar X_i$ is about 0.85, which is the between estimate
+$x_{it}$ reproduces the within estimate to three decimals.  The
+coefficient on $\bar x_i$ is about 0.85, which is the between estimate
 minus the within estimate.  In words, that second coefficient *is* the
 Hausman contrast, and its $t$-statistic is the Hausman test.  A
 collapsed regression cannot produce it, because it never sees the two
@@ -334,35 +342,39 @@ panel is unbalanced, and by variance when it mixes within and between
 variation.  Neither is a panel-specific quirk.  Both follow from one
 rule, and the rule is worth stating on its own.
 
-Let $X$ be the regressor we care about, and let $\tilde X$ be $X$ after
+Let $V$ be the regressor we care about, and let $\tilde V$ be $V$ after
 residualising on every other regressor in the model.  By the
 Frisch--Waugh--Lovell theorem,
 
 $$
-\hat\beta = \frac{\sum_i \sum_t \tilde X_{it}\, y_{it}}
-                 {\sum_i \sum_t \tilde X_{it}^{2}} .
+\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
+                 {\sum_i \sum_t \tilde V_{it}^{2}} .
 $$
 
-In words: each observation enters weighted by $\tilde X_{it}^2$, the
+In words: each observation enters weighted by $\tilde V_{it}^2$, the
 squared leftover variation in the regressor, and a unit's total
-influence is $\sum_t \tilde X_{it}^2$.  An observation that carries no
+influence is $\sum_t \tilde V_{it}^2$.  An observation that carries no
 leftover variation carries no weight, however many of its kind we
 collect.
 
-Everything else is that rule read in a particular model.
+That sum is the whole story, and in general it is as far as we can go.
+$\tilde V_{it}$ carries both subscripts even when $V$ itself does not,
+so $\sum_t \tilde V_{it}^2$ usually will not factor into anything
+tidier.  What changes from model to model is whether it happens to
+simplify.
 
-| Model | Weight on a unit or stratum |
+| Model | $\sum_t \tilde V_{it}^2$ simplifies to |
 |---|---|
-| $X_i$ alone, nothing else varying within the unit | $T_i\,\tilde X_i^2$ |
-| $X_i$, with a time-varying $W_{it}$ also in the model | $\sum_t \tilde X_{it}^2$ |
-| a time-varying $X_{it}$ | $\sum_t (X_{it}-\bar X_i)^2 = (T-1)\widehat{\text{Var}}_i(X)$ |
+| $z_i$ alone, nothing else varying within the unit | $T_i\,\tilde z_i^2$ |
+| a time-varying $x_{it}$, unit effects removed | $(T-1)\,\widehat{\text{Var}}_i(x)$ |
 | binary $d$ with saturated controls | $n_x\,\hat d(x)\,(1-\hat d(x))$ |
 
-The second row deserves a note, because it is the one that surprises.
-Putting $W_{it}$ in the model destroys the $T_i$ form.  Residualising a
-time-invariant $X_i$ on something that moves within the unit makes
-$\tilde X$ move within the unit as well, so the unit's weight no longer
-factors.  The rule survives; the shortcut does not.
+Now add a time-varying $x_{it}$ alongside $z_i$ in the first model, and
+the simplification is gone.  Residualising $z_i$ on something that moves
+within the unit makes $\tilde z$ move within the unit as well, so we are
+back to $\sum_t \tilde z_{it}^2$ with nothing to factor out.  This is
+worth stating because the $T_i$ form from the previous section looks
+like the general case and is not.  It is the one-regressor special case.
 
 The last row is Angrist ([1998](https://doi.org/10.2307/2998558)).
 Strata are weighted by $\hat d(x)(1-\hat d(x))$, largest where treatment
