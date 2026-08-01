@@ -104,3 +104,30 @@ What was left to find were precision and completeness gaps:
 algebra** — every issue found in two passes has been of that kind (an inverted
 hierarchy, a mis-titled model, an elided intercept, a normalization left unstated),
 not a wrong formula.
+
+## Addition (2026-08-01) — aggregation vs long format in `panel-data`
+
+New `##` section after the Hausman test: "Collapse to unit means, or keep the long
+format?" Written in the chapter's own notation (`z_i`, `x_it`, `c_i`, `ȳ_i`).
+
+Content: (1) with a balanced panel and only time-invariant regressors, pooled OLS on
+`NT` rows equals the between regression on `N` unit means *exactly*, and RE gives the
+same coefficient — Wooldridge (2010) §20.3.4; (2) the degrees-of-freedom trap, `N − k`
+not `NT − k`, citing Moulton (1990) and Donald & Lang (2007) — clustering repairs the
+SE asymptotically but not the dof at small `N`; (3) once a time-varying regressor
+enters, all coefficients differ, including those on `z_i`, since collapsing yields the
+between estimator while pooled OLS mixes within and between; (4) three-row summary
+table; (5) Mundlak as the reconciliation, linking to the regression-based Hausman
+paragraph directly above.
+
+Two references added to `references.qmd`: Donald & Lang (2007), Moulton (1990).
+
+Deliberately excluded: the Clark (1973) / Baayen et al. (2008) psychology result that
+averaging over a factor you still need to generalize across gives Type I error near
+0.24–0.31 against nominal 0.05, and does not improve with sample size. Correct and
+relevant, but off-register for this book. Add as a plain paragraph, not a callout, if
+it ever goes in — the book uses no callouts.
+
+Edit gotcha hit here: the Hausman caveat is one very long single line, so a short
+`old_string` anchor matched only its prefix and orphaned the tail onto the end of the
+new section. Anchor on whole lines in this file.

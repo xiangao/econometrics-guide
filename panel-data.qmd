@@ -149,3 +149,68 @@ $p$-value) favors fixed effects. In R this is `phtest(fe, re)` from the
 `plm` package; in Stata, `hausman fe re`.
 
 **Caveat: this classic form requires RE to be efficient.** The formula above relies on $\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})$ being positive semi-definite, which in turn requires the RE estimator to actually be the *efficient* estimator under the null -- true only under the RE model's homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak's approach) or with the demeaned regressors themselves (Wooldridge's regression-based test), and test the added coefficients jointly with a standard (robust) Wald test -- this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.
+
+## Collapse to unit means, or keep the long format?
+
+A practical question comes up whenever we hold a panel.  Should we
+average each unit over time and run $N$ regressions, or keep all $NT$
+rows and cluster the standard errors by unit?  Many people treat this
+as a trade-off, and assume the long format must carry more
+information.  It usually does not.  The answer turns entirely on where
+the regressors live.
+
+Take the case where every regressor is time-invariant.  The model is
+
+$$
+y_{it}={\bf z}_i \gamma + c_i + u_{it}
+$$
+
+and we have two options: pooled OLS on the $NT$ rows, or OLS on the
+$N$ unit means $\bar y_i$.  With a balanced panel the two give the same
+$\hat\gamma$.  Not close -- identical.  Random effects returns the same
+number as well.  Wooldridge (2010) states the reason plainly: because
+$c_i$ is there, new observations within a unit carry no information
+about $\gamma$ beyond how they move the unit average $\bar y_i$.  In
+effect we only have $N$ useful pieces of information.
+
+In other words, averaging discards nothing, because ${\bf z}_i$ is
+already constant over $t$ and the within variation was never available
+to $\gamma$ in the first place.
+
+What does differ is the degrees of freedom.  The unit-mean regression
+uses $N-k$.  Pooled OLS reports $NT-k$, and that is the mistake.
+Moulton (1990) is the classic illustration, and Donald and Lang (2007)
+show that the $t_{N-k}$ reference distribution is the one that keeps
+the size right.  Clustering by unit repairs the standard error when $N$
+is large, but it does not repair the degrees of freedom when $N$ is
+small.
+
+Now put a time-varying ${\bf x}_{it}$ into the model.  The two options
+stop agreeing, and not only for the coefficient on ${\bf x}_{it}$.
+Every coefficient moves, the one on ${\bf z}_i$ included.
+
+The reason is the between-within split from the sections above.
+Averaging to unit means throws away all within variation, so what
+survives is the between estimator.  Pooled OLS keeps both sources and
+forces a single coefficient on them, so it returns a variance-weighted
+average of the within and the between relationship.  The two agree only
+when the within and between coefficients are equal.  That is precisely
+the null the Hausman test examines.  So this is not a new problem.  It
+is the FE-versus-RE question in different clothes.
+
+| Situation | Collapsed vs long |
+|---|---|
+| All regressors time-invariant, balanced panel | Same coefficients; only the degrees of freedom differ |
+| Any time-varying regressor | All coefficients differ, including those on ${\bf z}_i$ |
+| Unbalanced panel | Differ regardless, since pooled OLS weights each unit by $T_i$ |
+
+The reconciliation is Mundlak's device, the same one used just above
+for the regression-based Hausman test.  Add the unit means
+${\bf \bar x}_i$ to the long regression alongside ${\bf x}_{it}$.  The
+within and between variation then carry separate coefficients, and the
+coefficient on ${\bf \bar x}_i$ reproduces what the collapsed
+regression estimates.  We keep the within variation and we recover the
+between answer, in one regression.
+
+The useful way to remember it: collapse freely when every regressor is
+constant within the group, and never when one is not.

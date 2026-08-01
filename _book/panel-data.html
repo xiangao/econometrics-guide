@@ -288,6 +288,7 @@ window.Quarto = {
   <li><a href="#random-effect-methods" id="toc-random-effect-methods" class="nav-link" data-scroll-target="#random-effect-methods"><span class="header-section-number">9.2</span> Random Effect Methods</a></li>
   <li><a href="#fixed-effect-methods" id="toc-fixed-effect-methods" class="nav-link" data-scroll-target="#fixed-effect-methods"><span class="header-section-number">9.3</span> Fixed Effect Methods</a></li>
   <li><a href="#fixed-effects-or-random-effects-the-hausman-test" id="toc-fixed-effects-or-random-effects-the-hausman-test" class="nav-link" data-scroll-target="#fixed-effects-or-random-effects-the-hausman-test"><span class="header-section-number">9.4</span> Fixed effects or random effects: the Hausman test</a></li>
+  <li><a href="#collapse-to-unit-means-or-keep-the-long-format" id="toc-collapse-to-unit-means-or-keep-the-long-format" class="nav-link" data-scroll-target="#collapse-to-unit-means-or-keep-the-long-format"><span class="header-section-number">9.5</span> Collapse to unit means, or keep the long format?</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/panel-data.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -367,6 +368,47 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 \]</span></p>
 <p>under the null that random effects is consistent. A large <span class="math inline">\(H\)</span> (small <span class="math inline">\(p\)</span>-value) favors fixed effects. In R this is <code>phtest(fe, re)</code> from the <code>plm</code> package; in Stata, <code>hausman fe re</code>.</p>
 <p><strong>Caveat: this classic form requires RE to be efficient.</strong> The formula above relies on <span class="math inline">\(\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})\)</span> being positive semi-definite, which in turn requires the RE estimator to actually be the <em>efficient</em> estimator under the null – true only under the RE model’s homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak’s approach) or with the demeaned regressors themselves (Wooldridge’s regression-based test), and test the added coefficients jointly with a standard (robust) Wald test – this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.</p>
+</section>
+<section id="collapse-to-unit-means-or-keep-the-long-format" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="collapse-to-unit-means-or-keep-the-long-format"><span class="header-section-number">9.5</span> Collapse to unit means, or keep the long format?</h2>
+<p>A practical question comes up whenever we hold a panel. Should we average each unit over time and run <span class="math inline">\(N\)</span> regressions, or keep all <span class="math inline">\(NT\)</span> rows and cluster the standard errors by unit? Many people treat this as a trade-off, and assume the long format must carry more information. It usually does not. The answer turns entirely on where the regressors live.</p>
+<p>Take the case where every regressor is time-invariant. The model is</p>
+<p><span class="math display">\[
+y_{it}={\bf z}_i \gamma + c_i + u_{it}
+\]</span></p>
+<p>and we have two options: pooled OLS on the <span class="math inline">\(NT\)</span> rows, or OLS on the <span class="math inline">\(N\)</span> unit means <span class="math inline">\(\bar y_i\)</span>. With a balanced panel the two give the same <span class="math inline">\(\hat\gamma\)</span>. Not close – identical. Random effects returns the same number as well. Wooldridge (2010) states the reason plainly: because <span class="math inline">\(c_i\)</span> is there, new observations within a unit carry no information about <span class="math inline">\(\gamma\)</span> beyond how they move the unit average <span class="math inline">\(\bar y_i\)</span>. In effect we only have <span class="math inline">\(N\)</span> useful pieces of information.</p>
+<p>In other words, averaging discards nothing, because <span class="math inline">\({\bf z}_i\)</span> is already constant over <span class="math inline">\(t\)</span> and the within variation was never available to <span class="math inline">\(\gamma\)</span> in the first place.</p>
+<p>What does differ is the degrees of freedom. The unit-mean regression uses <span class="math inline">\(N-k\)</span>. Pooled OLS reports <span class="math inline">\(NT-k\)</span>, and that is the mistake. Moulton (1990) is the classic illustration, and Donald and Lang (2007) show that the <span class="math inline">\(t_{N-k}\)</span> reference distribution is the one that keeps the size right. Clustering by unit repairs the standard error when <span class="math inline">\(N\)</span> is large, but it does not repair the degrees of freedom when <span class="math inline">\(N\)</span> is small.</p>
+<p>Now put a time-varying <span class="math inline">\({\bf x}_{it}\)</span> into the model. The two options stop agreeing, and not only for the coefficient on <span class="math inline">\({\bf x}_{it}\)</span>. Every coefficient moves, the one on <span class="math inline">\({\bf z}_i\)</span> included.</p>
+<p>The reason is the between-within split from the sections above. Averaging to unit means throws away all within variation, so what survives is the between estimator. Pooled OLS keeps both sources and forces a single coefficient on them, so it returns a variance-weighted average of the within and the between relationship. The two agree only when the within and between coefficients are equal. That is precisely the null the Hausman test examines. So this is not a new problem. It is the FE-versus-RE question in different clothes.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Collapsed vs long</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>All regressors time-invariant, balanced panel</td>
+<td>Same coefficients; only the degrees of freedom differ</td>
+</tr>
+<tr class="even">
+<td>Any time-varying regressor</td>
+<td>All coefficients differ, including those on <span class="math inline">\({\bf z}_i\)</span></td>
+</tr>
+<tr class="odd">
+<td>Unbalanced panel</td>
+<td>Differ regardless, since pooled OLS weights each unit by <span class="math inline">\(T_i\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The reconciliation is Mundlak’s device, the same one used just above for the regression-based Hausman test. Add the unit means <span class="math inline">\({\bf \bar x}_i\)</span> to the long regression alongside <span class="math inline">\({\bf x}_{it}\)</span>. The within and between variation then carry separate coefficients, and the coefficient on <span class="math inline">\({\bf \bar x}_i\)</span> reproduces what the collapsed regression estimates. We keep the within variation and we recover the between answer, in one regression.</p>
+<p>The useful way to remember it: collapse freely when every regressor is constant within the group, and never when one is not.</p>
 
 
 <!-- -->
@@ -987,7 +1029,72 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>$p$-value) favors fixed effects. In R this is <span class="in">`phtest(fe, re)`</span> from the</span>
 <span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a><span class="in">`plm`</span> package; in Stata, <span class="in">`hausman fe re`</span>.</span>
 <span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>**Caveat: this classic form requires RE to be efficient.** The formula above relies on $\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})$ being positive semi-definite, which in turn requires the RE estimator to actually be the *efficient* estimator under the null -- true only under the RE model's homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak's approach) or with the demeaned regressors themselves (Wooldridge's regression-based test), and test the added coefficients jointly with a standard (robust) Wald test -- this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>**Caveat: this classic form requires RE to be efficient.** The formula above relies on $\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})$ being positive semi-definite, which in turn requires the RE estimator to actually be the *efficient* estimator under the null -- true only under the RE model's homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak's approach) or with the demeaned regressors themselves (Wooldridge's regression-based test), and test the added coefficients jointly with a standard (robust) Wald test -- this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a><span class="fu">## Collapse to unit means, or keep the long format?</span></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>A practical question comes up whenever we hold a panel.  Should we</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>average each unit over time and run $N$ regressions, or keep all $NT$</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>rows and cluster the standard errors by unit?  Many people treat this</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>as a trade-off, and assume the long format must carry more</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>information.  It usually does not.  The answer turns entirely on where</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>the regressors live.</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>Take the case where every regressor is time-invariant.  The model is</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>y_{it}={\bf z}_i \gamma + c_i + u_{it}</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>and we have two options: pooled OLS on the $NT$ rows, or OLS on the</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>$N$ unit means $\bar y_i$.  With a balanced panel the two give the same</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>$\hat\gamma$.  Not close -- identical.  Random effects returns the same</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>number as well.  Wooldridge (2010) states the reason plainly: because</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>$c_i$ is there, new observations within a unit carry no information</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>about $\gamma$ beyond how they move the unit average $\bar y_i$.  In</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>effect we only have $N$ useful pieces of information.</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>In other words, averaging discards nothing, because ${\bf z}_i$ is</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>already constant over $t$ and the within variation was never available</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>to $\gamma$ in the first place.</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>What does differ is the degrees of freedom.  The unit-mean regression</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>uses $N-k$.  Pooled OLS reports $NT-k$, and that is the mistake.</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>Moulton (1990) is the classic illustration, and Donald and Lang (2007)</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>show that the $t_{N-k}$ reference distribution is the one that keeps</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>the size right.  Clustering by unit repairs the standard error when $N$</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>is large, but it does not repair the degrees of freedom when $N$ is</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>small.</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>Now put a time-varying ${\bf x}_{it}$ into the model.  The two options</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>stop agreeing, and not only for the coefficient on ${\bf x}_{it}$.</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>Every coefficient moves, the one on ${\bf z}_i$ included.</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>The reason is the between-within split from the sections above.</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>Averaging to unit means throws away all within variation, so what</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>survives is the between estimator.  Pooled OLS keeps both sources and</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>forces a single coefficient on them, so it returns a variance-weighted</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>average of the within and the between relationship.  The two agree only</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>when the within and between coefficients are equal.  That is precisely</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>the null the Hausman test examines.  So this is not a new problem.  It</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>is the FE-versus-RE question in different clothes.</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Situation <span class="pp">|</span> Collapsed vs long <span class="pp">|</span></span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> All regressors time-invariant, balanced panel <span class="pp">|</span> Same coefficients; only the degrees of freedom differ <span class="pp">|</span></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Any time-varying regressor <span class="pp">|</span> All coefficients differ, including those on ${\bf z}_i$ <span class="pp">|</span></span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Unbalanced panel <span class="pp">|</span> Differ regardless, since pooled OLS weights each unit by $T_i$ <span class="pp">|</span></span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>The reconciliation is Mundlak's device, the same one used just above</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>for the regression-based Hausman test.  Add the unit means</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>${\bf \bar x}_i$ to the long regression alongside ${\bf x}_{it}$.  The</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>within and between variation then carry separate coefficients, and the</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>coefficient on ${\bf \bar x}_i$ reproduces what the collapsed</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>regression estimates.  We keep the within variation and we recover the</span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>between answer, in one regression.</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>The useful way to remember it: collapse freely when every regressor is</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>constant within the group, and never when one is not.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

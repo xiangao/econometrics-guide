@@ -55,3 +55,14 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > just-identified; and `mle` — the book's inference chapter — developed the information
 > matrix and efficiency bound without ever presenting the LR, Wald and LM tests, which
 > are now included.
+
+> **2026-08-01:** New section in `panel-data`, "Collapse to unit means, or keep the
+> long format?" It settles a question the chapter raised but never answered: with a
+> balanced panel and only time-invariant regressors, pooled OLS on the `NT` rows and
+> OLS on the `N` unit means give *identical* coefficients (Wooldridge 2010, §20.3.4),
+> and the real error is reporting `NT − k` degrees of freedom instead of `N − k`
+> (Moulton 1990; Donald and Lang 2007). Adding a time-varying regressor breaks the
+> equivalence for *every* coefficient, not just its own, because collapsing leaves the
+> between estimator while pooled OLS returns a variance-weighted mix of within and
+> between — the FE-vs-RE comparison in different clothes. Mundlak's device reconciles
+> the two, tying the section back to the regression-based Hausman test above it.
