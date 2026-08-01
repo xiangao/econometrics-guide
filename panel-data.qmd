@@ -1,5 +1,10 @@
 # Panel Data Models
 
+```{r}
+#| include: false
+library(fixest)
+```
+
 ## Background
 
 Panel data are repeated observations on the same "unit" (we call that
@@ -214,3 +219,99 @@ between answer, in one regression.
 
 The useful way to remember it: collapse freely when every regressor is
 constant within the group, and never when one is not.
+
+## What the long format buys
+
+The section above is mostly a warning.  It says when collapsing is
+harmless and when it is not.  The other side is worth seeing directly,
+so we simulate a panel where we know the truth.  We use `fixest` here;
+in Stata the same three regressions are `regress`, `xtreg, fe` and
+`xtreg, re`.
+
+### First, the equivalence
+
+Take 1000 units over 6 periods, one time-invariant regressor $z_i$, and
+a true $\gamma=2$.
+
+```{r}
+set.seed(42)
+N <- 1000; T <- 6
+
+z   <- rnorm(N)
+bal <- data.frame(id = rep(1:N, each = T), t = rep(1:T, N),
+                  z  = rep(z, each = T), c = rep(rnorm(N), each = T))
+bal$y <- 2 * bal$z + bal$c + rnorm(N * T)
+agg   <- aggregate(cbind(y, z) ~ id, data = bal, FUN = mean)
+
+print(c(long      = coef(feols(y ~ z, bal))[["z"]],
+        collapsed = coef(feols(y ~ z, agg))[["z"]]), digits = 12)
+```
+
+The two agree to every digit printed.  That is the result quoted above,
+not an accident of the seed.
+
+Now break the balance.  We drop the later periods for units with high
+$z_i$, so $T_i$ varies, and varies with the regressor.
+
+```{r}
+unb  <- bal[!(bal$z > 0.5 & bal$t > 2), ]
+agg2 <- aggregate(cbind(y, z) ~ id, data = unb, FUN = mean)
+
+print(c(long      = coef(feols(y ~ z, unb))[["z"]],
+        collapsed = coef(feols(y ~ z, agg2))[["z"]]), digits = 12)
+```
+
+They no longer agree.  Pooled OLS weights each unit by $T_i$; the
+collapsed regression counts each unit once.  Neither is wrong.  They
+answer different questions, and we should know which one we asked.
+
+### Then, what collapsing costs
+
+Now the case that matters.  We let $x_{it}$ vary over time, and we make
+$c_i$ correlated with $\bar x_i$.  That is the situation fixed effects
+exists for.  The truth is $\beta=1$.
+
+```{r}
+mu <- rnorm(N)
+d  <- data.frame(id = rep(1:N, each = T),
+                 x  = rep(mu, each = T) + rnorm(N * T),
+                 c  = rep(mu + rnorm(N), each = T))
+d$y    <- 1 * d$x + d$c + rnorm(N * T)
+d$xbar <- ave(d$x, d$id)
+dagg   <- aggregate(cbind(y, x) ~ id, data = d, FUN = mean)
+
+between <- feols(y ~ x,        data = dagg)
+pooled  <- feols(y ~ x,        data = d, cluster = ~id)
+within  <- feols(y ~ x | id,   data = d)
+mundlak <- feols(y ~ x + xbar, data = d, cluster = ~id)
+
+pull <- function(m, v) c(coef(m)[[v]], se(m)[[v]])
+tab <- rbind(`between (collapsed)` = pull(between, "x"),
+             `pooled OLS`          = pull(pooled,  "x"),
+             `within / FE`         = pull(within,  "x"),
+             `Mundlak: x`          = pull(mundlak, "x"),
+             `Mundlak: xbar`       = pull(mundlak, "xbar"))
+colnames(tab) <- c("estimate", "std. error")
+round(tab, 3)
+```
+
+Read the table down.  The collapsed regression returns about 1.85,
+badly biased, because it is the between estimator and $\bar x_i$
+carries $c_i$ with it.  Pooled OLS returns about 1.48 -- better, since
+some within variation is mixed in, but still inconsistent.  The within
+estimator returns about 0.99.  Only the long format can compute it.
+Once we collapse there is nothing left to demean.
+
+Mundlak's regression delivers both at once.  The coefficient on
+$x_{it}$ reproduces the within estimate to three decimals.  The
+coefficient on $\bar x_i$ is about 0.85, which is the between estimate
+minus the within estimate.  In words, that second coefficient *is* the
+Hausman contrast, and its $t$-statistic is the Hausman test.  A
+collapsed regression cannot produce it, because it never sees the two
+sources of variation separately.
+
+So the argument for the long format is not precision.  It is that
+demeaning, the Hausman comparison, unit-specific slopes, lagged
+dependent variables and anything else built on within variation simply
+do not exist once the panel is collapsed.  Dynamic models are the
+extreme case, and they get their own chapter.

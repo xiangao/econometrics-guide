@@ -14,7 +14,7 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
 ## Prerequisites
 
 - [Quarto](https://quarto.org/docs/get-started/) (>= 1.3)
-- R with packages: `car`, `stats4`, `dplyr`, `mvtnorm`, `MASS`, `AER`, `ivreg`, `gmm`, `strucchange`, `ggfortify`, `survival`
+- R with packages: `car`, `stats4`, `dplyr`, `mvtnorm`, `MASS`, `AER`, `ivreg`, `gmm`, `strucchange`, `ggfortify`, `survival`, `fixest`
 
 ## Legacy file
 
@@ -66,3 +66,9 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > between estimator while pooled OLS returns a variance-weighted mix of within and
 > between — the FE-vs-RE comparison in different clothes. Mundlak's device reconciles
 > the two, tying the section back to the regression-based Hausman test above it.
+> A second section, "What the long format buys," demonstrates it with `fixest` on
+> simulated data (the chapter's first code): the balanced case agrees to twelve digits,
+> the unbalanced case does not, and with `c_i` correlated with `x̄_i` the collapsed
+> regression returns 1.845 against a truth of 1 while the within estimator returns
+> 0.995. Mundlak's regression reproduces the within estimate and returns the
+> between-minus-within contrast as the coefficient on `x̄_i`.

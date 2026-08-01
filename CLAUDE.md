@@ -21,7 +21,7 @@ quarto preview       # live preview in browser
 ```
 
 ## R Dependencies
-car, stats4, dplyr, mvtnorm, MASS, AER, ivreg, gmm, strucchange, ggfortify, survival
+car, stats4, dplyr, mvtnorm, MASS, AER, ivreg, gmm, strucchange, ggfortify, survival, fixest
 
 ## Notes
 - Each chapter with R code has a hidden setup chunk (`#| include: false`) loading its required libraries
@@ -131,3 +131,25 @@ it ever goes in — the book uses no callouts.
 Edit gotcha hit here: the Hausman caveat is one very long single line, so a short
 `old_string` anchor matched only its prefix and orphaned the tail onto the end of the
 new section. Anchor on whole lines in this file.
+
+## Addition (2026-08-01b) — `panel-data` demo section, first code in the chapter
+
+Second new section, "What the long format buys", answering the complaint that the
+first one only said what you lose. Three `fixest` chunks on simulated data, `N = 1000`,
+`T = 6`, seed 42:
+
+1. Balanced, time-invariant regressor only — long and collapsed agree at
+   `1.99351677619` vs `1.99351677619`, printed at 12 digits so the identity is visible.
+2. Unbalanced (high-`z` units lose later periods) — `2.00682070731` vs `2.01481052322`.
+3. `c_i` correlated with `x̄_i`, true `beta = 1` — between 1.845, pooled 1.484,
+   within 0.995, Mundlak `x` 0.995, Mundlak `x̄` 0.850. Note 1.845 − 0.995 = 0.850,
+   so the `x̄` coefficient is exactly the Hausman contrast.
+
+All five numbers match theory: between = 1 + var(mu)/var(x̄) = 1 + 1/(1+1/T) = 1.857,
+pooled = 1 + cov(x,c)/var(x) = 1.5. The prose quotes these values, so **if the seed,
+`N`, `T` or chunk order ever changes, the prose must be re-checked** — the RNG stream
+is shared across the three chunks.
+
+`fixest` added to the R dependency lists in README.md and above. Stata equivalents
+(`regress`, `xtreg, fe`, `xtreg, re`) are named inline, matching how the Hausman
+section already handles Stata.
