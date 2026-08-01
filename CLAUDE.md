@@ -290,3 +290,37 @@ same point more starkly, and it was the third table in a row.
 Chunk ordering note: the new chunk sits *before* the (A)/(B) chunk but does not disturb
 it, because that chunk opens with its own `set.seed(7)`. Verified — (A)/(B) output is
 byte-identical. Any future chunk inserted there must preserve that seed call.
+
+## Correction (2026-08-01i) — the demo implied plain OLS behaves like FE. It does not.
+
+Reader objection, and it was right: the section is titled "How OLS weights the data",
+every regression in it is `feols(... | id)`, and nothing warned that dropping the unit
+effects changes the answer. The natural inference — plain OLS does the same thing — is
+false, and the demo had been **constructed so it looked true**: both halves of the
+two-group example were built around zero, which made "distance from the grand mean" and
+"within-unit spread" numerically coincide.
+
+New chunk parks the steady half away from zero:
+
+| | fixed effects | plain OLS |
+|---|---|---|
+| steady half centred at 0 | 1.984 | 1.983 |
+| steady half parked at 10 | 1.984 | 0.311 |
+| steady half parked at 100 | 1.984 | 0.004 |
+
+FE is invariant — the within transformation removes each unit's own mean first, so no
+unit can sit far from it. Plain OLS collapses, for two reasons the text now separates:
+the steady half *gains* weight as it moves away from the grand mean (a tight cluster far
+out carries heavy weight despite barely moving), and a between-group channel opens that
+is not weighting at all.
+
+Key sentence now in the text: `Vtilde` is a deviation from *whatever mean the model
+removes* — the unit's own mean with unit effects, the grand mean without. So "the weight
+is how much x moves" is a statement about the demeaned case only.
+
+`park(0)` reproduces the preceding chunk's 1.984 exactly (same `set.seed(1)`, same draw
+order), so the two chunks compose. If either is edited, check that still holds.
+
+**Process note:** this survived three prior revisions of the section because every check
+run was on centred data. When a demo's conclusion depends on a construction choice, vary
+that choice before publishing.
