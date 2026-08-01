@@ -353,3 +353,19 @@ an `OLS predicted` column beside `OLS actual` so the table reads as a check.
 
 Used `\text{plim}` rather than `\operatorname*{plim}` — the latter is package-dependent
 in MathJax and this book has no math preamble.
+
+## Correction (2026-08-01k) — Słoczyński direction was stated backwards
+
+The text read: "a coefficient from a sample that is 10% treated is mostly telling us
+about the 90%." **Backwards**, and it contradicted the sentence immediately before it
+("the smaller group receives the larger weight").
+
+Słoczyński: `beta_OLS = (1-rho) ATT + rho ATU`, `rho` = treated share. So at `rho = 0.1`
+the weight on **ATT** is 0.9 — the coefficient mostly reports the effect on the treated
+tenth, not the untreated majority. The ATE is the same two numbers with the weights
+reversed, `rho ATT + (1-rho) ATU`.
+
+Verified by simulation (n = 400k, ~8.8% treated, heterogeneous `tau = 1 + 2x`):
+ATT 2.3896, ATU 0.8709, ATE 1.0039, OLS 2.2611. `(1-rho)ATT + rho ATU` = 2.2565 matches;
+`rho ATT + (1-rho) ATU` = 1.0039 is the ATE and does not. Those figures are now quoted
+in the text so the direction is anchored to something checkable.

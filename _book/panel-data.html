@@ -629,7 +629,8 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <p>Read down each column. In (A) all three numbers agree to within sampling noise: the weighting happens, and it costs nothing. In (B) the estimate is 1.53 while the plain average of the true slopes is 1.01. The estimate has not gone wrong — it matches the weighted average, 1.54, which is what it was reporting all along. We were reading it as an average.</p>
 <p>The same mechanism as the two-group case, spread over a continuum. Squaring is what drives it: a unit whose <span class="math inline">\(x\)</span> moves fifteen times as much as another counts for roughly two hundred times as much.</p>
 <p>None of this is a defect. A unit whose <span class="math inline">\(x\)</span> barely moves genuinely carries little information about how <span class="math inline">\(y\)</span> responds to <span class="math inline">\(x\)</span>, and leaning on the units that do move is the efficient thing to do. It becomes a problem only when the slope itself is related to the movement, which is what (B) imposes and (A) does not.</p>
-<p>Słoczyński (<a href="https://doi.org/10.1162/rest_a_00953">2022</a>) makes the same point for a binary treatment: the OLS coefficient is a convex combination of the effect on the treated and the effect on the untreated (<a href="https://xiangao.github.io/blog_book/ols-ate.html">discussed here</a>), and the <em>smaller</em> group receives the <em>larger</em> weight. So a coefficient from a sample that is 10% treated is mostly telling us about the 90%.</p>
+<p>Słoczyński (<a href="https://doi.org/10.1162/rest_a_00953">2022</a>) makes the same point for a binary treatment: the OLS coefficient is a convex combination of the effect on the treated and the effect on the untreated (<a href="https://xiangao.github.io/blog_book/ols-ate.html">discussed here</a>), and the <em>smaller</em> group receives the <em>larger</em> weight. Writing <span class="math inline">\(\rho\)</span> for the treated share, the coefficient is <span class="math inline">\((1-\rho)\,\text{ATT} + \rho\,\text{ATU}\)</span>, so the weight on the effect for the treated is <span class="math inline">\(1-\rho\)</span>.</p>
+<p>Read that carefully, because it runs against intuition. In a sample that is 10% treated the weight on the ATT is <span class="math inline">\(0.9\)</span>, so the coefficient is mostly reporting the effect on the <em>treated tenth</em>, not on the untreated majority. The ATE, by contrast, is <span class="math inline">\(\rho\,\text{ATT} + (1-\rho)\,\text{ATU}\)</span> — the same two numbers with the weights the other way round. The two can be far apart: in a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the ATE is 1.00 while OLS returns 2.26.</p>
 <p>The practical reading: with homogeneous effects the weighting is harmless and we can ignore it. With heterogeneous effects the question is never whether OLS is weighting, only whether we know what it weighted.</p>
 
 
@@ -1718,14 +1719,24 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <span id="cb13-634"><a href="#cb13-634" aria-hidden="true" tabindex="-1"></a>same point for a binary treatment: the OLS coefficient is a convex</span>
 <span id="cb13-635"><a href="#cb13-635" aria-hidden="true" tabindex="-1"></a>combination of the effect on the treated and the effect on the</span>
 <span id="cb13-636"><a href="#cb13-636" aria-hidden="true" tabindex="-1"></a>untreated (<span class="co">[</span><span class="ot">discussed here</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>),</span>
-<span id="cb13-637"><a href="#cb13-637" aria-hidden="true" tabindex="-1"></a>and the *smaller* group receives the *larger* weight.  So a</span>
-<span id="cb13-638"><a href="#cb13-638" aria-hidden="true" tabindex="-1"></a>coefficient from a sample that is 10% treated is mostly telling us</span>
-<span id="cb13-639"><a href="#cb13-639" aria-hidden="true" tabindex="-1"></a>about the 90%.</span>
-<span id="cb13-640"><a href="#cb13-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-641"><a href="#cb13-641" aria-hidden="true" tabindex="-1"></a>The practical reading: with homogeneous effects the weighting is</span>
-<span id="cb13-642"><a href="#cb13-642" aria-hidden="true" tabindex="-1"></a>harmless and we can ignore it.  With heterogeneous effects the question</span>
-<span id="cb13-643"><a href="#cb13-643" aria-hidden="true" tabindex="-1"></a>is never whether OLS is weighting, only whether we know what it</span>
-<span id="cb13-644"><a href="#cb13-644" aria-hidden="true" tabindex="-1"></a>weighted.</span>
+<span id="cb13-637"><a href="#cb13-637" aria-hidden="true" tabindex="-1"></a>and the *smaller* group receives the *larger* weight.  Writing $\rho$</span>
+<span id="cb13-638"><a href="#cb13-638" aria-hidden="true" tabindex="-1"></a>for the treated share, the coefficient is</span>
+<span id="cb13-639"><a href="#cb13-639" aria-hidden="true" tabindex="-1"></a>$(1-\rho)\,\text{ATT} + \rho\,\text{ATU}$, so the weight on the effect</span>
+<span id="cb13-640"><a href="#cb13-640" aria-hidden="true" tabindex="-1"></a>for the treated is $1-\rho$.</span>
+<span id="cb13-641"><a href="#cb13-641" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-642"><a href="#cb13-642" aria-hidden="true" tabindex="-1"></a>Read that carefully, because it runs against intuition.  In a sample</span>
+<span id="cb13-643"><a href="#cb13-643" aria-hidden="true" tabindex="-1"></a>that is 10% treated the weight on the ATT is $0.9$, so the coefficient</span>
+<span id="cb13-644"><a href="#cb13-644" aria-hidden="true" tabindex="-1"></a>is mostly reporting the effect on the *treated tenth*, not on the</span>
+<span id="cb13-645"><a href="#cb13-645" aria-hidden="true" tabindex="-1"></a>untreated majority.  The ATE, by contrast, is</span>
+<span id="cb13-646"><a href="#cb13-646" aria-hidden="true" tabindex="-1"></a>$\rho\,\text{ATT} + (1-\rho)\,\text{ATU}$ --- the same two numbers with</span>
+<span id="cb13-647"><a href="#cb13-647" aria-hidden="true" tabindex="-1"></a>the weights the other way round.  The two can be far apart: in a</span>
+<span id="cb13-648"><a href="#cb13-648" aria-hidden="true" tabindex="-1"></a>simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the</span>
+<span id="cb13-649"><a href="#cb13-649" aria-hidden="true" tabindex="-1"></a>ATE is 1.00 while OLS returns 2.26.</span>
+<span id="cb13-650"><a href="#cb13-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-651"><a href="#cb13-651" aria-hidden="true" tabindex="-1"></a>The practical reading: with homogeneous effects the weighting is</span>
+<span id="cb13-652"><a href="#cb13-652" aria-hidden="true" tabindex="-1"></a>harmless and we can ignore it.  With heterogeneous effects the question</span>
+<span id="cb13-653"><a href="#cb13-653" aria-hidden="true" tabindex="-1"></a>is never whether OLS is weighting, only whether we know what it</span>
+<span id="cb13-654"><a href="#cb13-654" aria-hidden="true" tabindex="-1"></a>weighted.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

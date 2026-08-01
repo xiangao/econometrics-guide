@@ -620,9 +620,19 @@ Słoczyński ([2022](https://doi.org/10.1162/rest_a_00953)) makes the
 same point for a binary treatment: the OLS coefficient is a convex
 combination of the effect on the treated and the effect on the
 untreated ([discussed here](https://xiangao.github.io/blog_book/ols-ate.html)),
-and the *smaller* group receives the *larger* weight.  So a
-coefficient from a sample that is 10% treated is mostly telling us
-about the 90%.
+and the *smaller* group receives the *larger* weight.  Writing $\rho$
+for the treated share, the coefficient is
+$(1-\rho)\,\text{ATT} + \rho\,\text{ATU}$, so the weight on the effect
+for the treated is $1-\rho$.
+
+Read that carefully, because it runs against intuition.  In a sample
+that is 10% treated the weight on the ATT is $0.9$, so the coefficient
+is mostly reporting the effect on the *treated tenth*, not on the
+untreated majority.  The ATE, by contrast, is
+$\rho\,\text{ATT} + (1-\rho)\,\text{ATU}$ --- the same two numbers with
+the weights the other way round.  The two can be far apart: in a
+simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the
+ATE is 1.00 while OLS returns 2.26.
 
 The practical reading: with homogeneous effects the weighting is
 harmless and we can ignore it.  With heterogeneous effects the question
