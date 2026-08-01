@@ -188,3 +188,30 @@ Those use the *outcome*-weight object; this section uses the *effect*-weight obj
 They are the same identity read at two granularities — verified numerically: OLS,
 `sum omega_i y_i`, Angrist's `dhat(1-dhat)P(x)` and `sum_x Dtilde^2` all returned
 1.96680501, with the last two differing by exactly the constant `n`.
+
+## Notation convention (2026-08-01d) — `panel-data.qmd`
+
+**Chapter-wide symbol remap, applied to pre-existing material as well as the new
+sections.** The role convention is now `X` = regressors of interest, `W` = other
+covariates, `Z` = instruments; the subscript, not the letter, carries the time
+variation (`X_it` varies over both, `X_i` over units only, `X_t` over time only). A
+short notation paragraph in Background states this and links to Endogeneity, GMM and
+Dynamic Panel Data.
+
+Why this needed care: the chapter's original notation encoded a *different* axis —
+`z_i` meant time-invariant and `w_t` meant individual-invariant — so it collided with
+the new convention on both `W` and `Z`. Resolution:
+
+- `x_it` (and all its decorated forms: `\bf x_{it}`, `\bar x_i`, `\ddot{\bf x}_{it}`) → `X`
+- `z_i` where it meant a time-invariant **covariate** (Background, and the FE "swept
+  out" sentence) → `W_i`
+- `z_i` where it meant the **regressor of interest** (both new sections) → `X_i`
+- `w_t` → `W_t`
+- the generic `V` in the FWL weighting rule → `X`. **Do not** touch `\hat V(...)`, which
+  is the variance operator in the FE and Hausman formulas.
+- R code in the first two chunks: variable `z` renamed to `x`
+
+Verified after the remap: all four chunk outputs byte-identical to before, so the code
+rename did not disturb the shared RNG stream. Cross-chapter links render as
+`href="./chapter.html"`, matching the existing `count-data.qmd` → `discrete.qmd` link.
+This book has no `{#sec-}` labels, so cross-references are chapter-level only.
