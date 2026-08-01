@@ -467,44 +467,76 @@ the reason matters more than the example.
 
 $\tilde V$ is a deviation from whatever mean the model removes.  With
 unit effects in the model that is the unit's own mean, so the weight is
-within-unit spread.  With only an intercept it is the grand mean, so
-the weight is distance from *that* --- and a tightly clustered group
-sitting far from the grand mean carries enormous weight despite barely
-moving.  Above, both halves were built around zero, which quietly made
-the two readings coincide.  Park the steady half somewhere else and
-they part company.
+within-unit spread.  With only an intercept it is the grand mean.  Above,
+both halves were built around zero, which quietly made the two readings
+coincide.  Separate them and the algebra says exactly what happens.
+
+Take two equally sized groups with means $\mu_g$, within-group variances
+$\sigma_g^2$, slopes $\beta_g$, and group mean outcomes $\bar y_g$.  The
+law of total covariance splits $\text{Cov}(x,y)$ and $\text{Var}(x)$
+into a within part and a between part, giving
+
+$$
+\text{plim}\;\hat\beta_{OLS}
+= \frac{\tfrac12\!\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)
+        \;+\; \tfrac14\,\Delta\mu\,\Delta\bar y}
+       {\tfrac12\!\left(\sigma_1^2+\sigma_2^2\right)
+        \;+\; \tfrac14\,\Delta\mu^{2}} ,
+$$
+
+with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.  In
+words, the coefficient is a variance-weighted average of two slopes:
+
+$$
+\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},
+\qquad
+\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},
+$$
+
+the first weighted by the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$
+and the second by the between variance $\tfrac14\Delta\mu^2$.
+
+Everything now follows without running anything.  Fixed effects
+estimates $\beta_{within}$, which here is
+$(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$ and does not involve $\mu_g$ at
+all --- so parking a group anywhere cannot move it.  Plain OLS also
+carries $\beta_{between}$, and in this design $\beta_{between}=0$: the
+steady group's slope is zero and both intercepts are zero, so the two
+group means sit at the same height and the line through them is flat.
+As $\Delta\mu$ grows, the between weight $\tfrac14\Delta\mu^2$ swamps
+the fixed within weight of $4.52$, and the OLS coefficient is dragged
+from $1.991$ toward $0$ like $9.04/(4.52+\Delta\mu^2/4)$.
+
+The simulation is a check on that, not the source of it.
 
 ```{r}
+b_within <- (0 * 0.2^2 + 2 * 3^2) / (0.2^2 + 3^2)   # variance-weighted slope
+V_within <- 0.5 * (0.2^2 + 3^2)                     # within variance
+predicted <- function(shift)                        # beta_between = 0 here
+  V_within * b_within / (V_within + 0.25 * shift^2)
+
 park <- function(shift) {
   set.seed(1)
   x <- rnorm(N * T, 0, g$move) + rep(c(rep(shift, half), rep(0, half)), each = T)
   y <- g$b * x + rep(rnorm(N), each = T) + rnorm(N * T)
   d <- data.frame(id = g$id, x = x, y = y)
-  c(`fixed effects` = coef(feols(y ~ x | id, d))[["x"]],
-    `plain OLS`     = coef(lm(y ~ x, d))[["x"]])
+  c(`FE (theory 1.991)` = coef(feols(y ~ x | id, d))[["x"]],
+    `OLS predicted`     = predicted(shift),
+    `OLS actual`        = coef(lm(y ~ x, d))[["x"]])
 }
 
-round(rbind(`steady half centred at 0`  = park(0),
-            `steady half parked at 10`  = park(10),
-            `steady half parked at 100` = park(100)), 3)
+round(t(sapply(c(`shift 0` = 0, `shift 10` = 10, `shift 100` = 100), park)), 3)
 ```
 
-Fixed effects returns 1.984 every time.  The within transformation
-subtracts each unit's own mean before anything else happens, so no unit
-can be far from its own mean and the level is irrelevant.  Plain OLS
-runs from 1.983 to 0.004 on the same true slopes.
+Predicted and actual agree in every row, and fixed effects is flat at
+1.984 against a theoretical 1.991 --- the gap is sampling noise, not
+structure.
 
-Two things are moving in that second column.  The steady half gains
-weight as it moves away from the grand mean, and it has a slope of
-zero.  And a second channel opens that is not weighting at all: with the
-two halves at different levels of $x$, part of the fitted line is a
-comparison *between* them, which reflects their difference in average
-$y$ rather than either group's slope.  Only the first is the subject of
-this section.
-
-The lesson is that "the weight is how much $x$ moves" is a statement
-about the *demeaned* case.  It is exactly right after unit effects are
-removed and it is not right in general.
+Two lessons.  First, "the weight is how much $x$ moves" describes the
+*demeaned* case; it is exact once unit effects are removed and false in
+general.  Second, when groups sit at different levels of $x$, plain OLS
+mixes in $\beta_{between}$, which answers a different question
+altogether.  Only the within part is the subject of this section.
 
 That is the mechanism in its starkest form.  A continuous version makes
 the same point, and adds the control case the extreme example cannot

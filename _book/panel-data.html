@@ -541,30 +541,50 @@ weight held by the steady half (%) 0.473</code></pre>
 </div>
 <p>The average slope is one and the regression reports 1.98. The reason is in the third line: the five hundred steady units hold under half of one percent of the weight. Their <span class="math inline">\(x\)</span> hardly moves, so squared deviations put them almost nowhere in the sum, and the estimate is very nearly a report on the wobbly half alone. Nothing has gone wrong in the arithmetic. The units with a slope of zero were never really in the regression.</p>
 <p>Before going further, a warning about what this example does <em>not</em> show. The section is called “How OLS weights the data” and the regression above is a fixed-effects regression. It is tempting to conclude that plain OLS would behave the same way. It would not, and the reason matters more than the example.</p>
-<p><span class="math inline">\(\tilde V\)</span> is a deviation from whatever mean the model removes. With unit effects in the model that is the unit’s own mean, so the weight is within-unit spread. With only an intercept it is the grand mean, so the weight is distance from <em>that</em> — and a tightly clustered group sitting far from the grand mean carries enormous weight despite barely moving. Above, both halves were built around zero, which quietly made the two readings coincide. Park the steady half somewhere else and they part company.</p>
+<p><span class="math inline">\(\tilde V\)</span> is a deviation from whatever mean the model removes. With unit effects in the model that is the unit’s own mean, so the weight is within-unit spread. With only an intercept it is the grand mean. Above, both halves were built around zero, which quietly made the two readings coincide. Separate them and the algebra says exactly what happens.</p>
+<p>Take two equally sized groups with means <span class="math inline">\(\mu_g\)</span>, within-group variances <span class="math inline">\(\sigma_g^2\)</span>, slopes <span class="math inline">\(\beta_g\)</span>, and group mean outcomes <span class="math inline">\(\bar y_g\)</span>. The law of total covariance splits <span class="math inline">\(\text{Cov}(x,y)\)</span> and <span class="math inline">\(\text{Var}(x)\)</span> into a within part and a between part, giving</p>
+<p><span class="math display">\[
+\text{plim}\;\hat\beta_{OLS}
+= \frac{\tfrac12\!\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)
+        \;+\; \tfrac14\,\Delta\mu\,\Delta\bar y}
+       {\tfrac12\!\left(\sigma_1^2+\sigma_2^2\right)
+        \;+\; \tfrac14\,\Delta\mu^{2}} ,
+\]</span></p>
+<p>with <span class="math inline">\(\Delta\mu=\mu_1-\mu_2\)</span> and <span class="math inline">\(\Delta\bar y=\bar y_1-\bar y_2\)</span>. In words, the coefficient is a variance-weighted average of two slopes:</p>
+<p><span class="math display">\[
+\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},
+\qquad
+\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},
+\]</span></p>
+<p>the first weighted by the within variance <span class="math inline">\(\tfrac12(\sigma_1^2+\sigma_2^2)\)</span> and the second by the between variance <span class="math inline">\(\tfrac14\Delta\mu^2\)</span>.</p>
+<p>Everything now follows without running anything. Fixed effects estimates <span class="math inline">\(\beta_{within}\)</span>, which here is <span class="math inline">\((0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991\)</span> and does not involve <span class="math inline">\(\mu_g\)</span> at all — so parking a group anywhere cannot move it. Plain OLS also carries <span class="math inline">\(\beta_{between}\)</span>, and in this design <span class="math inline">\(\beta_{between}=0\)</span>: the steady group’s slope is zero and both intercepts are zero, so the two group means sit at the same height and the line through them is flat. As <span class="math inline">\(\Delta\mu\)</span> grows, the between weight <span class="math inline">\(\tfrac14\Delta\mu^2\)</span> swamps the fixed within weight of <span class="math inline">\(4.52\)</span>, and the OLS coefficient is dragged from <span class="math inline">\(1.991\)</span> toward <span class="math inline">\(0\)</span> like <span class="math inline">\(9.04/(4.52+\Delta\mu^2/4)\)</span>.</p>
+<p>The simulation is a check on that, not the source of it.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">park</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span> <span class="op">{</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">b_within</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">0</span> <span class="op">*</span> <span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>   <span class="co"># variance-weighted slope</span></span>
+<span><span class="va">V_within</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>                     <span class="co"># within variance</span></span>
+<span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span>                        <span class="co"># beta_between = 0 here</span></span>
+<span>  <span class="va">V_within</span> <span class="op">*</span> <span class="va">b_within</span> <span class="op">/</span> <span class="op">(</span><span class="va">V_within</span> <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">shift</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">park</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span>, <span class="fl">0</span>, <span class="va">g</span><span class="op">$</span><span class="va">move</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">shift</span>, <span class="va">half</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">half</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">b</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span><span class="op">)</span></span>
 <span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">id</span>, x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`fixed effects` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>    `plain OLS`     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`FE (theory 1.991)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    `OLS predicted`     <span class="op">=</span> <span class="fu">predicted</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span>,</span>
+<span>    `OLS actual`        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span>`steady half centred at 0`  <span class="op">=</span> <span class="fu">park</span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
-<span>            `steady half parked at 10`  <span class="op">=</span> <span class="fu">park</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span>            `steady half parked at 100` <span class="op">=</span> <span class="fu">park</span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`shift 0` <span class="op">=</span> <span class="fl">0</span>, `shift 10` <span class="op">=</span> <span class="fl">10</span>, `shift 100` <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="va">park</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                          fixed effects plain OLS
-steady half centred at 0          1.984     1.983
-steady half parked at 10          1.984     0.311
-steady half parked at 100         1.984     0.004</code></pre>
+<pre><code>          FE (theory 1.991) OLS predicted OLS actual
+shift 0               1.984         1.991      1.983
+shift 10              1.984         0.305      0.311
+shift 100             1.984         0.004      0.004</code></pre>
 </div>
 </div>
-<p>Fixed effects returns 1.984 every time. The within transformation subtracts each unit’s own mean before anything else happens, so no unit can be far from its own mean and the level is irrelevant. Plain OLS runs from 1.983 to 0.004 on the same true slopes.</p>
-<p>Two things are moving in that second column. The steady half gains weight as it moves away from the grand mean, and it has a slope of zero. And a second channel opens that is not weighting at all: with the two halves at different levels of <span class="math inline">\(x\)</span>, part of the fitted line is a comparison <em>between</em> them, which reflects their difference in average <span class="math inline">\(y\)</span> rather than either group’s slope. Only the first is the subject of this section.</p>
-<p>The lesson is that “the weight is how much <span class="math inline">\(x\)</span> moves” is a statement about the <em>demeaned</em> case. It is exactly right after unit effects are removed and it is not right in general.</p>
+<p>Predicted and actual agree in every row, and fixed effects is flat at 1.984 against a theoretical 1.991 — the gap is sampling noise, not structure.</p>
+<p>Two lessons. First, “the weight is how much <span class="math inline">\(x\)</span> moves” describes the <em>demeaned</em> case; it is exact once unit effects are removed and false in general. Second, when groups sit at different levels of <span class="math inline">\(x\)</span>, plain OLS mixes in <span class="math inline">\(\beta_{between}\)</span>, which answers a different question altogether. Only the within part is the subject of this section.</p>
 <p>That is the mechanism in its starkest form. A continuous version makes the same point, and adds the control case the extreme example cannot show — what happens when the slope has nothing to do with the movement.</p>
 <p>Two designs. In both, units differ in how much <span class="math inline">\(x\)</span> moves for them. In (A) the slopes are unrelated to that movement. In (B) the slope is larger for units whose <span class="math inline">\(x\)</span> moves more. Both have an average slope near one, so the designs differ <em>only</em> in whether the heterogeneity lines up with the weight.</p>
 <div class="cell">
@@ -1536,110 +1556,142 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <span id="cb13-477"><a href="#cb13-477" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-478"><a href="#cb13-478" aria-hidden="true" tabindex="-1"></a>$\tilde V$ is a deviation from whatever mean the model removes.  With</span>
 <span id="cb13-479"><a href="#cb13-479" aria-hidden="true" tabindex="-1"></a>unit effects in the model that is the unit's own mean, so the weight is</span>
-<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a>within-unit spread.  With only an intercept it is the grand mean, so</span>
-<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a>the weight is distance from *that* --- and a tightly clustered group</span>
-<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a>sitting far from the grand mean carries enormous weight despite barely</span>
-<span id="cb13-483"><a href="#cb13-483" aria-hidden="true" tabindex="-1"></a>moving.  Above, both halves were built around zero, which quietly made</span>
-<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a>the two readings coincide.  Park the steady half somewhere else and</span>
-<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a>they part company.</span>
-<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a>park <span class="ot">&lt;-</span> <span class="cf">function</span>(shift) {</span>
-<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move) <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(shift, half), <span class="fu">rep</span>(<span class="dv">0</span>, half)), <span class="at">each =</span> T)</span>
-<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> g<span class="sc">$</span>id, <span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">fixed effects</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, d))[[<span class="st">"x"</span>]],</span>
-<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">plain OLS</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, d))[[<span class="st">"x"</span>]])</span>
-<span id="cb13-497"><a href="#cb13-497" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">rbind</span>(<span class="st">`</span><span class="at">steady half centred at 0</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">park</span>(<span class="dv">0</span>),</span>
-<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">steady half parked at 10</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">park</span>(<span class="dv">10</span>),</span>
-<span id="cb13-501"><a href="#cb13-501" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">steady half parked at 100</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">park</span>(<span class="dv">100</span>)), <span class="dv">3</span>)</span>
-<span id="cb13-502"><a href="#cb13-502" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-503"><a href="#cb13-503" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-504"><a href="#cb13-504" aria-hidden="true" tabindex="-1"></a>Fixed effects returns 1.984 every time.  The within transformation</span>
-<span id="cb13-505"><a href="#cb13-505" aria-hidden="true" tabindex="-1"></a>subtracts each unit's own mean before anything else happens, so no unit</span>
-<span id="cb13-506"><a href="#cb13-506" aria-hidden="true" tabindex="-1"></a>can be far from its own mean and the level is irrelevant.  Plain OLS</span>
-<span id="cb13-507"><a href="#cb13-507" aria-hidden="true" tabindex="-1"></a>runs from 1.983 to 0.004 on the same true slopes.</span>
+<span id="cb13-480"><a href="#cb13-480" aria-hidden="true" tabindex="-1"></a>within-unit spread.  With only an intercept it is the grand mean.  Above,</span>
+<span id="cb13-481"><a href="#cb13-481" aria-hidden="true" tabindex="-1"></a>both halves were built around zero, which quietly made the two readings</span>
+<span id="cb13-482"><a href="#cb13-482" aria-hidden="true" tabindex="-1"></a>coincide.  Separate them and the algebra says exactly what happens.</span>
+<span id="cb13-483"><a href="#cb13-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-484"><a href="#cb13-484" aria-hidden="true" tabindex="-1"></a>Take two equally sized groups with means $\mu_g$, within-group variances</span>
+<span id="cb13-485"><a href="#cb13-485" aria-hidden="true" tabindex="-1"></a>$\sigma_g^2$, slopes $\beta_g$, and group mean outcomes $\bar y_g$.  The</span>
+<span id="cb13-486"><a href="#cb13-486" aria-hidden="true" tabindex="-1"></a>law of total covariance splits $\text{Cov}(x,y)$ and $\text{Var}(x)$</span>
+<span id="cb13-487"><a href="#cb13-487" aria-hidden="true" tabindex="-1"></a>into a within part and a between part, giving</span>
+<span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a>\text{plim}\;\hat\beta_{OLS}</span>
+<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>= \frac{\tfrac12<span class="sc">\!</span>\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)</span>
+<span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a>        \;+\; \tfrac14\,\Delta\mu\,\Delta\bar y}</span>
+<span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a>       {\tfrac12<span class="sc">\!</span>\left(\sigma_1^2+\sigma_2^2\right)</span>
+<span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a>        \;+\; \tfrac14\,\Delta\mu^{2}} ,</span>
+<span id="cb13-495"><a href="#cb13-495" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-496"><a href="#cb13-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-497"><a href="#cb13-497" aria-hidden="true" tabindex="-1"></a>with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.  In</span>
+<span id="cb13-498"><a href="#cb13-498" aria-hidden="true" tabindex="-1"></a>words, the coefficient is a variance-weighted average of two slopes:</span>
+<span id="cb13-499"><a href="#cb13-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-500"><a href="#cb13-500" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-501"><a href="#cb13-501" aria-hidden="true" tabindex="-1"></a>\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},</span>
+<span id="cb13-502"><a href="#cb13-502" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb13-503"><a href="#cb13-503" aria-hidden="true" tabindex="-1"></a>\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},</span>
+<span id="cb13-504"><a href="#cb13-504" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-505"><a href="#cb13-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-506"><a href="#cb13-506" aria-hidden="true" tabindex="-1"></a>the first weighted by the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$</span>
+<span id="cb13-507"><a href="#cb13-507" aria-hidden="true" tabindex="-1"></a>and the second by the between variance $\tfrac14\Delta\mu^2$.</span>
 <span id="cb13-508"><a href="#cb13-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-509"><a href="#cb13-509" aria-hidden="true" tabindex="-1"></a>Two things are moving in that second column.  The steady half gains</span>
-<span id="cb13-510"><a href="#cb13-510" aria-hidden="true" tabindex="-1"></a>weight as it moves away from the grand mean, and it has a slope of</span>
-<span id="cb13-511"><a href="#cb13-511" aria-hidden="true" tabindex="-1"></a>zero.  And a second channel opens that is not weighting at all: with the</span>
-<span id="cb13-512"><a href="#cb13-512" aria-hidden="true" tabindex="-1"></a>two halves at different levels of $x$, part of the fitted line is a</span>
-<span id="cb13-513"><a href="#cb13-513" aria-hidden="true" tabindex="-1"></a>comparison *between* them, which reflects their difference in average</span>
-<span id="cb13-514"><a href="#cb13-514" aria-hidden="true" tabindex="-1"></a>$y$ rather than either group's slope.  Only the first is the subject of</span>
-<span id="cb13-515"><a href="#cb13-515" aria-hidden="true" tabindex="-1"></a>this section.</span>
-<span id="cb13-516"><a href="#cb13-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-517"><a href="#cb13-517" aria-hidden="true" tabindex="-1"></a>The lesson is that "the weight is how much $x$ moves" is a statement</span>
-<span id="cb13-518"><a href="#cb13-518" aria-hidden="true" tabindex="-1"></a>about the *demeaned* case.  It is exactly right after unit effects are</span>
-<span id="cb13-519"><a href="#cb13-519" aria-hidden="true" tabindex="-1"></a>removed and it is not right in general.</span>
-<span id="cb13-520"><a href="#cb13-520" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-521"><a href="#cb13-521" aria-hidden="true" tabindex="-1"></a>That is the mechanism in its starkest form.  A continuous version makes</span>
-<span id="cb13-522"><a href="#cb13-522" aria-hidden="true" tabindex="-1"></a>the same point, and adds the control case the extreme example cannot</span>
-<span id="cb13-523"><a href="#cb13-523" aria-hidden="true" tabindex="-1"></a>show --- what happens when the slope has nothing to do with the</span>
-<span id="cb13-524"><a href="#cb13-524" aria-hidden="true" tabindex="-1"></a>movement.</span>
-<span id="cb13-525"><a href="#cb13-525" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-526"><a href="#cb13-526" aria-hidden="true" tabindex="-1"></a>Two designs.  In both, units differ in how much $x$ moves for them.  In</span>
-<span id="cb13-527"><a href="#cb13-527" aria-hidden="true" tabindex="-1"></a>(A) the slopes are unrelated to that movement.  In (B) the slope is</span>
-<span id="cb13-528"><a href="#cb13-528" aria-hidden="true" tabindex="-1"></a>larger for units whose $x$ moves more.  Both have an average slope near</span>
-<span id="cb13-529"><a href="#cb13-529" aria-hidden="true" tabindex="-1"></a>one, so the designs differ *only* in whether the heterogeneity lines up</span>
-<span id="cb13-530"><a href="#cb13-530" aria-hidden="true" tabindex="-1"></a>with the weight.</span>
-<span id="cb13-531"><a href="#cb13-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-534"><a href="#cb13-534" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb13-535"><a href="#cb13-535" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb13-536"><a href="#cb13-536" aria-hidden="true" tabindex="-1"></a>sdX <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="fl">0.2</span>, <span class="dv">3</span>)          <span class="co"># how much x moves, unit by unit</span></span>
-<span id="cb13-537"><a href="#cb13-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-538"><a href="#cb13-538" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="cf">function</span>(b) {           <span class="co"># build a panel whose unit slopes are b</span></span>
-<span id="cb13-539"><a href="#cb13-539" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
-<span id="cb13-540"><a href="#cb13-540" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x  =</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, <span class="fu">rep</span>(sdX, <span class="at">each =</span> T)))</span>
-<span id="cb13-541"><a href="#cb13-541" aria-hidden="true" tabindex="-1"></a>  h<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(b, <span class="at">each =</span> T) <span class="sc">*</span> h<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb13-542"><a href="#cb13-542" aria-hidden="true" tabindex="-1"></a>  h</span>
-<span id="cb13-543"><a href="#cb13-543" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-544"><a href="#cb13-544" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(h, b) {</span>
-<span id="cb13-545"><a href="#cb13-545" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, h))<span class="sc">^</span><span class="dv">2</span>, h<span class="sc">$</span>id, sum)   <span class="co"># the weights</span></span>
-<span id="cb13-546"><a href="#cb13-546" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, h))[[<span class="st">"x"</span>]],</span>
-<span id="cb13-547"><a href="#cb13-547" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, plain avg</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(b),</span>
-<span id="cb13-548"><a href="#cb13-548" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, weighted</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w))</span>
-<span id="cb13-549"><a href="#cb13-549" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-550"><a href="#cb13-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-551"><a href="#cb13-551" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">1</span>, <span class="dv">1</span>)             <span class="co"># (A) slopes unrelated to movement</span></span>
-<span id="cb13-552"><a href="#cb13-552" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (sdX <span class="sc">-</span> <span class="fl">1.6</span>)      <span class="co"># (B) slopes larger where x moves more</span></span>
-<span id="cb13-553"><a href="#cb13-553" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b1); h2 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b2)</span>
-<span id="cb13-554"><a href="#cb13-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-555"><a href="#cb13-555" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">(A) unrelated</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(h1, b1),</span>
-<span id="cb13-556"><a href="#cb13-556" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">(B) aligned</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(h2, b2)), <span class="dv">4</span>)</span>
-<span id="cb13-557"><a href="#cb13-557" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb13-558"><a href="#cb13-558" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-559"><a href="#cb13-559" aria-hidden="true" tabindex="-1"></a>Read down each column.  In (A) all three numbers agree to within</span>
-<span id="cb13-560"><a href="#cb13-560" aria-hidden="true" tabindex="-1"></a>sampling noise: the weighting happens, and it costs nothing.  In (B) the</span>
-<span id="cb13-561"><a href="#cb13-561" aria-hidden="true" tabindex="-1"></a>estimate is 1.53 while the plain average of the true slopes is 1.01.</span>
-<span id="cb13-562"><a href="#cb13-562" aria-hidden="true" tabindex="-1"></a>The estimate has not gone wrong --- it matches the weighted average,</span>
-<span id="cb13-563"><a href="#cb13-563" aria-hidden="true" tabindex="-1"></a>1.54, which is what it was reporting all along.  We were reading it as</span>
-<span id="cb13-564"><a href="#cb13-564" aria-hidden="true" tabindex="-1"></a>an average.</span>
-<span id="cb13-565"><a href="#cb13-565" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-566"><a href="#cb13-566" aria-hidden="true" tabindex="-1"></a>The same mechanism as the two-group case, spread over a continuum.</span>
-<span id="cb13-567"><a href="#cb13-567" aria-hidden="true" tabindex="-1"></a>Squaring is what drives it: a unit whose $x$ moves fifteen times as much</span>
-<span id="cb13-568"><a href="#cb13-568" aria-hidden="true" tabindex="-1"></a>as another counts for roughly two hundred times as much.</span>
+<span id="cb13-509"><a href="#cb13-509" aria-hidden="true" tabindex="-1"></a>Everything now follows without running anything.  Fixed effects</span>
+<span id="cb13-510"><a href="#cb13-510" aria-hidden="true" tabindex="-1"></a>estimates $\beta_{within}$, which here is</span>
+<span id="cb13-511"><a href="#cb13-511" aria-hidden="true" tabindex="-1"></a>$(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$ and does not involve $\mu_g$ at</span>
+<span id="cb13-512"><a href="#cb13-512" aria-hidden="true" tabindex="-1"></a>all --- so parking a group anywhere cannot move it.  Plain OLS also</span>
+<span id="cb13-513"><a href="#cb13-513" aria-hidden="true" tabindex="-1"></a>carries $\beta_{between}$, and in this design $\beta_{between}=0$: the</span>
+<span id="cb13-514"><a href="#cb13-514" aria-hidden="true" tabindex="-1"></a>steady group's slope is zero and both intercepts are zero, so the two</span>
+<span id="cb13-515"><a href="#cb13-515" aria-hidden="true" tabindex="-1"></a>group means sit at the same height and the line through them is flat.</span>
+<span id="cb13-516"><a href="#cb13-516" aria-hidden="true" tabindex="-1"></a>As $\Delta\mu$ grows, the between weight $\tfrac14\Delta\mu^2$ swamps</span>
+<span id="cb13-517"><a href="#cb13-517" aria-hidden="true" tabindex="-1"></a>the fixed within weight of $4.52$, and the OLS coefficient is dragged</span>
+<span id="cb13-518"><a href="#cb13-518" aria-hidden="true" tabindex="-1"></a>from $1.991$ toward $0$ like $9.04/(4.52+\Delta\mu^2/4)$.</span>
+<span id="cb13-519"><a href="#cb13-519" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-520"><a href="#cb13-520" aria-hidden="true" tabindex="-1"></a>The simulation is a check on that, not the source of it.</span>
+<span id="cb13-521"><a href="#cb13-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-524"><a href="#cb13-524" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-525"><a href="#cb13-525" aria-hidden="true" tabindex="-1"></a>b_within <span class="ot">&lt;-</span> (<span class="dv">0</span> <span class="sc">*</span> <span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)   <span class="co"># variance-weighted slope</span></span>
+<span id="cb13-526"><a href="#cb13-526" aria-hidden="true" tabindex="-1"></a>V_within <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)                     <span class="co"># within variance</span></span>
+<span id="cb13-527"><a href="#cb13-527" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="cf">function</span>(shift)                        <span class="co"># beta_between = 0 here</span></span>
+<span id="cb13-528"><a href="#cb13-528" aria-hidden="true" tabindex="-1"></a>  V_within <span class="sc">*</span> b_within <span class="sc">/</span> (V_within <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> shift<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb13-529"><a href="#cb13-529" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-530"><a href="#cb13-530" aria-hidden="true" tabindex="-1"></a>park <span class="ot">&lt;-</span> <span class="cf">function</span>(shift) {</span>
+<span id="cb13-531"><a href="#cb13-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb13-532"><a href="#cb13-532" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move) <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(shift, half), <span class="fu">rep</span>(<span class="dv">0</span>, half)), <span class="at">each =</span> T)</span>
+<span id="cb13-533"><a href="#cb13-533" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb13-534"><a href="#cb13-534" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> g<span class="sc">$</span>id, <span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb13-535"><a href="#cb13-535" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE (theory 1.991)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, d))[[<span class="st">"x"</span>]],</span>
+<span id="cb13-536"><a href="#cb13-536" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS predicted</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">predicted</span>(shift),</span>
+<span id="cb13-537"><a href="#cb13-537" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS actual</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, d))[[<span class="st">"x"</span>]])</span>
+<span id="cb13-538"><a href="#cb13-538" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-539"><a href="#cb13-539" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-540"><a href="#cb13-540" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">t</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">shift 0</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">`</span><span class="at">shift 10</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">10</span>, <span class="st">`</span><span class="at">shift 100</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span>), park)), <span class="dv">3</span>)</span>
+<span id="cb13-541"><a href="#cb13-541" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-542"><a href="#cb13-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-543"><a href="#cb13-543" aria-hidden="true" tabindex="-1"></a>Predicted and actual agree in every row, and fixed effects is flat at</span>
+<span id="cb13-544"><a href="#cb13-544" aria-hidden="true" tabindex="-1"></a>1.984 against a theoretical 1.991 --- the gap is sampling noise, not</span>
+<span id="cb13-545"><a href="#cb13-545" aria-hidden="true" tabindex="-1"></a>structure.</span>
+<span id="cb13-546"><a href="#cb13-546" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-547"><a href="#cb13-547" aria-hidden="true" tabindex="-1"></a>Two lessons.  First, "the weight is how much $x$ moves" describes the</span>
+<span id="cb13-548"><a href="#cb13-548" aria-hidden="true" tabindex="-1"></a>*demeaned* case; it is exact once unit effects are removed and false in</span>
+<span id="cb13-549"><a href="#cb13-549" aria-hidden="true" tabindex="-1"></a>general.  Second, when groups sit at different levels of $x$, plain OLS</span>
+<span id="cb13-550"><a href="#cb13-550" aria-hidden="true" tabindex="-1"></a>mixes in $\beta_{between}$, which answers a different question</span>
+<span id="cb13-551"><a href="#cb13-551" aria-hidden="true" tabindex="-1"></a>altogether.  Only the within part is the subject of this section.</span>
+<span id="cb13-552"><a href="#cb13-552" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-553"><a href="#cb13-553" aria-hidden="true" tabindex="-1"></a>That is the mechanism in its starkest form.  A continuous version makes</span>
+<span id="cb13-554"><a href="#cb13-554" aria-hidden="true" tabindex="-1"></a>the same point, and adds the control case the extreme example cannot</span>
+<span id="cb13-555"><a href="#cb13-555" aria-hidden="true" tabindex="-1"></a>show --- what happens when the slope has nothing to do with the</span>
+<span id="cb13-556"><a href="#cb13-556" aria-hidden="true" tabindex="-1"></a>movement.</span>
+<span id="cb13-557"><a href="#cb13-557" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-558"><a href="#cb13-558" aria-hidden="true" tabindex="-1"></a>Two designs.  In both, units differ in how much $x$ moves for them.  In</span>
+<span id="cb13-559"><a href="#cb13-559" aria-hidden="true" tabindex="-1"></a>(A) the slopes are unrelated to that movement.  In (B) the slope is</span>
+<span id="cb13-560"><a href="#cb13-560" aria-hidden="true" tabindex="-1"></a>larger for units whose $x$ moves more.  Both have an average slope near</span>
+<span id="cb13-561"><a href="#cb13-561" aria-hidden="true" tabindex="-1"></a>one, so the designs differ *only* in whether the heterogeneity lines up</span>
+<span id="cb13-562"><a href="#cb13-562" aria-hidden="true" tabindex="-1"></a>with the weight.</span>
+<span id="cb13-563"><a href="#cb13-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-566"><a href="#cb13-566" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb13-567"><a href="#cb13-567" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb13-568"><a href="#cb13-568" aria-hidden="true" tabindex="-1"></a>sdX <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="fl">0.2</span>, <span class="dv">3</span>)          <span class="co"># how much x moves, unit by unit</span></span>
 <span id="cb13-569"><a href="#cb13-569" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-570"><a href="#cb13-570" aria-hidden="true" tabindex="-1"></a>None of this is a defect.  A unit whose $x$ barely moves genuinely</span>
-<span id="cb13-571"><a href="#cb13-571" aria-hidden="true" tabindex="-1"></a>carries little information about how $y$ responds to $x$, and leaning on</span>
-<span id="cb13-572"><a href="#cb13-572" aria-hidden="true" tabindex="-1"></a>the units that do move is the efficient thing to do.  It becomes a</span>
-<span id="cb13-573"><a href="#cb13-573" aria-hidden="true" tabindex="-1"></a>problem only when the slope itself is related to the movement, which is</span>
-<span id="cb13-574"><a href="#cb13-574" aria-hidden="true" tabindex="-1"></a>what (B) imposes and (A) does not.</span>
-<span id="cb13-575"><a href="#cb13-575" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-576"><a href="#cb13-576" aria-hidden="true" tabindex="-1"></a>Słoczyński (<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) makes the</span>
-<span id="cb13-577"><a href="#cb13-577" aria-hidden="true" tabindex="-1"></a>same point for a binary treatment: the OLS coefficient is a convex</span>
-<span id="cb13-578"><a href="#cb13-578" aria-hidden="true" tabindex="-1"></a>combination of the effect on the treated and the effect on the</span>
-<span id="cb13-579"><a href="#cb13-579" aria-hidden="true" tabindex="-1"></a>untreated (<span class="co">[</span><span class="ot">discussed here</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>),</span>
-<span id="cb13-580"><a href="#cb13-580" aria-hidden="true" tabindex="-1"></a>and the *smaller* group receives the *larger* weight.  So a</span>
-<span id="cb13-581"><a href="#cb13-581" aria-hidden="true" tabindex="-1"></a>coefficient from a sample that is 10% treated is mostly telling us</span>
-<span id="cb13-582"><a href="#cb13-582" aria-hidden="true" tabindex="-1"></a>about the 90%.</span>
-<span id="cb13-583"><a href="#cb13-583" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-584"><a href="#cb13-584" aria-hidden="true" tabindex="-1"></a>The practical reading: with homogeneous effects the weighting is</span>
-<span id="cb13-585"><a href="#cb13-585" aria-hidden="true" tabindex="-1"></a>harmless and we can ignore it.  With heterogeneous effects the question</span>
-<span id="cb13-586"><a href="#cb13-586" aria-hidden="true" tabindex="-1"></a>is never whether OLS is weighting, only whether we know what it</span>
-<span id="cb13-587"><a href="#cb13-587" aria-hidden="true" tabindex="-1"></a>weighted.</span>
+<span id="cb13-570"><a href="#cb13-570" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="cf">function</span>(b) {           <span class="co"># build a panel whose unit slopes are b</span></span>
+<span id="cb13-571"><a href="#cb13-571" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb13-572"><a href="#cb13-572" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x  =</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, <span class="fu">rep</span>(sdX, <span class="at">each =</span> T)))</span>
+<span id="cb13-573"><a href="#cb13-573" aria-hidden="true" tabindex="-1"></a>  h<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(b, <span class="at">each =</span> T) <span class="sc">*</span> h<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb13-574"><a href="#cb13-574" aria-hidden="true" tabindex="-1"></a>  h</span>
+<span id="cb13-575"><a href="#cb13-575" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-576"><a href="#cb13-576" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(h, b) {</span>
+<span id="cb13-577"><a href="#cb13-577" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, h))<span class="sc">^</span><span class="dv">2</span>, h<span class="sc">$</span>id, sum)   <span class="co"># the weights</span></span>
+<span id="cb13-578"><a href="#cb13-578" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, h))[[<span class="st">"x"</span>]],</span>
+<span id="cb13-579"><a href="#cb13-579" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, plain avg</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(b),</span>
+<span id="cb13-580"><a href="#cb13-580" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, weighted</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w))</span>
+<span id="cb13-581"><a href="#cb13-581" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-582"><a href="#cb13-582" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-583"><a href="#cb13-583" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">1</span>, <span class="dv">1</span>)             <span class="co"># (A) slopes unrelated to movement</span></span>
+<span id="cb13-584"><a href="#cb13-584" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (sdX <span class="sc">-</span> <span class="fl">1.6</span>)      <span class="co"># (B) slopes larger where x moves more</span></span>
+<span id="cb13-585"><a href="#cb13-585" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b1); h2 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b2)</span>
+<span id="cb13-586"><a href="#cb13-586" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-587"><a href="#cb13-587" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">(A) unrelated</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(h1, b1),</span>
+<span id="cb13-588"><a href="#cb13-588" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">(B) aligned</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(h2, b2)), <span class="dv">4</span>)</span>
+<span id="cb13-589"><a href="#cb13-589" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb13-590"><a href="#cb13-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-591"><a href="#cb13-591" aria-hidden="true" tabindex="-1"></a>Read down each column.  In (A) all three numbers agree to within</span>
+<span id="cb13-592"><a href="#cb13-592" aria-hidden="true" tabindex="-1"></a>sampling noise: the weighting happens, and it costs nothing.  In (B) the</span>
+<span id="cb13-593"><a href="#cb13-593" aria-hidden="true" tabindex="-1"></a>estimate is 1.53 while the plain average of the true slopes is 1.01.</span>
+<span id="cb13-594"><a href="#cb13-594" aria-hidden="true" tabindex="-1"></a>The estimate has not gone wrong --- it matches the weighted average,</span>
+<span id="cb13-595"><a href="#cb13-595" aria-hidden="true" tabindex="-1"></a>1.54, which is what it was reporting all along.  We were reading it as</span>
+<span id="cb13-596"><a href="#cb13-596" aria-hidden="true" tabindex="-1"></a>an average.</span>
+<span id="cb13-597"><a href="#cb13-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-598"><a href="#cb13-598" aria-hidden="true" tabindex="-1"></a>The same mechanism as the two-group case, spread over a continuum.</span>
+<span id="cb13-599"><a href="#cb13-599" aria-hidden="true" tabindex="-1"></a>Squaring is what drives it: a unit whose $x$ moves fifteen times as much</span>
+<span id="cb13-600"><a href="#cb13-600" aria-hidden="true" tabindex="-1"></a>as another counts for roughly two hundred times as much.</span>
+<span id="cb13-601"><a href="#cb13-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-602"><a href="#cb13-602" aria-hidden="true" tabindex="-1"></a>None of this is a defect.  A unit whose $x$ barely moves genuinely</span>
+<span id="cb13-603"><a href="#cb13-603" aria-hidden="true" tabindex="-1"></a>carries little information about how $y$ responds to $x$, and leaning on</span>
+<span id="cb13-604"><a href="#cb13-604" aria-hidden="true" tabindex="-1"></a>the units that do move is the efficient thing to do.  It becomes a</span>
+<span id="cb13-605"><a href="#cb13-605" aria-hidden="true" tabindex="-1"></a>problem only when the slope itself is related to the movement, which is</span>
+<span id="cb13-606"><a href="#cb13-606" aria-hidden="true" tabindex="-1"></a>what (B) imposes and (A) does not.</span>
+<span id="cb13-607"><a href="#cb13-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-608"><a href="#cb13-608" aria-hidden="true" tabindex="-1"></a>Słoczyński (<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) makes the</span>
+<span id="cb13-609"><a href="#cb13-609" aria-hidden="true" tabindex="-1"></a>same point for a binary treatment: the OLS coefficient is a convex</span>
+<span id="cb13-610"><a href="#cb13-610" aria-hidden="true" tabindex="-1"></a>combination of the effect on the treated and the effect on the</span>
+<span id="cb13-611"><a href="#cb13-611" aria-hidden="true" tabindex="-1"></a>untreated (<span class="co">[</span><span class="ot">discussed here</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>),</span>
+<span id="cb13-612"><a href="#cb13-612" aria-hidden="true" tabindex="-1"></a>and the *smaller* group receives the *larger* weight.  So a</span>
+<span id="cb13-613"><a href="#cb13-613" aria-hidden="true" tabindex="-1"></a>coefficient from a sample that is 10% treated is mostly telling us</span>
+<span id="cb13-614"><a href="#cb13-614" aria-hidden="true" tabindex="-1"></a>about the 90%.</span>
+<span id="cb13-615"><a href="#cb13-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-616"><a href="#cb13-616" aria-hidden="true" tabindex="-1"></a>The practical reading: with homogeneous effects the weighting is</span>
+<span id="cb13-617"><a href="#cb13-617" aria-hidden="true" tabindex="-1"></a>harmless and we can ignore it.  With heterogeneous effects the question</span>
+<span id="cb13-618"><a href="#cb13-618" aria-hidden="true" tabindex="-1"></a>is never whether OLS is weighting, only whether we know what it</span>
+<span id="cb13-619"><a href="#cb13-619" aria-hidden="true" tabindex="-1"></a>weighted.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

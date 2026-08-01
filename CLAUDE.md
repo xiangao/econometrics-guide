@@ -324,3 +324,32 @@ order), so the two chunks compose. If either is edited, check that still holds.
 **Process note:** this survived three prior revisions of the section because every check
 run was on centred data. When a demo's conclusion depends on a construction choice, vary
 that choice before publishing.
+
+## Revision (2026-08-01j) — derive the OLS-vs-FE result, don't simulate it
+
+Author's instruction: get this from theory, not simulation; simulation is fine as a
+check, but not as the source. The previous version discovered the OLS collapse by
+parking a group at different values and reporting what came out. Replaced with the
+closed form.
+
+Law of total covariance on two equally sized groups (means `mu_g`, within variances
+`sigma_g^2`, slopes `beta_g`, group mean outcomes `ybar_g`):
+
+```
+plim beta_OLS = [ (1/2)(b1 s1^2 + b2 s2^2) + (1/4) dmu * dybar ]
+                / [ (1/2)(s1^2 + s2^2)     + (1/4) dmu^2       ]
+```
+
+i.e. a variance-weighted average of `beta_within = (b1 s1^2 + b2 s2^2)/(s1^2+s2^2)` and
+`beta_between = dybar/dmu`, weighted by within variance and between variance.
+
+Everything then follows on paper. FE estimates `beta_within` = 18/9.04 = **1.991**, which
+contains no `mu_g`, so parking cannot move it. In this design `beta_between = 0` (steady
+slope is zero, both intercepts zero, so the group means sit at equal height). Hence
+`plim beta_OLS = 9.04/(4.52 + dmu^2/4)`.
+
+Predictions vs simulation: 1.991/1.983, 0.305/0.311, 0.004/0.004. The chunk now prints
+an `OLS predicted` column beside `OLS actual` so the table reads as a check.
+
+Used `\text{plim}` rather than `\operatorname*{plim}` — the latter is package-dependent
+in MathJax and this book has no math preamble.
