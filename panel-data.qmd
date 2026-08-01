@@ -174,8 +174,8 @@ $p$-value) favors fixed effects. In R this is `phtest(fe, re)` from the
 ## Collapse to unit means, or keep the long format?
 
 A practical question comes up whenever we hold a panel.  Should we
-average each unit over time and run $N$ regressions, or keep all $NT$
-rows and cluster the standard errors by unit?  Many people treat this
+average each unit over time and run one regression on the $N$ resulting
+rows, or keep all $NT$ rows and cluster the standard errors by unit?  Many people treat this
 as a trade-off, and assume the long format must carry more
 information.  It usually does not.  The answer turns entirely on where
 the regressors live.
@@ -228,10 +228,12 @@ is the FE-versus-RE question in different clothes.
 The reconciliation is Mundlak's device, the same one used just above
 for the regression-based Hausman test.  Add the unit means
 ${\bf \bar x}_i$ to the long regression alongside ${\bf x}_{it}$.  The
-within and between variation then carry separate coefficients, and the
-coefficient on ${\bf \bar x}_i$ reproduces what the collapsed
-regression estimates.  We keep the within variation and we recover the
-between answer, in one regression.
+within and between variation then carry separate coefficients.  The
+coefficient on ${\bf x}_{it}$ is the within estimate, and the one on
+${\bf \bar x}_i$ is the *difference* between the between and within
+estimates --- so their sum is what the collapsed regression reports.  We
+keep the within variation and recover the between answer, in one
+regression.
 
 The useful way to remember it: collapse freely when every regressor is
 constant within the group, and never when one is not.
@@ -241,8 +243,8 @@ constant within the group, and never when one is not.
 The section above is mostly a warning.  It says when collapsing is
 harmless and when it is not.  The other side is worth seeing directly,
 so we simulate a panel where we know the truth.  We use `fixest` here;
-in Stata the same three regressions are `regress`, `xtreg, fe` and
-`xtreg, re`.
+in Stata the same regressions are `regress`, `xtreg, be` and
+`xtreg, fe`.
 
 ### First, the equivalence
 
@@ -438,9 +440,9 @@ are two different numbers.
 We cannot check that on real data, because the individual effects are
 never observed.  So we plant them.  Give every unit $i$ its own slope
 $\beta_i$, generate $y$ from those slopes, run one regression, and see
-which average of the planted slopes the estimate lands on.  Only one
-estimator is run in what follows; anything else reported is not an
-estimate at all, but the planted slopes averaged some way.  Fixed
+which average of the planted slopes the estimate lands on.  In the next chunk only one
+estimator is run; anything else reported is not an estimate at all, but
+the planted slopes averaged some way.  Fixed
 effects is used because in a panel the natural place for heterogeneity
 is across units, and it is still OLS --- OLS with the unit dummies
 partialled out --- so the rule above applies to it unchanged.
@@ -530,7 +532,8 @@ steady group's slope is zero and both intercepts are zero, so the two
 group means sit at the same height and the line through them is flat.
 As $\Delta\mu$ grows, the between weight $\tfrac14\Delta\mu^2$ swamps
 the fixed within weight of $4.52$, and the OLS coefficient is dragged
-from $1.991$ toward $0$ like $9.04/(4.52+\Delta\mu^2/4)$.
+from $1.991$ toward $0$ like $9/(4.52+\Delta\mu^2/4)$, the numerator
+being $\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.
 
 The simulation is a check on that, not the source of it.
 

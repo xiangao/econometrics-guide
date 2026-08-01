@@ -369,3 +369,29 @@ Verified by simulation (n = 400k, ~8.8% treated, heterogeneous `tau = 1 + 2x`):
 ATT 2.3896, ATU 0.8709, ATE 1.0039, OLS 2.2611. `(1-rho)ATT + rho ATU` = 2.2565 matches;
 `rho ATT + (1-rho) ATU` = 1.0039 is the ATE and does not. Those figures are now quoted
 in the text so the direction is anchored to something checkable.
+
+## Full audit (2026-08-01l) — five more errors in the new sections
+
+Author asked for a re-read of the whole section after the Słoczyński direction error.
+Five found, all now fixed:
+
+1. **"average each unit over time and run `N` regressions"** — collapsing produces one
+   regression on `N` rows, not `N` regressions.
+2. **Mundlak stated wrongly.** Text claimed the coefficient on `xbar` "reproduces what
+   the collapsed regression estimates". It does not: regressing `y` on `x` and `xbar`
+   gives `beta_within` on `x` and `beta_between - beta_within` on `xbar`, so the *sum*
+   is the between estimate. Verified: between 1.7874, within 1.0191, Mundlak `x` 1.0191,
+   Mundlak `xbar` 0.7683 = 1.7874 - 1.0191, sum 1.7874. The later demo paragraph had it
+   right all along, so the chapter contradicted itself.
+3. **`xtreg, re` named as a Stata equivalent** — random effects is never run in any
+   chunk. Changed to `regress`, `xtreg, be`, `xtreg, fe`.
+4. **"Only one estimator is run in what follows"** — true of the next chunk, false of
+   the parking chunk, which runs FE and plain OLS. Scoped to "the next chunk".
+5. **Numerator constant wrong: `9.04` should be `9`.** The numerator is
+   `(1/2)(b1 s1^2 + b2 s2^2) = 9`; `9.04` is `s1^2 + s2^2`, a different quantity. With
+   9.04 the shift-0 prediction would be 2.0000, contradicting the chunk's own 1.991.
+
+Checked and correct: the FWL formula; the within/between decomposition and its `1/2`
+and `1/4` constants; `beta_within = 18/9.04 = 1.991`; `beta_between = 0` in this design;
+the three table simplifications including `(T-1)Var_i(x)` and `n_x d(1-d)`; every
+number quoted from a chunk against that chunk's output.
