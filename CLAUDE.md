@@ -395,3 +395,31 @@ Checked and correct: the FWL formula; the within/between decomposition and its `
 and `1/4` constants; `beta_within = 18/9.04 = 1.991`; `beta_between = 0` in this design;
 the three table simplifications including `(T-1)Var_i(x)` and `n_x d(1-d)`; every
 number quoted from a chunk against that chunk's output.
+
+## Consolidation (2026-08-01m) — two-representation framing added, repetition cut
+
+Added a `### Two ways to read the coefficient` subsection: the outcome representation
+`betahat = sum omega_i y_i` with `omega_i = Vtilde_i / sum Vtilde^2` beside the effect
+representation `betahat = sum w_i b_i / sum w_i` with `w_i = Vtilde_i V_i`, and a table
+comparing them on what is weighted / sign / computability / when the reading holds /
+what question each answers. Guidance is explicit: **default to the effect
+representation**; use the outcome one only to detect negative weights, which squares
+cannot express.
+
+Also cut roughly 95 lines of repetition. The same claims had been restated three or
+four times each as the section grew through revision:
+
+- "which mean is subtracted" appeared four times — now stated once where `Vtilde` is
+  introduced, with one back-reference at the two-group example
+- Mundlak was explained in full twice — now explained once in "Collapse to unit means"
+  and only referenced in the demo
+- three separate closers ("not precision" / "not a defect" / "the practical reading")
+  collapsed to one per section
+- the `T_i`-is-a-special-case point appeared three times, now once
+
+Net 644 -> 572 lines. All six chunks verified byte-identical after the rewrite, and
+every number quoted in prose re-checked against the chunk that produces it.
+
+**Standing lesson:** this section accumulated its repetition because each fix was
+appended rather than integrated. After a run of corrections, re-read the whole section
+once and consolidate before considering it done.
