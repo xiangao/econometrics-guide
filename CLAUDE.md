@@ -242,3 +242,31 @@ reading three estimators side by side. Rewritten:
 the old code passed `rnorm(N,1,1)` as a function argument, and R's lazy evaluation drew
 it *after* `x` inside the body. Assigning `b1` first draws it before. Row (B) is
 unchanged because its slopes use no RNG. No prose quoted row (A)'s values.
+
+## Correction (2026-08-01g) — first-power vs squared weights in `panel-data`
+
+The FWL section said "each observation enters weighted by `Vtilde_it^2`". **That was
+wrong.** The numerator carries `Vtilde` to the *first* power, so an observation's weight
+on the *outcome* is `Vtilde_it`, signed, summing to zero. Two distinct objects were
+being collapsed:
+
+- weights on **outcomes**: `omega_it = Vtilde_it / sum Vtilde^2` — first power, signed
+- weights on **effects**:  `w_i = sum_t Vtilde_it^2` — second power, non-negative
+
+The text now derives the second from the first rather than asserting it: substitute
+`y_it = beta_i V_it + ...`, and `sum_t Vtilde_it V_it = sum_t Vtilde_it^2` because
+`Vtilde` is orthogonal to the projected-out part of `V`.
+
+**The per-unit identity requires saturation.** Verified numerically: with unit dummies
+the identity holds globally AND unit by unit; with a linear control it holds globally
+but fails per unit (max discrepancy 12.5 in a 200x6 panel). This is the Hazlett–Shinkre
+point, and it is why the Angrist row assumes saturated controls. Stated in the text.
+
+Links added to `https://xiangao.github.io/blog_book/weights-ols.html` and
+`ols-ate.html` (both verified 200). Those chapters carry both weight objects; this one
+only needed the second, so the cross-reference does real work — negative weights live
+in the signed first-power object and cannot appear in the squared one.
+
+Also checked: Słoczyński (2022) uses only the effect-weight representation ("a convex
+combination" of ATT and ATU) and never discusses per-observation signed weights, so
+there is no conflict with him — he is answering a different question.

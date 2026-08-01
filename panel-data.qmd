@@ -351,11 +351,43 @@ $$
                  {\sum_i \sum_t \tilde V_{it}^{2}} .
 $$
 
-In words: each observation enters weighted by $\tilde V_{it}^2$, the
-squared leftover variation in the regressor, and a unit's total
-influence is $\sum_t \tilde V_{it}^2$.  An observation that carries no
-leftover variation carries no weight, however many of its kind we
-collect.
+In words: an observation enters the numerator weighted by
+$\tilde V_{it}$ --- the leftover variation in its own regressor, to the
+*first* power, and signed.  Those weights sum to zero.  An observation
+with no leftover variation carries no weight, however many of its kind
+we collect.
+
+The squares come from asking a different question.  Weights on
+*outcomes* are one object; weights on *effects* are another.  Let the
+effect vary by unit, so $y_{it}=\beta_i V_{it}+\ldots$ with the
+remainder orthogonal to $\tilde V$.  Substituting into the numerator
+leaves $\sum_t \tilde V_{it}V_{it}$ for each unit, and since $\tilde V$
+is orthogonal to the part of $V$ that was projected out,
+$\sum_t \tilde V_{it}V_{it}=\sum_t \tilde V_{it}^2$.  So
+
+$$
+\hat\beta = \frac{\sum_i \beta_i \sum_t \tilde V_{it}^2}
+                 {\sum_i \sum_t \tilde V_{it}^2},
+$$
+
+a weighted average of the unit-level effects.  The square is not
+assumed anywhere.  It is what a first-power weight on the outcome
+becomes once the outcome is rewritten in terms of an effect.
+
+One condition is easy to miss.  That identity holds unit by unit only
+when the residualising is done *within* the unit --- demeaning, or a
+full set of unit dummies.  Under a coarser control it still holds over
+the whole sample, but not unit by unit, and reading
+$\sum_t \tilde V_{it}^2$ as "unit $i$'s weight" stops being exact.
+Hazlett and Shinkre make this the centre of their treatment; the
+Angrist row in the table below assumes the saturated case.
+
+Both objects are developed at length in
+[Weights in OLS in causal inference](https://xiangao.github.io/blog_book/weights-ols.html).
+The distinction earns its keep there: signed outcome weights can turn
+negative when a linear probability model pushes $\hat d(x)$ outside
+$[0,1]$, and squared effect weights, being non-negative, cannot express
+that at all.
 
 That sum is the whole story, and in general it is as far as we can go.
 $\tilde V_{it}$ carries both subscripts even when $V$ itself does not,
@@ -465,7 +497,8 @@ what (B) imposes and (A) does not.
 Słoczyński ([2022](https://doi.org/10.1162/rest_a_00953)) makes the
 same point for a binary treatment: the OLS coefficient is a convex
 combination of the effect on the treated and the effect on the
-untreated, and the *smaller* group receives the *larger* weight.  So a
+untreated ([discussed here](https://xiangao.github.io/blog_book/ols-ate.html)),
+and the *smaller* group receives the *larger* weight.  So a
 coefficient from a sample that is 10% treated is mostly telling us
 about the 90%.
 
