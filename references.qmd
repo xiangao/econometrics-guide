@@ -17,6 +17,7 @@ collects the works cited across the chapters.
 
 - Anderson, T. W., and C. Hsiao (1981). "Estimation of Dynamic Models with Error Components." *Journal of the American Statistical Association* 76: 598–606.
 - Andrews, D. W. K., M. J. Moreira, and J. H. Stock (2006). "Optimal Two-Sided Invariant Tests for Instrumental Variables Regression." *Econometrica* 74(3): 715–752.
+- Angrist, J. D. (1998). "Estimating the Labor Market Impact of Voluntary Military Service Using Social Security Data on Military Applicants." *Econometrica* 66(2): 249–288.
 - Arellano, M., and S. Bond (1991). "Some Tests of Specification for Panel Data." *Review of Economic Studies* 58: 277–297.
 - Baltagi, B. H., and D. Levin (1992). "Cigarette Taxation: Raising Revenues and Reducing Consumption." *Structural Change and Economic Dynamics* 3(2): 321–335.
 - Blundell, R., and S. Bond (1998). "Initial Conditions and Moment Restrictions in Dynamic Panel Data Models." *Journal of Econometrics* 87: 115–143.
@@ -33,6 +34,7 @@ collects the works cited across the chapters.
 - Nickell, S. (1981). "Biases in Dynamic Models with Fixed Effects." *Econometrica* 49: 1417–1426.
 - Sargan, J. D. (1958). "The Estimation of Economic Relationships Using Instrumental Variables." *Econometrica* 26: 393–415.
 - Singer, J. D., and J. B. Willett (1993). "It's About Time: Using Discrete-Time Survival Analysis to Study Duration and the Timing of Events." *Journal of Educational Statistics* 18: 155–195.
+- Słoczyński, T. (2022). "Interpreting OLS Estimands When Treatment Effects Are Heterogeneous: Smaller Groups Get Larger Weights." *Review of Economics and Statistics* 104(3): 501–509.
 - Stock, J. H., and M. Yogo (2005). "Testing for Weak Instruments in Linear IV Regression." In *Identification and Inference for Econometric Models*, ed. Andrews and Stock. Cambridge University Press.
 - Wooldridge, J. M. (1999). "Distribution-Free Estimation of Some Nonlinear Panel Data Models." *Journal of Econometrics* 90: 77–97.
 

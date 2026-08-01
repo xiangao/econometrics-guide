@@ -153,3 +153,38 @@ is shared across the three chunks.
 `fixest` added to the R dependency lists in README.md and above. Stata equivalents
 (`regress`, `xtreg, fe`, `xtreg, re`) are named inline, matching how the Hausman
 section already handles Stata.
+
+## Addition (2026-08-01c) — "How OLS weights the data" in `panel-data`
+
+Third section, added because the `T_i` weighting in the section above reads as a
+panel-specific quirk when it is an instance of the general FWL rule. States the rule
+once — each observation enters weighted by the squared residualised regressor,
+`sum_t Vtilde_it^2` per unit — then tabulates four cases:
+
+| model | unit/stratum weight |
+|---|---|
+| `z_i` alone | `T_i * ztilde_i^2` |
+| `z_i` plus time-varying `W_it` | `sum_t ztilde_it^2` (the `T_i` form dies) |
+| time-varying `x_it` | `sum_t (x_it - xbar_i)^2 = (T-1) Var_i(x)` |
+| binary `d`, saturated controls | `n_x dhat(x)(1-dhat(x))` — Angrist (1998) |
+
+Fourth code chunk (seed 7, self-contained) shows when the weighting matters: with
+slopes drawn independently of how much `x` moves, FE 1.0019 / plain 1.0179 /
+weighted 0.9841, all equal to within noise. With slopes larger where `x` moves more,
+FE 1.5338 / plain 1.0140 / weighted 1.5422 — FE tracks the weighted average, and a
+reader taking it as "the" slope is off by 50%. Closes on Słoczyński (2022).
+
+**Verified against the primary sources, and this turned up an error elsewhere:**
+`blog_book/weights-ols.qmd` line 74 links Angrist (1998) as DOI `10.2307/2999578`,
+which resolves to Gul, "A Comment on Aumann's Bayesian View", *Econometrica* 66(4).
+The correct DOI is `10.2307/2998558` (Econometrica 66(2), 249–288), confirmed via the
+Crossref API. Not fixed here — different repo. Słoczyński confirmed as
+`10.1162/rest_a_00953`, REStat 104(3), 501–509. Note `doi.org` returns 403 to curl for
+both (JSTOR and MIT Press block bots); use the Crossref API to verify, not the DOI URL.
+
+The same material is covered at more depth in `blog_book/weights-ols.qmd` (unit-level
+weights, signed, first power of `Dtilde`) and `blog_book/ols-ate.qmd` (Słoczyński).
+Those use the *outcome*-weight object; this section uses the *effect*-weight object.
+They are the same identity read at two granularities — verified numerically: OLS,
+`sum omega_i y_i`, Angrist's `dhat(1-dhat)P(x)` and `sum_x Dtilde^2` all returned
+1.96680501, with the last two differing by exactly the constant `n`.
