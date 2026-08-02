@@ -407,22 +407,18 @@ to observations whose $s_i$ wander far from it.
 
 ### What this means for the whole exercise
 
-The identity in terms of $s_i$ holds in *any* dataset.  No model, no
-heterogeneity, nothing assumed --- it would hold on pure noise.  That
-also makes it empty: its weighted average is $\hat\beta$, which we
-already had, so computing the $s_i$ tells us nothing new.
+Writing $s_i$ out in full is what showed the individual biases
+reshaping the weighting rather than cancelling --- an argument that
+needed the $s_i$ algebra, not just a claim about $b_i$.  Writing effects
+into $y_i=b_i x_i+\text{noise}$ is what gives the coefficient content: a
+specific mixture of structural effects, the same mixture Angrist's
+$\hat d(x)(1-\hat d(x))$ weighting and Słoczyński's ATT/ATU split name
+one level of aggregation up.
 
-The version in terms of $b_i$ is the one with content, and it costs an
-assumption: that $y_i=b_i x_i+\text{noise}$ describes the data.  Only
-then does the coefficient estimate a particular mixture of *structural*
-effects, and only then do Angrist's $\hat d(x)(1-\hat d(x))$ weighting
-or Słoczyński's ATT/ATU split say anything.  Neither statement can be
-made in the language of $s_i$.
-
-So the useful part is neither slope.  It is the **weights**, which are
-computable exactly, need no model, and are the only piece of this that
-can be reported in a paper: they say which observations the estimate is
-about, whatever the effects turn out to be.
+The **weights** are the part usable without knowing any $b_i$:
+computable exactly, and the only piece of this that belongs in a paper,
+since they say which observations the estimate is about whatever the
+effects turn out to be.
 
 ## The rule
 
