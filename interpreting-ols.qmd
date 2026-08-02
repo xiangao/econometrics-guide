@@ -189,8 +189,14 @@ This ought to look like a problem.  We want the $b_i$; we are averaging
 something that barely correlates with them.  The resolution is that the
 weight is precisely the right correction.
 
-With homogeneous truth $b$, writing $d_i=x_i-\bar x$, we have
-$s_i=b+(e_i-\bar e)/d_i$, so $s_i$ is unbiased for $b$ and
+Everything here is **conditional on $X$**, as usual in regression, and
+that matters twice over: it makes $d_i=x_i-\bar x$ a known constant
+rather than a random variable, and the weights are functions of $x$
+alone, so the whole weighting story only lives in the conditional world.
+
+With homogeneous truth $b$, $y_i-\bar y = b\,d_i + (e_i-\bar e)$, so
+$s_i = b + (e_i-\bar e)/d_i$ and $s_i$ is unbiased.  Since
+$\text{Var}(e_i-\bar e)=\sigma^2-2\sigma^2/n+\sigma^2/n=\sigma^2(1-1/n)$,
 
 $$
 \text{Var}(s_i)\;=\;\frac{\sigma^2\,(1-1/n)}{d_i^{\,2}}
@@ -199,8 +205,19 @@ $$
 d_i^{\,2} \;\propto\; \frac{1}{\text{Var}(s_i)} .
 $$
 
-(The $1-1/n$ comes from $\bar e$ appearing in every $s_i$; it is
-irrelevant at any useful sample size.)
+The same $\bar e$ also makes the $s_i$ *dependent*.  From
+$\text{Cov}(e_i-\bar e,\,e_j-\bar e)=-\sigma^2/n$,
+
+$$
+\text{Cov}(s_i,s_j)\;=\;-\,\frac{\sigma^2}{n\,d_i d_j}\,,
+\qquad i\neq j .
+$$
+
+Small, of order $1/n$, but not zero --- so this is inverse-variance
+weighting, and it is *not* the meta-analysis situation, where the
+estimates being pooled are independent.  OLS is efficient here for the
+ordinary Gauss--Markov reason, not because precision weighting of
+independent estimates would be optimal.
 
 The weight is the inverse variance of the thing it weights.  Check it by
 splitting on $|d_i|$: the product $d_i^2\,\text{Var}(s_i)$ should be
@@ -223,9 +240,7 @@ round(c(`unweighted mean of s_i` = mean(ss),
 
 Ignore the first row for a moment.  Across the rest the last column sits
 at about 4, which is $\sigma^2$ --- so OLS is the inverse-variance
-weighted average of $n$ unbiased estimates of the slope.  It is
-precision weighting, the same operation as pooling studies in a
-meta-analysis.  The $s_i$ that look absurd are absurd *because* their
+weighted average of $n$ unbiased estimates of the slope.  The $s_i$ that look absurd are absurd *because* their
 $x$ lies near the mean, and that is exactly the quantity the weight
 divides out.  The cancellation is algebraic, not approximate:
 $d_i^2\, s_i = d_i^2 \cdot (y_i-\bar y)/d_i = d_i(y_i-\bar y)$.

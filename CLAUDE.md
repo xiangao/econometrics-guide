@@ -640,3 +640,25 @@ OLS 2.26) that no chunk in the book produces. Replaced with a cross-reference.
 
 Also verified by hand this pass: all four external links live, both DOIs resolve to the
 right papers via Crossref, zero repeated sentences within or across the two chapters.
+
+## Correction (2026-08-02h) — conditioning on X, and a wrong analogy
+
+Author asked why `d_i` is treated as a constant in `Var(s_i)`. It is because everything
+is conditional on `X` — the standard convention, and load-bearing here: the weights are
+functions of `x` alone, so the weighting argument only exists in the conditional world.
+It also explains the degenerate first bin of the variance table: conditionally each
+`Var(s_i)` is finite, merely enormous; it is unconditionally, over draws of `x` landing
+near `xbar`, that it is unbounded. Now stated in the text.
+
+**A wrong claim removed.** The chapter said OLS is "precision weighting, the same
+operation as pooling studies in a meta-analysis". The weights part is right; the analogy
+is not, because meta-analysis presumes *independent* estimates and the `s_i` are not
+independent — the shared `ebar` gives `Cov(s_i, s_j) = -sigma^2/(n d_i d_j)`. OLS is
+efficient here by Gauss–Markov, not by that route. Both the `(1-1/n)` and the covariance
+are the same `ebar` term; I had noticed one and missed the other.
+
+Derivation now in the text, two lines: `Var(e_i - ebar) = sigma^2(1 - 1/n)` and
+`Cov(e_i - ebar, e_j - ebar) = -sigma^2/n`, divided by `d_i` and `d_i d_j`.
+
+**Process note from the author:** stop reaching for simulation when the result is a
+two-line derivation. Both facts here are algebra; no chunk was needed or added.
