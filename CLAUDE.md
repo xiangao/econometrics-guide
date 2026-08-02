@@ -476,3 +476,31 @@ identity `betahat = sum (x_i-xbar)^2 s_i / sum (x_i-xbar)^2`, and a section warn
 weighted averages agree (0.950 / 0.992, OLS 0.950). The point of that section is that
 the `s_i` identity is model-free but vacuous, the `b_i` version carries the content but
 needs an assumption, and the genuinely useful object is the weights, which need neither.
+
+## Addition (2026-08-02b) — why averaging `s_i` recovers `b_i`
+
+A reader objected, correctly: we want the `b_i`, we average `s_i`, and the two barely
+correlate. The chapter reported the 0.019 without answering it. Two sections added.
+
+**`w_i` is the inverse variance of `s_i`.** With `d_i = x_i - xbar`,
+`s_i = b + (e_i - ebar)/d_i`, so `Var(s_i) = sigma^2 / d_i^2` and therefore
+`w_i = d_i^2 = sigma^2 / Var(s_i)`. OLS is inverse-variance weighting of `n` unbiased
+slope estimates — precision weighting, as in a meta-analysis. Verified by binning on
+`|d|`: `w * Var(s)` is flat at ~4 = `sigma^2` across bins. The cancellation is algebraic:
+`w_i s_i = d_i^2 (y_i - ybar)/d_i = d_i (y_i - ybar)`.
+
+The first bin (|d| down to 1e-10) has no finite variance and reads 4e13. Kept in the
+output and explained rather than trimmed: it is why the *unweighted* mean of `s_i` is
+-23,816 against 0.999 weighted. The weighting is not an efficiency refinement; without
+it the estimator does not exist.
+
+**How much is noise?** Sweeping `sigma_e` from 2 to 0: Spearman goes 0.252 -> 0.997 and
+the Pearson correlation among observations away from the mean reaches 1.000. So less
+noise does tighten the link. **But at `sigma_e = 0` exactly, Pearson is 0.906, not 1** —
+even with no error `s_i = b_i - ybar/(x_i - xbar)`, which explodes near the mean
+(max |s_i - b_i| = 25.9 overall, 0.0074 on the far half). The irreducible gap is the
+centring, not the noise, and it sits exactly where the weight is smallest.
+
+Also softened the earlier "correlation 0.019 --- none". That is Pearson on a heavy-tailed
+variable, dominated by a few exploded values; the rank correlation is much higher. The
+signal is buried, not absent — a different claim.
