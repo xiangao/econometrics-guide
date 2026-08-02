@@ -148,6 +148,11 @@ four-point panel shows this happening in miniature.
 
 ## Do not mistake $s_i$ for $b_i$
 
+Suppose, hypothetically, that every observation really did have its own
+slope --- $y_i = b_i x_i + \text{noise}$, with $b_i$ a fixed but unknown
+number specific to observation $i$.  $b_i$ is the *true* slope; $s_i$ is
+our earlier point-to-centroid slope, computed from the data.
+
 This is where care is needed.  $s_i$ is *observable* --- it is computed
 from the data.  The structural $b_i$ is not.  It is tempting to treat
 the first as a measurement of the second, and at the level of a single
