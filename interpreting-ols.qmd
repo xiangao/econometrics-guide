@@ -257,48 +257,59 @@ over --- so the bracket does not go anywhere.  $s_i$ is **not** unbiased
 for its own $b_i$; the bias is permanent, and it has nothing to do with
 noise.
 
-Sum $d_i^2 s_i$ anyway, and substitute the formula for $s_i$:
+Nothing about that kills the estimator, though, and here is exactly
+why.  $\hat\beta$ is not merely *related* to the $s_i$ --- by the
+identity that opened this chapter, $\hat\beta=\sum_i d_i^2 s_i
+/\sum_i d_i^2$ exactly, and $\sum_i d_i^2$ is a fixed number that does
+not depend on $e$.  So expectation passes straight through:
 
 $$
-\sum_i d_i^2 s_i
-= \sum_i d_i^2 b_i \;+\; \sum_i d_i\bigl(\bar x(b_i-\bar b)-C\bigr)
-\;+\; \sum_i d_i(e_i-\bar e).
+E(\hat\beta) \;=\; \frac{\sum_i d_i^2\, E(s_i)}{\sum_i d_i^2}.
 $$
 
-The middle sum collapses: $\sum_i d_i=0$ kills the $-C$ piece, and
-$\sum_i d_i(b_i-\bar b)=\sum_i d_i b_i = nC$ by the definition of $C$,
-leaving $\bar x\,nC$.  Taking $E[\cdot]$ over $e$ --- the last sum has
-mean zero, as usual ---
+$E(\hat\beta)$ is, quite literally, the $d_i^2$-weighted average of what
+each $s_i$ is expected to be.  $s_i$ has not gone anywhere.
+
+Substitute $E(s_i)=b_i+[\bar x(b_i-\bar b)-C]/d_i$, and the bias terms
+do *not* cancel to zero.  Weighted by $d_i^2$ and summed, they add up to
 
 $$
-E\!\left(\sum_i d_i^2 s_i\right)
-= \sum_i d_i^2 b_i + n\bar x\,C
-= \sum_i b_i\,d_i(d_i+\bar x)
-= \sum_i b_i\,d_i x_i,
+\sum_i d_i^2 \cdot \frac{\bar x(b_i-\bar b)-C}{d_i}
+= \bar x \sum_i d_i(b_i-\bar b) - C\sum_i d_i
+= \bar x\, nC,
+$$
+
+using $\sum_i d_i=0$ and $\sum_i d_i(b_i-\bar b)=\sum_i d_i b_i=nC$ by
+the definition of $C$.  That is a specific, generally nonzero number,
+not something that averages away.  What it does is combine with
+$\sum_i d_i^2 b_i$ to give exactly
+
+$$
+\sum_i d_i^2\, E(s_i) = \sum_i d_i^2 b_i + n\bar x\,C
+= \sum_i b_i\,d_i(d_i+\bar x) = \sum_i b_i\, d_i x_i,
 $$
 
 using $x_i=d_i+\bar x$.  Divide by $\sum_i d_i^2$, which --- as noted
 above --- equals $\sum_i d_i x_i$ exactly:
 
 $$
-E(\hat\beta) \;=\; \frac{\sum_i d_i x_i\, b_i}{\sum_i d_i x_i},
+E(\hat\beta) \;=\; \frac{\sum_i d_i^2\, E(s_i)}{\sum_i d_i^2}
+\;=\; \frac{\sum_i d_i x_i\, b_i}{\sum_i d_i x_i},
 $$
 
 exactly the effect-weighted average of $b_i$ from "Two ways to read the
 coefficient" earlier in this chapter --- no approximation, no large $n$,
 true at every sample size.
 
-Bring this back to $s_i$, since that is what the whole section is
-about.  $\hat\beta$ is not merely *related* to the $s_i$ --- by the
-identity that opened this chapter, it *is* their $d_i^2$-weighted
-average.  So the calculation just done is a statement about averaging
-$s_i$: each one, alone, is a biased guess at its own $b_i$, and that
-bias never washes out by watching more of it, however large $n$ gets.
-What makes the average unbiased anyway is not that the individual
-biases shrink --- they do not --- but that the specific $d_i^2$
-weighting makes them cancel, term for term, against each other in the
-sum.  Individually worthless, and the sum answers the right question
-regardless.
+That is the whole answer.  Each $s_i$'s own bias is permanent and never
+shrinks, however large the sample.  Weighted by $d_i^2$ and summed,
+those biases do not cancel to nothing either --- they sum to a real,
+nonzero quantity, $\bar x\,nC$.  What that quantity does is convert one
+valid weighted average of the true $b_i$, weighted by $d_i^2$, into
+another valid weighted average of the same $b_i$, weighted by
+$d_i x_i$ --- the one OLS is supposed to deliver.  Individually wrong in
+a specific and permanent way; combined, exactly right, because the
+wrongness reshapes the weighting rather than vanishing.
 
 ### Why averaging $s_i$ works
 
