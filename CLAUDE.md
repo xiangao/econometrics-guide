@@ -589,3 +589,27 @@ decimal so the 0.2% point does not read as "0%".
 
 **Worth repeating as practice:** read the generated image. Both defects were invisible in
 the source and in the printed table.
+
+## Fix (2026-08-02f) — cross-reference and heading damage from the restructure
+
+Reader caught "the effect weight **above** was `w_i = Vtilde_i V_i`" in the `s_i`
+section. After moving the `s_i` block ahead of "The rule", `w_i` is defined 200 lines
+*below* that sentence — a forward reference written as a backward one. The comparison now
+lives in "Two ways to read the coefficient", where both weights are known, and points
+back at `d_i^2`.
+
+Swept every directional word in the file (above / below / earlier / later / shortly /
+next section) against the section it sits in. Only that one was broken; the other eleven
+resolve correctly.
+
+The sweep also exposed heading damage. Everything from the square derivation through the
+simplifications table had been sitting under `### Two ways to read the coefficient`,
+which describes none of it. Split into `### Where the square comes from` and
+`### When the weight simplifies`. Also promoted `Do not mistake s_i for b_i` to `##`,
+since "The identity behind it" was carrying four substantial subsections it does not
+describe.
+
+**Pattern, now three for three:** every content move in this chapter has broken something
+invisible in the diff — orphaned text, stranded numbers, wrong heading levels, reversed
+cross-references. After any move, sweep directional references and re-check the heading
+tree before rendering.
