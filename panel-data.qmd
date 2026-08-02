@@ -455,9 +455,35 @@ because both halves were built around zero.  Separate them and the
 algebra says exactly what happens.
 
 Take two equally sized groups with means $\mu_g$, within-group variances
-$\sigma_g^2$, slopes $\beta_g$ and group mean outcomes $\bar y_g$.  The
-law of total covariance splits $\text{Cov}(x,y)$ and $\text{Var}(x)$
-into within and between parts, giving
+$\sigma_g^2$, slopes $\beta_g$ and group mean outcomes $\bar y_g$.  Let
+$G$ be the group label, equally likely to be 1 or 2.  Two laws do the
+work.
+
+The **law of total covariance** splits the numerator:
+
+$$
+\text{Cov}(x,y)=E\!\left[\text{Cov}(x,y\mid G)\right]
+              + \text{Cov}\!\left(E[x\mid G],\,E[y\mid G]\right).
+$$
+
+Inside group $g$ we have $\text{Cov}(x,y\mid G=g)=\beta_g\sigma_g^2$, so
+the first term averages to
+$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)$.  For the second,
+$E[x\mid G]$ and $E[y\mid G]$ are two-point variables taking
+$(\mu_1,\mu_2)$ and $(\bar y_1,\bar y_2)$ with probability one half
+each, and for any such pair
+$\text{Cov}(a,b)=\tfrac14(a_1-a_2)(b_1-b_2)$.  That gives
+$\tfrac14\Delta\mu\,\Delta\bar y$.
+
+The **law of total variance** is the same statement with $y$ replaced by
+$x$:
+
+$$
+\text{Var}(x)=E\!\left[\text{Var}(x\mid G)\right]+\text{Var}\!\left(E[x\mid G]\right)
+=\tfrac12(\sigma_1^2+\sigma_2^2)+\tfrac14\Delta\mu^2 .
+$$
+
+Dividing one by the other,
 
 $$
 \text{plim}\;\hat\beta_{OLS}
@@ -467,12 +493,27 @@ $$
         + \tfrac14\,\Delta\mu^{2}} ,
 $$
 
-with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$: a
-variance-weighted average of
-$\beta_{within}=(\beta_1\sigma_1^2+\beta_2\sigma_2^2)/(\sigma_1^2+\sigma_2^2)$
-and $\beta_{between}=\Delta\bar y/\Delta\mu$, weighted by the within
-variance $\tfrac12(\sigma_1^2+\sigma_2^2)$ and the between variance
-$\tfrac14\Delta\mu^2$.
+with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.
+Split that into the two slopes it mixes,
+
+$$
+\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},
+\qquad
+\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},
+$$
+
+and the coefficient is a genuine convex combination of them, weighted by
+the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$ and the between
+variance $\tfrac14\Delta\mu^2$, which sum to the total variance.
+
+Two features are worth pausing on.  $\beta_{within}$ is itself a
+variance-weighted average of the two slopes --- the same $\sigma^2$
+weighting as everywhere else in this section, one level up.  And
+$\beta_{between}$ is a two-point slope, rise over run between the two
+group centres, so it can take any value at all regardless of what
+happens inside either group.  The $\tfrac14$ is the only piece specific
+to equal group sizes; with shares $p$ and $1-p$ it becomes $p(1-p)$,
+which is Angrist's weight again.
 
 Everything follows without running anything.  Fixed effects estimates
 $\beta_{within}$, here $(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$, which
@@ -504,6 +545,66 @@ park <- function(shift) {
 
 round(t(sapply(c(`shift 0` = 0, `shift 10` = 10, `shift 100` = 100), park)), 3)
 ```
+
+### The same thing as a picture
+
+The algebra says the between term takes over as the groups separate.
+That is visible directly.  Left, the two groups share a centre; right,
+the steady group is parked ten units away.  Dotted line is the mean of
+$x$, dashed line joins the two group centres, solid line is the fit.
+
+```{r}
+#| fig-width: 9
+#| fig-height: 4.2
+set.seed(5)
+m <- 200
+draw <- function(shift, main) {
+  xw <- rnorm(m, 0, 3);       yw <- 2 * xw + rnorm(m)      # wobbly: true slope 2
+  xs <- rnorm(m, shift, 0.2); ys <- rnorm(m)               # steady: true slope 0
+  x <- c(xw, xs); y <- c(yw, ys)
+  plot(x, y, pch = 16, cex = .5, col = c(rep("#9E431855", m), rep("#0E6473", m)),
+       xlab = "x", ylab = "y", main = main)
+  abline(v = mean(x), lty = 3, col = "grey50")
+  segments(mean(xw), mean(yw), mean(xs), mean(ys), lty = 2, lwd = 2, col = "grey30")
+  points(c(mean(xw), mean(xs)), c(mean(yw), mean(ys)), pch = 21, bg = "white", cex = 1.4)
+  abline(lm(y ~ x), lwd = 2, col = "#0E6473")
+  dmu <- mean(xs) - mean(xw)
+  Vb  <- 0.25 * dmu^2                       # between variance
+  Vw  <- 0.5 * (var(xs) + var(xw))          # within variance
+  c(`slope inside wobbly` = unname(coef(lm(yw ~ xw))[2]),
+    `slope inside steady` = unname(coef(lm(ys ~ xs))[2]),
+    `between slope`       = unname((mean(ys) - mean(yw)) / dmu),
+    `weight on between %` = 100 * Vb / (Vb + Vw),
+    `OLS`                 = unname(coef(lm(y ~ x))[2]))
+}
+op <- par(mfrow = c(1, 2), mar = c(4, 4, 2.5, 1))
+a <- draw(0,  "groups share a centre")
+b <- draw(10, "groups far apart in x")
+par(op)
+round(cbind(`share a centre` = a, `far apart` = b), 3)
+```
+
+Read the two columns.  The slope inside the wobbly cloud is about 2 in
+both, and the slope inside the steady strip is indistinguishable from
+zero in both --- $0.007$ and $-0.288$, the second noisy because a
+regression on an $x$ that barely varies has a standard error of roughly
+$0.35$.  The groups themselves are unchanged.  What changes is the
+weight on the between comparison: 0.03% when the centres coincide, 85%
+when they are ten apart.  So the fit lands on 2.01 in the first panel
+and 0.29 in the second.
+
+Notice the between slope reported for the left panel, 0.882.  It is
+meaningless there, and harmlessly so: with the centres nearly on top of
+each other $\Delta\mu\approx 0$, the ratio $\Delta\bar y/\Delta\mu$
+divides by almost nothing, and its weight $\tfrac14\Delta\mu^2$ is
+almost nothing too.  An unstable quantity multiplied by a vanishing
+weight contributes nothing.
+
+The picture also shows why the strip has influence in the right panel
+despite barely moving.  Influence is distance from the mean of $x$, the
+dotted line, and the strip sits ten units from it.  What it contributes
+is not its own slope but its position: it anchors one end of the dashed
+line.  A group dummy removes that channel and returns the within answer.
 
 Predicted and actual agree in every row.  Fixed effects is flat at 1.984
 against a theoretical 1.991, the gap being sampling noise.  Plain OLS

@@ -423,3 +423,35 @@ every number quoted in prose re-checked against the chunk that produces it.
 **Standing lesson:** this section accumulated its repetition because each fix was
 appended rather than integrated. After a run of corrections, re-read the whole section
 once and consolidate before considering it done.
+
+## Addition (2026-08-02) — derivation of the within/between split, plus a figure
+
+The chapter stated the decomposition without deriving it. Now shows both laws:
+total covariance for the numerator (within term `(1/2)(b1 s1^2 + b2 s2^2)`; between term
+`(1/4) dmu dybar`, using `Cov(a,b) = (1/4)(a1-a2)(b1-b2)` for two-point equal-probability
+variables) and total variance for the denominator. Then splits the result explicitly
+into `beta_within` and `beta_between` as a convex combination, notes that `beta_within`
+is itself a variance-weighted average one level up, that `beta_between` is a two-point
+slope and so unconstrained by either group's interior, and that the `1/4` generalises to
+`p(1-p)` — Angrist's weight again.
+
+New base-R figure chunk (`set.seed(5)`, own seed so it does not disturb the `set.seed(7)`
+chunk after it): two scatter panels, groups sharing a centre versus parked ten apart,
+with the mean of `x` dotted, the centre-to-centre line dashed, and the fit solid. Prints
+
+|                      | share a centre | far apart |
+|---|---|---|
+| slope inside wobbly  | 2.019 | 2.009 |
+| slope inside steady  | 0.007 | -0.288 |
+| between slope        | 0.882 | -0.007 |
+| weight on between %  | 0.026 | 85.113 |
+| OLS                  | 2.010 | 0.291 |
+
+Two traps handled in the prose: the left panel's between slope of 0.882 is meaningless
+(`dmu ~ 0`, so it divides by almost nothing) but harmless, since its weight is 0.026%;
+and the right panel's steady slope of -0.288 is noise, not signal — a regression on an
+`x` with sd 0.2 has SE around 0.35.
+
+**Open question from the author:** whether to move this material into a separate
+chapter, "Interpreting OLS". See the proposal in the session notes — the weighting
+material is now roughly half of `panel-data.qmd` and is not panel-specific.
