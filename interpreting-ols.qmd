@@ -45,16 +45,34 @@ Attach a weight to each, $d_i^2=(x_i-\bar x)^2$, the squared horizontal
 distance from the centroid.  We will justify that choice shortly; for
 now just take the weighted average.
 
+In the figures below the hollow circle is the centroid, the dotted
+vertical line is $\bar x$, the rust rays run from the centroid to each
+point with **thickness proportional to that point's weight**, and the
+solid line is the fit.  Percentages label each point's share of the
+total weight.
+
 ```{r}
-show <- function(x, y) {
-  xb <- mean(x); d <- x - xb; s <- (y - mean(y)) / d; w <- d^2
+#| fig-width: 5
+#| fig-height: 4
+show <- function(x, y, main = "") {
+  xb <- mean(x); yb <- mean(y); d <- x - xb; s <- (y - yb) / d; w <- d^2
+  plot(x, y, pch = 16, cex = 1.5, xlim = c(-0.5, 11.5), ylim = c(0, 9),
+       xlab = "x", ylab = "y", main = main)
+  abline(v = xb, lty = 3, col = "grey55")                      # the mean of x
+  segments(xb, yb, x, y, lwd = 0.6 + 9 * w / sum(w),           # rays, thickness = weight
+           col = "#9E431899")
+  abline(lm(y ~ x), lwd = 2, col = "#0E6473")                  # the fit
+  points(x, y, pch = 16, cex = 1.5)
+  points(xb, yb, pch = 21, bg = "white", col = "#0E6473", lwd = 2.5, cex = 1.7)
+  text(x, y, labels = sprintf("%.1f%%", 100 * w / sum(w)),   # label away from centroid
+       pos = ifelse(y >= yb, 3, 1), cex = .85, col = "#9E4318")
   print(round(data.frame(x, y, s_i = s, weight = w,
                          `weight %` = 100 * w / sum(w), check.names = FALSE), 3),
         row.names = FALSE)
   cat(sprintf("  centroid x = %.3f | weighted avg of s_i = %.4f | OLS = %.4f\n",
               xb, sum(w * s) / sum(w), coef(lm(y ~ x))[["x"]]))
 }
-show(c(1, 3), c(2, 8))
+show(c(1, 3), c(2, 8), "two points")
 ```
 
 Both $s_i$ equal 3, the weights split evenly, and the average is 3 ---
@@ -65,7 +83,9 @@ returns that number.
 ## Add a third point
 
 ```{r}
-show(c(1, 3, 4), c(2, 8, 5))
+#| fig-width: 5
+#| fig-height: 4
+show(c(1, 3, 4), c(2, 8, 5), "three points")
 ```
 
 Now the three own-slopes disagree: 1.8, 9.0 and 0.0.  The fit has to
@@ -81,7 +101,9 @@ the line.
 ## Add a fourth, far out
 
 ```{r}
-show(c(1, 3, 4, 9), c(2, 8, 5, 6))
+#| fig-width: 5
+#| fig-height: 4
+show(c(1, 3, 4, 9), c(2, 8, 5, 6), "four points")
 ```
 
 Two things happened at once, and both are worth naming.

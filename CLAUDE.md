@@ -572,3 +572,20 @@ before Moreira — alphabetical order is Moreira, Moulton, Mundlak.
 
 Also changed an R comment inside a chunk from `##` to `#`: it parses as a heading to any
 markdown tool scanning the source, even though Quarto renders it correctly.
+
+## Figures (2026-08-02e) — plots for the two/three/four-point build-up
+
+The build-up had tables but no pictures. `show()` now draws as well as prints: points,
+the centroid as a hollow circle, a dotted line at `xbar`, rays from centroid to each
+point with **thickness proportional to weight**, the fit, and each point's weight share
+as a label. Same function, three calls, so the three panels are directly comparable.
+
+Two label defects caught by actually looking at the rendered PNGs rather than trusting
+the code: the rightmost label was clipped at the panel edge (fixed with
+`xlim = c(-0.5, 11.5)`), and the label on the point sitting at the centroid collided
+with the centroid marker (fixed with `pos = ifelse(y >= yb, 3, 1)`, so labels go above
+or below depending on which side of the centroid the point is on). Also switched to one
+decimal so the 0.2% point does not read as "0%".
+
+**Worth repeating as practice:** read the generated image. Both defects were invisible in
+the source and in the printed table.
