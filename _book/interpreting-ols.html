@@ -549,10 +549,9 @@ furthest out         3.68 3.300000e-01    14.20 4.730000e+00</code></pre>
 <p>The panel chapter met two weightings: by <span class="math inline">\(T_i\)</span> when a panel is unbalanced, and by variance when a regression mixes within and between variation. Neither is a panel-specific quirk. Both follow from one rule.</p>
 <p>Let <span class="math inline">\(V\)</span> be the regressor of interest and <span class="math inline">\(\tilde V\)</span> be <span class="math inline">\(V\)</span> after residualising on every other regressor in the model. By the Frisch–Waugh–Lovell theorem,</p>
 <p><span class="math display">\[
-\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
-                 {\sum_i \sum_t \tilde V_{it}^{2}} .
+\hat\beta = \frac{\sum_i \tilde V_i\, y_i}{\sum_i \tilde V_i^{2}} .
 \]</span></p>
-<p>Be careful what <span class="math inline">\(\tilde V_{it}\)</span> is. A single observation has no variation of its own — variation belongs to a collection. What it has is a <strong>deviation</strong>: how far its regressor sits from what the rest of the model predicts for it. With only an intercept that is distance from the grand mean; with unit effects it is distance from the unit’s own mean. Which mean gets subtracted is the single most consequential detail in this section, and we return to it.</p>
+<p>Be careful what <span class="math inline">\(\tilde V_i\)</span> is. A single observation has no variation of its own — variation belongs to a collection. What it has is a <strong>deviation</strong>: how far its regressor sits from what the rest of the model predicts for it. With only an intercept that is distance from the grand mean; with unit effects — as in a panel, where several observations share a unit — it is distance from the unit’s own mean. Which mean gets subtracted is the single most consequential detail in this section, and we return to it.</p>
 <section id="two-ways-to-read-the-coefficient" class="level3" data-number="13.6.1"><h3 data-number="13.6.1" class="anchored" data-anchor-id="two-ways-to-read-the-coefficient">
 <span class="header-section-number">13.6.1</span> Two ways to read the coefficient</h3>
 <p>The formula supports two readings. They describe one estimator and differ in what is being weighted.</p>
@@ -610,11 +609,12 @@ w_i = \tilde V_i V_i .
 <p>Default to the second. Nearly every question that motivates the topic — is my coefficient the average effect, whose effect does it report, why do smaller groups get larger weights — is a question about the estimand. Reach for the first when overlap is in doubt and you need to see whether observations enter negatively, which squares cannot show. Both are developed at length in <a href="https://xiangao.github.io/blog_book/weights-ols.html">Weights in OLS in causal inference</a>.</p>
 </section><section id="where-the-square-comes-from" class="level3" data-number="13.6.2"><h3 data-number="13.6.2" class="anchored" data-anchor-id="where-the-square-comes-from">
 <span class="header-section-number">13.6.2</span> Where the square comes from</h3>
-<p>The square in <span class="math inline">\(w_i\)</span> is derived, not assumed. Substituting <span class="math inline">\(y_{it}=\beta_i V_{it}+\ldots\)</span> into the numerator gives <span class="math inline">\(\sum_i \beta_i \sum_t \tilde V_{it}V_{it}\)</span>, and over the whole sample <span class="math inline">\(\sum \tilde V V=\sum \tilde V^2\)</span> because <span class="math inline">\(\tilde V\)</span> is orthogonal to the fitted part of <span class="math inline">\(V\)</span>. Whether that holds <em>unit by unit</em> — which is what licenses reading <span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> as unit <span class="math inline">\(i\)</span>’s weight — depends on the residualising being done within the unit. Demeaning delivers it by direct expansion, <span class="math inline">\(\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
-=\sum_t (V_{it}-\bar V_i)^2\)</span>, while a coarser control matches only in total. Hazlett and Shinkre make this the centre of their treatment; the Angrist row below assumes the saturated case.</p>
+<p>The square in <span class="math inline">\(w_i\)</span> is derived, not assumed. Substituting <span class="math inline">\(y_i=\beta_i V_i+\ldots\)</span> into the numerator gives <span class="math inline">\(\sum_i \beta_i \tilde V_i V_i\)</span>, and over the whole sample <span class="math inline">\(\sum \tilde V V=\sum \tilde V^2\)</span> because <span class="math inline">\(\tilde V\)</span> is orthogonal to the fitted part of <span class="math inline">\(V\)</span>.</p>
+<p>In a panel, several observations share a unit, indexed by <span class="math inline">\(t\)</span> within unit <span class="math inline">\(i\)</span>, and it is natural to ask whether the same cancellation holds <em>within a single unit</em> — summed only over that unit’s own <span class="math inline">\(t\)</span>’s — rather than only over the whole sample. Write <span class="math inline">\(V_{it}\)</span> for the observation and <span class="math inline">\(\bar V_i\)</span> for the unit’s own mean. Demeaning delivers the within-unit version by direct expansion, <span class="math inline">\(\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
+=\sum_t (V_{it}-\bar V_i)^2\)</span>, while a coarser control matches only in total, over the whole sample, not unit by unit. Hazlett and Shinkre make this the centre of their treatment; the Angrist row below assumes the saturated case.</p>
 </section><section id="when-the-weight-simplifies" class="level3" data-number="13.6.3"><h3 data-number="13.6.3" class="anchored" data-anchor-id="when-the-weight-simplifies">
 <span class="header-section-number">13.6.3</span> When the weight simplifies</h3>
-<p>In general <span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> will not factor into anything tidier, since <span class="math inline">\(\tilde V_{it}\)</span> carries both subscripts even when <span class="math inline">\(V\)</span> does not. What changes from model to model is whether it happens to simplify. The table borrows the panel chapter’s notation — <span class="math inline">\(x_{it}\)</span> varying over units and time, <span class="math inline">\(z_i\)</span> over units only, <span class="math inline">\(T\)</span> periods per unit — because that is where the cases are easiest to name; nothing in the rule depends on having a panel.</p>
+<p>In general the within-unit sum <span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> will not factor into anything tidier, since <span class="math inline">\(\tilde V_{it}\)</span> carries both subscripts even when <span class="math inline">\(V\)</span> does not. What changes from model to model is whether it happens to simplify. The table is stated for a panel — <span class="math inline">\(x_{it}\)</span> varying over units and time, <span class="math inline">\(z_i\)</span> over units only, <span class="math inline">\(T\)</span> periods per unit — because that is where the cases are easiest to name; nothing in the rule depends on having a panel.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -878,7 +878,7 @@ OLS                          2.010     0.291</code></pre>
 <p>Predicted and actual agree in every row. Fixed effects is flat at 1.984 against a theoretical 1.991, the gap being sampling noise. Plain OLS runs from 1.983 to 0.004 on identical true slopes, partly because the steady half gains weight as it leaves the grand mean, and partly because a second channel opens that is not weighting at all: with the halves at different levels of <span class="math inline">\(x\)</span>, part of the fitted line is a comparison <em>between</em> them. So “the weight is how much <span class="math inline">\(x\)</span> moves” describes the demeaned case; it is exact once unit effects are removed and false in general.</p>
 </section><section id="when-it-does-not-matter" class="level3" data-number="13.8.3"><h3 data-number="13.8.3" class="anchored" data-anchor-id="when-it-does-not-matter">
 <span class="header-section-number">13.8.3</span> When it does not matter</h3>
-<p>Weighting only distorts when the effect is related to the weight. Give every unit its own slope, let units differ in how much <span class="math inline">\(x\)</span> moves, and compare two designs: in (A) the slopes are unrelated to that movement, in (B) the slope is larger where <span class="math inline">\(x\)</span> moves more. Both average near one.</p>
+<p>Weighting only distorts when the effect is related to the weight. Give every unit its own slope, let units differ in how much <span class="math inline">\(x\)</span> moves, and compare two designs: in (A) the slopes are unrelated to that movement, in (B) the slope is larger where <span class="math inline">\(x\)</span> moves more. Both average near one. Design (A) is the <span class="math inline">\(s_i\)</span>-versus-<span class="math inline">\(b_i\)</span> story from earlier, run again as a panel instead of a cross-section: true slopes drawn independently of the weight, so the weighted and unweighted averages come out close together.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
 <span><span class="va">sdX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0.2</span>, <span class="fl">3</span><span class="op">)</span>          <span class="co"># how much x moves, unit by unit</span></span>
@@ -1717,15 +1717,15 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <span id="cb30-352"><a href="#cb30-352" aria-hidden="true" tabindex="-1"></a>Frisch--Waugh--Lovell theorem,</span>
 <span id="cb30-353"><a href="#cb30-353" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-354"><a href="#cb30-354" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-355"><a href="#cb30-355" aria-hidden="true" tabindex="-1"></a>\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}</span>
-<span id="cb30-356"><a href="#cb30-356" aria-hidden="true" tabindex="-1"></a>                 {\sum_i \sum_t \tilde V_{it}^{2}} .</span>
-<span id="cb30-357"><a href="#cb30-357" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-358"><a href="#cb30-358" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-359"><a href="#cb30-359" aria-hidden="true" tabindex="-1"></a>Be careful what $\tilde V_{it}$ is.  A single observation has no</span>
-<span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a>variation of its own --- variation belongs to a collection.  What it has</span>
-<span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a>is a **deviation**: how far its regressor sits from what the rest of the</span>
-<span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a>model predicts for it.  With only an intercept that is distance from the</span>
-<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a>grand mean; with unit effects it is distance from the unit's own mean.</span>
+<span id="cb30-355"><a href="#cb30-355" aria-hidden="true" tabindex="-1"></a>\hat\beta = \frac{\sum_i \tilde V_i\, y_i}{\sum_i \tilde V_i^{2}} .</span>
+<span id="cb30-356"><a href="#cb30-356" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-357"><a href="#cb30-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-358"><a href="#cb30-358" aria-hidden="true" tabindex="-1"></a>Be careful what $\tilde V_i$ is.  A single observation has no</span>
+<span id="cb30-359"><a href="#cb30-359" aria-hidden="true" tabindex="-1"></a>variation of its own --- variation belongs to a collection.  What it has</span>
+<span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a>is a **deviation**: how far its regressor sits from what the rest of the</span>
+<span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a>model predicts for it.  With only an intercept that is distance from the</span>
+<span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a>grand mean; with unit effects --- as in a panel, where several</span>
+<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a>observations share a unit --- it is distance from the unit's own mean.</span>
 <span id="cb30-364"><a href="#cb30-364" aria-hidden="true" tabindex="-1"></a>Which mean gets subtracted is the single most consequential detail in</span>
 <span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a>this section, and we return to it.</span>
 <span id="cb30-366"><a href="#cb30-366" aria-hidden="true" tabindex="-1"></a></span>
@@ -1769,426 +1769,434 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <span id="cb30-404"><a href="#cb30-404" aria-hidden="true" tabindex="-1"></a><span class="fu">### Where the square comes from</span></span>
 <span id="cb30-405"><a href="#cb30-405" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-406"><a href="#cb30-406" aria-hidden="true" tabindex="-1"></a>The square in $w_i$ is derived, not assumed.  Substituting</span>
-<span id="cb30-407"><a href="#cb30-407" aria-hidden="true" tabindex="-1"></a>$y_{it}=\beta_i V_{it}+\ldots$ into the numerator gives</span>
-<span id="cb30-408"><a href="#cb30-408" aria-hidden="true" tabindex="-1"></a>$\sum_i \beta_i \sum_t \tilde V_{it}V_{it}$, and over the whole sample</span>
+<span id="cb30-407"><a href="#cb30-407" aria-hidden="true" tabindex="-1"></a>$y_i=\beta_i V_i+\ldots$ into the numerator gives</span>
+<span id="cb30-408"><a href="#cb30-408" aria-hidden="true" tabindex="-1"></a>$\sum_i \beta_i \tilde V_i V_i$, and over the whole sample</span>
 <span id="cb30-409"><a href="#cb30-409" aria-hidden="true" tabindex="-1"></a>$\sum \tilde V V=\sum \tilde V^2$ because $\tilde V$ is orthogonal to the</span>
-<span id="cb30-410"><a href="#cb30-410" aria-hidden="true" tabindex="-1"></a>fitted part of $V$.  Whether that holds *unit by unit* --- which is what</span>
-<span id="cb30-411"><a href="#cb30-411" aria-hidden="true" tabindex="-1"></a>licenses reading $\sum_t \tilde V_{it}^2$ as unit $i$'s weight ---</span>
-<span id="cb30-412"><a href="#cb30-412" aria-hidden="true" tabindex="-1"></a>depends on the residualising being done within the unit.  Demeaning</span>
-<span id="cb30-413"><a href="#cb30-413" aria-hidden="true" tabindex="-1"></a>delivers it by direct expansion,</span>
-<span id="cb30-414"><a href="#cb30-414" aria-hidden="true" tabindex="-1"></a>$\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}</span>
-<span id="cb30-415"><a href="#cb30-415" aria-hidden="true" tabindex="-1"></a>=\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in</span>
-<span id="cb30-416"><a href="#cb30-416" aria-hidden="true" tabindex="-1"></a>total.  Hazlett and Shinkre make this the centre of their treatment; the</span>
-<span id="cb30-417"><a href="#cb30-417" aria-hidden="true" tabindex="-1"></a>Angrist row below assumes the saturated case.</span>
-<span id="cb30-418"><a href="#cb30-418" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-419"><a href="#cb30-419" aria-hidden="true" tabindex="-1"></a><span class="fu">### When the weight simplifies</span></span>
-<span id="cb30-420"><a href="#cb30-420" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-421"><a href="#cb30-421" aria-hidden="true" tabindex="-1"></a>In general $\sum_t \tilde V_{it}^2$ will not factor into anything</span>
-<span id="cb30-422"><a href="#cb30-422" aria-hidden="true" tabindex="-1"></a>tidier, since $\tilde V_{it}$ carries both subscripts even when $V$ does</span>
-<span id="cb30-423"><a href="#cb30-423" aria-hidden="true" tabindex="-1"></a>not.  What changes from model to model is whether it happens to</span>
-<span id="cb30-424"><a href="#cb30-424" aria-hidden="true" tabindex="-1"></a>simplify.  The table borrows the panel chapter's notation --- $x_{it}$</span>
-<span id="cb30-425"><a href="#cb30-425" aria-hidden="true" tabindex="-1"></a>varying over units and time, $z_i$ over units only, $T$ periods per</span>
-<span id="cb30-426"><a href="#cb30-426" aria-hidden="true" tabindex="-1"></a>unit --- because that is where the cases are easiest to name; nothing</span>
-<span id="cb30-427"><a href="#cb30-427" aria-hidden="true" tabindex="-1"></a>in the rule depends on having a panel.</span>
-<span id="cb30-428"><a href="#cb30-428" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-429"><a href="#cb30-429" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model <span class="pp">|</span> $\sum_t \tilde V_{it}^2$ simplifies to <span class="pp">|</span></span>
-<span id="cb30-430"><a href="#cb30-430" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb30-431"><a href="#cb30-431" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $z_i$ alone, nothing else varying within the unit <span class="pp">|</span> $T_i\,\tilde z_i^2$ <span class="pp">|</span></span>
-<span id="cb30-432"><a href="#cb30-432" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> a time-varying $x_{it}$, unit effects removed <span class="pp">|</span> $(T-1)\,\widehat{\text{Var}}_i(x)$ <span class="pp">|</span></span>
-<span id="cb30-433"><a href="#cb30-433" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> binary $d$ with saturated controls <span class="pp">|</span> $n_x\,\hat d(x)\,(1-\hat d(x))$ <span class="pp">|</span></span>
-<span id="cb30-434"><a href="#cb30-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-435"><a href="#cb30-435" aria-hidden="true" tabindex="-1"></a>Add a time-varying $x_{it}$ alongside $z_i$ in the first model and the</span>
-<span id="cb30-436"><a href="#cb30-436" aria-hidden="true" tabindex="-1"></a>simplification is gone: residualising $z_i$ on something that moves</span>
-<span id="cb30-437"><a href="#cb30-437" aria-hidden="true" tabindex="-1"></a>within the unit makes $\tilde z$ move within the unit too.  The rule</span>
-<span id="cb30-438"><a href="#cb30-438" aria-hidden="true" tabindex="-1"></a>survives, the shortcut does not, and the $T_i$ form is the one-regressor</span>
-<span id="cb30-439"><a href="#cb30-439" aria-hidden="true" tabindex="-1"></a>special case rather than the general one.  The last row is Angrist</span>
-<span id="cb30-440"><a href="#cb30-440" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">1998</span><span class="co">](https://doi.org/10.2307/2998558)</span>), whose strata weights</span>
-<span id="cb30-441"><a href="#cb30-441" aria-hidden="true" tabindex="-1"></a>$\hat d(x)(1-\hat d(x))$ are largest where treatment is closest to a</span>
-<span id="cb30-442"><a href="#cb30-442" aria-hidden="true" tabindex="-1"></a>coin flip.  Same rule, different regressor.</span>
-<span id="cb30-443"><a href="#cb30-443" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-444"><a href="#cb30-444" aria-hidden="true" tabindex="-1"></a><span class="fu">## Angrist and Słoczyński, exactly</span></span>
-<span id="cb30-445"><a href="#cb30-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-446"><a href="#cb30-446" aria-hidden="true" tabindex="-1"></a>Both results are usually met as free-standing facts about treatment</span>
-<span id="cb30-447"><a href="#cb30-447" aria-hidden="true" tabindex="-1"></a>effects.  They are the rule above, read at two different granularities.</span>
+<span id="cb30-410"><a href="#cb30-410" aria-hidden="true" tabindex="-1"></a>fitted part of $V$.</span>
+<span id="cb30-411"><a href="#cb30-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-412"><a href="#cb30-412" aria-hidden="true" tabindex="-1"></a>In a panel, several observations share a unit, indexed by $t$ within</span>
+<span id="cb30-413"><a href="#cb30-413" aria-hidden="true" tabindex="-1"></a>unit $i$, and it is natural to ask whether the same cancellation holds</span>
+<span id="cb30-414"><a href="#cb30-414" aria-hidden="true" tabindex="-1"></a>*within a single unit* --- summed only over that unit's own $t$'s ---</span>
+<span id="cb30-415"><a href="#cb30-415" aria-hidden="true" tabindex="-1"></a>rather than only over the whole sample.  Write $V_{it}$ for the</span>
+<span id="cb30-416"><a href="#cb30-416" aria-hidden="true" tabindex="-1"></a>observation and $\bar V_i$ for the unit's own mean.  Demeaning delivers</span>
+<span id="cb30-417"><a href="#cb30-417" aria-hidden="true" tabindex="-1"></a>the within-unit version by direct expansion,</span>
+<span id="cb30-418"><a href="#cb30-418" aria-hidden="true" tabindex="-1"></a>$\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}</span>
+<span id="cb30-419"><a href="#cb30-419" aria-hidden="true" tabindex="-1"></a>=\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in</span>
+<span id="cb30-420"><a href="#cb30-420" aria-hidden="true" tabindex="-1"></a>total, over the whole sample, not unit by unit.  Hazlett and Shinkre</span>
+<span id="cb30-421"><a href="#cb30-421" aria-hidden="true" tabindex="-1"></a>make this the centre of their treatment; the Angrist row below assumes</span>
+<span id="cb30-422"><a href="#cb30-422" aria-hidden="true" tabindex="-1"></a>the saturated case.</span>
+<span id="cb30-423"><a href="#cb30-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-424"><a href="#cb30-424" aria-hidden="true" tabindex="-1"></a><span class="fu">### When the weight simplifies</span></span>
+<span id="cb30-425"><a href="#cb30-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-426"><a href="#cb30-426" aria-hidden="true" tabindex="-1"></a>In general the within-unit sum $\sum_t \tilde V_{it}^2$ will not factor</span>
+<span id="cb30-427"><a href="#cb30-427" aria-hidden="true" tabindex="-1"></a>into anything tidier, since $\tilde V_{it}$ carries both subscripts even</span>
+<span id="cb30-428"><a href="#cb30-428" aria-hidden="true" tabindex="-1"></a>when $V$ does not.  What changes from model to model is whether it</span>
+<span id="cb30-429"><a href="#cb30-429" aria-hidden="true" tabindex="-1"></a>happens to simplify.  The table is stated for a panel --- $x_{it}$</span>
+<span id="cb30-430"><a href="#cb30-430" aria-hidden="true" tabindex="-1"></a>varying over units and time, $z_i$ over units only, $T$ periods per</span>
+<span id="cb30-431"><a href="#cb30-431" aria-hidden="true" tabindex="-1"></a>unit --- because that is where the cases are easiest to name; nothing</span>
+<span id="cb30-432"><a href="#cb30-432" aria-hidden="true" tabindex="-1"></a>in the rule depends on having a panel.</span>
+<span id="cb30-433"><a href="#cb30-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-434"><a href="#cb30-434" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model <span class="pp">|</span> $\sum_t \tilde V_{it}^2$ simplifies to <span class="pp">|</span></span>
+<span id="cb30-435"><a href="#cb30-435" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb30-436"><a href="#cb30-436" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $z_i$ alone, nothing else varying within the unit <span class="pp">|</span> $T_i\,\tilde z_i^2$ <span class="pp">|</span></span>
+<span id="cb30-437"><a href="#cb30-437" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> a time-varying $x_{it}$, unit effects removed <span class="pp">|</span> $(T-1)\,\widehat{\text{Var}}_i(x)$ <span class="pp">|</span></span>
+<span id="cb30-438"><a href="#cb30-438" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> binary $d$ with saturated controls <span class="pp">|</span> $n_x\,\hat d(x)\,(1-\hat d(x))$ <span class="pp">|</span></span>
+<span id="cb30-439"><a href="#cb30-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-440"><a href="#cb30-440" aria-hidden="true" tabindex="-1"></a>Add a time-varying $x_{it}$ alongside $z_i$ in the first model and the</span>
+<span id="cb30-441"><a href="#cb30-441" aria-hidden="true" tabindex="-1"></a>simplification is gone: residualising $z_i$ on something that moves</span>
+<span id="cb30-442"><a href="#cb30-442" aria-hidden="true" tabindex="-1"></a>within the unit makes $\tilde z$ move within the unit too.  The rule</span>
+<span id="cb30-443"><a href="#cb30-443" aria-hidden="true" tabindex="-1"></a>survives, the shortcut does not, and the $T_i$ form is the one-regressor</span>
+<span id="cb30-444"><a href="#cb30-444" aria-hidden="true" tabindex="-1"></a>special case rather than the general one.  The last row is Angrist</span>
+<span id="cb30-445"><a href="#cb30-445" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">1998</span><span class="co">](https://doi.org/10.2307/2998558)</span>), whose strata weights</span>
+<span id="cb30-446"><a href="#cb30-446" aria-hidden="true" tabindex="-1"></a>$\hat d(x)(1-\hat d(x))$ are largest where treatment is closest to a</span>
+<span id="cb30-447"><a href="#cb30-447" aria-hidden="true" tabindex="-1"></a>coin flip.  Same rule, different regressor.</span>
 <span id="cb30-448"><a href="#cb30-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-449"><a href="#cb30-449" aria-hidden="true" tabindex="-1"></a><span class="fu">### Angrist (1998): the rule with a binary regressor</span></span>
+<span id="cb30-449"><a href="#cb30-449" aria-hidden="true" tabindex="-1"></a><span class="fu">## Angrist and Słoczyński, exactly</span></span>
 <span id="cb30-450"><a href="#cb30-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-451"><a href="#cb30-451" aria-hidden="true" tabindex="-1"></a>Let $d$ be binary and let the controls be **saturated** --- a full set</span>
-<span id="cb30-452"><a href="#cb30-452" aria-hidden="true" tabindex="-1"></a>of dummies for each covariate stratum $x$.  Residualising $d$ on those</span>
-<span id="cb30-453"><a href="#cb30-453" aria-hidden="true" tabindex="-1"></a>dummies subtracts each stratum's own treated share, so</span>
-<span id="cb30-454"><a href="#cb30-454" aria-hidden="true" tabindex="-1"></a>$\tilde d_i = d_i - \hat d(x)$ for observation $i$ in stratum $x$.  The</span>
-<span id="cb30-455"><a href="#cb30-455" aria-hidden="true" tabindex="-1"></a>stratum's total effect weight is then</span>
-<span id="cb30-456"><a href="#cb30-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-457"><a href="#cb30-457" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-458"><a href="#cb30-458" aria-hidden="true" tabindex="-1"></a>\sum_{i\in x}\tilde d_i d_i</span>
-<span id="cb30-459"><a href="#cb30-459" aria-hidden="true" tabindex="-1"></a>=\sum_{i\in x} d_i^2 - \hat d(x)<span class="sc">\!</span>\sum_{i\in x} d_i</span>
-<span id="cb30-460"><a href="#cb30-460" aria-hidden="true" tabindex="-1"></a>= n_x\hat d(x) - n_x \hat d(x)^2</span>
-<span id="cb30-461"><a href="#cb30-461" aria-hidden="true" tabindex="-1"></a>= n_x\,\hat d(x)\bigl(1-\hat d(x)\bigr),</span>
+<span id="cb30-451"><a href="#cb30-451" aria-hidden="true" tabindex="-1"></a>Both results are usually met as free-standing facts about treatment</span>
+<span id="cb30-452"><a href="#cb30-452" aria-hidden="true" tabindex="-1"></a>effects.  They are the rule above, read at two different granularities.</span>
+<span id="cb30-453"><a href="#cb30-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-454"><a href="#cb30-454" aria-hidden="true" tabindex="-1"></a><span class="fu">### Angrist (1998): the rule with a binary regressor</span></span>
+<span id="cb30-455"><a href="#cb30-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-456"><a href="#cb30-456" aria-hidden="true" tabindex="-1"></a>Let $d$ be binary and let the controls be **saturated** --- a full set</span>
+<span id="cb30-457"><a href="#cb30-457" aria-hidden="true" tabindex="-1"></a>of dummies for each covariate stratum $x$.  Residualising $d$ on those</span>
+<span id="cb30-458"><a href="#cb30-458" aria-hidden="true" tabindex="-1"></a>dummies subtracts each stratum's own treated share, so</span>
+<span id="cb30-459"><a href="#cb30-459" aria-hidden="true" tabindex="-1"></a>$\tilde d_i = d_i - \hat d(x)$ for observation $i$ in stratum $x$.  The</span>
+<span id="cb30-460"><a href="#cb30-460" aria-hidden="true" tabindex="-1"></a>stratum's total effect weight is then</span>
+<span id="cb30-461"><a href="#cb30-461" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-462"><a href="#cb30-462" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-463"><a href="#cb30-463" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-464"><a href="#cb30-464" aria-hidden="true" tabindex="-1"></a>which is Angrist's weight.  Nothing was added: it is</span>
-<span id="cb30-465"><a href="#cb30-465" aria-hidden="true" tabindex="-1"></a>$\sum \tilde V V$ with a binary $V$, where $d_i^2=d_i$ makes the sum</span>
-<span id="cb30-466"><a href="#cb30-466" aria-hidden="true" tabindex="-1"></a>collapse.  The maximum at $\hat d(x)=\tfrac12$ is just the fact that a</span>
-<span id="cb30-467"><a href="#cb30-467" aria-hidden="true" tabindex="-1"></a>binary variable has most variance when it is a coin flip.</span>
+<span id="cb30-463"><a href="#cb30-463" aria-hidden="true" tabindex="-1"></a>\sum_{i\in x}\tilde d_i d_i</span>
+<span id="cb30-464"><a href="#cb30-464" aria-hidden="true" tabindex="-1"></a>=\sum_{i\in x} d_i^2 - \hat d(x)<span class="sc">\!</span>\sum_{i\in x} d_i</span>
+<span id="cb30-465"><a href="#cb30-465" aria-hidden="true" tabindex="-1"></a>= n_x\hat d(x) - n_x \hat d(x)^2</span>
+<span id="cb30-466"><a href="#cb30-466" aria-hidden="true" tabindex="-1"></a>= n_x\,\hat d(x)\bigl(1-\hat d(x)\bigr),</span>
+<span id="cb30-467"><a href="#cb30-467" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb30-468"><a href="#cb30-468" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-469"><a href="#cb30-469" aria-hidden="true" tabindex="-1"></a>Note also what plays the role of $s_i$ here.  A single observation with</span>
-<span id="cb30-470"><a href="#cb30-470" aria-hidden="true" tabindex="-1"></a>a binary regressor has no slope --- you need one treated and one control</span>
-<span id="cb30-471"><a href="#cb30-471" aria-hidden="true" tabindex="-1"></a>to form a difference.  So the smallest unit carrying an effect is the</span>
-<span id="cb30-472"><a href="#cb30-472" aria-hidden="true" tabindex="-1"></a>*stratum*, and $s_i$ becomes the stratum difference in means.  The</span>
-<span id="cb30-473"><a href="#cb30-473" aria-hidden="true" tabindex="-1"></a>granularity of the decomposition is set by the regressor, not chosen.</span>
-<span id="cb30-474"><a href="#cb30-474" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-475"><a href="#cb30-475" aria-hidden="true" tabindex="-1"></a>The check below builds five covariate strata with different treated</span>
-<span id="cb30-476"><a href="#cb30-476" aria-hidden="true" tabindex="-1"></a>shares and a different effect in each, then computes the stratum weights</span>
-<span id="cb30-477"><a href="#cb30-477" aria-hidden="true" tabindex="-1"></a>twice --- once as $\sum \tilde d_i d_i$, once as Angrist's</span>
-<span id="cb30-478"><a href="#cb30-478" aria-hidden="true" tabindex="-1"></a>$n_x\hat d(1-\hat d)$ --- and compares both to the OLS coefficient and</span>
-<span id="cb30-479"><a href="#cb30-479" aria-hidden="true" tabindex="-1"></a>to Słoczyński's form.  It runs the whole thing under two treated shares,</span>
-<span id="cb30-480"><a href="#cb30-480" aria-hidden="true" tabindex="-1"></a>one near a half and one near a tenth.</span>
-<span id="cb30-481"><a href="#cb30-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-484"><a href="#cb30-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-485"><a href="#cb30-485" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">21</span>)</span>
-<span id="cb30-486"><a href="#cb30-486" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">400000</span></span>
-<span id="cb30-487"><a href="#cb30-487" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, n, <span class="cn">TRUE</span>)</span>
-<span id="cb30-488"><a href="#cb30-488" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-489"><a href="#cb30-489" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(px) {</span>
-<span id="cb30-490"><a href="#cb30-490" aria-hidden="true" tabindex="-1"></a>  d  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, px[X]); ta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)[X]   <span class="co"># effect varies by stratum</span></span>
-<span id="cb30-491"><a href="#cb30-491" aria-hidden="true" tabindex="-1"></a>  yy <span class="ot">&lt;-</span> ta <span class="sc">*</span> d <span class="sc">+</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
-<span id="cb30-492"><a href="#cb30-492" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">resid</span>(<span class="fu">lm</span>(d <span class="sc">~</span> <span class="fu">factor</span>(X)))                          <span class="co"># residualised treatment</span></span>
-<span id="cb30-493"><a href="#cb30-493" aria-hidden="true" tabindex="-1"></a>  nx <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">table</span>(X)); dh <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">tapply</span>(d, X, mean))</span>
-<span id="cb30-494"><a href="#cb30-494" aria-hidden="true" tabindex="-1"></a>  DIM <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">tapply</span>(yy[d <span class="sc">==</span> <span class="dv">1</span>], X[d <span class="sc">==</span> <span class="dv">1</span>], mean) <span class="sc">-</span></span>
-<span id="cb30-495"><a href="#cb30-495" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">tapply</span>(yy[d <span class="sc">==</span> <span class="dv">0</span>], X[d <span class="sc">==</span> <span class="dv">0</span>], mean))</span>
-<span id="cb30-496"><a href="#cb30-496" aria-hidden="true" tabindex="-1"></a>  rho <span class="ot">&lt;-</span> <span class="fu">mean</span>(d); ATT <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(ta, d); ATU <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(ta, <span class="dv">1</span> <span class="sc">-</span> d)</span>
-<span id="cb30-497"><a href="#cb30-497" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">treated share rho</span><span class="st">`</span>      <span class="ot">=</span> rho,</span>
-<span id="cb30-498"><a href="#cb30-498" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">max |ours - Angrist|</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">as.vector</span>(<span class="fu">tapply</span>(dt <span class="sc">*</span> d, X, sum)) <span class="sc">-</span> nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh))),</span>
-<span id="cb30-499"><a href="#cb30-499" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS, saturated</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yy <span class="sc">~</span> d <span class="sc">+</span> <span class="fu">factor</span>(X)))[[<span class="st">"d"</span>]]),</span>
-<span id="cb30-500"><a href="#cb30-500" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Angrist weighted avg</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh) <span class="sc">*</span> DIM) <span class="sc">/</span> <span class="fu">sum</span>(nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh)),</span>
-<span id="cb30-501"><a href="#cb30-501" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Sloczynski, raw rho</span><span class="st">`</span>    <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> rho) <span class="sc">*</span> ATT <span class="sc">+</span> rho <span class="sc">*</span> ATU,</span>
-<span id="cb30-502"><a href="#cb30-502" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">ATE</span><span class="st">`</span>                    <span class="ot">=</span> <span class="fu">mean</span>(ta))</span>
-<span id="cb30-503"><a href="#cb30-503" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-504"><a href="#cb30-504" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="st">`</span><span class="at">near balanced</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">08</span>, .<span class="dv">20</span>, .<span class="dv">50</span>, .<span class="dv">75</span>, .<span class="dv">93</span>)),</span>
-<span id="cb30-505"><a href="#cb30-505" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">few treated</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">02</span>, .<span class="dv">04</span>, .<span class="dv">08</span>, .<span class="dv">12</span>, .<span class="dv">20</span>)))</span>
-<span id="cb30-506"><a href="#cb30-506" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"max |our weight - Angrist's| : %.1e , %.1e</span><span class="sc">\n\n</span><span class="st">"</span>, res[<span class="dv">2</span>, <span class="dv">1</span>], res[<span class="dv">2</span>, <span class="dv">2</span>]))</span>
-<span id="cb30-507"><a href="#cb30-507" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(res[<span class="sc">-</span><span class="dv">2</span>, ], <span class="dv">4</span>)</span>
-<span id="cb30-508"><a href="#cb30-508" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-509"><a href="#cb30-509" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-510"><a href="#cb30-510" aria-hidden="true" tabindex="-1"></a>The two weight vectors agree to within $6\times10^{-10}$ in both</span>
-<span id="cb30-511"><a href="#cb30-511" aria-hidden="true" tabindex="-1"></a>designs, and Angrist's weighted average reproduces the OLS coefficient</span>
-<span id="cb30-512"><a href="#cb30-512" aria-hidden="true" tabindex="-1"></a>exactly.  In the near-balanced design the coefficient is 2.012 against</span>
-<span id="cb30-513"><a href="#cb30-513" aria-hidden="true" tabindex="-1"></a>an ATE of 1.998 --- close, because balance is where the weighting does</span>
-<span id="cb30-514"><a href="#cb30-514" aria-hidden="true" tabindex="-1"></a>least.  Push the treated share down to 0.09 and the coefficient goes to</span>
-<span id="cb30-515"><a href="#cb30-515" aria-hidden="true" tabindex="-1"></a>2.874 against the same ATE of 1.998.  Nothing about the effects changed;</span>
-<span id="cb30-516"><a href="#cb30-516" aria-hidden="true" tabindex="-1"></a>only the treated share did.</span>
-<span id="cb30-517"><a href="#cb30-517" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-518"><a href="#cb30-518" aria-hidden="true" tabindex="-1"></a><span class="fu">### Słoczyński (2022): the same weights, aggregated to two groups</span></span>
-<span id="cb30-519"><a href="#cb30-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-520"><a href="#cb30-520" aria-hidden="true" tabindex="-1"></a>Angrist sorts by covariate stratum.  Słoczyński</span>
-<span id="cb30-521"><a href="#cb30-521" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) sorts by treatment status</span>
-<span id="cb30-522"><a href="#cb30-522" aria-hidden="true" tabindex="-1"></a>instead, and collapses everything into two numbers: the effect on the</span>
-<span id="cb30-523"><a href="#cb30-523" aria-hidden="true" tabindex="-1"></a>treated and the effect on the untreated.  Writing $\rho$ for the treated</span>
-<span id="cb30-524"><a href="#cb30-524" aria-hidden="true" tabindex="-1"></a>share,</span>
-<span id="cb30-525"><a href="#cb30-525" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-526"><a href="#cb30-526" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-527"><a href="#cb30-527" aria-hidden="true" tabindex="-1"></a>\hat\beta \;\to\; (1-\rho)\,\text{ATT} \;+\; \rho\,\text{ATU},</span>
-<span id="cb30-528"><a href="#cb30-528" aria-hidden="true" tabindex="-1"></a>\qquad\text{while}\qquad</span>
-<span id="cb30-529"><a href="#cb30-529" aria-hidden="true" tabindex="-1"></a>\text{ATE} \;=\; \rho\,\text{ATT} + (1-\rho)\,\text{ATU} .</span>
-<span id="cb30-530"><a href="#cb30-530" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-531"><a href="#cb30-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-532"><a href="#cb30-532" aria-hidden="true" tabindex="-1"></a>The same two quantities with the weights **swapped**.  That is the whole</span>
-<span id="cb30-533"><a href="#cb30-533" aria-hidden="true" tabindex="-1"></a>content of "smaller groups get larger weights": at $\rho=0.1$ the</span>
-<span id="cb30-534"><a href="#cb30-534" aria-hidden="true" tabindex="-1"></a>coefficient puts $0.9$ on the effect for the treated tenth, while the</span>
-<span id="cb30-535"><a href="#cb30-535" aria-hidden="true" tabindex="-1"></a>ATE puts $0.1$ there.</span>
+<span id="cb30-469"><a href="#cb30-469" aria-hidden="true" tabindex="-1"></a>which is Angrist's weight.  Nothing was added: it is</span>
+<span id="cb30-470"><a href="#cb30-470" aria-hidden="true" tabindex="-1"></a>$\sum \tilde V V$ with a binary $V$, where $d_i^2=d_i$ makes the sum</span>
+<span id="cb30-471"><a href="#cb30-471" aria-hidden="true" tabindex="-1"></a>collapse.  The maximum at $\hat d(x)=\tfrac12$ is just the fact that a</span>
+<span id="cb30-472"><a href="#cb30-472" aria-hidden="true" tabindex="-1"></a>binary variable has most variance when it is a coin flip.</span>
+<span id="cb30-473"><a href="#cb30-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-474"><a href="#cb30-474" aria-hidden="true" tabindex="-1"></a>Note also what plays the role of $s_i$ here.  A single observation with</span>
+<span id="cb30-475"><a href="#cb30-475" aria-hidden="true" tabindex="-1"></a>a binary regressor has no slope --- you need one treated and one control</span>
+<span id="cb30-476"><a href="#cb30-476" aria-hidden="true" tabindex="-1"></a>to form a difference.  So the smallest unit carrying an effect is the</span>
+<span id="cb30-477"><a href="#cb30-477" aria-hidden="true" tabindex="-1"></a>*stratum*, and $s_i$ becomes the stratum difference in means.  The</span>
+<span id="cb30-478"><a href="#cb30-478" aria-hidden="true" tabindex="-1"></a>granularity of the decomposition is set by the regressor, not chosen.</span>
+<span id="cb30-479"><a href="#cb30-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-480"><a href="#cb30-480" aria-hidden="true" tabindex="-1"></a>The check below builds five covariate strata with different treated</span>
+<span id="cb30-481"><a href="#cb30-481" aria-hidden="true" tabindex="-1"></a>shares and a different effect in each, then computes the stratum weights</span>
+<span id="cb30-482"><a href="#cb30-482" aria-hidden="true" tabindex="-1"></a>twice --- once as $\sum \tilde d_i d_i$, once as Angrist's</span>
+<span id="cb30-483"><a href="#cb30-483" aria-hidden="true" tabindex="-1"></a>$n_x\hat d(1-\hat d)$ --- and compares both to the OLS coefficient and</span>
+<span id="cb30-484"><a href="#cb30-484" aria-hidden="true" tabindex="-1"></a>to Słoczyński's form.  It runs the whole thing under two treated shares,</span>
+<span id="cb30-485"><a href="#cb30-485" aria-hidden="true" tabindex="-1"></a>one near a half and one near a tenth.</span>
+<span id="cb30-486"><a href="#cb30-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-489"><a href="#cb30-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-490"><a href="#cb30-490" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">21</span>)</span>
+<span id="cb30-491"><a href="#cb30-491" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">400000</span></span>
+<span id="cb30-492"><a href="#cb30-492" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, n, <span class="cn">TRUE</span>)</span>
+<span id="cb30-493"><a href="#cb30-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-494"><a href="#cb30-494" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(px) {</span>
+<span id="cb30-495"><a href="#cb30-495" aria-hidden="true" tabindex="-1"></a>  d  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, px[X]); ta <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)[X]   <span class="co"># effect varies by stratum</span></span>
+<span id="cb30-496"><a href="#cb30-496" aria-hidden="true" tabindex="-1"></a>  yy <span class="ot">&lt;-</span> ta <span class="sc">*</span> d <span class="sc">+</span> X <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb30-497"><a href="#cb30-497" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">&lt;-</span> <span class="fu">resid</span>(<span class="fu">lm</span>(d <span class="sc">~</span> <span class="fu">factor</span>(X)))                          <span class="co"># residualised treatment</span></span>
+<span id="cb30-498"><a href="#cb30-498" aria-hidden="true" tabindex="-1"></a>  nx <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">table</span>(X)); dh <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">tapply</span>(d, X, mean))</span>
+<span id="cb30-499"><a href="#cb30-499" aria-hidden="true" tabindex="-1"></a>  DIM <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">tapply</span>(yy[d <span class="sc">==</span> <span class="dv">1</span>], X[d <span class="sc">==</span> <span class="dv">1</span>], mean) <span class="sc">-</span></span>
+<span id="cb30-500"><a href="#cb30-500" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">tapply</span>(yy[d <span class="sc">==</span> <span class="dv">0</span>], X[d <span class="sc">==</span> <span class="dv">0</span>], mean))</span>
+<span id="cb30-501"><a href="#cb30-501" aria-hidden="true" tabindex="-1"></a>  rho <span class="ot">&lt;-</span> <span class="fu">mean</span>(d); ATT <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(ta, d); ATU <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(ta, <span class="dv">1</span> <span class="sc">-</span> d)</span>
+<span id="cb30-502"><a href="#cb30-502" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">treated share rho</span><span class="st">`</span>      <span class="ot">=</span> rho,</span>
+<span id="cb30-503"><a href="#cb30-503" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">max |ours - Angrist|</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">as.vector</span>(<span class="fu">tapply</span>(dt <span class="sc">*</span> d, X, sum)) <span class="sc">-</span> nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh))),</span>
+<span id="cb30-504"><a href="#cb30-504" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS, saturated</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yy <span class="sc">~</span> d <span class="sc">+</span> <span class="fu">factor</span>(X)))[[<span class="st">"d"</span>]]),</span>
+<span id="cb30-505"><a href="#cb30-505" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Angrist weighted avg</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh) <span class="sc">*</span> DIM) <span class="sc">/</span> <span class="fu">sum</span>(nx<span class="sc">*</span>dh<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>dh)),</span>
+<span id="cb30-506"><a href="#cb30-506" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Sloczynski, raw rho</span><span class="st">`</span>    <span class="ot">=</span> (<span class="dv">1</span> <span class="sc">-</span> rho) <span class="sc">*</span> ATT <span class="sc">+</span> rho <span class="sc">*</span> ATU,</span>
+<span id="cb30-507"><a href="#cb30-507" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">ATE</span><span class="st">`</span>                    <span class="ot">=</span> <span class="fu">mean</span>(ta))</span>
+<span id="cb30-508"><a href="#cb30-508" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-509"><a href="#cb30-509" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="st">`</span><span class="at">near balanced</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">08</span>, .<span class="dv">20</span>, .<span class="dv">50</span>, .<span class="dv">75</span>, .<span class="dv">93</span>)),</span>
+<span id="cb30-510"><a href="#cb30-510" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">few treated</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">02</span>, .<span class="dv">04</span>, .<span class="dv">08</span>, .<span class="dv">12</span>, .<span class="dv">20</span>)))</span>
+<span id="cb30-511"><a href="#cb30-511" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"max |our weight - Angrist's| : %.1e , %.1e</span><span class="sc">\n\n</span><span class="st">"</span>, res[<span class="dv">2</span>, <span class="dv">1</span>], res[<span class="dv">2</span>, <span class="dv">2</span>]))</span>
+<span id="cb30-512"><a href="#cb30-512" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(res[<span class="sc">-</span><span class="dv">2</span>, ], <span class="dv">4</span>)</span>
+<span id="cb30-513"><a href="#cb30-513" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-514"><a href="#cb30-514" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-515"><a href="#cb30-515" aria-hidden="true" tabindex="-1"></a>The two weight vectors agree to within $6\times10^{-10}$ in both</span>
+<span id="cb30-516"><a href="#cb30-516" aria-hidden="true" tabindex="-1"></a>designs, and Angrist's weighted average reproduces the OLS coefficient</span>
+<span id="cb30-517"><a href="#cb30-517" aria-hidden="true" tabindex="-1"></a>exactly.  In the near-balanced design the coefficient is 2.012 against</span>
+<span id="cb30-518"><a href="#cb30-518" aria-hidden="true" tabindex="-1"></a>an ATE of 1.998 --- close, because balance is where the weighting does</span>
+<span id="cb30-519"><a href="#cb30-519" aria-hidden="true" tabindex="-1"></a>least.  Push the treated share down to 0.09 and the coefficient goes to</span>
+<span id="cb30-520"><a href="#cb30-520" aria-hidden="true" tabindex="-1"></a>2.874 against the same ATE of 1.998.  Nothing about the effects changed;</span>
+<span id="cb30-521"><a href="#cb30-521" aria-hidden="true" tabindex="-1"></a>only the treated share did.</span>
+<span id="cb30-522"><a href="#cb30-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-523"><a href="#cb30-523" aria-hidden="true" tabindex="-1"></a><span class="fu">### Słoczyński (2022): the same weights, aggregated to two groups</span></span>
+<span id="cb30-524"><a href="#cb30-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-525"><a href="#cb30-525" aria-hidden="true" tabindex="-1"></a>Angrist sorts by covariate stratum.  Słoczyński</span>
+<span id="cb30-526"><a href="#cb30-526" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) sorts by treatment status</span>
+<span id="cb30-527"><a href="#cb30-527" aria-hidden="true" tabindex="-1"></a>instead, and collapses everything into two numbers: the effect on the</span>
+<span id="cb30-528"><a href="#cb30-528" aria-hidden="true" tabindex="-1"></a>treated and the effect on the untreated.  Writing $\rho$ for the treated</span>
+<span id="cb30-529"><a href="#cb30-529" aria-hidden="true" tabindex="-1"></a>share,</span>
+<span id="cb30-530"><a href="#cb30-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-531"><a href="#cb30-531" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-532"><a href="#cb30-532" aria-hidden="true" tabindex="-1"></a>\hat\beta \;\to\; (1-\rho)\,\text{ATT} \;+\; \rho\,\text{ATU},</span>
+<span id="cb30-533"><a href="#cb30-533" aria-hidden="true" tabindex="-1"></a>\qquad\text{while}\qquad</span>
+<span id="cb30-534"><a href="#cb30-534" aria-hidden="true" tabindex="-1"></a>\text{ATE} \;=\; \rho\,\text{ATT} + (1-\rho)\,\text{ATU} .</span>
+<span id="cb30-535"><a href="#cb30-535" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb30-536"><a href="#cb30-536" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-537"><a href="#cb30-537" aria-hidden="true" tabindex="-1"></a>One caveat, and it matters.  The clean form above with the raw share</span>
-<span id="cb30-538"><a href="#cb30-538" aria-hidden="true" tabindex="-1"></a>$\rho$ is exact in the *no-covariate* case.  With covariates the weights</span>
-<span id="cb30-539"><a href="#cb30-539" aria-hidden="true" tabindex="-1"></a>are covariate-adjusted, so $\rho$ is only an approximation --- visible</span>
-<span id="cb30-540"><a href="#cb30-540" aria-hidden="true" tabindex="-1"></a>in the table above, where the raw-$\rho$ form gives 2.029 against an</span>
-<span id="cb30-541"><a href="#cb30-541" aria-hidden="true" tabindex="-1"></a>exact 2.012, and 2.858 against an exact 2.874.  Close enough to reason</span>
-<span id="cb30-542"><a href="#cb30-542" aria-hidden="true" tabindex="-1"></a>with, not close enough to quote.</span>
-<span id="cb30-543"><a href="#cb30-543" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-544"><a href="#cb30-544" aria-hidden="true" tabindex="-1"></a><span class="fu">### Where they sit relative to each other</span></span>
-<span id="cb30-545"><a href="#cb30-545" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-546"><a href="#cb30-546" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> Sorts observations by <span class="pp">|</span> Smallest unit with an effect <span class="pp">|</span> Exact when <span class="pp">|</span></span>
-<span id="cb30-547"><a href="#cb30-547" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb30-548"><a href="#cb30-548" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Our rule <span class="pp">|</span> nothing --- observation level <span class="pp">|</span> the observation, $s_i$ <span class="pp">|</span> always (algebra) <span class="pp">|</span></span>
-<span id="cb30-549"><a href="#cb30-549" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Angrist (1998) <span class="pp">|</span> covariate stratum <span class="pp">|</span> the stratum, a difference in means <span class="pp">|</span> controls are saturated <span class="pp">|</span></span>
-<span id="cb30-550"><a href="#cb30-550" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Słoczyński (2022) <span class="pp">|</span> treated vs untreated <span class="pp">|</span> the group, ATT and ATU <span class="pp">|</span> no covariates, else approximate <span class="pp">|</span></span>
-<span id="cb30-551"><a href="#cb30-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-552"><a href="#cb30-552" aria-hidden="true" tabindex="-1"></a>Reading down the last column is the useful part.  The observation-level</span>
-<span id="cb30-553"><a href="#cb30-553" aria-hidden="true" tabindex="-1"></a>identity always holds and says little.  Angrist's needs saturation and</span>
-<span id="cb30-554"><a href="#cb30-554" aria-hidden="true" tabindex="-1"></a>buys an interpretable weight.  Słoczyński's needs more and buys the</span>
-<span id="cb30-555"><a href="#cb30-555" aria-hidden="true" tabindex="-1"></a>sharpest statement of all --- that the coefficient and the ATE are the</span>
-<span id="cb30-556"><a href="#cb30-556" aria-hidden="true" tabindex="-1"></a>same two numbers with the weights reversed.</span>
-<span id="cb30-557"><a href="#cb30-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-558"><a href="#cb30-558" aria-hidden="true" tabindex="-1"></a>Hazlett and Shinkre (<span class="co">[</span><span class="ot">2024</span><span class="co">](https://arxiv.org/abs/2403.03299)</span>) sit</span>
-<span id="cb30-559"><a href="#cb30-559" aria-hidden="true" tabindex="-1"></a>underneath all three: they show these weights arise from, and</span>
-<span id="cb30-560"><a href="#cb30-560" aria-hidden="true" tabindex="-1"></a>characterise, the bias caused by fitting a constant effect when effects</span>
-<span id="cb30-561"><a href="#cb30-561" aria-hidden="true" tabindex="-1"></a>are heterogeneous --- and argue for estimators that tolerate</span>
-<span id="cb30-562"><a href="#cb30-562" aria-hidden="true" tabindex="-1"></a>heterogeneity rather than for diagnosing the weights after the fact.</span>
-<span id="cb30-563"><a href="#cb30-563" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-564"><a href="#cb30-564" aria-hidden="true" tabindex="-1"></a><span class="fu">## When the weighting changes the answer</span></span>
-<span id="cb30-565"><a href="#cb30-565" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-566"><a href="#cb30-566" aria-hidden="true" tabindex="-1"></a>The weighting always happens.  It changes the answer only when the</span>
-<span id="cb30-567"><a href="#cb30-567" aria-hidden="true" tabindex="-1"></a>effect is heterogeneous *and* the heterogeneity lines up with the</span>
-<span id="cb30-568"><a href="#cb30-568" aria-hidden="true" tabindex="-1"></a>weight.  The claim to check is that a regression does not report *the*</span>
-<span id="cb30-569"><a href="#cb30-569" aria-hidden="true" tabindex="-1"></a>effect but a weighted average of the effects, and that these are</span>
-<span id="cb30-570"><a href="#cb30-570" aria-hidden="true" tabindex="-1"></a>different numbers.</span>
-<span id="cb30-571"><a href="#cb30-571" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-572"><a href="#cb30-572" aria-hidden="true" tabindex="-1"></a>The individual effects are never observed, so we plant them: give every</span>
-<span id="cb30-573"><a href="#cb30-573" aria-hidden="true" tabindex="-1"></a>unit its own slope $\beta_i$, generate $y$ from those slopes, and see</span>
-<span id="cb30-574"><a href="#cb30-574" aria-hidden="true" tabindex="-1"></a>which average of the planted slopes the estimate lands on.  In the next</span>
-<span id="cb30-575"><a href="#cb30-575" aria-hidden="true" tabindex="-1"></a>chunk only one estimator is run; anything else reported is not an</span>
-<span id="cb30-576"><a href="#cb30-576" aria-hidden="true" tabindex="-1"></a>estimate but the planted slopes averaged some way.  Fixed effects is</span>
-<span id="cb30-577"><a href="#cb30-577" aria-hidden="true" tabindex="-1"></a>used because in a panel the natural place for heterogeneity is across</span>
-<span id="cb30-578"><a href="#cb30-578" aria-hidden="true" tabindex="-1"></a>units, and it is still OLS --- OLS with the unit dummies partialled out.</span>
-<span id="cb30-579"><a href="#cb30-579" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-580"><a href="#cb30-580" aria-hidden="true" tabindex="-1"></a>Start with the extreme case.  Half the units barely move and have a true</span>
-<span id="cb30-581"><a href="#cb30-581" aria-hidden="true" tabindex="-1"></a>slope of zero; the other half move a great deal and have a true slope of</span>
-<span id="cb30-582"><a href="#cb30-582" aria-hidden="true" tabindex="-1"></a>two.  The average unit's slope is one.</span>
-<span id="cb30-583"><a href="#cb30-583" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-586"><a href="#cb30-586" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-587"><a href="#cb30-587" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb30-588"><a href="#cb30-588" aria-hidden="true" tabindex="-1"></a>half <span class="ot">&lt;-</span> N <span class="sc">/</span> <span class="dv">2</span></span>
-<span id="cb30-589"><a href="#cb30-589" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id   =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
-<span id="cb30-590"><a href="#cb30-590" aria-hidden="true" tabindex="-1"></a>                <span class="at">move =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.2</span>, half), <span class="fu">rep</span>(<span class="dv">3</span>, half)), <span class="at">each =</span> T),</span>
-<span id="cb30-591"><a href="#cb30-591" aria-hidden="true" tabindex="-1"></a>                <span class="at">b    =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,   half), <span class="fu">rep</span>(<span class="dv">2</span>, half)), <span class="at">each =</span> T))</span>
-<span id="cb30-592"><a href="#cb30-592" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move)</span>
-<span id="cb30-593"><a href="#cb30-593" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> g<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb30-594"><a href="#cb30-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-595"><a href="#cb30-595" aria-hidden="true" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, g))<span class="sc">^</span><span class="dv">2</span>, g<span class="sc">$</span>id, sum)</span>
-<span id="cb30-596"><a href="#cb30-596" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">value =</span> <span class="fu">c</span>(</span>
-<span id="cb30-597"><a href="#cb30-597" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">average of the two true slopes</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)),</span>
-<span id="cb30-598"><a href="#cb30-598" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>                         <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, g))[[<span class="st">"x"</span>]],</span>
-<span id="cb30-599"><a href="#cb30-599" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">weight held by the steady half (%)</span><span class="st">`</span>  <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(wg[<span class="dv">1</span><span class="sc">:</span>half]) <span class="sc">/</span> <span class="fu">sum</span>(wg))), <span class="dv">3</span>)</span>
-<span id="cb30-600"><a href="#cb30-600" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-601"><a href="#cb30-601" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-602"><a href="#cb30-602" aria-hidden="true" tabindex="-1"></a>The average slope is one and the regression reports 1.98, because the</span>
-<span id="cb30-603"><a href="#cb30-603" aria-hidden="true" tabindex="-1"></a>five hundred steady units hold under half of one percent of the weight.</span>
-<span id="cb30-604"><a href="#cb30-604" aria-hidden="true" tabindex="-1"></a>Their six observations sit almost on top of their own unit mean ---</span>
-<span id="cb30-605"><a href="#cb30-605" aria-hidden="true" tabindex="-1"></a>this regression carries unit effects, so that is the relevant deviation</span>
-<span id="cb30-606"><a href="#cb30-606" aria-hidden="true" tabindex="-1"></a>--- and squaring puts them nowhere in the sum.  Nothing has gone wrong</span>
-<span id="cb30-607"><a href="#cb30-607" aria-hidden="true" tabindex="-1"></a>in the arithmetic.  The units with a slope of zero were never really in</span>
-<span id="cb30-608"><a href="#cb30-608" aria-hidden="true" tabindex="-1"></a>the regression.</span>
-<span id="cb30-609"><a href="#cb30-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-610"><a href="#cb30-610" aria-hidden="true" tabindex="-1"></a><span class="fu">### Which mean, and why it matters</span></span>
-<span id="cb30-611"><a href="#cb30-611" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-612"><a href="#cb30-612" aria-hidden="true" tabindex="-1"></a>That result is about the *within-unit* deviation.  Plain OLS uses</span>
-<span id="cb30-613"><a href="#cb30-613" aria-hidden="true" tabindex="-1"></a>distance from the grand mean instead, and the two coincided above only</span>
-<span id="cb30-614"><a href="#cb30-614" aria-hidden="true" tabindex="-1"></a>because both halves were built around zero.  Separate them and the</span>
-<span id="cb30-615"><a href="#cb30-615" aria-hidden="true" tabindex="-1"></a>algebra says exactly what happens.</span>
+<span id="cb30-537"><a href="#cb30-537" aria-hidden="true" tabindex="-1"></a>The same two quantities with the weights **swapped**.  That is the whole</span>
+<span id="cb30-538"><a href="#cb30-538" aria-hidden="true" tabindex="-1"></a>content of "smaller groups get larger weights": at $\rho=0.1$ the</span>
+<span id="cb30-539"><a href="#cb30-539" aria-hidden="true" tabindex="-1"></a>coefficient puts $0.9$ on the effect for the treated tenth, while the</span>
+<span id="cb30-540"><a href="#cb30-540" aria-hidden="true" tabindex="-1"></a>ATE puts $0.1$ there.</span>
+<span id="cb30-541"><a href="#cb30-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-542"><a href="#cb30-542" aria-hidden="true" tabindex="-1"></a>One caveat, and it matters.  The clean form above with the raw share</span>
+<span id="cb30-543"><a href="#cb30-543" aria-hidden="true" tabindex="-1"></a>$\rho$ is exact in the *no-covariate* case.  With covariates the weights</span>
+<span id="cb30-544"><a href="#cb30-544" aria-hidden="true" tabindex="-1"></a>are covariate-adjusted, so $\rho$ is only an approximation --- visible</span>
+<span id="cb30-545"><a href="#cb30-545" aria-hidden="true" tabindex="-1"></a>in the table above, where the raw-$\rho$ form gives 2.029 against an</span>
+<span id="cb30-546"><a href="#cb30-546" aria-hidden="true" tabindex="-1"></a>exact 2.012, and 2.858 against an exact 2.874.  Close enough to reason</span>
+<span id="cb30-547"><a href="#cb30-547" aria-hidden="true" tabindex="-1"></a>with, not close enough to quote.</span>
+<span id="cb30-548"><a href="#cb30-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-549"><a href="#cb30-549" aria-hidden="true" tabindex="-1"></a><span class="fu">### Where they sit relative to each other</span></span>
+<span id="cb30-550"><a href="#cb30-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-551"><a href="#cb30-551" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> Sorts observations by <span class="pp">|</span> Smallest unit with an effect <span class="pp">|</span> Exact when <span class="pp">|</span></span>
+<span id="cb30-552"><a href="#cb30-552" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb30-553"><a href="#cb30-553" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Our rule <span class="pp">|</span> nothing --- observation level <span class="pp">|</span> the observation, $s_i$ <span class="pp">|</span> always (algebra) <span class="pp">|</span></span>
+<span id="cb30-554"><a href="#cb30-554" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Angrist (1998) <span class="pp">|</span> covariate stratum <span class="pp">|</span> the stratum, a difference in means <span class="pp">|</span> controls are saturated <span class="pp">|</span></span>
+<span id="cb30-555"><a href="#cb30-555" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Słoczyński (2022) <span class="pp">|</span> treated vs untreated <span class="pp">|</span> the group, ATT and ATU <span class="pp">|</span> no covariates, else approximate <span class="pp">|</span></span>
+<span id="cb30-556"><a href="#cb30-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-557"><a href="#cb30-557" aria-hidden="true" tabindex="-1"></a>Reading down the last column is the useful part.  The observation-level</span>
+<span id="cb30-558"><a href="#cb30-558" aria-hidden="true" tabindex="-1"></a>identity always holds and says little.  Angrist's needs saturation and</span>
+<span id="cb30-559"><a href="#cb30-559" aria-hidden="true" tabindex="-1"></a>buys an interpretable weight.  Słoczyński's needs more and buys the</span>
+<span id="cb30-560"><a href="#cb30-560" aria-hidden="true" tabindex="-1"></a>sharpest statement of all --- that the coefficient and the ATE are the</span>
+<span id="cb30-561"><a href="#cb30-561" aria-hidden="true" tabindex="-1"></a>same two numbers with the weights reversed.</span>
+<span id="cb30-562"><a href="#cb30-562" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-563"><a href="#cb30-563" aria-hidden="true" tabindex="-1"></a>Hazlett and Shinkre (<span class="co">[</span><span class="ot">2024</span><span class="co">](https://arxiv.org/abs/2403.03299)</span>) sit</span>
+<span id="cb30-564"><a href="#cb30-564" aria-hidden="true" tabindex="-1"></a>underneath all three: they show these weights arise from, and</span>
+<span id="cb30-565"><a href="#cb30-565" aria-hidden="true" tabindex="-1"></a>characterise, the bias caused by fitting a constant effect when effects</span>
+<span id="cb30-566"><a href="#cb30-566" aria-hidden="true" tabindex="-1"></a>are heterogeneous --- and argue for estimators that tolerate</span>
+<span id="cb30-567"><a href="#cb30-567" aria-hidden="true" tabindex="-1"></a>heterogeneity rather than for diagnosing the weights after the fact.</span>
+<span id="cb30-568"><a href="#cb30-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-569"><a href="#cb30-569" aria-hidden="true" tabindex="-1"></a><span class="fu">## When the weighting changes the answer</span></span>
+<span id="cb30-570"><a href="#cb30-570" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-571"><a href="#cb30-571" aria-hidden="true" tabindex="-1"></a>The weighting always happens.  It changes the answer only when the</span>
+<span id="cb30-572"><a href="#cb30-572" aria-hidden="true" tabindex="-1"></a>effect is heterogeneous *and* the heterogeneity lines up with the</span>
+<span id="cb30-573"><a href="#cb30-573" aria-hidden="true" tabindex="-1"></a>weight.  The claim to check is that a regression does not report *the*</span>
+<span id="cb30-574"><a href="#cb30-574" aria-hidden="true" tabindex="-1"></a>effect but a weighted average of the effects, and that these are</span>
+<span id="cb30-575"><a href="#cb30-575" aria-hidden="true" tabindex="-1"></a>different numbers.</span>
+<span id="cb30-576"><a href="#cb30-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-577"><a href="#cb30-577" aria-hidden="true" tabindex="-1"></a>The individual effects are never observed, so we plant them: give every</span>
+<span id="cb30-578"><a href="#cb30-578" aria-hidden="true" tabindex="-1"></a>unit its own slope $\beta_i$, generate $y$ from those slopes, and see</span>
+<span id="cb30-579"><a href="#cb30-579" aria-hidden="true" tabindex="-1"></a>which average of the planted slopes the estimate lands on.  In the next</span>
+<span id="cb30-580"><a href="#cb30-580" aria-hidden="true" tabindex="-1"></a>chunk only one estimator is run; anything else reported is not an</span>
+<span id="cb30-581"><a href="#cb30-581" aria-hidden="true" tabindex="-1"></a>estimate but the planted slopes averaged some way.  Fixed effects is</span>
+<span id="cb30-582"><a href="#cb30-582" aria-hidden="true" tabindex="-1"></a>used because in a panel the natural place for heterogeneity is across</span>
+<span id="cb30-583"><a href="#cb30-583" aria-hidden="true" tabindex="-1"></a>units, and it is still OLS --- OLS with the unit dummies partialled out.</span>
+<span id="cb30-584"><a href="#cb30-584" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-585"><a href="#cb30-585" aria-hidden="true" tabindex="-1"></a>Start with the extreme case.  Half the units barely move and have a true</span>
+<span id="cb30-586"><a href="#cb30-586" aria-hidden="true" tabindex="-1"></a>slope of zero; the other half move a great deal and have a true slope of</span>
+<span id="cb30-587"><a href="#cb30-587" aria-hidden="true" tabindex="-1"></a>two.  The average unit's slope is one.</span>
+<span id="cb30-588"><a href="#cb30-588" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-591"><a href="#cb30-591" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-592"><a href="#cb30-592" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb30-593"><a href="#cb30-593" aria-hidden="true" tabindex="-1"></a>half <span class="ot">&lt;-</span> N <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb30-594"><a href="#cb30-594" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id   =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb30-595"><a href="#cb30-595" aria-hidden="true" tabindex="-1"></a>                <span class="at">move =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.2</span>, half), <span class="fu">rep</span>(<span class="dv">3</span>, half)), <span class="at">each =</span> T),</span>
+<span id="cb30-596"><a href="#cb30-596" aria-hidden="true" tabindex="-1"></a>                <span class="at">b    =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,   half), <span class="fu">rep</span>(<span class="dv">2</span>, half)), <span class="at">each =</span> T))</span>
+<span id="cb30-597"><a href="#cb30-597" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move)</span>
+<span id="cb30-598"><a href="#cb30-598" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> g<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb30-599"><a href="#cb30-599" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-600"><a href="#cb30-600" aria-hidden="true" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, g))<span class="sc">^</span><span class="dv">2</span>, g<span class="sc">$</span>id, sum)</span>
+<span id="cb30-601"><a href="#cb30-601" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">value =</span> <span class="fu">c</span>(</span>
+<span id="cb30-602"><a href="#cb30-602" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">average of the two true slopes</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)),</span>
+<span id="cb30-603"><a href="#cb30-603" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>                         <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, g))[[<span class="st">"x"</span>]],</span>
+<span id="cb30-604"><a href="#cb30-604" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">weight held by the steady half (%)</span><span class="st">`</span>  <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(wg[<span class="dv">1</span><span class="sc">:</span>half]) <span class="sc">/</span> <span class="fu">sum</span>(wg))), <span class="dv">3</span>)</span>
+<span id="cb30-605"><a href="#cb30-605" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-606"><a href="#cb30-606" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-607"><a href="#cb30-607" aria-hidden="true" tabindex="-1"></a>The average slope is one and the regression reports 1.98, because the</span>
+<span id="cb30-608"><a href="#cb30-608" aria-hidden="true" tabindex="-1"></a>five hundred steady units hold under half of one percent of the weight.</span>
+<span id="cb30-609"><a href="#cb30-609" aria-hidden="true" tabindex="-1"></a>Their six observations sit almost on top of their own unit mean ---</span>
+<span id="cb30-610"><a href="#cb30-610" aria-hidden="true" tabindex="-1"></a>this regression carries unit effects, so that is the relevant deviation</span>
+<span id="cb30-611"><a href="#cb30-611" aria-hidden="true" tabindex="-1"></a>--- and squaring puts them nowhere in the sum.  Nothing has gone wrong</span>
+<span id="cb30-612"><a href="#cb30-612" aria-hidden="true" tabindex="-1"></a>in the arithmetic.  The units with a slope of zero were never really in</span>
+<span id="cb30-613"><a href="#cb30-613" aria-hidden="true" tabindex="-1"></a>the regression.</span>
+<span id="cb30-614"><a href="#cb30-614" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-615"><a href="#cb30-615" aria-hidden="true" tabindex="-1"></a><span class="fu">### Which mean, and why it matters</span></span>
 <span id="cb30-616"><a href="#cb30-616" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-617"><a href="#cb30-617" aria-hidden="true" tabindex="-1"></a>Take two equally sized groups with means $\mu_g$, within-group variances</span>
-<span id="cb30-618"><a href="#cb30-618" aria-hidden="true" tabindex="-1"></a>$\sigma_g^2$, slopes $\beta_g$ and group mean outcomes $\bar y_g$.  Let</span>
-<span id="cb30-619"><a href="#cb30-619" aria-hidden="true" tabindex="-1"></a>$G$ be the group label, equally likely to be 1 or 2.  Two laws do the</span>
-<span id="cb30-620"><a href="#cb30-620" aria-hidden="true" tabindex="-1"></a>work.</span>
+<span id="cb30-617"><a href="#cb30-617" aria-hidden="true" tabindex="-1"></a>That result is about the *within-unit* deviation.  Plain OLS uses</span>
+<span id="cb30-618"><a href="#cb30-618" aria-hidden="true" tabindex="-1"></a>distance from the grand mean instead, and the two coincided above only</span>
+<span id="cb30-619"><a href="#cb30-619" aria-hidden="true" tabindex="-1"></a>because both halves were built around zero.  Separate them and the</span>
+<span id="cb30-620"><a href="#cb30-620" aria-hidden="true" tabindex="-1"></a>algebra says exactly what happens.</span>
 <span id="cb30-621"><a href="#cb30-621" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-622"><a href="#cb30-622" aria-hidden="true" tabindex="-1"></a>The **law of total covariance** splits the numerator:</span>
-<span id="cb30-623"><a href="#cb30-623" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-624"><a href="#cb30-624" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-625"><a href="#cb30-625" aria-hidden="true" tabindex="-1"></a>\text{Cov}(x,y)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Cov}(x,y\mid G)\right</span><span class="co">]</span></span>
-<span id="cb30-626"><a href="#cb30-626" aria-hidden="true" tabindex="-1"></a><span class="ss">              + </span>\text{Cov}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>,\,E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>\right).</span>
-<span id="cb30-627"><a href="#cb30-627" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-622"><a href="#cb30-622" aria-hidden="true" tabindex="-1"></a>Take two equally sized groups with means $\mu_g$, within-group variances</span>
+<span id="cb30-623"><a href="#cb30-623" aria-hidden="true" tabindex="-1"></a>$\sigma_g^2$, slopes $\beta_g$ and group mean outcomes $\bar y_g$.  Let</span>
+<span id="cb30-624"><a href="#cb30-624" aria-hidden="true" tabindex="-1"></a>$G$ be the group label, equally likely to be 1 or 2.  Two laws do the</span>
+<span id="cb30-625"><a href="#cb30-625" aria-hidden="true" tabindex="-1"></a>work.</span>
+<span id="cb30-626"><a href="#cb30-626" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-627"><a href="#cb30-627" aria-hidden="true" tabindex="-1"></a>The **law of total covariance** splits the numerator:</span>
 <span id="cb30-628"><a href="#cb30-628" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-629"><a href="#cb30-629" aria-hidden="true" tabindex="-1"></a>Inside group $g$ we have $\text{Cov}(x,y\mid G=g)=\beta_g\sigma_g^2$, so</span>
-<span id="cb30-630"><a href="#cb30-630" aria-hidden="true" tabindex="-1"></a>the first term averages to</span>
-<span id="cb30-631"><a href="#cb30-631" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)$.  For the second,</span>
-<span id="cb30-632"><a href="#cb30-632" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>$ are two-point variables taking</span>
-<span id="cb30-633"><a href="#cb30-633" aria-hidden="true" tabindex="-1"></a>$(\mu_1,\mu_2)$ and $(\bar y_1,\bar y_2)$ with probability one half</span>
-<span id="cb30-634"><a href="#cb30-634" aria-hidden="true" tabindex="-1"></a>each, and for any such pair</span>
-<span id="cb30-635"><a href="#cb30-635" aria-hidden="true" tabindex="-1"></a>$\text{Cov}(a,b)=\tfrac14(a_1-a_2)(b_1-b_2)$.  That gives</span>
-<span id="cb30-636"><a href="#cb30-636" aria-hidden="true" tabindex="-1"></a>$\tfrac14\Delta\mu\,\Delta\bar y$.</span>
-<span id="cb30-637"><a href="#cb30-637" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-638"><a href="#cb30-638" aria-hidden="true" tabindex="-1"></a>The **law of total variance** is the same statement with $y$ replaced by</span>
-<span id="cb30-639"><a href="#cb30-639" aria-hidden="true" tabindex="-1"></a>$x$:</span>
-<span id="cb30-640"><a href="#cb30-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-641"><a href="#cb30-641" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-642"><a href="#cb30-642" aria-hidden="true" tabindex="-1"></a>\text{Var}(x)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Var}(x\mid G)\right</span><span class="co">]</span>+\text{Var}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>\right)</span>
-<span id="cb30-643"><a href="#cb30-643" aria-hidden="true" tabindex="-1"></a>=\tfrac12(\sigma_1^2+\sigma_2^2)+\tfrac14\Delta\mu^2 .</span>
-<span id="cb30-644"><a href="#cb30-644" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-629"><a href="#cb30-629" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-630"><a href="#cb30-630" aria-hidden="true" tabindex="-1"></a>\text{Cov}(x,y)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Cov}(x,y\mid G)\right</span><span class="co">]</span></span>
+<span id="cb30-631"><a href="#cb30-631" aria-hidden="true" tabindex="-1"></a><span class="ss">              + </span>\text{Cov}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>,\,E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>\right).</span>
+<span id="cb30-632"><a href="#cb30-632" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-633"><a href="#cb30-633" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-634"><a href="#cb30-634" aria-hidden="true" tabindex="-1"></a>Inside group $g$ we have $\text{Cov}(x,y\mid G=g)=\beta_g\sigma_g^2$, so</span>
+<span id="cb30-635"><a href="#cb30-635" aria-hidden="true" tabindex="-1"></a>the first term averages to</span>
+<span id="cb30-636"><a href="#cb30-636" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)$.  For the second,</span>
+<span id="cb30-637"><a href="#cb30-637" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>$ are two-point variables taking</span>
+<span id="cb30-638"><a href="#cb30-638" aria-hidden="true" tabindex="-1"></a>$(\mu_1,\mu_2)$ and $(\bar y_1,\bar y_2)$ with probability one half</span>
+<span id="cb30-639"><a href="#cb30-639" aria-hidden="true" tabindex="-1"></a>each, and for any such pair</span>
+<span id="cb30-640"><a href="#cb30-640" aria-hidden="true" tabindex="-1"></a>$\text{Cov}(a,b)=\tfrac14(a_1-a_2)(b_1-b_2)$.  That gives</span>
+<span id="cb30-641"><a href="#cb30-641" aria-hidden="true" tabindex="-1"></a>$\tfrac14\Delta\mu\,\Delta\bar y$.</span>
+<span id="cb30-642"><a href="#cb30-642" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-643"><a href="#cb30-643" aria-hidden="true" tabindex="-1"></a>The **law of total variance** is the same statement with $y$ replaced by</span>
+<span id="cb30-644"><a href="#cb30-644" aria-hidden="true" tabindex="-1"></a>$x$:</span>
 <span id="cb30-645"><a href="#cb30-645" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-646"><a href="#cb30-646" aria-hidden="true" tabindex="-1"></a>Dividing one by the other,</span>
-<span id="cb30-647"><a href="#cb30-647" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-648"><a href="#cb30-648" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-649"><a href="#cb30-649" aria-hidden="true" tabindex="-1"></a>\text{plim}\;\hat\beta_{OLS}</span>
-<span id="cb30-650"><a href="#cb30-650" aria-hidden="true" tabindex="-1"></a>= \frac{\tfrac12<span class="sc">\!</span>\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)</span>
-<span id="cb30-651"><a href="#cb30-651" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu\,\Delta\bar y}</span>
-<span id="cb30-652"><a href="#cb30-652" aria-hidden="true" tabindex="-1"></a>       {\tfrac12<span class="sc">\!</span>\left(\sigma_1^2+\sigma_2^2\right)</span>
-<span id="cb30-653"><a href="#cb30-653" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu^{2}} ,</span>
-<span id="cb30-654"><a href="#cb30-654" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-655"><a href="#cb30-655" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-656"><a href="#cb30-656" aria-hidden="true" tabindex="-1"></a>with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.</span>
-<span id="cb30-657"><a href="#cb30-657" aria-hidden="true" tabindex="-1"></a>Split that into the two slopes it mixes,</span>
-<span id="cb30-658"><a href="#cb30-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-646"><a href="#cb30-646" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-647"><a href="#cb30-647" aria-hidden="true" tabindex="-1"></a>\text{Var}(x)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Var}(x\mid G)\right</span><span class="co">]</span>+\text{Var}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>\right)</span>
+<span id="cb30-648"><a href="#cb30-648" aria-hidden="true" tabindex="-1"></a>=\tfrac12(\sigma_1^2+\sigma_2^2)+\tfrac14\Delta\mu^2 .</span>
+<span id="cb30-649"><a href="#cb30-649" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-650"><a href="#cb30-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-651"><a href="#cb30-651" aria-hidden="true" tabindex="-1"></a>Dividing one by the other,</span>
+<span id="cb30-652"><a href="#cb30-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-653"><a href="#cb30-653" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-654"><a href="#cb30-654" aria-hidden="true" tabindex="-1"></a>\text{plim}\;\hat\beta_{OLS}</span>
+<span id="cb30-655"><a href="#cb30-655" aria-hidden="true" tabindex="-1"></a>= \frac{\tfrac12<span class="sc">\!</span>\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)</span>
+<span id="cb30-656"><a href="#cb30-656" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu\,\Delta\bar y}</span>
+<span id="cb30-657"><a href="#cb30-657" aria-hidden="true" tabindex="-1"></a>       {\tfrac12<span class="sc">\!</span>\left(\sigma_1^2+\sigma_2^2\right)</span>
+<span id="cb30-658"><a href="#cb30-658" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu^{2}} ,</span>
 <span id="cb30-659"><a href="#cb30-659" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-660"><a href="#cb30-660" aria-hidden="true" tabindex="-1"></a>\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},</span>
-<span id="cb30-661"><a href="#cb30-661" aria-hidden="true" tabindex="-1"></a>\qquad</span>
-<span id="cb30-662"><a href="#cb30-662" aria-hidden="true" tabindex="-1"></a>\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},</span>
-<span id="cb30-663"><a href="#cb30-663" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb30-664"><a href="#cb30-664" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-665"><a href="#cb30-665" aria-hidden="true" tabindex="-1"></a>and the coefficient is a genuine convex combination of them, weighted by</span>
-<span id="cb30-666"><a href="#cb30-666" aria-hidden="true" tabindex="-1"></a>the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$ and the between</span>
-<span id="cb30-667"><a href="#cb30-667" aria-hidden="true" tabindex="-1"></a>variance $\tfrac14\Delta\mu^2$, which sum to the total variance.</span>
-<span id="cb30-668"><a href="#cb30-668" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-669"><a href="#cb30-669" aria-hidden="true" tabindex="-1"></a>Two features are worth pausing on.  $\beta_{within}$ is itself a</span>
-<span id="cb30-670"><a href="#cb30-670" aria-hidden="true" tabindex="-1"></a>variance-weighted average of the two slopes --- the same $\sigma^2$</span>
-<span id="cb30-671"><a href="#cb30-671" aria-hidden="true" tabindex="-1"></a>weighting as everywhere else in this section, one level up.  And</span>
-<span id="cb30-672"><a href="#cb30-672" aria-hidden="true" tabindex="-1"></a>$\beta_{between}$ is a two-point slope, rise over run between the two</span>
-<span id="cb30-673"><a href="#cb30-673" aria-hidden="true" tabindex="-1"></a>group centres, so it can take any value at all regardless of what</span>
-<span id="cb30-674"><a href="#cb30-674" aria-hidden="true" tabindex="-1"></a>happens inside either group.  The $\tfrac14$ is the only piece specific</span>
-<span id="cb30-675"><a href="#cb30-675" aria-hidden="true" tabindex="-1"></a>to equal group sizes; with shares $p$ and $1-p$ it becomes $p(1-p)$,</span>
-<span id="cb30-676"><a href="#cb30-676" aria-hidden="true" tabindex="-1"></a>which is Angrist's weight again.</span>
-<span id="cb30-677"><a href="#cb30-677" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-678"><a href="#cb30-678" aria-hidden="true" tabindex="-1"></a>Everything follows without running anything.  Fixed effects estimates</span>
-<span id="cb30-679"><a href="#cb30-679" aria-hidden="true" tabindex="-1"></a>$\beta_{within}$, here $(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$, which</span>
-<span id="cb30-680"><a href="#cb30-680" aria-hidden="true" tabindex="-1"></a>involves no $\mu_g$ --- so parking a group anywhere cannot move it.</span>
-<span id="cb30-681"><a href="#cb30-681" aria-hidden="true" tabindex="-1"></a>Plain OLS also carries $\beta_{between}$, which is zero in this design</span>
-<span id="cb30-682"><a href="#cb30-682" aria-hidden="true" tabindex="-1"></a>because the steady slope and both intercepts are zero, leaving the two</span>
-<span id="cb30-683"><a href="#cb30-683" aria-hidden="true" tabindex="-1"></a>group means at the same height.  As $\Delta\mu$ grows, the between</span>
-<span id="cb30-684"><a href="#cb30-684" aria-hidden="true" tabindex="-1"></a>weight $\tfrac14\Delta\mu^2$ swamps the fixed within weight of $4.52$</span>
-<span id="cb30-685"><a href="#cb30-685" aria-hidden="true" tabindex="-1"></a>and the coefficient is dragged from $1.991$ toward zero like</span>
-<span id="cb30-686"><a href="#cb30-686" aria-hidden="true" tabindex="-1"></a>$9/(4.52+\Delta\mu^2/4)$, the numerator being</span>
-<span id="cb30-687"><a href="#cb30-687" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.</span>
-<span id="cb30-688"><a href="#cb30-688" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-689"><a href="#cb30-689" aria-hidden="true" tabindex="-1"></a>The code below evaluates that expression, then takes the same data and</span>
-<span id="cb30-690"><a href="#cb30-690" aria-hidden="true" tabindex="-1"></a>shifts the steady group to three different positions --- on top of the</span>
-<span id="cb30-691"><a href="#cb30-691" aria-hidden="true" tabindex="-1"></a>other group, ten units away, a hundred units away --- reporting the</span>
-<span id="cb30-692"><a href="#cb30-692" aria-hidden="true" tabindex="-1"></a>fixed-effects estimate, the predicted OLS value and the actual one side</span>
-<span id="cb30-693"><a href="#cb30-693" aria-hidden="true" tabindex="-1"></a>by side.  The simulation is a check on the algebra, not the source of</span>
-<span id="cb30-694"><a href="#cb30-694" aria-hidden="true" tabindex="-1"></a>it.</span>
-<span id="cb30-695"><a href="#cb30-695" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-698"><a href="#cb30-698" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-699"><a href="#cb30-699" aria-hidden="true" tabindex="-1"></a>b_within <span class="ot">&lt;-</span> (<span class="dv">0</span> <span class="sc">*</span> <span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)   <span class="co"># variance-weighted slope</span></span>
-<span id="cb30-700"><a href="#cb30-700" aria-hidden="true" tabindex="-1"></a>V_within <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)                     <span class="co"># within variance</span></span>
-<span id="cb30-701"><a href="#cb30-701" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="cf">function</span>(shift)                        <span class="co"># beta_between = 0 here</span></span>
-<span id="cb30-702"><a href="#cb30-702" aria-hidden="true" tabindex="-1"></a>  V_within <span class="sc">*</span> b_within <span class="sc">/</span> (V_within <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> shift<span class="sc">^</span><span class="dv">2</span>)</span>
-<span id="cb30-703"><a href="#cb30-703" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-704"><a href="#cb30-704" aria-hidden="true" tabindex="-1"></a>park <span class="ot">&lt;-</span> <span class="cf">function</span>(shift) {</span>
-<span id="cb30-705"><a href="#cb30-705" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb30-706"><a href="#cb30-706" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move) <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(shift, half), <span class="fu">rep</span>(<span class="dv">0</span>, half)), <span class="at">each =</span> T)</span>
-<span id="cb30-707"><a href="#cb30-707" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb30-708"><a href="#cb30-708" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> g<span class="sc">$</span>id, <span class="at">x =</span> x, <span class="at">y =</span> y)</span>
-<span id="cb30-709"><a href="#cb30-709" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE (theory 1.991)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, d))[[<span class="st">"x"</span>]],</span>
-<span id="cb30-710"><a href="#cb30-710" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS predicted</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">predicted</span>(shift),</span>
-<span id="cb30-711"><a href="#cb30-711" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS actual</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, d))[[<span class="st">"x"</span>]])</span>
-<span id="cb30-712"><a href="#cb30-712" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-713"><a href="#cb30-713" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-714"><a href="#cb30-714" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">t</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">shift 0</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">`</span><span class="at">shift 10</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">10</span>, <span class="st">`</span><span class="at">shift 100</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span>), park)), <span class="dv">3</span>)</span>
-<span id="cb30-715"><a href="#cb30-715" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-716"><a href="#cb30-716" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-717"><a href="#cb30-717" aria-hidden="true" tabindex="-1"></a><span class="fu">### The same thing as a picture</span></span>
+<span id="cb30-660"><a href="#cb30-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-661"><a href="#cb30-661" aria-hidden="true" tabindex="-1"></a>with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.</span>
+<span id="cb30-662"><a href="#cb30-662" aria-hidden="true" tabindex="-1"></a>Split that into the two slopes it mixes,</span>
+<span id="cb30-663"><a href="#cb30-663" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-664"><a href="#cb30-664" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-665"><a href="#cb30-665" aria-hidden="true" tabindex="-1"></a>\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},</span>
+<span id="cb30-666"><a href="#cb30-666" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb30-667"><a href="#cb30-667" aria-hidden="true" tabindex="-1"></a>\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},</span>
+<span id="cb30-668"><a href="#cb30-668" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb30-669"><a href="#cb30-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-670"><a href="#cb30-670" aria-hidden="true" tabindex="-1"></a>and the coefficient is a genuine convex combination of them, weighted by</span>
+<span id="cb30-671"><a href="#cb30-671" aria-hidden="true" tabindex="-1"></a>the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$ and the between</span>
+<span id="cb30-672"><a href="#cb30-672" aria-hidden="true" tabindex="-1"></a>variance $\tfrac14\Delta\mu^2$, which sum to the total variance.</span>
+<span id="cb30-673"><a href="#cb30-673" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-674"><a href="#cb30-674" aria-hidden="true" tabindex="-1"></a>Two features are worth pausing on.  $\beta_{within}$ is itself a</span>
+<span id="cb30-675"><a href="#cb30-675" aria-hidden="true" tabindex="-1"></a>variance-weighted average of the two slopes --- the same $\sigma^2$</span>
+<span id="cb30-676"><a href="#cb30-676" aria-hidden="true" tabindex="-1"></a>weighting as everywhere else in this section, one level up.  And</span>
+<span id="cb30-677"><a href="#cb30-677" aria-hidden="true" tabindex="-1"></a>$\beta_{between}$ is a two-point slope, rise over run between the two</span>
+<span id="cb30-678"><a href="#cb30-678" aria-hidden="true" tabindex="-1"></a>group centres, so it can take any value at all regardless of what</span>
+<span id="cb30-679"><a href="#cb30-679" aria-hidden="true" tabindex="-1"></a>happens inside either group.  The $\tfrac14$ is the only piece specific</span>
+<span id="cb30-680"><a href="#cb30-680" aria-hidden="true" tabindex="-1"></a>to equal group sizes; with shares $p$ and $1-p$ it becomes $p(1-p)$,</span>
+<span id="cb30-681"><a href="#cb30-681" aria-hidden="true" tabindex="-1"></a>which is Angrist's weight again.</span>
+<span id="cb30-682"><a href="#cb30-682" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-683"><a href="#cb30-683" aria-hidden="true" tabindex="-1"></a>Everything follows without running anything.  Fixed effects estimates</span>
+<span id="cb30-684"><a href="#cb30-684" aria-hidden="true" tabindex="-1"></a>$\beta_{within}$, here $(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$, which</span>
+<span id="cb30-685"><a href="#cb30-685" aria-hidden="true" tabindex="-1"></a>involves no $\mu_g$ --- so parking a group anywhere cannot move it.</span>
+<span id="cb30-686"><a href="#cb30-686" aria-hidden="true" tabindex="-1"></a>Plain OLS also carries $\beta_{between}$, which is zero in this design</span>
+<span id="cb30-687"><a href="#cb30-687" aria-hidden="true" tabindex="-1"></a>because the steady slope and both intercepts are zero, leaving the two</span>
+<span id="cb30-688"><a href="#cb30-688" aria-hidden="true" tabindex="-1"></a>group means at the same height.  As $\Delta\mu$ grows, the between</span>
+<span id="cb30-689"><a href="#cb30-689" aria-hidden="true" tabindex="-1"></a>weight $\tfrac14\Delta\mu^2$ swamps the fixed within weight of $4.52$</span>
+<span id="cb30-690"><a href="#cb30-690" aria-hidden="true" tabindex="-1"></a>and the coefficient is dragged from $1.991$ toward zero like</span>
+<span id="cb30-691"><a href="#cb30-691" aria-hidden="true" tabindex="-1"></a>$9/(4.52+\Delta\mu^2/4)$, the numerator being</span>
+<span id="cb30-692"><a href="#cb30-692" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.</span>
+<span id="cb30-693"><a href="#cb30-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-694"><a href="#cb30-694" aria-hidden="true" tabindex="-1"></a>The code below evaluates that expression, then takes the same data and</span>
+<span id="cb30-695"><a href="#cb30-695" aria-hidden="true" tabindex="-1"></a>shifts the steady group to three different positions --- on top of the</span>
+<span id="cb30-696"><a href="#cb30-696" aria-hidden="true" tabindex="-1"></a>other group, ten units away, a hundred units away --- reporting the</span>
+<span id="cb30-697"><a href="#cb30-697" aria-hidden="true" tabindex="-1"></a>fixed-effects estimate, the predicted OLS value and the actual one side</span>
+<span id="cb30-698"><a href="#cb30-698" aria-hidden="true" tabindex="-1"></a>by side.  The simulation is a check on the algebra, not the source of</span>
+<span id="cb30-699"><a href="#cb30-699" aria-hidden="true" tabindex="-1"></a>it.</span>
+<span id="cb30-700"><a href="#cb30-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-703"><a href="#cb30-703" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-704"><a href="#cb30-704" aria-hidden="true" tabindex="-1"></a>b_within <span class="ot">&lt;-</span> (<span class="dv">0</span> <span class="sc">*</span> <span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)   <span class="co"># variance-weighted slope</span></span>
+<span id="cb30-705"><a href="#cb30-705" aria-hidden="true" tabindex="-1"></a>V_within <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)                     <span class="co"># within variance</span></span>
+<span id="cb30-706"><a href="#cb30-706" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="cf">function</span>(shift)                        <span class="co"># beta_between = 0 here</span></span>
+<span id="cb30-707"><a href="#cb30-707" aria-hidden="true" tabindex="-1"></a>  V_within <span class="sc">*</span> b_within <span class="sc">/</span> (V_within <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> shift<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb30-708"><a href="#cb30-708" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-709"><a href="#cb30-709" aria-hidden="true" tabindex="-1"></a>park <span class="ot">&lt;-</span> <span class="cf">function</span>(shift) {</span>
+<span id="cb30-710"><a href="#cb30-710" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb30-711"><a href="#cb30-711" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move) <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(shift, half), <span class="fu">rep</span>(<span class="dv">0</span>, half)), <span class="at">each =</span> T)</span>
+<span id="cb30-712"><a href="#cb30-712" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb30-713"><a href="#cb30-713" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> g<span class="sc">$</span>id, <span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb30-714"><a href="#cb30-714" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE (theory 1.991)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, d))[[<span class="st">"x"</span>]],</span>
+<span id="cb30-715"><a href="#cb30-715" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS predicted</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">predicted</span>(shift),</span>
+<span id="cb30-716"><a href="#cb30-716" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS actual</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, d))[[<span class="st">"x"</span>]])</span>
+<span id="cb30-717"><a href="#cb30-717" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb30-718"><a href="#cb30-718" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-719"><a href="#cb30-719" aria-hidden="true" tabindex="-1"></a>The algebra says the between term takes over as the groups separate.</span>
-<span id="cb30-720"><a href="#cb30-720" aria-hidden="true" tabindex="-1"></a>That is visible directly.  Left, the two groups share a centre; right,</span>
-<span id="cb30-721"><a href="#cb30-721" aria-hidden="true" tabindex="-1"></a>the steady group is parked ten units away.  Dotted line is the mean of</span>
-<span id="cb30-722"><a href="#cb30-722" aria-hidden="true" tabindex="-1"></a>$x$, dashed line joins the two group centres, solid line is the fit.</span>
+<span id="cb30-719"><a href="#cb30-719" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">t</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">shift 0</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">`</span><span class="at">shift 10</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">10</span>, <span class="st">`</span><span class="at">shift 100</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span>), park)), <span class="dv">3</span>)</span>
+<span id="cb30-720"><a href="#cb30-720" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-721"><a href="#cb30-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-722"><a href="#cb30-722" aria-hidden="true" tabindex="-1"></a><span class="fu">### The same thing as a picture</span></span>
 <span id="cb30-723"><a href="#cb30-723" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-726"><a href="#cb30-726" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-727"><a href="#cb30-727" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
-<span id="cb30-728"><a href="#cb30-728" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
-<span id="cb30-729"><a href="#cb30-729" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
-<span id="cb30-730"><a href="#cb30-730" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">200</span></span>
-<span id="cb30-731"><a href="#cb30-731" aria-hidden="true" tabindex="-1"></a>draw <span class="ot">&lt;-</span> <span class="cf">function</span>(shift, main) {</span>
-<span id="cb30-732"><a href="#cb30-732" aria-hidden="true" tabindex="-1"></a>  xw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, <span class="dv">0</span>, <span class="dv">3</span>);       yw <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> xw <span class="sc">+</span> <span class="fu">rnorm</span>(m)      <span class="co"># wobbly: true slope 2</span></span>
-<span id="cb30-733"><a href="#cb30-733" aria-hidden="true" tabindex="-1"></a>  xs <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, shift, <span class="fl">0.2</span>); ys <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m)               <span class="co"># steady: true slope 0</span></span>
-<span id="cb30-734"><a href="#cb30-734" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">c</span>(xw, xs); y <span class="ot">&lt;-</span> <span class="fu">c</span>(yw, ys)</span>
-<span id="cb30-735"><a href="#cb30-735" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> .<span class="dv">5</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"#9E431855"</span>, m), <span class="fu">rep</span>(<span class="st">"#0E6473"</span>, m)),</span>
-<span id="cb30-736"><a href="#cb30-736" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">main =</span> main)</span>
-<span id="cb30-737"><a href="#cb30-737" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(x), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span>
-<span id="cb30-738"><a href="#cb30-738" aria-hidden="true" tabindex="-1"></a>  <span class="fu">segments</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(yw), <span class="fu">mean</span>(xs), <span class="fu">mean</span>(ys), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey30"</span>)</span>
-<span id="cb30-739"><a href="#cb30-739" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">c</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(xs)), <span class="fu">c</span>(<span class="fu">mean</span>(yw), <span class="fu">mean</span>(ys)), <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">1.4</span>)</span>
-<span id="cb30-740"><a href="#cb30-740" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"#0E6473"</span>)</span>
-<span id="cb30-741"><a href="#cb30-741" aria-hidden="true" tabindex="-1"></a>  dmu <span class="ot">&lt;-</span> <span class="fu">mean</span>(xs) <span class="sc">-</span> <span class="fu">mean</span>(xw)</span>
-<span id="cb30-742"><a href="#cb30-742" aria-hidden="true" tabindex="-1"></a>  Vb  <span class="ot">&lt;-</span> <span class="fl">0.25</span> <span class="sc">*</span> dmu<span class="sc">^</span><span class="dv">2</span>                       <span class="co"># between variance</span></span>
-<span id="cb30-743"><a href="#cb30-743" aria-hidden="true" tabindex="-1"></a>  Vw  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">var</span>(xs) <span class="sc">+</span> <span class="fu">var</span>(xw))          <span class="co"># within variance</span></span>
-<span id="cb30-744"><a href="#cb30-744" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">slope inside wobbly</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yw <span class="sc">~</span> xw))[<span class="dv">2</span>]),</span>
-<span id="cb30-745"><a href="#cb30-745" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">slope inside steady</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(ys <span class="sc">~</span> xs))[<span class="dv">2</span>]),</span>
-<span id="cb30-746"><a href="#cb30-746" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">between slope</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">unname</span>((<span class="fu">mean</span>(ys) <span class="sc">-</span> <span class="fu">mean</span>(yw)) <span class="sc">/</span> dmu),</span>
-<span id="cb30-747"><a href="#cb30-747" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">weight on between %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> Vb <span class="sc">/</span> (Vb <span class="sc">+</span> Vw),</span>
-<span id="cb30-748"><a href="#cb30-748" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS</span><span class="st">`</span>                 <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]))</span>
-<span id="cb30-749"><a href="#cb30-749" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-750"><a href="#cb30-750" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">2.5</span>, <span class="dv">1</span>))</span>
-<span id="cb30-751"><a href="#cb30-751" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">0</span>,  <span class="st">"groups share a centre"</span>)</span>
-<span id="cb30-752"><a href="#cb30-752" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">10</span>, <span class="st">"groups far apart in x"</span>)</span>
-<span id="cb30-753"><a href="#cb30-753" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span>
-<span id="cb30-754"><a href="#cb30-754" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">share a centre</span><span class="st">`</span> <span class="ot">=</span> a, <span class="st">`</span><span class="at">far apart</span><span class="st">`</span> <span class="ot">=</span> b), <span class="dv">3</span>)</span>
-<span id="cb30-755"><a href="#cb30-755" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb30-756"><a href="#cb30-756" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-757"><a href="#cb30-757" aria-hidden="true" tabindex="-1"></a>Read the two columns.  The slope inside the wobbly cloud is about 2 in</span>
-<span id="cb30-758"><a href="#cb30-758" aria-hidden="true" tabindex="-1"></a>both, and the slope inside the steady strip is indistinguishable from</span>
-<span id="cb30-759"><a href="#cb30-759" aria-hidden="true" tabindex="-1"></a>zero in both --- $0.007$ and $-0.288$, the second noisy because a</span>
-<span id="cb30-760"><a href="#cb30-760" aria-hidden="true" tabindex="-1"></a>regression on an $x$ that barely varies has a standard error of roughly</span>
-<span id="cb30-761"><a href="#cb30-761" aria-hidden="true" tabindex="-1"></a>$0.35$.  The groups themselves are unchanged.  What changes is the</span>
-<span id="cb30-762"><a href="#cb30-762" aria-hidden="true" tabindex="-1"></a>weight on the between comparison: 0.03% when the centres coincide, 85%</span>
-<span id="cb30-763"><a href="#cb30-763" aria-hidden="true" tabindex="-1"></a>when they are ten apart.  So the fit lands on 2.01 in the first panel</span>
-<span id="cb30-764"><a href="#cb30-764" aria-hidden="true" tabindex="-1"></a>and 0.29 in the second.</span>
-<span id="cb30-765"><a href="#cb30-765" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-766"><a href="#cb30-766" aria-hidden="true" tabindex="-1"></a>Notice the between slope reported for the left panel, 0.882.  It is</span>
-<span id="cb30-767"><a href="#cb30-767" aria-hidden="true" tabindex="-1"></a>meaningless there, and harmlessly so: with the centres nearly on top of</span>
-<span id="cb30-768"><a href="#cb30-768" aria-hidden="true" tabindex="-1"></a>each other $\Delta\mu\approx 0$, the ratio $\Delta\bar y/\Delta\mu$</span>
-<span id="cb30-769"><a href="#cb30-769" aria-hidden="true" tabindex="-1"></a>divides by almost nothing, and its weight $\tfrac14\Delta\mu^2$ is</span>
-<span id="cb30-770"><a href="#cb30-770" aria-hidden="true" tabindex="-1"></a>almost nothing too.  An unstable quantity multiplied by a vanishing</span>
-<span id="cb30-771"><a href="#cb30-771" aria-hidden="true" tabindex="-1"></a>weight contributes nothing.</span>
-<span id="cb30-772"><a href="#cb30-772" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-773"><a href="#cb30-773" aria-hidden="true" tabindex="-1"></a>The picture also shows why the strip has influence in the right panel</span>
-<span id="cb30-774"><a href="#cb30-774" aria-hidden="true" tabindex="-1"></a>despite barely moving.  Influence is distance from the mean of $x$, the</span>
-<span id="cb30-775"><a href="#cb30-775" aria-hidden="true" tabindex="-1"></a>dotted line, and the strip sits ten units from it.  What it contributes</span>
-<span id="cb30-776"><a href="#cb30-776" aria-hidden="true" tabindex="-1"></a>is not its own slope but its position: it anchors one end of the dashed</span>
-<span id="cb30-777"><a href="#cb30-777" aria-hidden="true" tabindex="-1"></a>line.  A group dummy removes that channel and returns the within answer.</span>
-<span id="cb30-778"><a href="#cb30-778" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-779"><a href="#cb30-779" aria-hidden="true" tabindex="-1"></a>Predicted and actual agree in every row.  Fixed effects is flat at 1.984</span>
-<span id="cb30-780"><a href="#cb30-780" aria-hidden="true" tabindex="-1"></a>against a theoretical 1.991, the gap being sampling noise.  Plain OLS</span>
-<span id="cb30-781"><a href="#cb30-781" aria-hidden="true" tabindex="-1"></a>runs from 1.983 to 0.004 on identical true slopes, partly because the</span>
-<span id="cb30-782"><a href="#cb30-782" aria-hidden="true" tabindex="-1"></a>steady half gains weight as it leaves the grand mean, and partly because</span>
-<span id="cb30-783"><a href="#cb30-783" aria-hidden="true" tabindex="-1"></a>a second channel opens that is not weighting at all: with the halves at</span>
-<span id="cb30-784"><a href="#cb30-784" aria-hidden="true" tabindex="-1"></a>different levels of $x$, part of the fitted line is a comparison</span>
-<span id="cb30-785"><a href="#cb30-785" aria-hidden="true" tabindex="-1"></a>*between* them.  So "the weight is how much $x$ moves" describes the</span>
-<span id="cb30-786"><a href="#cb30-786" aria-hidden="true" tabindex="-1"></a>demeaned case; it is exact once unit effects are removed and false in</span>
-<span id="cb30-787"><a href="#cb30-787" aria-hidden="true" tabindex="-1"></a>general.</span>
-<span id="cb30-788"><a href="#cb30-788" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-789"><a href="#cb30-789" aria-hidden="true" tabindex="-1"></a><span class="fu">### When it does not matter</span></span>
-<span id="cb30-790"><a href="#cb30-790" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-791"><a href="#cb30-791" aria-hidden="true" tabindex="-1"></a>Weighting only distorts when the effect is related to the weight.  Give</span>
-<span id="cb30-792"><a href="#cb30-792" aria-hidden="true" tabindex="-1"></a>every unit its own slope, let units differ in how much $x$ moves, and</span>
-<span id="cb30-793"><a href="#cb30-793" aria-hidden="true" tabindex="-1"></a>compare two designs: in (A) the slopes are unrelated to that movement,</span>
-<span id="cb30-794"><a href="#cb30-794" aria-hidden="true" tabindex="-1"></a>in (B) the slope is larger where $x$ moves more.  Both average near one.</span>
+<span id="cb30-724"><a href="#cb30-724" aria-hidden="true" tabindex="-1"></a>The algebra says the between term takes over as the groups separate.</span>
+<span id="cb30-725"><a href="#cb30-725" aria-hidden="true" tabindex="-1"></a>That is visible directly.  Left, the two groups share a centre; right,</span>
+<span id="cb30-726"><a href="#cb30-726" aria-hidden="true" tabindex="-1"></a>the steady group is parked ten units away.  Dotted line is the mean of</span>
+<span id="cb30-727"><a href="#cb30-727" aria-hidden="true" tabindex="-1"></a>$x$, dashed line joins the two group centres, solid line is the fit.</span>
+<span id="cb30-728"><a href="#cb30-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-731"><a href="#cb30-731" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-732"><a href="#cb30-732" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb30-733"><a href="#cb30-733" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb30-734"><a href="#cb30-734" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb30-735"><a href="#cb30-735" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb30-736"><a href="#cb30-736" aria-hidden="true" tabindex="-1"></a>draw <span class="ot">&lt;-</span> <span class="cf">function</span>(shift, main) {</span>
+<span id="cb30-737"><a href="#cb30-737" aria-hidden="true" tabindex="-1"></a>  xw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, <span class="dv">0</span>, <span class="dv">3</span>);       yw <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> xw <span class="sc">+</span> <span class="fu">rnorm</span>(m)      <span class="co"># wobbly: true slope 2</span></span>
+<span id="cb30-738"><a href="#cb30-738" aria-hidden="true" tabindex="-1"></a>  xs <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, shift, <span class="fl">0.2</span>); ys <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m)               <span class="co"># steady: true slope 0</span></span>
+<span id="cb30-739"><a href="#cb30-739" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">c</span>(xw, xs); y <span class="ot">&lt;-</span> <span class="fu">c</span>(yw, ys)</span>
+<span id="cb30-740"><a href="#cb30-740" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> .<span class="dv">5</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"#9E431855"</span>, m), <span class="fu">rep</span>(<span class="st">"#0E6473"</span>, m)),</span>
+<span id="cb30-741"><a href="#cb30-741" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">main =</span> main)</span>
+<span id="cb30-742"><a href="#cb30-742" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(x), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span>
+<span id="cb30-743"><a href="#cb30-743" aria-hidden="true" tabindex="-1"></a>  <span class="fu">segments</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(yw), <span class="fu">mean</span>(xs), <span class="fu">mean</span>(ys), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey30"</span>)</span>
+<span id="cb30-744"><a href="#cb30-744" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">c</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(xs)), <span class="fu">c</span>(<span class="fu">mean</span>(yw), <span class="fu">mean</span>(ys)), <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">1.4</span>)</span>
+<span id="cb30-745"><a href="#cb30-745" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"#0E6473"</span>)</span>
+<span id="cb30-746"><a href="#cb30-746" aria-hidden="true" tabindex="-1"></a>  dmu <span class="ot">&lt;-</span> <span class="fu">mean</span>(xs) <span class="sc">-</span> <span class="fu">mean</span>(xw)</span>
+<span id="cb30-747"><a href="#cb30-747" aria-hidden="true" tabindex="-1"></a>  Vb  <span class="ot">&lt;-</span> <span class="fl">0.25</span> <span class="sc">*</span> dmu<span class="sc">^</span><span class="dv">2</span>                       <span class="co"># between variance</span></span>
+<span id="cb30-748"><a href="#cb30-748" aria-hidden="true" tabindex="-1"></a>  Vw  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">var</span>(xs) <span class="sc">+</span> <span class="fu">var</span>(xw))          <span class="co"># within variance</span></span>
+<span id="cb30-749"><a href="#cb30-749" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">slope inside wobbly</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yw <span class="sc">~</span> xw))[<span class="dv">2</span>]),</span>
+<span id="cb30-750"><a href="#cb30-750" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">slope inside steady</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(ys <span class="sc">~</span> xs))[<span class="dv">2</span>]),</span>
+<span id="cb30-751"><a href="#cb30-751" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">between slope</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">unname</span>((<span class="fu">mean</span>(ys) <span class="sc">-</span> <span class="fu">mean</span>(yw)) <span class="sc">/</span> dmu),</span>
+<span id="cb30-752"><a href="#cb30-752" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">weight on between %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> Vb <span class="sc">/</span> (Vb <span class="sc">+</span> Vw),</span>
+<span id="cb30-753"><a href="#cb30-753" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS</span><span class="st">`</span>                 <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]))</span>
+<span id="cb30-754"><a href="#cb30-754" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-755"><a href="#cb30-755" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">2.5</span>, <span class="dv">1</span>))</span>
+<span id="cb30-756"><a href="#cb30-756" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">0</span>,  <span class="st">"groups share a centre"</span>)</span>
+<span id="cb30-757"><a href="#cb30-757" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">10</span>, <span class="st">"groups far apart in x"</span>)</span>
+<span id="cb30-758"><a href="#cb30-758" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span>
+<span id="cb30-759"><a href="#cb30-759" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">share a centre</span><span class="st">`</span> <span class="ot">=</span> a, <span class="st">`</span><span class="at">far apart</span><span class="st">`</span> <span class="ot">=</span> b), <span class="dv">3</span>)</span>
+<span id="cb30-760"><a href="#cb30-760" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-761"><a href="#cb30-761" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-762"><a href="#cb30-762" aria-hidden="true" tabindex="-1"></a>Read the two columns.  The slope inside the wobbly cloud is about 2 in</span>
+<span id="cb30-763"><a href="#cb30-763" aria-hidden="true" tabindex="-1"></a>both, and the slope inside the steady strip is indistinguishable from</span>
+<span id="cb30-764"><a href="#cb30-764" aria-hidden="true" tabindex="-1"></a>zero in both --- $0.007$ and $-0.288$, the second noisy because a</span>
+<span id="cb30-765"><a href="#cb30-765" aria-hidden="true" tabindex="-1"></a>regression on an $x$ that barely varies has a standard error of roughly</span>
+<span id="cb30-766"><a href="#cb30-766" aria-hidden="true" tabindex="-1"></a>$0.35$.  The groups themselves are unchanged.  What changes is the</span>
+<span id="cb30-767"><a href="#cb30-767" aria-hidden="true" tabindex="-1"></a>weight on the between comparison: 0.03% when the centres coincide, 85%</span>
+<span id="cb30-768"><a href="#cb30-768" aria-hidden="true" tabindex="-1"></a>when they are ten apart.  So the fit lands on 2.01 in the first panel</span>
+<span id="cb30-769"><a href="#cb30-769" aria-hidden="true" tabindex="-1"></a>and 0.29 in the second.</span>
+<span id="cb30-770"><a href="#cb30-770" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-771"><a href="#cb30-771" aria-hidden="true" tabindex="-1"></a>Notice the between slope reported for the left panel, 0.882.  It is</span>
+<span id="cb30-772"><a href="#cb30-772" aria-hidden="true" tabindex="-1"></a>meaningless there, and harmlessly so: with the centres nearly on top of</span>
+<span id="cb30-773"><a href="#cb30-773" aria-hidden="true" tabindex="-1"></a>each other $\Delta\mu\approx 0$, the ratio $\Delta\bar y/\Delta\mu$</span>
+<span id="cb30-774"><a href="#cb30-774" aria-hidden="true" tabindex="-1"></a>divides by almost nothing, and its weight $\tfrac14\Delta\mu^2$ is</span>
+<span id="cb30-775"><a href="#cb30-775" aria-hidden="true" tabindex="-1"></a>almost nothing too.  An unstable quantity multiplied by a vanishing</span>
+<span id="cb30-776"><a href="#cb30-776" aria-hidden="true" tabindex="-1"></a>weight contributes nothing.</span>
+<span id="cb30-777"><a href="#cb30-777" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-778"><a href="#cb30-778" aria-hidden="true" tabindex="-1"></a>The picture also shows why the strip has influence in the right panel</span>
+<span id="cb30-779"><a href="#cb30-779" aria-hidden="true" tabindex="-1"></a>despite barely moving.  Influence is distance from the mean of $x$, the</span>
+<span id="cb30-780"><a href="#cb30-780" aria-hidden="true" tabindex="-1"></a>dotted line, and the strip sits ten units from it.  What it contributes</span>
+<span id="cb30-781"><a href="#cb30-781" aria-hidden="true" tabindex="-1"></a>is not its own slope but its position: it anchors one end of the dashed</span>
+<span id="cb30-782"><a href="#cb30-782" aria-hidden="true" tabindex="-1"></a>line.  A group dummy removes that channel and returns the within answer.</span>
+<span id="cb30-783"><a href="#cb30-783" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-784"><a href="#cb30-784" aria-hidden="true" tabindex="-1"></a>Predicted and actual agree in every row.  Fixed effects is flat at 1.984</span>
+<span id="cb30-785"><a href="#cb30-785" aria-hidden="true" tabindex="-1"></a>against a theoretical 1.991, the gap being sampling noise.  Plain OLS</span>
+<span id="cb30-786"><a href="#cb30-786" aria-hidden="true" tabindex="-1"></a>runs from 1.983 to 0.004 on identical true slopes, partly because the</span>
+<span id="cb30-787"><a href="#cb30-787" aria-hidden="true" tabindex="-1"></a>steady half gains weight as it leaves the grand mean, and partly because</span>
+<span id="cb30-788"><a href="#cb30-788" aria-hidden="true" tabindex="-1"></a>a second channel opens that is not weighting at all: with the halves at</span>
+<span id="cb30-789"><a href="#cb30-789" aria-hidden="true" tabindex="-1"></a>different levels of $x$, part of the fitted line is a comparison</span>
+<span id="cb30-790"><a href="#cb30-790" aria-hidden="true" tabindex="-1"></a>*between* them.  So "the weight is how much $x$ moves" describes the</span>
+<span id="cb30-791"><a href="#cb30-791" aria-hidden="true" tabindex="-1"></a>demeaned case; it is exact once unit effects are removed and false in</span>
+<span id="cb30-792"><a href="#cb30-792" aria-hidden="true" tabindex="-1"></a>general.</span>
+<span id="cb30-793"><a href="#cb30-793" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-794"><a href="#cb30-794" aria-hidden="true" tabindex="-1"></a><span class="fu">### When it does not matter</span></span>
 <span id="cb30-795"><a href="#cb30-795" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-798"><a href="#cb30-798" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb30-799"><a href="#cb30-799" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
-<span id="cb30-800"><a href="#cb30-800" aria-hidden="true" tabindex="-1"></a>sdX <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="fl">0.2</span>, <span class="dv">3</span>)          <span class="co"># how much x moves, unit by unit</span></span>
-<span id="cb30-801"><a href="#cb30-801" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-802"><a href="#cb30-802" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="cf">function</span>(b) {           <span class="co"># build a panel whose unit slopes are b</span></span>
-<span id="cb30-803"><a href="#cb30-803" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
-<span id="cb30-804"><a href="#cb30-804" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x  =</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, <span class="fu">rep</span>(sdX, <span class="at">each =</span> T)))</span>
-<span id="cb30-805"><a href="#cb30-805" aria-hidden="true" tabindex="-1"></a>  h<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(b, <span class="at">each =</span> T) <span class="sc">*</span> h<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb30-806"><a href="#cb30-806" aria-hidden="true" tabindex="-1"></a>  h</span>
-<span id="cb30-807"><a href="#cb30-807" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-808"><a href="#cb30-808" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(h, b) {</span>
-<span id="cb30-809"><a href="#cb30-809" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, h))<span class="sc">^</span><span class="dv">2</span>, h<span class="sc">$</span>id, sum)   <span class="co"># the weights</span></span>
-<span id="cb30-810"><a href="#cb30-810" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, h))[[<span class="st">"x"</span>]],</span>
-<span id="cb30-811"><a href="#cb30-811" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, plain avg</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(b),</span>
-<span id="cb30-812"><a href="#cb30-812" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, weighted</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w))</span>
-<span id="cb30-813"><a href="#cb30-813" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb30-814"><a href="#cb30-814" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-815"><a href="#cb30-815" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">1</span>, <span class="dv">1</span>)             <span class="co"># (A) slopes unrelated to movement</span></span>
-<span id="cb30-816"><a href="#cb30-816" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (sdX <span class="sc">-</span> <span class="fl">1.6</span>)      <span class="co"># (B) slopes larger where x moves more</span></span>
-<span id="cb30-817"><a href="#cb30-817" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b1); h2 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b2)</span>
-<span id="cb30-818"><a href="#cb30-818" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-819"><a href="#cb30-819" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">(A) unrelated</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(h1, b1),</span>
-<span id="cb30-820"><a href="#cb30-820" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">(B) aligned</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(h2, b2)), <span class="dv">4</span>)</span>
-<span id="cb30-821"><a href="#cb30-821" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-796"><a href="#cb30-796" aria-hidden="true" tabindex="-1"></a>Weighting only distorts when the effect is related to the weight.  Give</span>
+<span id="cb30-797"><a href="#cb30-797" aria-hidden="true" tabindex="-1"></a>every unit its own slope, let units differ in how much $x$ moves, and</span>
+<span id="cb30-798"><a href="#cb30-798" aria-hidden="true" tabindex="-1"></a>compare two designs: in (A) the slopes are unrelated to that movement,</span>
+<span id="cb30-799"><a href="#cb30-799" aria-hidden="true" tabindex="-1"></a>in (B) the slope is larger where $x$ moves more.  Both average near one.</span>
+<span id="cb30-800"><a href="#cb30-800" aria-hidden="true" tabindex="-1"></a>Design (A) is the $s_i$-versus-$b_i$ story from earlier, run again as a</span>
+<span id="cb30-801"><a href="#cb30-801" aria-hidden="true" tabindex="-1"></a>panel instead of a cross-section: true slopes drawn independently of the</span>
+<span id="cb30-802"><a href="#cb30-802" aria-hidden="true" tabindex="-1"></a>weight, so the weighted and unweighted averages come out close together.</span>
+<span id="cb30-803"><a href="#cb30-803" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-806"><a href="#cb30-806" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-807"><a href="#cb30-807" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb30-808"><a href="#cb30-808" aria-hidden="true" tabindex="-1"></a>sdX <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="fl">0.2</span>, <span class="dv">3</span>)          <span class="co"># how much x moves, unit by unit</span></span>
+<span id="cb30-809"><a href="#cb30-809" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-810"><a href="#cb30-810" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="cf">function</span>(b) {           <span class="co"># build a panel whose unit slopes are b</span></span>
+<span id="cb30-811"><a href="#cb30-811" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb30-812"><a href="#cb30-812" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x  =</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, <span class="fu">rep</span>(sdX, <span class="at">each =</span> T)))</span>
+<span id="cb30-813"><a href="#cb30-813" aria-hidden="true" tabindex="-1"></a>  h<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(b, <span class="at">each =</span> T) <span class="sc">*</span> h<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb30-814"><a href="#cb30-814" aria-hidden="true" tabindex="-1"></a>  h</span>
+<span id="cb30-815"><a href="#cb30-815" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-816"><a href="#cb30-816" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(h, b) {</span>
+<span id="cb30-817"><a href="#cb30-817" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, h))<span class="sc">^</span><span class="dv">2</span>, h<span class="sc">$</span>id, sum)   <span class="co"># the weights</span></span>
+<span id="cb30-818"><a href="#cb30-818" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, h))[[<span class="st">"x"</span>]],</span>
+<span id="cb30-819"><a href="#cb30-819" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, plain avg</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(b),</span>
+<span id="cb30-820"><a href="#cb30-820" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, weighted</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w))</span>
+<span id="cb30-821"><a href="#cb30-821" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb30-822"><a href="#cb30-822" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-823"><a href="#cb30-823" aria-hidden="true" tabindex="-1"></a>In (A) all three numbers agree to within sampling noise: the weighting</span>
-<span id="cb30-824"><a href="#cb30-824" aria-hidden="true" tabindex="-1"></a>is there and costs nothing.  In (B) the estimate is 1.53 while the plain</span>
-<span id="cb30-825"><a href="#cb30-825" aria-hidden="true" tabindex="-1"></a>average of the true slopes is 1.01, and the weighted average, 1.54, is</span>
-<span id="cb30-826"><a href="#cb30-826" aria-hidden="true" tabindex="-1"></a>what the estimator was tracking all along.  None of this is a defect ---</span>
-<span id="cb30-827"><a href="#cb30-827" aria-hidden="true" tabindex="-1"></a>a unit whose $x$ barely moves genuinely carries little information about</span>
-<span id="cb30-828"><a href="#cb30-828" aria-hidden="true" tabindex="-1"></a>how $y$ responds, and leaning on the units that do move is efficient.</span>
-<span id="cb30-829"><a href="#cb30-829" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-830"><a href="#cb30-830" aria-hidden="true" tabindex="-1"></a>Design (B) is the continuous version of what Słoczyński describes for a</span>
-<span id="cb30-831"><a href="#cb30-831" aria-hidden="true" tabindex="-1"></a>binary treatment, worked through earlier in this chapter: the same</span>
-<span id="cb30-832"><a href="#cb30-832" aria-hidden="true" tabindex="-1"></a>weighting, aggregated to two groups instead of spread over a continuum.</span>
-<span id="cb30-833"><a href="#cb30-833" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-834"><a href="#cb30-834" aria-hidden="true" tabindex="-1"></a>With homogeneous effects the weighting is harmless.  With heterogeneous</span>
-<span id="cb30-835"><a href="#cb30-835" aria-hidden="true" tabindex="-1"></a>effects the question is never whether OLS is weighting, only whether we</span>
-<span id="cb30-836"><a href="#cb30-836" aria-hidden="true" tabindex="-1"></a>know what it weighted.</span>
+<span id="cb30-823"><a href="#cb30-823" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">1</span>, <span class="dv">1</span>)             <span class="co"># (A) slopes unrelated to movement</span></span>
+<span id="cb30-824"><a href="#cb30-824" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (sdX <span class="sc">-</span> <span class="fl">1.6</span>)      <span class="co"># (B) slopes larger where x moves more</span></span>
+<span id="cb30-825"><a href="#cb30-825" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b1); h2 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b2)</span>
+<span id="cb30-826"><a href="#cb30-826" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-827"><a href="#cb30-827" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">(A) unrelated</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(h1, b1),</span>
+<span id="cb30-828"><a href="#cb30-828" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">(B) aligned</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(h2, b2)), <span class="dv">4</span>)</span>
+<span id="cb30-829"><a href="#cb30-829" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-830"><a href="#cb30-830" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-831"><a href="#cb30-831" aria-hidden="true" tabindex="-1"></a>In (A) all three numbers agree to within sampling noise: the weighting</span>
+<span id="cb30-832"><a href="#cb30-832" aria-hidden="true" tabindex="-1"></a>is there and costs nothing.  In (B) the estimate is 1.53 while the plain</span>
+<span id="cb30-833"><a href="#cb30-833" aria-hidden="true" tabindex="-1"></a>average of the true slopes is 1.01, and the weighted average, 1.54, is</span>
+<span id="cb30-834"><a href="#cb30-834" aria-hidden="true" tabindex="-1"></a>what the estimator was tracking all along.  None of this is a defect ---</span>
+<span id="cb30-835"><a href="#cb30-835" aria-hidden="true" tabindex="-1"></a>a unit whose $x$ barely moves genuinely carries little information about</span>
+<span id="cb30-836"><a href="#cb30-836" aria-hidden="true" tabindex="-1"></a>how $y$ responds, and leaning on the units that do move is efficient.</span>
+<span id="cb30-837"><a href="#cb30-837" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-838"><a href="#cb30-838" aria-hidden="true" tabindex="-1"></a>Design (B) is the continuous version of what Słoczyński describes for a</span>
+<span id="cb30-839"><a href="#cb30-839" aria-hidden="true" tabindex="-1"></a>binary treatment, worked through earlier in this chapter: the same</span>
+<span id="cb30-840"><a href="#cb30-840" aria-hidden="true" tabindex="-1"></a>weighting, aggregated to two groups instead of spread over a continuum.</span>
+<span id="cb30-841"><a href="#cb30-841" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-842"><a href="#cb30-842" aria-hidden="true" tabindex="-1"></a>With homogeneous effects the weighting is harmless.  With heterogeneous</span>
+<span id="cb30-843"><a href="#cb30-843" aria-hidden="true" tabindex="-1"></a>effects the question is never whether OLS is weighting, only whether we</span>
+<span id="cb30-844"><a href="#cb30-844" aria-hidden="true" tabindex="-1"></a>know what it weighted.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

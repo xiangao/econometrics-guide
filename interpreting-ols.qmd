@@ -338,15 +338,15 @@ residualising on every other regressor in the model.  By the
 Frisch--Waugh--Lovell theorem,
 
 $$
-\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
-                 {\sum_i \sum_t \tilde V_{it}^{2}} .
+\hat\beta = \frac{\sum_i \tilde V_i\, y_i}{\sum_i \tilde V_i^{2}} .
 $$
 
-Be careful what $\tilde V_{it}$ is.  A single observation has no
+Be careful what $\tilde V_i$ is.  A single observation has no
 variation of its own --- variation belongs to a collection.  What it has
 is a **deviation**: how far its regressor sits from what the rest of the
 model predicts for it.  With only an intercept that is distance from the
-grand mean; with unit effects it is distance from the unit's own mean.
+grand mean; with unit effects --- as in a panel, where several
+observations share a unit --- it is distance from the unit's own mean.
 Which mean gets subtracted is the single most consequential detail in
 this section, and we return to it.
 
@@ -390,24 +390,29 @@ Both are developed at length in
 ### Where the square comes from
 
 The square in $w_i$ is derived, not assumed.  Substituting
-$y_{it}=\beta_i V_{it}+\ldots$ into the numerator gives
-$\sum_i \beta_i \sum_t \tilde V_{it}V_{it}$, and over the whole sample
+$y_i=\beta_i V_i+\ldots$ into the numerator gives
+$\sum_i \beta_i \tilde V_i V_i$, and over the whole sample
 $\sum \tilde V V=\sum \tilde V^2$ because $\tilde V$ is orthogonal to the
-fitted part of $V$.  Whether that holds *unit by unit* --- which is what
-licenses reading $\sum_t \tilde V_{it}^2$ as unit $i$'s weight ---
-depends on the residualising being done within the unit.  Demeaning
-delivers it by direct expansion,
+fitted part of $V$.
+
+In a panel, several observations share a unit, indexed by $t$ within
+unit $i$, and it is natural to ask whether the same cancellation holds
+*within a single unit* --- summed only over that unit's own $t$'s ---
+rather than only over the whole sample.  Write $V_{it}$ for the
+observation and $\bar V_i$ for the unit's own mean.  Demeaning delivers
+the within-unit version by direct expansion,
 $\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
 =\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in
-total.  Hazlett and Shinkre make this the centre of their treatment; the
-Angrist row below assumes the saturated case.
+total, over the whole sample, not unit by unit.  Hazlett and Shinkre
+make this the centre of their treatment; the Angrist row below assumes
+the saturated case.
 
 ### When the weight simplifies
 
-In general $\sum_t \tilde V_{it}^2$ will not factor into anything
-tidier, since $\tilde V_{it}$ carries both subscripts even when $V$ does
-not.  What changes from model to model is whether it happens to
-simplify.  The table borrows the panel chapter's notation --- $x_{it}$
+In general the within-unit sum $\sum_t \tilde V_{it}^2$ will not factor
+into anything tidier, since $\tilde V_{it}$ carries both subscripts even
+when $V$ does not.  What changes from model to model is whether it
+happens to simplify.  The table is stated for a panel --- $x_{it}$
 varying over units and time, $z_i$ over units only, $T$ periods per
 unit --- because that is where the cases are easiest to name; nothing
 in the rule depends on having a panel.
@@ -770,6 +775,9 @@ Weighting only distorts when the effect is related to the weight.  Give
 every unit its own slope, let units differ in how much $x$ moves, and
 compare two designs: in (A) the slopes are unrelated to that movement,
 in (B) the slope is larger where $x$ moves more.  Both average near one.
+Design (A) is the $s_i$-versus-$b_i$ story from earlier, run again as a
+panel instead of a cross-section: true slopes drawn independently of the
+weight, so the weighted and unweighted averages come out close together.
 
 ```{r}
 set.seed(7)
