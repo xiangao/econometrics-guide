@@ -662,3 +662,22 @@ Derivation now in the text, two lines: `Var(e_i - ebar) = sigma^2(1 - 1/n)` and
 
 **Process note from the author:** stop reaching for simulation when the result is a
 two-line derivation. Both facts here are algebra; no chunk was needed or added.
+
+## Standing rule (2026-08-02i) — every simulation gets a lead-in
+
+Author's instruction: always say what a simulation or illustration is doing, before the
+code. Prompted by the variance-binning chunk, which was unreadable: `t(sapply(split(...)))`
+three transformations deep, introduced by a single line.
+
+Swept both chapters. Six chunks had no description of their setup — only a heading or a
+paragraph about the surrounding idea. Each now says, in a sentence or two, what is being
+generated, what is being computed, and what the reader should look for in the output.
+The binning chunk gets the fullest treatment: six equal-sized groups sorted by distance
+from the mean, and the point is that the last column is `sigma^2` in every group.
+
+`audit_chapters.py` does not check this — the lead-in sweep is a separate loop over
+chunks comparing each against the preceding paragraph. Worth folding in if this recurs.
+
+Related note from the same exchange: prefer deriving to simulating when the result is a
+few lines of algebra, and when a claim turns out to be wrong, **delete it** rather than
+qualify it in place. A denial of a claim the reader never saw is worse than the claim.

@@ -82,6 +82,8 @@ returns that number.
 
 ## Add a third point
 
+Same function, one more point, at $x=4$.
+
 ```{r}
 #| fig-width: 5
 #| fig-height: 4
@@ -99,6 +101,9 @@ horizontal leverage, so however dramatic its own slope, it barely moves
 the line.
 
 ## Add a fourth, far out
+
+Again the same function, now with a point at $x=9$, well to the right of
+everything else.
 
 ```{r}
 #| fig-width: 5
@@ -147,6 +152,11 @@ This is where care is needed.  $s_i$ is *observable* --- it is computed
 from the data.  The structural $b_i$ is not.  It is tempting to treat
 the first as a measurement of the second, and at the level of a single
 observation that is badly wrong.
+
+To see it we need both quantities at once, so we plant the truth: two
+thousand observations, each given its own slope $b_i$ drawn around 1,
+with a fair amount of noise on top.  Then we compute $s_i$ from the data
+the ordinary way and compare the two.
 
 ```{r}
 set.seed(6)
@@ -218,9 +228,14 @@ of $s_i$, while the $s_i$ themselves are mildly correlated --- which is
 why the efficiency of OLS rests on Gauss--Markov and not on any argument
 about combining independent estimates.
 
-The weight is the inverse variance of the thing it weights.  Check it by
-splitting on $|d_i|$: the product $d_i^2\,\text{Var}(s_i)$ should be
-constant at $\sigma^2$.
+We can watch that happen.  Generate a large sample with a known
+$\sigma^2=4$, sort the observations by $|d_i|$, and cut them into six
+equal-sized groups running from nearest the mean to furthest from it.
+Within each group, report the typical distance, the spread of the
+$s_i$, the typical weight, and --- the point of the exercise --- their
+product.  If $\text{Var}(s_i)$ really falls off like $1/d_i^2$, that
+product is $\sigma^2$ in every group, however far from the mean the
+group sits.
 
 ```{r}
 set.seed(12)
@@ -442,6 +457,13 @@ to form a difference.  So the smallest unit carrying an effect is the
 *stratum*, and $s_i$ becomes the stratum difference in means.  The
 granularity of the decomposition is set by the regressor, not chosen.
 
+The check below builds five covariate strata with different treated
+shares and a different effect in each, then computes the stratum weights
+twice --- once as $\sum \tilde d_i d_i$, once as Angrist's
+$n_x\hat d(1-\hat d)$ --- and compares both to the OLS coefficient and
+to Słoczyński's form.  It runs the whole thing under two treated shares,
+one near a half and one near a tenth.
+
 ```{r}
 set.seed(21)
 n <- 400000
@@ -643,8 +665,14 @@ group means at the same height.  As $\Delta\mu$ grows, the between
 weight $\tfrac14\Delta\mu^2$ swamps the fixed within weight of $4.52$
 and the coefficient is dragged from $1.991$ toward zero like
 $9/(4.52+\Delta\mu^2/4)$, the numerator being
-$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.  The simulation is a
-check on that, not the source of it.
+$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.
+
+The code below evaluates that expression, then takes the same data and
+shifts the steady group to three different positions --- on top of the
+other group, ten units away, a hundred units away --- reporting the
+fixed-effects estimate, the predicted OLS value and the actual one side
+by side.  The simulation is a check on the algebra, not the source of
+it.
 
 ```{r}
 b_within <- (0 * 0.2^2 + 2 * 3^2) / (0.2^2 + 3^2)   # variance-weighted slope
