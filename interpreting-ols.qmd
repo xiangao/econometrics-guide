@@ -220,6 +220,24 @@ own, so when the $b_i$ genuinely differ, one point's ray does not
 recover that point's own slope even without noise.  Noise makes it
 worse, but it is not the cause of it.
 
+Write out exactly what happens.  Let $\bar b$ be the average $b_i$ and
+$C$ the sample covariance of $b$ and $x$.  Substituting $x_i=d_i+\bar x$
+throughout and collecting terms,
+
+$$
+s_i \;=\; b_i \;+\; \frac{\bar x\,(b_i-\bar b) - C}{d_i}
+        \;+\; \frac{e_i-\bar e}{d_i}.
+$$
+
+Set $b_i=b$ for everyone and the middle term vanishes on its own, since
+$b_i-\bar b=0$ and $C=0$, leaving exactly the homogeneous formula used
+below.  With $b_i$ heterogeneous, that middle term survives, and it
+divides by $d_i$ exactly like the noise term does --- so it inflates
+near the mean for the same geometric reason, with no noise involved at
+all.  It vanishes only if $x$ happens to be centred exactly
+($\bar x=0$) and $b$ happens to be uncorrelated with $x$ in this
+particular sample ($C=0$); neither is guaranteed at any finite $n$.
+
 What survives regardless is the weighted average, which comes out at
 $0.9914$ either way and matches OLS exactly.  That is the weighted-
 average identity established earlier in this chapter: it is pure
@@ -267,56 +285,19 @@ So an observation's weight is the reciprocal of how noisy its own slope
 estimate is.  The $s_i$ that look absurd are absurd because their $d_i$
 is small, and a small $d_i$ is exactly what the weight penalises.
 
-That is the claim, and it can be checked directly.  Draw a large sample
-with a known $\sigma^2=4$, sort the observations by $|d_i|$, and cut
-them into six equal-sized groups running from nearest the mean to
-furthest from it.  In each group report the typical distance, the spread
-of the $s_i$, the typical weight, and their product.  If
-$\text{Var}(s_i)$ really falls off like $1/d_i^2$, that product is
-$\sigma^2$ in every group, however far out the group sits.
-
-```{r}
-set.seed(12)
-nn <- 200000
-xx <- rnorm(nn, 0, 2); yy <- 1 * xx + rnorm(nn, 0, 2)   # true b = 1, sigma^2 = 4
-dd <- xx - mean(xx); ss <- (yy - mean(yy)) / dd; ww <- dd^2
-
-bin <- cut(abs(dd), quantile(abs(dd), 0:6/6), include.lowest = TRUE,
-           labels = c("nearest the mean", "2nd", "3rd", "4th", "5th",
-                      "furthest out"))
-print(round(t(sapply(split(seq_len(nn), bin), function(i)
-  c(`mean |d|` = mean(abs(dd[i])), `var(s)` = var(ss[i]),
-    `mean d^2` = mean(ww[i]), `d^2 x var(s)` = mean(ww[i]) * var(ss[i])))), 2))
-
-round(c(`unweighted mean of s_i` = mean(ss),
-        `weighted mean of s_i`   = sum(ww * ss) / sum(ww)), 3)
-```
-
-Read the `d^2 x var(s)` column, and skip the "nearest the mean" row for
-a moment.  In every other group it sits at about 4, which is
-$\sigma^2$ --- the variance of $s_i$ shrinks exactly as fast as the
-weight grows, so their product is the same everywhere.  That is what
-makes OLS the inverse-variance weighted average of $n$ unbiased
-estimates of the slope.  The cancellation is algebraic, not approximate:
-$d_i^2\, s_i = d_i^2 \cdot (y_i-\bar y)/d_i = d_i(y_i-\bar y)$.
+The cancellation behind that weight is algebraic, not approximate:
+$d_i^2\, s_i = d_i^2 \cdot (y_i-\bar y)/d_i = d_i(y_i-\bar y)$, true in
+any sample, which is what makes OLS the inverse-variance weighted
+average of $n$ unbiased estimates of the slope.
 
 This is the step that explains why averaging $s_i$ recovers $b$, not
 merely that it is unbiased.  Because $s_i$ is unbiased,
 $\text{Var}(s_i)$ is exactly the average squared distance of $s_i$ from
 $b$ --- large variance means $s_i$ typically lands far away, small
-variance means it typically lands close.  The constancy of
-$d_i^2\,\text{Var}(s_i)$ says that distance shrinks exactly as fast as
-$d_i^2$ grows, so weighting by $d_i^2$ hands almost all the say to
-observations whose $s_i$ reliably sit near $b$, and next to none to
-observations whose $s_i$ wander far from it.
-
-The "nearest the mean" row is the exception, and it is instructive.
-Its $|d_i|$ reaches down to $10^{-10}$, so $s_i$ there is a ratio with a
-vanishing denominator and has no finite variance at all.  Those observations get weight near zero
-and do no damage --- but it means the weighting is not merely efficient.
-Without it the estimator would not exist: the *unweighted* mean of the
-$s_i$ in this sample is $-23{,}816$, against $0.999$ for the weighted
-one.
+variance means it typically lands close.  Since $\text{Var}(s_i)$ is
+proportional to $1/d_i^{\,2}$, weighting by $d_i^2$ hands almost all the
+say to observations whose $s_i$ reliably sit near $b$, and next to none
+to observations whose $s_i$ wander far from it.
 
 ### How much of this is the noise?
 
