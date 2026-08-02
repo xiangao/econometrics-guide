@@ -158,6 +158,8 @@ from the data.  The structural $b_i$ is not.  It is tempting to treat
 the first as a measurement of the second, and at the level of a single
 observation that is badly wrong.
 
+### The heterogeneous case
+
 To see it we need both quantities at once, so we plant the truth: two
 thousand observations, each given its own slope $b_i$ drawn around 1,
 with a fair amount of noise on top.  Then we compute $s_i$ from the data
