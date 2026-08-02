@@ -46,5 +46,8 @@
   },
   "references.qmd": {
     "references.html": "22d70f66"
+  },
+  "interpreting-ols.qmd": {
+    "interpreting-ols.html": "14d48135"
   }
 }

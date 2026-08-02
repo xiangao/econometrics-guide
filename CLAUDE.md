@@ -10,6 +10,7 @@ A Quarto book covering core econometrics topics (OLS, MLE, GLS, IV, GMM, discret
 - `endogeneity.qmd`, `gmm.qmd` — causal inference & IV part
 - `censored.qmd`, `discrete.qmd`, `count-data.qmd` — limited DV part
 - `panel-data.qmd`, `survival.qmd`, `dynamic-panel.qmd`, `missing-data.qmd` — advanced topics
+- `interpreting-ols.qmd` — final chapter: what an OLS coefficient means when effects are heterogeneous
 - `_book/` — rendered HTML output
 - `econometrics_guide.rmd` — legacy single-file version (kept for reference)
 - `*.png` — images converted from EPS (ols, davidson, davidson2)
@@ -455,3 +456,23 @@ and the right panel's steady slope of -0.288 is noise, not signal — a regressi
 **Open question from the author:** whether to move this material into a separate
 chapter, "Interpreting OLS". See the proposal in the session notes — the weighting
 material is now roughly half of `panel-data.qmd` and is not panel-specific.
+
+## Split (2026-08-02) — `interpreting-ols.qmd` created
+
+`panel-data.qmd` had grown to ~640 lines, half of it not about panels. Everything from
+"How OLS weights the data" onward moved to a new final chapter, `interpreting-ols.qmd`,
+registered in `_quarto.yml` between `missing-data` and `references`. `panel-data` keeps
+Background/RE/FE/Hausman plus collapse-versus-long-format, and ends with a forward link.
+
+**Chunk portability.** The moved chunks depended on `N`, `T` and `library(fixest)` from
+a chunk that stayed behind. The new chapter has a hidden setup chunk defining them. Every
+moved chunk re-seeds internally (`set.seed(1)`, `set.seed(5)`, `set.seed(7)`, and
+`set.seed(1)` inside `park()`), so all outputs are byte-identical after the move —
+verified. If a chunk without its own seed is ever added there, this breaks.
+
+**New material:** the point-to-centroid slope `s_i = (y_i - ybar)/(x_i - xbar)`, the
+identity `betahat = sum (x_i-xbar)^2 s_i / sum (x_i-xbar)^2`, and a section warning that
+`s_i` is not a measurement of `b_i`: correlation 0.019, sd 117.4 against 0.5, yet the
+weighted averages agree (0.950 / 0.992, OLS 0.950). The point of that section is that
+the `s_i` identity is model-free but vacuous, the `b_i` version carries the content but
+needs an assumption, and the genuinely useful object is the weights, which need neither.

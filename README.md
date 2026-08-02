@@ -9,7 +9,7 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
 | **Foundations** | OLS, Maximum Likelihood, GLS |
 | **Causal Inference & IV** | Endogeneity & Instrumental Variables, GMM |
 | **Limited Dependent Variables** | Censored/Truncated/Selection Models, Discrete Choice, Count Data |
-| **Advanced Topics** | Panel Data, Survival Models, Dynamic Panels, Missing Data |
+| **Advanced Topics** | Panel Data, Survival Models, Dynamic Panels, Missing Data, Interpreting OLS |
 
 ## Prerequisites
 
@@ -72,3 +72,14 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > regression returns 1.845 against a truth of 1 while the within estimator returns
 > 0.995. Mundlak's regression reproduces the within estimate and returns the
 > between-minus-within contrast as the coefficient on `x̄_i`.
+
+> **2026-08-02:** Split the OLS-weighting material out of `panel-data` into a new final
+> chapter, **Interpreting OLS**. It was roughly half of the panel chapter and almost
+> none of it is panel-specific: the FWL weighting rule, the outcome-versus-effect
+> representations, Angrist's variance weighting, Słoczyński's ATT/ATU split and the
+> within/between decomposition all apply to a plain cross-section. `panel-data` keeps
+> the collapse-versus-long-format material and links forward. The new chapter also adds
+> the point-to-centroid slope `s_i` and the warning not to read it as the structural
+> `b_i` — their correlation is 0.019 and `s_i` has 235 times the spread, yet their
+> weighted averages agree, which is the whole reason the decomposition is about the
+> weights rather than either slope.

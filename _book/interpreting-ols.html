@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>13&nbsp; Interpreting OLS – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./missing-data.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script>
+try {
+  if (window.localStorage) {
+    window.localStorage.setItem("quarto-reader-mode", "false");
+  }
+} catch (e) {}
+</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="style.css">
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./interpreting-ols.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Interpreting OLS</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://xiangao.github.io/" title="Xiang Ao home" class="quarto-navigation-tool px-1" aria-label="Xiang Ao home"><i class="bi bi-house-door-fill"></i></a>
+    <a href="https://xiangao.github.io/books.html" title="Other books" class="quarto-navigation-tool px-1" aria-label="Other books"><i class="bi bi-book"></i></a>
+    <a href="https://github.com/xiangao/econometrics-guide/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpreting-ols.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Interpreting OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#the-rule" id="toc-the-rule" class="nav-link active" data-scroll-target="#the-rule"><span class="header-section-number">13.1</span> The rule</a>
+  <ul class="collapse">
+<li><a href="#two-ways-to-read-the-coefficient" id="toc-two-ways-to-read-the-coefficient" class="nav-link" data-scroll-target="#two-ways-to-read-the-coefficient"><span class="header-section-number">13.1.1</span> Two ways to read the coefficient</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#the-slope-of-a-single-observation" id="toc-the-slope-of-a-single-observation" class="nav-link" data-scroll-target="#the-slope-of-a-single-observation"><span class="header-section-number">13.2</span> The slope of a single observation</a>
+  <ul class="collapse">
+<li><a href="#do-not-mistake-s_i-for-b_i" id="toc-do-not-mistake-s_i-for-b_i" class="nav-link" data-scroll-target="#do-not-mistake-s_i-for-b_i"><span class="header-section-number">13.2.1</span> Do not mistake <span class="math inline">\(s_i\)</span> for <span class="math inline">\(b_i\)</span></a></li>
+  <li><a href="#what-this-means-for-the-whole-exercise" id="toc-what-this-means-for-the-whole-exercise" class="nav-link" data-scroll-target="#what-this-means-for-the-whole-exercise"><span class="header-section-number">13.2.2</span> What this means for the whole exercise</a></li>
+  <li><a href="#when-the-weighting-changes-the-answer" id="toc-when-the-weighting-changes-the-answer" class="nav-link" data-scroll-target="#when-the-weighting-changes-the-answer"><span class="header-section-number">13.2.3</span> When the weighting changes the answer</a></li>
+  <li><a href="#which-mean-and-why-it-matters" id="toc-which-mean-and-why-it-matters" class="nav-link" data-scroll-target="#which-mean-and-why-it-matters"><span class="header-section-number">13.2.4</span> Which mean, and why it matters</a></li>
+  <li><a href="#the-same-thing-as-a-picture" id="toc-the-same-thing-as-a-picture" class="nav-link" data-scroll-target="#the-same-thing-as-a-picture"><span class="header-section-number">13.2.5</span> The same thing as a picture</a></li>
+  <li><a href="#when-it-does-not-matter" id="toc-when-it-does-not-matter" class="nav-link" data-scroll-target="#when-it-does-not-matter"><span class="header-section-number">13.2.6</span> When it does not matter</a></li>
+  </ul>
+</li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/interpreting-ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Interpreting OLS</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>A regression returns one number. What that number <em>is</em> — whose effect it reflects, which observations produced it, whether it is the average anyone had in mind — is a separate question from how it is computed, and the answer is less obvious than it looks.</p>
+<p>This chapter collects the material. It sits at the end because it draws on the between-versus-within split from <a href="./panel-data.html">Panel Data Models</a>, but almost nothing in it is specific to panels: the same rule governs a plain cross-sectional regression, and the binary-treatment case that most of the applied literature discusses is one line of the table below.</p>
+<p>Two companion pieces develop the same ideas with a treatment-effects emphasis: <a href="https://xiangao.github.io/blog_book/weights-ols.html">Weights in OLS in causal inference</a> and <a href="https://xiangao.github.io/blog_book/ols-ate.html">OLS cannot be ATE</a>.</p>
+<section id="the-rule" class="level2" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="the-rule">
+<span class="header-section-number">13.1</span> The rule</h2>
+<p>The panel chapter met two weightings: by <span class="math inline">\(T_i\)</span> when a panel is unbalanced, and by variance when a regression mixes within and between variation. Neither is a panel-specific quirk. Both follow from one rule.</p>
+<p>Let <span class="math inline">\(V\)</span> be the regressor of interest and <span class="math inline">\(\tilde V\)</span> be <span class="math inline">\(V\)</span> after residualising on every other regressor in the model. By the Frisch–Waugh–Lovell theorem,</p>
+<p><span class="math display">\[
+\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
+                 {\sum_i \sum_t \tilde V_{it}^{2}} .
+\]</span></p>
+<p>Be careful what <span class="math inline">\(\tilde V_{it}\)</span> is. A single observation has no variation of its own — variation belongs to a collection. What it has is a <strong>deviation</strong>: how far its regressor sits from what the rest of the model predicts for it. With only an intercept that is distance from the grand mean; with unit effects it is distance from the unit’s own mean. Which mean gets subtracted is the single most consequential detail in this section, and we return to it.</p>
+<section id="two-ways-to-read-the-coefficient" class="level3" data-number="13.1.1"><h3 data-number="13.1.1" class="anchored" data-anchor-id="two-ways-to-read-the-coefficient">
+<span class="header-section-number">13.1.1</span> Two ways to read the coefficient</h3>
+<p>The formula supports two readings. They describe one estimator and differ in what is being weighted.</p>
+<p><span class="math display">\[
+\hat\beta = \sum_i \omega_i\, y_i , \quad
+\omega_i = \frac{\tilde V_i}{\sum_j \tilde V_j^2}
+\qquad\text{versus}\qquad
+\hat\beta = \frac{\sum_i w_i\, \beta_i}{\sum_i w_i} , \quad
+w_i = \tilde V_i V_i .
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Weights on outcomes, <span class="math inline">\(\omega_i\)</span>
+</th>
+<th>Weights on effects, <span class="math inline">\(w_i\)</span>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Weights what</td>
+<td>the observed <span class="math inline">\(y_i\)</span>
+</td>
+<td>that observation’s own effect <span class="math inline">\(\beta_i\)</span>
+</td>
+</tr>
+<tr class="even">
+<td>Sign</td>
+<td>signed, sums to zero</td>
+<td>non-negative</td>
+</tr>
+<tr class="odd">
+<td>Computable</td>
+<td>yes, <span class="math inline">\(y\)</span> is observed</td>
+<td>no, the <span class="math inline">\(\beta_i\)</span> are never seen</td>
+</tr>
+<tr class="even">
+<td>Holds when</td>
+<td>always, it is algebra</td>
+<td>after writing effects into <span class="math inline">\(y\)</span>; the per-unit reading also needs saturation</td>
+</tr>
+<tr class="odd">
+<td>Answers</td>
+<td>which rows drive this number, and does any enter with the wrong sign</td>
+<td>is this the effect I meant, and whose effect is it mostly</td>
+</tr>
+</tbody>
+</table>
+<p>Default to the second. Nearly every question that motivates the topic — is my coefficient the average effect, whose effect does it report, why do smaller groups get larger weights — is a question about the estimand. Reach for the first when overlap is in doubt and you need to see whether observations enter negatively, which squares cannot show. Both are developed at length in <a href="https://xiangao.github.io/blog_book/weights-ols.html">Weights in OLS in causal inference</a>.</p>
+<p>The square in <span class="math inline">\(w_i\)</span> is derived, not assumed. Substituting <span class="math inline">\(y_{it}=\beta_i V_{it}+\ldots\)</span> into the numerator gives <span class="math inline">\(\sum_i \beta_i \sum_t \tilde V_{it}V_{it}\)</span>, and over the whole sample <span class="math inline">\(\sum \tilde V V=\sum \tilde V^2\)</span> because <span class="math inline">\(\tilde V\)</span> is orthogonal to the fitted part of <span class="math inline">\(V\)</span>. Whether that holds <em>unit by unit</em> — which is what licenses reading <span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> as unit <span class="math inline">\(i\)</span>’s weight — depends on the residualising being done within the unit. Demeaning delivers it by direct expansion, <span class="math inline">\(\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
+=\sum_t (V_{it}-\bar V_i)^2\)</span>, while a coarser control matches only in total. Hazlett and Shinkre make this the centre of their treatment; the Angrist row below assumes the saturated case.</p>
+<p>In general <span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> will not factor into anything tidier, since <span class="math inline">\(\tilde V_{it}\)</span> carries both subscripts even when <span class="math inline">\(V\)</span> does not. What changes from model to model is whether it happens to simplify.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead><tr class="header">
+<th>Model</th>
+<th>
+<span class="math inline">\(\sum_t \tilde V_{it}^2\)</span> simplifies to</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<span class="math inline">\(z_i\)</span> alone, nothing else varying within the unit</td>
+<td><span class="math inline">\(T_i\,\tilde z_i^2\)</span></td>
+</tr>
+<tr class="even">
+<td>a time-varying <span class="math inline">\(x_{it}\)</span>, unit effects removed</td>
+<td><span class="math inline">\((T-1)\,\widehat{\text{Var}}_i(x)\)</span></td>
+</tr>
+<tr class="odd">
+<td>binary <span class="math inline">\(d\)</span> with saturated controls</td>
+<td><span class="math inline">\(n_x\,\hat d(x)\,(1-\hat d(x))\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Add a time-varying <span class="math inline">\(x_{it}\)</span> alongside <span class="math inline">\(z_i\)</span> in the first model and the simplification is gone: residualising <span class="math inline">\(z_i\)</span> on something that moves within the unit makes <span class="math inline">\(\tilde z\)</span> move within the unit too. The rule survives, the shortcut does not, and the <span class="math inline">\(T_i\)</span> form is the one-regressor special case rather than the general one. The last row is Angrist (<a href="https://doi.org/10.2307/2998558">1998</a>), whose strata weights <span class="math inline">\(\hat d(x)(1-\hat d(x))\)</span> are largest where treatment is closest to a coin flip. Same rule, different regressor.</p>
+</section></section><section id="the-slope-of-a-single-observation" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="the-slope-of-a-single-observation">
+<span class="header-section-number">13.2</span> The slope of a single observation</h2>
+<p>There is a geometric version of the effect weights, and it is worth seeing because it exposes something the algebra hides.</p>
+<p>Take the slope of the line from the centroid <span class="math inline">\((\bar x,\bar y)\)</span> to observation <span class="math inline">\(i\)</span>, call it <span class="math inline">\(s_i=(y_i-\bar y)/(x_i-\bar x)\)</span>. Since <span class="math inline">\((x_i-\bar x)(y_i-\bar y)=(x_i-\bar x)^2 s_i\)</span>, the OLS slope is exactly</p>
+<p><span class="math display">\[
+\hat\beta=\frac{\sum_i (x_i-\bar x)^2\, s_i}{\sum_i (x_i-\bar x)^2},
+\]</span></p>
+<p>a weighted average of those point-to-centroid slopes. Every observation carries a slope of its own, and the fit averages them with the usual weights.</p>
+<p>Two consequences are immediate. With two points the centroid lies on the segment joining them, so both <span class="math inline">\(s_i\)</span> equal the slope of that segment and any weighting returns it — which is why a line through two points simply joins them. And an observation sitting at <span class="math inline">\(\bar x\)</span> has an undefined <span class="math inline">\(s_i\)</span> and zero weight; the wild value arrives paired with a weight that annihilates it.</p>
+<section id="do-not-mistake-s_i-for-b_i" class="level3" data-number="13.2.1"><h3 data-number="13.2.1" class="anchored" data-anchor-id="do-not-mistake-s_i-for-b_i">
+<span class="header-section-number">13.2.1</span> Do not mistake <span class="math inline">\(s_i\)</span> for <span class="math inline">\(b_i\)</span>
+</h3>
+<p>This is where care is needed. <span class="math inline">\(s_i\)</span> is <em>observable</em> — it is computed from the data. The structural <span class="math inline">\(b_i\)</span> is not. It is tempting to treat the first as a measurement of the second, and at the level of a single observation that is badly wrong.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">2000</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>                 <span class="co"># TRUE slope of each observation, unobservable</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">xb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>; <span class="va">w</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">xb</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">s</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">xb</span><span class="op">)</span>        <span class="co"># OBSERVABLE slope to the centroid</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>  `correlation of s_i with b_i` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">b</span><span class="op">)</span>,</span>
+<span>  `sd of true b_i`              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>,</span>
+<span>  `sd of observed s_i`          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span>,</span>
+<span>  `weighted average of s_i`     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">s</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span>
+<span>  `weighted average of b_i`     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span>
+<span>  `OLS estimate`                <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                              value
+correlation of s_i with b_i   0.019
+sd of true b_i                0.500
+sd of observed s_i          117.420
+weighted average of s_i       0.950
+weighted average of b_i       0.992
+OLS estimate                  0.950</code></pre>
+</div>
+</div>
+<p>The correlation between the two is 0.019 — none. The spread of the observed <span class="math inline">\(s_i\)</span> is more than two hundred times the spread of the true <span class="math inline">\(b_i\)</span>, because <span class="math inline">\(s_i\)</span> divides a noisy vertical gap by a horizontal distance that is sometimes almost zero. An observation with an ordinary <span class="math inline">\(b_i\)</span> near one can easily show an <span class="math inline">\(s_i\)</span> of eighteen.</p>
+<p>Yet the weighted averages agree: <span class="math inline">\(0.950\)</span> for the <span class="math inline">\(s_i\)</span>, <span class="math inline">\(0.992\)</span> for the <span class="math inline">\(b_i\)</span>, and the OLS estimate is <span class="math inline">\(0.950\)</span> — identical to the <span class="math inline">\(s_i\)</span> version by construction, and close to the <span class="math inline">\(b_i\)</span> version because the noise averages out.</p>
+</section><section id="what-this-means-for-the-whole-exercise" class="level3" data-number="13.2.2"><h3 data-number="13.2.2" class="anchored" data-anchor-id="what-this-means-for-the-whole-exercise">
+<span class="header-section-number">13.2.2</span> What this means for the whole exercise</h3>
+<p>The identity in terms of <span class="math inline">\(s_i\)</span> holds in <em>any</em> dataset. No model, no heterogeneity, nothing assumed — it would hold on pure noise. That also makes it empty: its weighted average is <span class="math inline">\(\hat\beta\)</span>, which we already had, so computing the <span class="math inline">\(s_i\)</span> tells us nothing new.</p>
+<p>The version in terms of <span class="math inline">\(b_i\)</span> is the one with content, and it costs an assumption: that <span class="math inline">\(y_i=b_i x_i+\text{noise}\)</span> describes the data. Only then does the coefficient estimate a particular mixture of <em>structural</em> effects, and only then do Angrist’s <span class="math inline">\(\hat d(x)(1-\hat d(x))\)</span> weighting or Słoczyński’s ATT/ATU split say anything. Neither statement can be made in the language of <span class="math inline">\(s_i\)</span>.</p>
+<p>So the useful part is neither slope. It is the <strong>weights</strong>, which are computable exactly, need no model, and are the only piece of this that can be reported in a paper: they say which observations the estimate is about, whatever the effects turn out to be.</p>
+</section><section id="when-the-weighting-changes-the-answer" class="level3" data-number="13.2.3"><h3 data-number="13.2.3" class="anchored" data-anchor-id="when-the-weighting-changes-the-answer">
+<span class="header-section-number">13.2.3</span> When the weighting changes the answer</h3>
+<p>The weighting always happens. It changes the answer only when the effect is heterogeneous <em>and</em> the heterogeneity lines up with the weight. The claim to check is that a regression does not report <em>the</em> effect but a weighted average of the effects, and that these are different numbers.</p>
+<p>The individual effects are never observed, so we plant them: give every unit its own slope <span class="math inline">\(\beta_i\)</span>, generate <span class="math inline">\(y\)</span> from those slopes, and see which average of the planted slopes the estimate lands on. In the next chunk only one estimator is run; anything else reported is not an estimate but the planted slopes averaged some way. Fixed effects is used because in a panel the natural place for heterogeneity is across units, and it is still OLS — OLS with the unit dummies partialled out.</p>
+<p>Start with the extreme case. Half the units barely move and have a true slope of zero; the other half move a great deal and have a true slope of two. The average unit’s slope is one.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">half</span> <span class="op">&lt;-</span> <span class="va">N</span> <span class="op">/</span> <span class="fl">2</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>                move <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="va">half</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">3</span>, <span class="va">half</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>                b    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,   <span class="va">half</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="va">half</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">g</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span>, <span class="fl">0</span>, <span class="va">g</span><span class="op">$</span><span class="va">move</span><span class="op">)</span></span>
+<span><span class="va">g</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">b</span> <span class="op">*</span> <span class="va">g</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">wg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">x</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">g</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">g</span><span class="op">$</span><span class="va">id</span>, <span class="va">sum</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>  `average of the two true slopes`      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  `FE estimate`                         <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">g</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>  `weight held by the steady half (%)`  <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">wg</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">half</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">wg</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                   value
+average of the two true slopes     1.000
+FE estimate                        1.984
+weight held by the steady half (%) 0.473</code></pre>
+</div>
+</div>
+<p>The average slope is one and the regression reports 1.98, because the five hundred steady units hold under half of one percent of the weight. Their six observations sit almost on top of their own unit mean — this regression carries unit effects, so that is the relevant deviation — and squaring puts them nowhere in the sum. Nothing has gone wrong in the arithmetic. The units with a slope of zero were never really in the regression.</p>
+</section><section id="which-mean-and-why-it-matters" class="level3" data-number="13.2.4"><h3 data-number="13.2.4" class="anchored" data-anchor-id="which-mean-and-why-it-matters">
+<span class="header-section-number">13.2.4</span> Which mean, and why it matters</h3>
+<p>That result is about the <em>within-unit</em> deviation. Plain OLS uses distance from the grand mean instead, and the two coincided above only because both halves were built around zero. Separate them and the algebra says exactly what happens.</p>
+<p>Take two equally sized groups with means <span class="math inline">\(\mu_g\)</span>, within-group variances <span class="math inline">\(\sigma_g^2\)</span>, slopes <span class="math inline">\(\beta_g\)</span> and group mean outcomes <span class="math inline">\(\bar y_g\)</span>. Let <span class="math inline">\(G\)</span> be the group label, equally likely to be 1 or 2. Two laws do the work.</p>
+<p>The <strong>law of total covariance</strong> splits the numerator:</p>
+<p><span class="math display">\[
+\text{Cov}(x,y)=E\!\left[\text{Cov}(x,y\mid G)\right]
+              + \text{Cov}\!\left(E[x\mid G],\,E[y\mid G]\right).
+\]</span></p>
+<p>Inside group <span class="math inline">\(g\)</span> we have <span class="math inline">\(\text{Cov}(x,y\mid G=g)=\beta_g\sigma_g^2\)</span>, so the first term averages to <span class="math inline">\(\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)\)</span>. For the second, <span class="math inline">\(E[x\mid G]\)</span> and <span class="math inline">\(E[y\mid G]\)</span> are two-point variables taking <span class="math inline">\((\mu_1,\mu_2)\)</span> and <span class="math inline">\((\bar y_1,\bar y_2)\)</span> with probability one half each, and for any such pair <span class="math inline">\(\text{Cov}(a,b)=\tfrac14(a_1-a_2)(b_1-b_2)\)</span>. That gives <span class="math inline">\(\tfrac14\Delta\mu\,\Delta\bar y\)</span>.</p>
+<p>The <strong>law of total variance</strong> is the same statement with <span class="math inline">\(y\)</span> replaced by <span class="math inline">\(x\)</span>:</p>
+<p><span class="math display">\[
+\text{Var}(x)=E\!\left[\text{Var}(x\mid G)\right]+\text{Var}\!\left(E[x\mid G]\right)
+=\tfrac12(\sigma_1^2+\sigma_2^2)+\tfrac14\Delta\mu^2 .
+\]</span></p>
+<p>Dividing one by the other,</p>
+<p><span class="math display">\[
+\text{plim}\;\hat\beta_{OLS}
+= \frac{\tfrac12\!\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)
+        + \tfrac14\,\Delta\mu\,\Delta\bar y}
+       {\tfrac12\!\left(\sigma_1^2+\sigma_2^2\right)
+        + \tfrac14\,\Delta\mu^{2}} ,
+\]</span></p>
+<p>with <span class="math inline">\(\Delta\mu=\mu_1-\mu_2\)</span> and <span class="math inline">\(\Delta\bar y=\bar y_1-\bar y_2\)</span>. Split that into the two slopes it mixes,</p>
+<p><span class="math display">\[
+\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},
+\qquad
+\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},
+\]</span></p>
+<p>and the coefficient is a genuine convex combination of them, weighted by the within variance <span class="math inline">\(\tfrac12(\sigma_1^2+\sigma_2^2)\)</span> and the between variance <span class="math inline">\(\tfrac14\Delta\mu^2\)</span>, which sum to the total variance.</p>
+<p>Two features are worth pausing on. <span class="math inline">\(\beta_{within}\)</span> is itself a variance-weighted average of the two slopes — the same <span class="math inline">\(\sigma^2\)</span> weighting as everywhere else in this section, one level up. And <span class="math inline">\(\beta_{between}\)</span> is a two-point slope, rise over run between the two group centres, so it can take any value at all regardless of what happens inside either group. The <span class="math inline">\(\tfrac14\)</span> is the only piece specific to equal group sizes; with shares <span class="math inline">\(p\)</span> and <span class="math inline">\(1-p\)</span> it becomes <span class="math inline">\(p(1-p)\)</span>, which is Angrist’s weight again.</p>
+<p>Everything follows without running anything. Fixed effects estimates <span class="math inline">\(\beta_{within}\)</span>, here <span class="math inline">\((0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991\)</span>, which involves no <span class="math inline">\(\mu_g\)</span> — so parking a group anywhere cannot move it. Plain OLS also carries <span class="math inline">\(\beta_{between}\)</span>, which is zero in this design because the steady slope and both intercepts are zero, leaving the two group means at the same height. As <span class="math inline">\(\Delta\mu\)</span> grows, the between weight <span class="math inline">\(\tfrac14\Delta\mu^2\)</span> swamps the fixed within weight of <span class="math inline">\(4.52\)</span> and the coefficient is dragged from <span class="math inline">\(1.991\)</span> toward zero like <span class="math inline">\(9/(4.52+\Delta\mu^2/4)\)</span>, the numerator being <span class="math inline">\(\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9\)</span>. The simulation is a check on that, not the source of it.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">b_within</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">0</span> <span class="op">*</span> <span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>   <span class="co"># variance-weighted slope</span></span>
+<span><span class="va">V_within</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0.2</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">3</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>                     <span class="co"># within variance</span></span>
+<span><span class="va">predicted</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span>                        <span class="co"># beta_between = 0 here</span></span>
+<span>  <span class="va">V_within</span> <span class="op">*</span> <span class="va">b_within</span> <span class="op">/</span> <span class="op">(</span><span class="va">V_within</span> <span class="op">+</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">shift</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">park</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span>, <span class="fl">0</span>, <span class="va">g</span><span class="op">$</span><span class="va">move</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">shift</span>, <span class="va">half</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">half</span><span class="op">)</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">y</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">b</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="va">g</span><span class="op">$</span><span class="va">id</span>, x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`FE (theory 1.991)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    `OLS predicted`     <span class="op">=</span> <span class="fu">predicted</span><span class="op">(</span><span class="va">shift</span><span class="op">)</span>,</span>
+<span>    `OLS actual`        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span>, <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`shift 0` <span class="op">=</span> <span class="fl">0</span>, `shift 10` <span class="op">=</span> <span class="fl">10</span>, `shift 100` <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>, <span class="va">park</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          FE (theory 1.991) OLS predicted OLS actual
+shift 0               1.984         1.991      1.983
+shift 10              1.984         0.305      0.311
+shift 100             1.984         0.004      0.004</code></pre>
+</div>
+</div>
+</section><section id="the-same-thing-as-a-picture" class="level3" data-number="13.2.5"><h3 data-number="13.2.5" class="anchored" data-anchor-id="the-same-thing-as-a-picture">
+<span class="header-section-number">13.2.5</span> The same thing as a picture</h3>
+<p>The algebra says the between term takes over as the groups separate. That is visible directly. Left, the two groups share a centre; right, the steady group is parked ten units away. Dotted line is the mean of <span class="math inline">\(x\)</span>, dashed line joins the two group centres, solid line is the fit.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">200</span></span>
+<span><span class="va">draw</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">shift</span>, <span class="va">main</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">xw</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">m</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>;       <span class="va">yw</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">xw</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>      <span class="co"># wobbly: true slope 2</span></span>
+<span>  <span class="va">xs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">shift</span>, <span class="fl">0.2</span><span class="op">)</span>; <span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>               <span class="co"># steady: true slope 0</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">xw</span>, <span class="va">xs</span><span class="op">)</span>; <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">yw</span>, <span class="va">ys</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">.5</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"#9E431855"</span>, <span class="va">m</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"#0E6473"</span>, <span class="va">m</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>       xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"y"</span>, main <span class="op">=</span> <span class="va">main</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xw</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">yw</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">ys</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey30"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xw</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">yw</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">ys</span><span class="op">)</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">21</span>, bg <span class="op">=</span> <span class="st">"white"</span>, cex <span class="op">=</span> <span class="fl">1.4</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"#0E6473"</span><span class="op">)</span></span>
+<span>  <span class="va">dmu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">xw</span><span class="op">)</span></span>
+<span>  <span class="va">Vb</span>  <span class="op">&lt;-</span> <span class="fl">0.25</span> <span class="op">*</span> <span class="va">dmu</span><span class="op">^</span><span class="fl">2</span>                       <span class="co"># between variance</span></span>
+<span>  <span class="va">Vw</span>  <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">xs</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">xw</span><span class="op">)</span><span class="op">)</span>          <span class="co"># within variance</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`slope inside wobbly` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">yw</span> <span class="op">~</span> <span class="va">xw</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    `slope inside steady` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">ys</span> <span class="op">~</span> <span class="va">xs</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>    `between slope`       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">ys</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">yw</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">dmu</span><span class="op">)</span>,</span>
+<span>    `weight on between %` <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">Vb</span> <span class="op">/</span> <span class="op">(</span><span class="va">Vb</span> <span class="op">+</span> <span class="va">Vw</span><span class="op">)</span>,</span>
+<span>    `OLS`                 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu">draw</span><span class="op">(</span><span class="fl">0</span>,  <span class="st">"groups share a centre"</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">draw</span><span class="op">(</span><span class="fl">10</span>, <span class="st">"groups far apart in x"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="interpreting-ols_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>`share a centre` <span class="op">=</span> <span class="va">a</span>, `far apart` <span class="op">=</span> <span class="va">b</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    share a centre far apart
+slope inside wobbly          2.019     2.009
+slope inside steady          0.007    -0.288
+between slope                0.882    -0.007
+weight on between %          0.026    85.113
+OLS                          2.010     0.291</code></pre>
+</div>
+</div>
+<p>Read the two columns. The slope inside the wobbly cloud is about 2 in both, and the slope inside the steady strip is indistinguishable from zero in both — <span class="math inline">\(0.007\)</span> and <span class="math inline">\(-0.288\)</span>, the second noisy because a regression on an <span class="math inline">\(x\)</span> that barely varies has a standard error of roughly <span class="math inline">\(0.35\)</span>. The groups themselves are unchanged. What changes is the weight on the between comparison: 0.03% when the centres coincide, 85% when they are ten apart. So the fit lands on 2.01 in the first panel and 0.29 in the second.</p>
+<p>Notice the between slope reported for the left panel, 0.882. It is meaningless there, and harmlessly so: with the centres nearly on top of each other <span class="math inline">\(\Delta\mu\approx 0\)</span>, the ratio <span class="math inline">\(\Delta\bar y/\Delta\mu\)</span> divides by almost nothing, and its weight <span class="math inline">\(\tfrac14\Delta\mu^2\)</span> is almost nothing too. An unstable quantity multiplied by a vanishing weight contributes nothing.</p>
+<p>The picture also shows why the strip has influence in the right panel despite barely moving. Influence is distance from the mean of <span class="math inline">\(x\)</span>, the dotted line, and the strip sits ten units from it. What it contributes is not its own slope but its position: it anchors one end of the dashed line. A group dummy removes that channel and returns the within answer.</p>
+<p>Predicted and actual agree in every row. Fixed effects is flat at 1.984 against a theoretical 1.991, the gap being sampling noise. Plain OLS runs from 1.983 to 0.004 on identical true slopes, partly because the steady half gains weight as it leaves the grand mean, and partly because a second channel opens that is not weighting at all: with the halves at different levels of <span class="math inline">\(x\)</span>, part of the fitted line is a comparison <em>between</em> them. So “the weight is how much <span class="math inline">\(x\)</span> moves” describes the demeaned case; it is exact once unit effects are removed and false in general.</p>
+</section><section id="when-it-does-not-matter" class="level3" data-number="13.2.6"><h3 data-number="13.2.6" class="anchored" data-anchor-id="when-it-does-not-matter">
+<span class="header-section-number">13.2.6</span> When it does not matter</h3>
+<p>Weighting only distorts when the effect is related to the weight. Give every unit its own slope, let units differ in how much <span class="math inline">\(x\)</span> moves, and compare two designs: in (A) the slopes are unrelated to that movement, in (B) the slope is larger where <span class="math inline">\(x\)</span> moves more. Both average near one.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">sdX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">0.2</span>, <span class="fl">3</span><span class="op">)</span>          <span class="co"># how much x moves, unit by unit</span></span>
+<span></span>
+<span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">b</span><span class="op">)</span> <span class="op">{</span>           <span class="co"># build a panel whose unit slopes are b</span></span>
+<span>  <span class="va">h</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>                    x  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">sdX</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">h</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="va">b</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">*</span> <span class="va">h</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, each <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span> <span class="op">*</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="va">h</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">compare</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">h</span>, <span class="va">b</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">x</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>, <span class="va">h</span><span class="op">$</span><span class="va">id</span>, <span class="va">sum</span><span class="op">)</span>   <span class="co"># the weights</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`FE estimate`            <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu">feols</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">id</span>, <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>    `true slopes, plain avg` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>,</span>
+<span>    `true slopes, weighted`  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">b1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>             <span class="co"># (A) slopes unrelated to movement</span></span>
+<span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="op">(</span><span class="va">sdX</span> <span class="op">-</span> <span class="fl">1.6</span><span class="op">)</span>      <span class="co"># (B) slopes larger where x moves more</span></span>
+<span><span class="va">h1</span> <span class="op">&lt;-</span> <span class="fu">panel</span><span class="op">(</span><span class="va">b1</span><span class="op">)</span>; <span class="va">h2</span> <span class="op">&lt;-</span> <span class="fu">panel</span><span class="op">(</span><span class="va">b2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>`(A) unrelated` <span class="op">=</span> <span class="fu">compare</span><span class="op">(</span><span class="va">h1</span>, <span class="va">b1</span><span class="op">)</span>,</span>
+<span>            `(B) aligned`   <span class="op">=</span> <span class="fu">compare</span><span class="op">(</span><span class="va">h2</span>, <span class="va">b2</span><span class="op">)</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       (A) unrelated (B) aligned
+FE estimate                   0.9813      1.5338
+true slopes, plain avg        0.9716      1.0140
+true slopes, weighted         0.9816      1.5422</code></pre>
+</div>
+</div>
+<p>In (A) all three numbers agree to within sampling noise: the weighting is there and costs nothing. In (B) the estimate is 1.53 while the plain average of the true slopes is 1.01, and the weighted average, 1.54, is what the estimator was tracking all along. None of this is a defect — a unit whose <span class="math inline">\(x\)</span> barely moves genuinely carries little information about how <span class="math inline">\(y\)</span> responds, and leaning on the units that do move is efficient.</p>
+<p>Słoczyński (<a href="https://doi.org/10.1162/rest_a_00953">2022</a>) makes the same point for a binary treatment (<a href="https://xiangao.github.io/blog_book/ols-ate.html">discussed here</a>): writing <span class="math inline">\(\rho\)</span> for the treated share, the coefficient is <span class="math inline">\((1-\rho)\,\text{ATT} + \rho\,\text{ATU}\)</span>, so the <em>smaller</em> group receives the <em>larger</em> weight. In a sample that is 10% treated the weight on the ATT is <span class="math inline">\(0.9\)</span>, so the coefficient mostly reports the effect on the treated tenth, not the untreated majority. The ATE is the same two numbers with the weights reversed, and the two can be far apart: in a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the ATE is 1.00 while OLS returns 2.26.</p>
+<p>With homogeneous effects the weighting is harmless. With heterogeneous effects the question is never whether OLS is weighting, only whether we know what it weighted.</p>
+
+
+<!-- -->
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/xiangao\.github\.io\/econometrics-guide\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./missing-data.html" class="pagination-link" aria-label="Missing data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Missing data</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Interpreting OLS</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fixest)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>; T <span class="ot">&lt;-</span> <span class="dv">6</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>A regression returns one number.  What that number *is* --- whose effect</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>it reflects, which observations produced it, whether it is the average</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>anyone had in mind --- is a separate question from how it is computed,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>and the answer is less obvious than it looks.</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>This chapter collects the material.  It sits at the end because it</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>draws on the between-versus-within split from</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Panel Data Models</span><span class="co">](panel-data.qmd)</span>, but almost nothing in it is</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>specific to panels: the same rule governs a plain cross-sectional</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>regression, and the binary-treatment case that most of the applied</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>literature discusses is one line of the table below.</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>Two companion pieces develop the same ideas with a treatment-effects</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>emphasis:</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Weights in OLS in causal inference</span><span class="co">](https://xiangao.github.io/blog_book/weights-ols.html)</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>and</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">OLS cannot be ATE</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>.</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a><span class="fu">## The rule</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>The panel chapter met two weightings: by $T_i$ when a panel is</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>unbalanced, and by variance when a regression mixes within and between</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>variation.  Neither is a panel-specific quirk.  Both follow from one</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>rule.</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>Let $V$ be the regressor of interest and $\tilde V$ be $V$ after</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>residualising on every other regressor in the model.  By the</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>Frisch--Waugh--Lovell theorem,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>                 {\sum_i \sum_t \tilde V_{it}^{2}} .</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>Be careful what $\tilde V_{it}$ is.  A single observation has no</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>variation of its own --- variation belongs to a collection.  What it has</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>is a **deviation**: how far its regressor sits from what the rest of the</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>model predicts for it.  With only an intercept that is distance from the</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>grand mean; with unit effects it is distance from the unit's own mean.</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>Which mean gets subtracted is the single most consequential detail in</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>this section, and we return to it.</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a><span class="fu">### Two ways to read the coefficient</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>The formula supports two readings.  They describe one estimator and</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>differ in what is being weighted.</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>\hat\beta = \sum_i \omega_i\, y_i , \quad</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>\omega_i = \frac{\tilde V_i}{\sum_j \tilde V_j^2}</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>\qquad\text{versus}\qquad</span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>\hat\beta = \frac{\sum_i w_i\, \beta_i}{\sum_i w_i} , \quad</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>w_i = \tilde V_i V_i .</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> Weights on outcomes, $\omega_i$ <span class="pp">|</span> Weights on effects, $w_i$ <span class="pp">|</span></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Weights what <span class="pp">|</span> the observed $y_i$ <span class="pp">|</span> that observation's own effect $\beta_i$ <span class="pp">|</span></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sign <span class="pp">|</span> signed, sums to zero <span class="pp">|</span> non-negative <span class="pp">|</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Computable <span class="pp">|</span> yes, $y$ is observed <span class="pp">|</span> no, the $\beta_i$ are never seen <span class="pp">|</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Holds when <span class="pp">|</span> always, it is algebra <span class="pp">|</span> after writing effects into $y$; the per-unit reading also needs saturation <span class="pp">|</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Answers <span class="pp">|</span> which rows drive this number, and does any enter with the wrong sign <span class="pp">|</span> is this the effect I meant, and whose effect is it mostly <span class="pp">|</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>Default to the second.  Nearly every question that motivates the topic</span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>--- is my coefficient the average effect, whose effect does it report,</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>why do smaller groups get larger weights --- is a question about the</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>estimand.  Reach for the first when overlap is in doubt and you need to</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>see whether observations enter negatively, which squares cannot show.</span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>Both are developed at length in</span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Weights in OLS in causal inference</span><span class="co">](https://xiangao.github.io/blog_book/weights-ols.html)</span>.</span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>The square in $w_i$ is derived, not assumed.  Substituting</span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>$y_{it}=\beta_i V_{it}+\ldots$ into the numerator gives</span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>$\sum_i \beta_i \sum_t \tilde V_{it}V_{it}$, and over the whole sample</span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>$\sum \tilde V V=\sum \tilde V^2$ because $\tilde V$ is orthogonal to the</span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>fitted part of $V$.  Whether that holds *unit by unit* --- which is what</span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>licenses reading $\sum_t \tilde V_{it}^2$ as unit $i$'s weight ---</span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>depends on the residualising being done within the unit.  Demeaning</span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>delivers it by direct expansion,</span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>$\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}</span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>=\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>total.  Hazlett and Shinkre make this the centre of their treatment; the</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>Angrist row below assumes the saturated case.</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>In general $\sum_t \tilde V_{it}^2$ will not factor into anything</span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>tidier, since $\tilde V_{it}$ carries both subscripts even when $V$ does</span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>not.  What changes from model to model is whether it happens to</span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>simplify.</span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Model <span class="pp">|</span> $\sum_t \tilde V_{it}^2$ simplifies to <span class="pp">|</span></span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> $z_i$ alone, nothing else varying within the unit <span class="pp">|</span> $T_i\,\tilde z_i^2$ <span class="pp">|</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> a time-varying $x_{it}$, unit effects removed <span class="pp">|</span> $(T-1)\,\widehat{\text{Var}}_i(x)$ <span class="pp">|</span></span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> binary $d$ with saturated controls <span class="pp">|</span> $n_x\,\hat d(x)\,(1-\hat d(x))$ <span class="pp">|</span></span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>Add a time-varying $x_{it}$ alongside $z_i$ in the first model and the</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>simplification is gone: residualising $z_i$ on something that moves</span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>within the unit makes $\tilde z$ move within the unit too.  The rule</span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>survives, the shortcut does not, and the $T_i$ form is the one-regressor</span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>special case rather than the general one.  The last row is Angrist</span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">1998</span><span class="co">](https://doi.org/10.2307/2998558)</span>), whose strata weights</span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>$\hat d(x)(1-\hat d(x))$ are largest where treatment is closest to a</span>
+<span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>coin flip.  Same rule, different regressor.</span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## The slope of a single observation</span></span>
+<span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a>There is a geometric version of the effect weights, and it is worth</span>
+<span id="cb12-118"><a href="#cb12-118" aria-hidden="true" tabindex="-1"></a>seeing because it exposes something the algebra hides.</span>
+<span id="cb12-119"><a href="#cb12-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-120"><a href="#cb12-120" aria-hidden="true" tabindex="-1"></a>Take the slope of the line from the centroid $(\bar x,\bar y)$ to</span>
+<span id="cb12-121"><a href="#cb12-121" aria-hidden="true" tabindex="-1"></a>observation $i$, call it $s_i=(y_i-\bar y)/(x_i-\bar x)$.  Since</span>
+<span id="cb12-122"><a href="#cb12-122" aria-hidden="true" tabindex="-1"></a>$(x_i-\bar x)(y_i-\bar y)=(x_i-\bar x)^2 s_i$, the OLS slope is exactly</span>
+<span id="cb12-123"><a href="#cb12-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-124"><a href="#cb12-124" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-125"><a href="#cb12-125" aria-hidden="true" tabindex="-1"></a>\hat\beta=\frac{\sum_i (x_i-\bar x)^2\, s_i}{\sum_i (x_i-\bar x)^2},</span>
+<span id="cb12-126"><a href="#cb12-126" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-127"><a href="#cb12-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-128"><a href="#cb12-128" aria-hidden="true" tabindex="-1"></a>a weighted average of those point-to-centroid slopes.  Every observation</span>
+<span id="cb12-129"><a href="#cb12-129" aria-hidden="true" tabindex="-1"></a>carries a slope of its own, and the fit averages them with the usual</span>
+<span id="cb12-130"><a href="#cb12-130" aria-hidden="true" tabindex="-1"></a>weights.</span>
+<span id="cb12-131"><a href="#cb12-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-132"><a href="#cb12-132" aria-hidden="true" tabindex="-1"></a>Two consequences are immediate.  With two points the centroid lies on</span>
+<span id="cb12-133"><a href="#cb12-133" aria-hidden="true" tabindex="-1"></a>the segment joining them, so both $s_i$ equal the slope of that segment</span>
+<span id="cb12-134"><a href="#cb12-134" aria-hidden="true" tabindex="-1"></a>and any weighting returns it --- which is why a line through two points</span>
+<span id="cb12-135"><a href="#cb12-135" aria-hidden="true" tabindex="-1"></a>simply joins them.  And an observation sitting at $\bar x$ has an</span>
+<span id="cb12-136"><a href="#cb12-136" aria-hidden="true" tabindex="-1"></a>undefined $s_i$ and zero weight; the wild value arrives paired with a</span>
+<span id="cb12-137"><a href="#cb12-137" aria-hidden="true" tabindex="-1"></a>weight that annihilates it.</span>
+<span id="cb12-138"><a href="#cb12-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-139"><a href="#cb12-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### Do not mistake $s_i$ for $b_i$</span></span>
+<span id="cb12-140"><a href="#cb12-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-141"><a href="#cb12-141" aria-hidden="true" tabindex="-1"></a>This is where care is needed.  $s_i$ is *observable* --- it is computed</span>
+<span id="cb12-142"><a href="#cb12-142" aria-hidden="true" tabindex="-1"></a>from the data.  The structural $b_i$ is not.  It is tempting to treat</span>
+<span id="cb12-143"><a href="#cb12-143" aria-hidden="true" tabindex="-1"></a>the first as a measurement of the second, and at the level of a single</span>
+<span id="cb12-144"><a href="#cb12-144" aria-hidden="true" tabindex="-1"></a>observation that is badly wrong.</span>
+<span id="cb12-145"><a href="#cb12-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-148"><a href="#cb12-148" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-149"><a href="#cb12-149" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6</span>)</span>
+<span id="cb12-150"><a href="#cb12-150" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb12-151"><a href="#cb12-151" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)                 <span class="co"># TRUE slope of each observation, unobservable</span></span>
+<span id="cb12-152"><a href="#cb12-152" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb12-153"><a href="#cb12-153" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
+<span id="cb12-154"><a href="#cb12-154" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">mean</span>(x); w <span class="ot">&lt;-</span> (x <span class="sc">-</span> xb)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb12-155"><a href="#cb12-155" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> (y <span class="sc">-</span> <span class="fu">mean</span>(y)) <span class="sc">/</span> (x <span class="sc">-</span> xb)        <span class="co"># OBSERVABLE slope to the centroid</span></span>
+<span id="cb12-156"><a href="#cb12-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-157"><a href="#cb12-157" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">value =</span> <span class="fu">c</span>(</span>
+<span id="cb12-158"><a href="#cb12-158" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">correlation of s_i with b_i</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">cor</span>(s, b),</span>
+<span id="cb12-159"><a href="#cb12-159" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">sd of true b_i</span><span class="st">`</span>              <span class="ot">=</span> <span class="fu">sd</span>(b),</span>
+<span id="cb12-160"><a href="#cb12-160" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">sd of observed s_i</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">sd</span>(s),</span>
+<span id="cb12-161"><a href="#cb12-161" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">weighted average of s_i</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> s) <span class="sc">/</span> <span class="fu">sum</span>(w),</span>
+<span id="cb12-162"><a href="#cb12-162" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">weighted average of b_i</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w),</span>
+<span id="cb12-163"><a href="#cb12-163" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">OLS estimate</span><span class="st">`</span>                <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]))), <span class="dv">3</span>)</span>
+<span id="cb12-164"><a href="#cb12-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-165"><a href="#cb12-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-166"><a href="#cb12-166" aria-hidden="true" tabindex="-1"></a>The correlation between the two is 0.019 --- none.  The spread of the</span>
+<span id="cb12-167"><a href="#cb12-167" aria-hidden="true" tabindex="-1"></a>observed $s_i$ is more than two hundred times the spread of the true</span>
+<span id="cb12-168"><a href="#cb12-168" aria-hidden="true" tabindex="-1"></a>$b_i$, because $s_i$ divides a noisy vertical gap by a horizontal</span>
+<span id="cb12-169"><a href="#cb12-169" aria-hidden="true" tabindex="-1"></a>distance that is sometimes almost zero.  An observation with an ordinary</span>
+<span id="cb12-170"><a href="#cb12-170" aria-hidden="true" tabindex="-1"></a>$b_i$ near one can easily show an $s_i$ of eighteen.</span>
+<span id="cb12-171"><a href="#cb12-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-172"><a href="#cb12-172" aria-hidden="true" tabindex="-1"></a>Yet the weighted averages agree: $0.950$ for the $s_i$, $0.992$ for the</span>
+<span id="cb12-173"><a href="#cb12-173" aria-hidden="true" tabindex="-1"></a>$b_i$, and the OLS estimate is $0.950$ --- identical to the $s_i$</span>
+<span id="cb12-174"><a href="#cb12-174" aria-hidden="true" tabindex="-1"></a>version by construction, and close to the $b_i$ version because the</span>
+<span id="cb12-175"><a href="#cb12-175" aria-hidden="true" tabindex="-1"></a>noise averages out.</span>
+<span id="cb12-176"><a href="#cb12-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-177"><a href="#cb12-177" aria-hidden="true" tabindex="-1"></a><span class="fu">### What this means for the whole exercise</span></span>
+<span id="cb12-178"><a href="#cb12-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-179"><a href="#cb12-179" aria-hidden="true" tabindex="-1"></a>The identity in terms of $s_i$ holds in *any* dataset.  No model, no</span>
+<span id="cb12-180"><a href="#cb12-180" aria-hidden="true" tabindex="-1"></a>heterogeneity, nothing assumed --- it would hold on pure noise.  That</span>
+<span id="cb12-181"><a href="#cb12-181" aria-hidden="true" tabindex="-1"></a>also makes it empty: its weighted average is $\hat\beta$, which we</span>
+<span id="cb12-182"><a href="#cb12-182" aria-hidden="true" tabindex="-1"></a>already had, so computing the $s_i$ tells us nothing new.</span>
+<span id="cb12-183"><a href="#cb12-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-184"><a href="#cb12-184" aria-hidden="true" tabindex="-1"></a>The version in terms of $b_i$ is the one with content, and it costs an</span>
+<span id="cb12-185"><a href="#cb12-185" aria-hidden="true" tabindex="-1"></a>assumption: that $y_i=b_i x_i+\text{noise}$ describes the data.  Only</span>
+<span id="cb12-186"><a href="#cb12-186" aria-hidden="true" tabindex="-1"></a>then does the coefficient estimate a particular mixture of *structural*</span>
+<span id="cb12-187"><a href="#cb12-187" aria-hidden="true" tabindex="-1"></a>effects, and only then do Angrist's $\hat d(x)(1-\hat d(x))$ weighting</span>
+<span id="cb12-188"><a href="#cb12-188" aria-hidden="true" tabindex="-1"></a>or Słoczyński's ATT/ATU split say anything.  Neither statement can be</span>
+<span id="cb12-189"><a href="#cb12-189" aria-hidden="true" tabindex="-1"></a>made in the language of $s_i$.</span>
+<span id="cb12-190"><a href="#cb12-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-191"><a href="#cb12-191" aria-hidden="true" tabindex="-1"></a>So the useful part is neither slope.  It is the **weights**, which are</span>
+<span id="cb12-192"><a href="#cb12-192" aria-hidden="true" tabindex="-1"></a>computable exactly, need no model, and are the only piece of this that</span>
+<span id="cb12-193"><a href="#cb12-193" aria-hidden="true" tabindex="-1"></a>can be reported in a paper: they say which observations the estimate is</span>
+<span id="cb12-194"><a href="#cb12-194" aria-hidden="true" tabindex="-1"></a>about, whatever the effects turn out to be.</span>
+<span id="cb12-195"><a href="#cb12-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-196"><a href="#cb12-196" aria-hidden="true" tabindex="-1"></a><span class="fu">### When the weighting changes the answer</span></span>
+<span id="cb12-197"><a href="#cb12-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-198"><a href="#cb12-198" aria-hidden="true" tabindex="-1"></a>The weighting always happens.  It changes the answer only when the</span>
+<span id="cb12-199"><a href="#cb12-199" aria-hidden="true" tabindex="-1"></a>effect is heterogeneous *and* the heterogeneity lines up with the</span>
+<span id="cb12-200"><a href="#cb12-200" aria-hidden="true" tabindex="-1"></a>weight.  The claim to check is that a regression does not report *the*</span>
+<span id="cb12-201"><a href="#cb12-201" aria-hidden="true" tabindex="-1"></a>effect but a weighted average of the effects, and that these are</span>
+<span id="cb12-202"><a href="#cb12-202" aria-hidden="true" tabindex="-1"></a>different numbers.</span>
+<span id="cb12-203"><a href="#cb12-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-204"><a href="#cb12-204" aria-hidden="true" tabindex="-1"></a>The individual effects are never observed, so we plant them: give every</span>
+<span id="cb12-205"><a href="#cb12-205" aria-hidden="true" tabindex="-1"></a>unit its own slope $\beta_i$, generate $y$ from those slopes, and see</span>
+<span id="cb12-206"><a href="#cb12-206" aria-hidden="true" tabindex="-1"></a>which average of the planted slopes the estimate lands on.  In the next</span>
+<span id="cb12-207"><a href="#cb12-207" aria-hidden="true" tabindex="-1"></a>chunk only one estimator is run; anything else reported is not an</span>
+<span id="cb12-208"><a href="#cb12-208" aria-hidden="true" tabindex="-1"></a>estimate but the planted slopes averaged some way.  Fixed effects is</span>
+<span id="cb12-209"><a href="#cb12-209" aria-hidden="true" tabindex="-1"></a>used because in a panel the natural place for heterogeneity is across</span>
+<span id="cb12-210"><a href="#cb12-210" aria-hidden="true" tabindex="-1"></a>units, and it is still OLS --- OLS with the unit dummies partialled out.</span>
+<span id="cb12-211"><a href="#cb12-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-212"><a href="#cb12-212" aria-hidden="true" tabindex="-1"></a>Start with the extreme case.  Half the units barely move and have a true</span>
+<span id="cb12-213"><a href="#cb12-213" aria-hidden="true" tabindex="-1"></a>slope of zero; the other half move a great deal and have a true slope of</span>
+<span id="cb12-214"><a href="#cb12-214" aria-hidden="true" tabindex="-1"></a>two.  The average unit's slope is one.</span>
+<span id="cb12-215"><a href="#cb12-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-218"><a href="#cb12-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-219"><a href="#cb12-219" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb12-220"><a href="#cb12-220" aria-hidden="true" tabindex="-1"></a>half <span class="ot">&lt;-</span> N <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb12-221"><a href="#cb12-221" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id   =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb12-222"><a href="#cb12-222" aria-hidden="true" tabindex="-1"></a>                <span class="at">move =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="fl">0.2</span>, half), <span class="fu">rep</span>(<span class="dv">3</span>, half)), <span class="at">each =</span> T),</span>
+<span id="cb12-223"><a href="#cb12-223" aria-hidden="true" tabindex="-1"></a>                <span class="at">b    =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,   half), <span class="fu">rep</span>(<span class="dv">2</span>, half)), <span class="at">each =</span> T))</span>
+<span id="cb12-224"><a href="#cb12-224" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move)</span>
+<span id="cb12-225"><a href="#cb12-225" aria-hidden="true" tabindex="-1"></a>g<span class="sc">$</span>y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> g<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb12-226"><a href="#cb12-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-227"><a href="#cb12-227" aria-hidden="true" tabindex="-1"></a>wg <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, g))<span class="sc">^</span><span class="dv">2</span>, g<span class="sc">$</span>id, sum)</span>
+<span id="cb12-228"><a href="#cb12-228" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">value =</span> <span class="fu">c</span>(</span>
+<span id="cb12-229"><a href="#cb12-229" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">average of the two true slopes</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">mean</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span>)),</span>
+<span id="cb12-230"><a href="#cb12-230" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>                         <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, g))[[<span class="st">"x"</span>]],</span>
+<span id="cb12-231"><a href="#cb12-231" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">weight held by the steady half (%)</span><span class="st">`</span>  <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(wg[<span class="dv">1</span><span class="sc">:</span>half]) <span class="sc">/</span> <span class="fu">sum</span>(wg))), <span class="dv">3</span>)</span>
+<span id="cb12-232"><a href="#cb12-232" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-233"><a href="#cb12-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-234"><a href="#cb12-234" aria-hidden="true" tabindex="-1"></a>The average slope is one and the regression reports 1.98, because the</span>
+<span id="cb12-235"><a href="#cb12-235" aria-hidden="true" tabindex="-1"></a>five hundred steady units hold under half of one percent of the weight.</span>
+<span id="cb12-236"><a href="#cb12-236" aria-hidden="true" tabindex="-1"></a>Their six observations sit almost on top of their own unit mean ---</span>
+<span id="cb12-237"><a href="#cb12-237" aria-hidden="true" tabindex="-1"></a>this regression carries unit effects, so that is the relevant deviation</span>
+<span id="cb12-238"><a href="#cb12-238" aria-hidden="true" tabindex="-1"></a>--- and squaring puts them nowhere in the sum.  Nothing has gone wrong</span>
+<span id="cb12-239"><a href="#cb12-239" aria-hidden="true" tabindex="-1"></a>in the arithmetic.  The units with a slope of zero were never really in</span>
+<span id="cb12-240"><a href="#cb12-240" aria-hidden="true" tabindex="-1"></a>the regression.</span>
+<span id="cb12-241"><a href="#cb12-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-242"><a href="#cb12-242" aria-hidden="true" tabindex="-1"></a><span class="fu">### Which mean, and why it matters</span></span>
+<span id="cb12-243"><a href="#cb12-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-244"><a href="#cb12-244" aria-hidden="true" tabindex="-1"></a>That result is about the *within-unit* deviation.  Plain OLS uses</span>
+<span id="cb12-245"><a href="#cb12-245" aria-hidden="true" tabindex="-1"></a>distance from the grand mean instead, and the two coincided above only</span>
+<span id="cb12-246"><a href="#cb12-246" aria-hidden="true" tabindex="-1"></a>because both halves were built around zero.  Separate them and the</span>
+<span id="cb12-247"><a href="#cb12-247" aria-hidden="true" tabindex="-1"></a>algebra says exactly what happens.</span>
+<span id="cb12-248"><a href="#cb12-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-249"><a href="#cb12-249" aria-hidden="true" tabindex="-1"></a>Take two equally sized groups with means $\mu_g$, within-group variances</span>
+<span id="cb12-250"><a href="#cb12-250" aria-hidden="true" tabindex="-1"></a>$\sigma_g^2$, slopes $\beta_g$ and group mean outcomes $\bar y_g$.  Let</span>
+<span id="cb12-251"><a href="#cb12-251" aria-hidden="true" tabindex="-1"></a>$G$ be the group label, equally likely to be 1 or 2.  Two laws do the</span>
+<span id="cb12-252"><a href="#cb12-252" aria-hidden="true" tabindex="-1"></a>work.</span>
+<span id="cb12-253"><a href="#cb12-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-254"><a href="#cb12-254" aria-hidden="true" tabindex="-1"></a>The **law of total covariance** splits the numerator:</span>
+<span id="cb12-255"><a href="#cb12-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-256"><a href="#cb12-256" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-257"><a href="#cb12-257" aria-hidden="true" tabindex="-1"></a>\text{Cov}(x,y)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Cov}(x,y\mid G)\right</span><span class="co">]</span></span>
+<span id="cb12-258"><a href="#cb12-258" aria-hidden="true" tabindex="-1"></a><span class="ss">              + </span>\text{Cov}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>,\,E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>\right).</span>
+<span id="cb12-259"><a href="#cb12-259" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-260"><a href="#cb12-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-261"><a href="#cb12-261" aria-hidden="true" tabindex="-1"></a>Inside group $g$ we have $\text{Cov}(x,y\mid G=g)=\beta_g\sigma_g^2$, so</span>
+<span id="cb12-262"><a href="#cb12-262" aria-hidden="true" tabindex="-1"></a>the first term averages to</span>
+<span id="cb12-263"><a href="#cb12-263" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)$.  For the second,</span>
+<span id="cb12-264"><a href="#cb12-264" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>$ and $E<span class="co">[</span><span class="ot">y\mid G</span><span class="co">]</span>$ are two-point variables taking</span>
+<span id="cb12-265"><a href="#cb12-265" aria-hidden="true" tabindex="-1"></a>$(\mu_1,\mu_2)$ and $(\bar y_1,\bar y_2)$ with probability one half</span>
+<span id="cb12-266"><a href="#cb12-266" aria-hidden="true" tabindex="-1"></a>each, and for any such pair</span>
+<span id="cb12-267"><a href="#cb12-267" aria-hidden="true" tabindex="-1"></a>$\text{Cov}(a,b)=\tfrac14(a_1-a_2)(b_1-b_2)$.  That gives</span>
+<span id="cb12-268"><a href="#cb12-268" aria-hidden="true" tabindex="-1"></a>$\tfrac14\Delta\mu\,\Delta\bar y$.</span>
+<span id="cb12-269"><a href="#cb12-269" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-270"><a href="#cb12-270" aria-hidden="true" tabindex="-1"></a>The **law of total variance** is the same statement with $y$ replaced by</span>
+<span id="cb12-271"><a href="#cb12-271" aria-hidden="true" tabindex="-1"></a>$x$:</span>
+<span id="cb12-272"><a href="#cb12-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-273"><a href="#cb12-273" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-274"><a href="#cb12-274" aria-hidden="true" tabindex="-1"></a>\text{Var}(x)=E<span class="sc">\!</span>\left<span class="co">[</span><span class="ot">\text{Var}(x\mid G)\right</span><span class="co">]</span>+\text{Var}<span class="sc">\!</span>\left(E<span class="co">[</span><span class="ot">x\mid G</span><span class="co">]</span>\right)</span>
+<span id="cb12-275"><a href="#cb12-275" aria-hidden="true" tabindex="-1"></a>=\tfrac12(\sigma_1^2+\sigma_2^2)+\tfrac14\Delta\mu^2 .</span>
+<span id="cb12-276"><a href="#cb12-276" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-277"><a href="#cb12-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-278"><a href="#cb12-278" aria-hidden="true" tabindex="-1"></a>Dividing one by the other,</span>
+<span id="cb12-279"><a href="#cb12-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-280"><a href="#cb12-280" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-281"><a href="#cb12-281" aria-hidden="true" tabindex="-1"></a>\text{plim}\;\hat\beta_{OLS}</span>
+<span id="cb12-282"><a href="#cb12-282" aria-hidden="true" tabindex="-1"></a>= \frac{\tfrac12<span class="sc">\!</span>\left(\beta_1\sigma_1^2+\beta_2\sigma_2^2\right)</span>
+<span id="cb12-283"><a href="#cb12-283" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu\,\Delta\bar y}</span>
+<span id="cb12-284"><a href="#cb12-284" aria-hidden="true" tabindex="-1"></a>       {\tfrac12<span class="sc">\!</span>\left(\sigma_1^2+\sigma_2^2\right)</span>
+<span id="cb12-285"><a href="#cb12-285" aria-hidden="true" tabindex="-1"></a><span class="ss">        + </span>\tfrac14\,\Delta\mu^{2}} ,</span>
+<span id="cb12-286"><a href="#cb12-286" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-287"><a href="#cb12-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-288"><a href="#cb12-288" aria-hidden="true" tabindex="-1"></a>with $\Delta\mu=\mu_1-\mu_2$ and $\Delta\bar y=\bar y_1-\bar y_2$.</span>
+<span id="cb12-289"><a href="#cb12-289" aria-hidden="true" tabindex="-1"></a>Split that into the two slopes it mixes,</span>
+<span id="cb12-290"><a href="#cb12-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-291"><a href="#cb12-291" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-292"><a href="#cb12-292" aria-hidden="true" tabindex="-1"></a>\beta_{within}=\frac{\beta_1\sigma_1^2+\beta_2\sigma_2^2}{\sigma_1^2+\sigma_2^2},</span>
+<span id="cb12-293"><a href="#cb12-293" aria-hidden="true" tabindex="-1"></a>\qquad</span>
+<span id="cb12-294"><a href="#cb12-294" aria-hidden="true" tabindex="-1"></a>\beta_{between}=\frac{\Delta\bar y}{\Delta\mu},</span>
+<span id="cb12-295"><a href="#cb12-295" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb12-296"><a href="#cb12-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-297"><a href="#cb12-297" aria-hidden="true" tabindex="-1"></a>and the coefficient is a genuine convex combination of them, weighted by</span>
+<span id="cb12-298"><a href="#cb12-298" aria-hidden="true" tabindex="-1"></a>the within variance $\tfrac12(\sigma_1^2+\sigma_2^2)$ and the between</span>
+<span id="cb12-299"><a href="#cb12-299" aria-hidden="true" tabindex="-1"></a>variance $\tfrac14\Delta\mu^2$, which sum to the total variance.</span>
+<span id="cb12-300"><a href="#cb12-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-301"><a href="#cb12-301" aria-hidden="true" tabindex="-1"></a>Two features are worth pausing on.  $\beta_{within}$ is itself a</span>
+<span id="cb12-302"><a href="#cb12-302" aria-hidden="true" tabindex="-1"></a>variance-weighted average of the two slopes --- the same $\sigma^2$</span>
+<span id="cb12-303"><a href="#cb12-303" aria-hidden="true" tabindex="-1"></a>weighting as everywhere else in this section, one level up.  And</span>
+<span id="cb12-304"><a href="#cb12-304" aria-hidden="true" tabindex="-1"></a>$\beta_{between}$ is a two-point slope, rise over run between the two</span>
+<span id="cb12-305"><a href="#cb12-305" aria-hidden="true" tabindex="-1"></a>group centres, so it can take any value at all regardless of what</span>
+<span id="cb12-306"><a href="#cb12-306" aria-hidden="true" tabindex="-1"></a>happens inside either group.  The $\tfrac14$ is the only piece specific</span>
+<span id="cb12-307"><a href="#cb12-307" aria-hidden="true" tabindex="-1"></a>to equal group sizes; with shares $p$ and $1-p$ it becomes $p(1-p)$,</span>
+<span id="cb12-308"><a href="#cb12-308" aria-hidden="true" tabindex="-1"></a>which is Angrist's weight again.</span>
+<span id="cb12-309"><a href="#cb12-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-310"><a href="#cb12-310" aria-hidden="true" tabindex="-1"></a>Everything follows without running anything.  Fixed effects estimates</span>
+<span id="cb12-311"><a href="#cb12-311" aria-hidden="true" tabindex="-1"></a>$\beta_{within}$, here $(0\cdot 0.04 + 2\cdot 9)/9.04 = 1.991$, which</span>
+<span id="cb12-312"><a href="#cb12-312" aria-hidden="true" tabindex="-1"></a>involves no $\mu_g$ --- so parking a group anywhere cannot move it.</span>
+<span id="cb12-313"><a href="#cb12-313" aria-hidden="true" tabindex="-1"></a>Plain OLS also carries $\beta_{between}$, which is zero in this design</span>
+<span id="cb12-314"><a href="#cb12-314" aria-hidden="true" tabindex="-1"></a>because the steady slope and both intercepts are zero, leaving the two</span>
+<span id="cb12-315"><a href="#cb12-315" aria-hidden="true" tabindex="-1"></a>group means at the same height.  As $\Delta\mu$ grows, the between</span>
+<span id="cb12-316"><a href="#cb12-316" aria-hidden="true" tabindex="-1"></a>weight $\tfrac14\Delta\mu^2$ swamps the fixed within weight of $4.52$</span>
+<span id="cb12-317"><a href="#cb12-317" aria-hidden="true" tabindex="-1"></a>and the coefficient is dragged from $1.991$ toward zero like</span>
+<span id="cb12-318"><a href="#cb12-318" aria-hidden="true" tabindex="-1"></a>$9/(4.52+\Delta\mu^2/4)$, the numerator being</span>
+<span id="cb12-319"><a href="#cb12-319" aria-hidden="true" tabindex="-1"></a>$\tfrac12(\beta_1\sigma_1^2+\beta_2\sigma_2^2)=9$.  The simulation is a</span>
+<span id="cb12-320"><a href="#cb12-320" aria-hidden="true" tabindex="-1"></a>check on that, not the source of it.</span>
+<span id="cb12-321"><a href="#cb12-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-324"><a href="#cb12-324" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-325"><a href="#cb12-325" aria-hidden="true" tabindex="-1"></a>b_within <span class="ot">&lt;-</span> (<span class="dv">0</span> <span class="sc">*</span> <span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)   <span class="co"># variance-weighted slope</span></span>
+<span id="cb12-326"><a href="#cb12-326" aria-hidden="true" tabindex="-1"></a>V_within <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fl">0.2</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span><span class="dv">2</span>)                     <span class="co"># within variance</span></span>
+<span id="cb12-327"><a href="#cb12-327" aria-hidden="true" tabindex="-1"></a>predicted <span class="ot">&lt;-</span> <span class="cf">function</span>(shift)                        <span class="co"># beta_between = 0 here</span></span>
+<span id="cb12-328"><a href="#cb12-328" aria-hidden="true" tabindex="-1"></a>  V_within <span class="sc">*</span> b_within <span class="sc">/</span> (V_within <span class="sc">+</span> <span class="fl">0.25</span> <span class="sc">*</span> shift<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb12-329"><a href="#cb12-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-330"><a href="#cb12-330" aria-hidden="true" tabindex="-1"></a>park <span class="ot">&lt;-</span> <span class="cf">function</span>(shift) {</span>
+<span id="cb12-331"><a href="#cb12-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb12-332"><a href="#cb12-332" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, g<span class="sc">$</span>move) <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="fu">rep</span>(shift, half), <span class="fu">rep</span>(<span class="dv">0</span>, half)), <span class="at">each =</span> T)</span>
+<span id="cb12-333"><a href="#cb12-333" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> g<span class="sc">$</span>b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb12-334"><a href="#cb12-334" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> g<span class="sc">$</span>id, <span class="at">x =</span> x, <span class="at">y =</span> y)</span>
+<span id="cb12-335"><a href="#cb12-335" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE (theory 1.991)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, d))[[<span class="st">"x"</span>]],</span>
+<span id="cb12-336"><a href="#cb12-336" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS predicted</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">predicted</span>(shift),</span>
+<span id="cb12-337"><a href="#cb12-337" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS actual</span><span class="st">`</span>        <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x, d))[[<span class="st">"x"</span>]])</span>
+<span id="cb12-338"><a href="#cb12-338" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-339"><a href="#cb12-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-340"><a href="#cb12-340" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">t</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">shift 0</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">0</span>, <span class="st">`</span><span class="at">shift 10</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">10</span>, <span class="st">`</span><span class="at">shift 100</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span>), park)), <span class="dv">3</span>)</span>
+<span id="cb12-341"><a href="#cb12-341" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-342"><a href="#cb12-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-343"><a href="#cb12-343" aria-hidden="true" tabindex="-1"></a><span class="fu">### The same thing as a picture</span></span>
+<span id="cb12-344"><a href="#cb12-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-345"><a href="#cb12-345" aria-hidden="true" tabindex="-1"></a>The algebra says the between term takes over as the groups separate.</span>
+<span id="cb12-346"><a href="#cb12-346" aria-hidden="true" tabindex="-1"></a>That is visible directly.  Left, the two groups share a centre; right,</span>
+<span id="cb12-347"><a href="#cb12-347" aria-hidden="true" tabindex="-1"></a>the steady group is parked ten units away.  Dotted line is the mean of</span>
+<span id="cb12-348"><a href="#cb12-348" aria-hidden="true" tabindex="-1"></a>$x$, dashed line joins the two group centres, solid line is the fit.</span>
+<span id="cb12-349"><a href="#cb12-349" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-352"><a href="#cb12-352" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-353"><a href="#cb12-353" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb12-354"><a href="#cb12-354" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb12-355"><a href="#cb12-355" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5</span>)</span>
+<span id="cb12-356"><a href="#cb12-356" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb12-357"><a href="#cb12-357" aria-hidden="true" tabindex="-1"></a>draw <span class="ot">&lt;-</span> <span class="cf">function</span>(shift, main) {</span>
+<span id="cb12-358"><a href="#cb12-358" aria-hidden="true" tabindex="-1"></a>  xw <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, <span class="dv">0</span>, <span class="dv">3</span>);       yw <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> xw <span class="sc">+</span> <span class="fu">rnorm</span>(m)      <span class="co"># wobbly: true slope 2</span></span>
+<span id="cb12-359"><a href="#cb12-359" aria-hidden="true" tabindex="-1"></a>  xs <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m, shift, <span class="fl">0.2</span>); ys <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(m)               <span class="co"># steady: true slope 0</span></span>
+<span id="cb12-360"><a href="#cb12-360" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">c</span>(xw, xs); y <span class="ot">&lt;-</span> <span class="fu">c</span>(yw, ys)</span>
+<span id="cb12-361"><a href="#cb12-361" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> .<span class="dv">5</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"#9E431855"</span>, m), <span class="fu">rep</span>(<span class="st">"#0E6473"</span>, m)),</span>
+<span id="cb12-362"><a href="#cb12-362" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">main =</span> main)</span>
+<span id="cb12-363"><a href="#cb12-363" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(x), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey50"</span>)</span>
+<span id="cb12-364"><a href="#cb12-364" aria-hidden="true" tabindex="-1"></a>  <span class="fu">segments</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(yw), <span class="fu">mean</span>(xs), <span class="fu">mean</span>(ys), <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey30"</span>)</span>
+<span id="cb12-365"><a href="#cb12-365" aria-hidden="true" tabindex="-1"></a>  <span class="fu">points</span>(<span class="fu">c</span>(<span class="fu">mean</span>(xw), <span class="fu">mean</span>(xs)), <span class="fu">c</span>(<span class="fu">mean</span>(yw), <span class="fu">mean</span>(ys)), <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">1.4</span>)</span>
+<span id="cb12-366"><a href="#cb12-366" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x), <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"#0E6473"</span>)</span>
+<span id="cb12-367"><a href="#cb12-367" aria-hidden="true" tabindex="-1"></a>  dmu <span class="ot">&lt;-</span> <span class="fu">mean</span>(xs) <span class="sc">-</span> <span class="fu">mean</span>(xw)</span>
+<span id="cb12-368"><a href="#cb12-368" aria-hidden="true" tabindex="-1"></a>  Vb  <span class="ot">&lt;-</span> <span class="fl">0.25</span> <span class="sc">*</span> dmu<span class="sc">^</span><span class="dv">2</span>                       <span class="co"># between variance</span></span>
+<span id="cb12-369"><a href="#cb12-369" aria-hidden="true" tabindex="-1"></a>  Vw  <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> (<span class="fu">var</span>(xs) <span class="sc">+</span> <span class="fu">var</span>(xw))          <span class="co"># within variance</span></span>
+<span id="cb12-370"><a href="#cb12-370" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">slope inside wobbly</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(yw <span class="sc">~</span> xw))[<span class="dv">2</span>]),</span>
+<span id="cb12-371"><a href="#cb12-371" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">slope inside steady</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(ys <span class="sc">~</span> xs))[<span class="dv">2</span>]),</span>
+<span id="cb12-372"><a href="#cb12-372" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">between slope</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">unname</span>((<span class="fu">mean</span>(ys) <span class="sc">-</span> <span class="fu">mean</span>(yw)) <span class="sc">/</span> dmu),</span>
+<span id="cb12-373"><a href="#cb12-373" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">weight on between %</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> Vb <span class="sc">/</span> (Vb <span class="sc">+</span> Vw),</span>
+<span id="cb12-374"><a href="#cb12-374" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">OLS</span><span class="st">`</span>                 <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]))</span>
+<span id="cb12-375"><a href="#cb12-375" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-376"><a href="#cb12-376" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">2.5</span>, <span class="dv">1</span>))</span>
+<span id="cb12-377"><a href="#cb12-377" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">0</span>,  <span class="st">"groups share a centre"</span>)</span>
+<span id="cb12-378"><a href="#cb12-378" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">draw</span>(<span class="dv">10</span>, <span class="st">"groups far apart in x"</span>)</span>
+<span id="cb12-379"><a href="#cb12-379" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span>
+<span id="cb12-380"><a href="#cb12-380" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">share a centre</span><span class="st">`</span> <span class="ot">=</span> a, <span class="st">`</span><span class="at">far apart</span><span class="st">`</span> <span class="ot">=</span> b), <span class="dv">3</span>)</span>
+<span id="cb12-381"><a href="#cb12-381" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-382"><a href="#cb12-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-383"><a href="#cb12-383" aria-hidden="true" tabindex="-1"></a>Read the two columns.  The slope inside the wobbly cloud is about 2 in</span>
+<span id="cb12-384"><a href="#cb12-384" aria-hidden="true" tabindex="-1"></a>both, and the slope inside the steady strip is indistinguishable from</span>
+<span id="cb12-385"><a href="#cb12-385" aria-hidden="true" tabindex="-1"></a>zero in both --- $0.007$ and $-0.288$, the second noisy because a</span>
+<span id="cb12-386"><a href="#cb12-386" aria-hidden="true" tabindex="-1"></a>regression on an $x$ that barely varies has a standard error of roughly</span>
+<span id="cb12-387"><a href="#cb12-387" aria-hidden="true" tabindex="-1"></a>$0.35$.  The groups themselves are unchanged.  What changes is the</span>
+<span id="cb12-388"><a href="#cb12-388" aria-hidden="true" tabindex="-1"></a>weight on the between comparison: 0.03% when the centres coincide, 85%</span>
+<span id="cb12-389"><a href="#cb12-389" aria-hidden="true" tabindex="-1"></a>when they are ten apart.  So the fit lands on 2.01 in the first panel</span>
+<span id="cb12-390"><a href="#cb12-390" aria-hidden="true" tabindex="-1"></a>and 0.29 in the second.</span>
+<span id="cb12-391"><a href="#cb12-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-392"><a href="#cb12-392" aria-hidden="true" tabindex="-1"></a>Notice the between slope reported for the left panel, 0.882.  It is</span>
+<span id="cb12-393"><a href="#cb12-393" aria-hidden="true" tabindex="-1"></a>meaningless there, and harmlessly so: with the centres nearly on top of</span>
+<span id="cb12-394"><a href="#cb12-394" aria-hidden="true" tabindex="-1"></a>each other $\Delta\mu\approx 0$, the ratio $\Delta\bar y/\Delta\mu$</span>
+<span id="cb12-395"><a href="#cb12-395" aria-hidden="true" tabindex="-1"></a>divides by almost nothing, and its weight $\tfrac14\Delta\mu^2$ is</span>
+<span id="cb12-396"><a href="#cb12-396" aria-hidden="true" tabindex="-1"></a>almost nothing too.  An unstable quantity multiplied by a vanishing</span>
+<span id="cb12-397"><a href="#cb12-397" aria-hidden="true" tabindex="-1"></a>weight contributes nothing.</span>
+<span id="cb12-398"><a href="#cb12-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-399"><a href="#cb12-399" aria-hidden="true" tabindex="-1"></a>The picture also shows why the strip has influence in the right panel</span>
+<span id="cb12-400"><a href="#cb12-400" aria-hidden="true" tabindex="-1"></a>despite barely moving.  Influence is distance from the mean of $x$, the</span>
+<span id="cb12-401"><a href="#cb12-401" aria-hidden="true" tabindex="-1"></a>dotted line, and the strip sits ten units from it.  What it contributes</span>
+<span id="cb12-402"><a href="#cb12-402" aria-hidden="true" tabindex="-1"></a>is not its own slope but its position: it anchors one end of the dashed</span>
+<span id="cb12-403"><a href="#cb12-403" aria-hidden="true" tabindex="-1"></a>line.  A group dummy removes that channel and returns the within answer.</span>
+<span id="cb12-404"><a href="#cb12-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-405"><a href="#cb12-405" aria-hidden="true" tabindex="-1"></a>Predicted and actual agree in every row.  Fixed effects is flat at 1.984</span>
+<span id="cb12-406"><a href="#cb12-406" aria-hidden="true" tabindex="-1"></a>against a theoretical 1.991, the gap being sampling noise.  Plain OLS</span>
+<span id="cb12-407"><a href="#cb12-407" aria-hidden="true" tabindex="-1"></a>runs from 1.983 to 0.004 on identical true slopes, partly because the</span>
+<span id="cb12-408"><a href="#cb12-408" aria-hidden="true" tabindex="-1"></a>steady half gains weight as it leaves the grand mean, and partly because</span>
+<span id="cb12-409"><a href="#cb12-409" aria-hidden="true" tabindex="-1"></a>a second channel opens that is not weighting at all: with the halves at</span>
+<span id="cb12-410"><a href="#cb12-410" aria-hidden="true" tabindex="-1"></a>different levels of $x$, part of the fitted line is a comparison</span>
+<span id="cb12-411"><a href="#cb12-411" aria-hidden="true" tabindex="-1"></a>*between* them.  So "the weight is how much $x$ moves" describes the</span>
+<span id="cb12-412"><a href="#cb12-412" aria-hidden="true" tabindex="-1"></a>demeaned case; it is exact once unit effects are removed and false in</span>
+<span id="cb12-413"><a href="#cb12-413" aria-hidden="true" tabindex="-1"></a>general.</span>
+<span id="cb12-414"><a href="#cb12-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-415"><a href="#cb12-415" aria-hidden="true" tabindex="-1"></a><span class="fu">### When it does not matter</span></span>
+<span id="cb12-416"><a href="#cb12-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-417"><a href="#cb12-417" aria-hidden="true" tabindex="-1"></a>Weighting only distorts when the effect is related to the weight.  Give</span>
+<span id="cb12-418"><a href="#cb12-418" aria-hidden="true" tabindex="-1"></a>every unit its own slope, let units differ in how much $x$ moves, and</span>
+<span id="cb12-419"><a href="#cb12-419" aria-hidden="true" tabindex="-1"></a>compare two designs: in (A) the slopes are unrelated to that movement,</span>
+<span id="cb12-420"><a href="#cb12-420" aria-hidden="true" tabindex="-1"></a>in (B) the slope is larger where $x$ moves more.  Both average near one.</span>
+<span id="cb12-421"><a href="#cb12-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-424"><a href="#cb12-424" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb12-425"><a href="#cb12-425" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb12-426"><a href="#cb12-426" aria-hidden="true" tabindex="-1"></a>sdX <span class="ot">&lt;-</span> <span class="fu">runif</span>(N, <span class="fl">0.2</span>, <span class="dv">3</span>)          <span class="co"># how much x moves, unit by unit</span></span>
+<span id="cb12-427"><a href="#cb12-427" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-428"><a href="#cb12-428" aria-hidden="true" tabindex="-1"></a>panel <span class="ot">&lt;-</span> <span class="cf">function</span>(b) {           <span class="co"># build a panel whose unit slopes are b</span></span>
+<span id="cb12-429"><a href="#cb12-429" aria-hidden="true" tabindex="-1"></a>  h   <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb12-430"><a href="#cb12-430" aria-hidden="true" tabindex="-1"></a>                    <span class="at">x  =</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T, <span class="dv">0</span>, <span class="fu">rep</span>(sdX, <span class="at">each =</span> T)))</span>
+<span id="cb12-431"><a href="#cb12-431" aria-hidden="true" tabindex="-1"></a>  h<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(b, <span class="at">each =</span> T) <span class="sc">*</span> h<span class="sc">$</span>x <span class="sc">+</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb12-432"><a href="#cb12-432" aria-hidden="true" tabindex="-1"></a>  h</span>
+<span id="cb12-433"><a href="#cb12-433" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-434"><a href="#cb12-434" aria-hidden="true" tabindex="-1"></a>compare <span class="ot">&lt;-</span> <span class="cf">function</span>(h, b) {</span>
+<span id="cb12-435"><a href="#cb12-435" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">resid</span>(<span class="fu">feols</span>(x <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> id, h))<span class="sc">^</span><span class="dv">2</span>, h<span class="sc">$</span>id, sum)   <span class="co"># the weights</span></span>
+<span id="cb12-436"><a href="#cb12-436" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">`</span><span class="at">FE estimate</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id, h))[[<span class="st">"x"</span>]],</span>
+<span id="cb12-437"><a href="#cb12-437" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, plain avg</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(b),</span>
+<span id="cb12-438"><a href="#cb12-438" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">true slopes, weighted</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w))</span>
+<span id="cb12-439"><a href="#cb12-439" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-440"><a href="#cb12-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-441"><a href="#cb12-441" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N, <span class="dv">1</span>, <span class="dv">1</span>)             <span class="co"># (A) slopes unrelated to movement</span></span>
+<span id="cb12-442"><a href="#cb12-442" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.8</span> <span class="sc">*</span> (sdX <span class="sc">-</span> <span class="fl">1.6</span>)      <span class="co"># (B) slopes larger where x moves more</span></span>
+<span id="cb12-443"><a href="#cb12-443" aria-hidden="true" tabindex="-1"></a>h1 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b1); h2 <span class="ot">&lt;-</span> <span class="fu">panel</span>(b2)</span>
+<span id="cb12-444"><a href="#cb12-444" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-445"><a href="#cb12-445" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="st">`</span><span class="at">(A) unrelated</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(h1, b1),</span>
+<span id="cb12-446"><a href="#cb12-446" aria-hidden="true" tabindex="-1"></a>            <span class="st">`</span><span class="at">(B) aligned</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(h2, b2)), <span class="dv">4</span>)</span>
+<span id="cb12-447"><a href="#cb12-447" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb12-448"><a href="#cb12-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-449"><a href="#cb12-449" aria-hidden="true" tabindex="-1"></a>In (A) all three numbers agree to within sampling noise: the weighting</span>
+<span id="cb12-450"><a href="#cb12-450" aria-hidden="true" tabindex="-1"></a>is there and costs nothing.  In (B) the estimate is 1.53 while the plain</span>
+<span id="cb12-451"><a href="#cb12-451" aria-hidden="true" tabindex="-1"></a>average of the true slopes is 1.01, and the weighted average, 1.54, is</span>
+<span id="cb12-452"><a href="#cb12-452" aria-hidden="true" tabindex="-1"></a>what the estimator was tracking all along.  None of this is a defect ---</span>
+<span id="cb12-453"><a href="#cb12-453" aria-hidden="true" tabindex="-1"></a>a unit whose $x$ barely moves genuinely carries little information about</span>
+<span id="cb12-454"><a href="#cb12-454" aria-hidden="true" tabindex="-1"></a>how $y$ responds, and leaning on the units that do move is efficient.</span>
+<span id="cb12-455"><a href="#cb12-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-456"><a href="#cb12-456" aria-hidden="true" tabindex="-1"></a>Słoczyński (<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) makes the same</span>
+<span id="cb12-457"><a href="#cb12-457" aria-hidden="true" tabindex="-1"></a>point for a binary treatment</span>
+<span id="cb12-458"><a href="#cb12-458" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">discussed here</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>):</span>
+<span id="cb12-459"><a href="#cb12-459" aria-hidden="true" tabindex="-1"></a>writing $\rho$ for the treated share, the coefficient is</span>
+<span id="cb12-460"><a href="#cb12-460" aria-hidden="true" tabindex="-1"></a>$(1-\rho)\,\text{ATT} + \rho\,\text{ATU}$, so the *smaller* group</span>
+<span id="cb12-461"><a href="#cb12-461" aria-hidden="true" tabindex="-1"></a>receives the *larger* weight.  In a sample that is 10% treated the</span>
+<span id="cb12-462"><a href="#cb12-462" aria-hidden="true" tabindex="-1"></a>weight on the ATT is $0.9$, so the coefficient mostly reports the effect</span>
+<span id="cb12-463"><a href="#cb12-463" aria-hidden="true" tabindex="-1"></a>on the treated tenth, not the untreated majority.  The ATE is the same</span>
+<span id="cb12-464"><a href="#cb12-464" aria-hidden="true" tabindex="-1"></a>two numbers with the weights reversed, and the two can be far apart: in</span>
+<span id="cb12-465"><a href="#cb12-465" aria-hidden="true" tabindex="-1"></a>a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the</span>
+<span id="cb12-466"><a href="#cb12-466" aria-hidden="true" tabindex="-1"></a>ATE is 1.00 while OLS returns 2.26.</span>
+<span id="cb12-467"><a href="#cb12-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-468"><a href="#cb12-468" aria-hidden="true" tabindex="-1"></a>With homogeneous effects the weighting is harmless.  With heterogeneous</span>
+<span id="cb12-469"><a href="#cb12-469" aria-hidden="true" tabindex="-1"></a>effects the question is never whether OLS is weighting, only whether we</span>
+<span id="cb12-470"><a href="#cb12-470" aria-hidden="true" tabindex="-1"></a>know what it weighted.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/interpreting-ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
