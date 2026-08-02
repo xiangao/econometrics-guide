@@ -257,8 +257,7 @@ over --- so the bracket does not go anywhere.  $s_i$ is **not** unbiased
 for its own $b_i$; the bias is permanent, and it has nothing to do with
 noise.
 
-What rescues the weighted average is not that this bias disappears, but
-that it cancels.  Sum $d_i^2 s_i$ and substitute the formula for $s_i$:
+Sum $d_i^2 s_i$ anyway, and substitute the formula for $s_i$:
 
 $$
 \sum_i d_i^2 s_i
@@ -287,10 +286,19 @@ $$
 
 exactly the effect-weighted average of $b_i$ from "Two ways to read the
 coefficient" earlier in this chapter --- no approximation, no large $n$,
-true at every sample size.  Each observation's own bias is a fixed
-distortion that never goes away by averaging over $e$; what goes away is
-the *sum* of them, because $d_i^2$ weights the biases so they cancel
-exactly, term for term, against each other.
+true at every sample size.
+
+Bring this back to $s_i$, since that is what the whole section is
+about.  $\hat\beta$ is not merely *related* to the $s_i$ --- by the
+identity that opened this chapter, it *is* their $d_i^2$-weighted
+average.  So the calculation just done is a statement about averaging
+$s_i$: each one, alone, is a biased guess at its own $b_i$, and that
+bias never washes out by watching more of it, however large $n$ gets.
+What makes the average unbiased anyway is not that the individual
+biases shrink --- they do not --- but that the specific $d_i^2$
+weighting makes them cancel, term for term, against each other in the
+sum.  Individually worthless, and the sum answers the right question
+regardless.
 
 ### Why averaging $s_i$ works
 
