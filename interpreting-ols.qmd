@@ -193,19 +193,22 @@ version by construction, and close to the $b_i$ version because the
 noise averages out.
 
 
-### Why using $s_i$ works anyway
+### Why averaging $s_i$ works
 
-This ought to look like a problem.  We want the $b_i$; we are averaging
-something that barely correlates with them.  The resolution is that the
-weight is precisely the right correction.
+Low correlation is not the same as bias.  Each $s_i$ is an unbiased
+estimate of $b$ on its own, so any weighted average of them is unbiased
+too --- equal weights, $d_i^2$, anything.  What the weights buy is not
+correctness but precision: some $s_i$ are far noisier than others, and
+$d_i^2$ happens to be the weighting that makes the average as precise
+as possible.
 
-Everything here is **conditional on $X$**, as usual in regression, and
+Everything below is **conditional on $X$**, as usual in regression, and
 that matters twice over: it makes $d_i=x_i-\bar x$ a known constant
 rather than a random variable, and the weights are functions of $x$
 alone, so the whole weighting story only lives in the conditional world.
 
 With homogeneous truth $b$, $y_i-\bar y = b\,d_i + (e_i-\bar e)$, so
-$s_i = b + (e_i-\bar e)/d_i$ and $s_i$ is unbiased.  Since
+$s_i = b + (e_i-\bar e)/d_i$ --- confirming the unbiasedness just used.  Since
 $\text{Var}(e_i-\bar e)=\sigma^2-2\sigma^2/n+\sigma^2/n=\sigma^2(1-1/n)$,
 
 $$
