@@ -197,15 +197,44 @@ $b_i$, and the OLS estimate is $0.950$ --- identical to the $s_i$
 version by construction, and close to the $b_i$ version because the
 noise averages out.
 
+That comparison had genuine noise sitting on top of the heterogeneity.
+The two are different phenomena, and it is worth seeing them apart.
+Turn the noise off entirely --- let $y_i=b_i x_i$ exactly, nothing
+added --- and ask how well $s_i$ tracks its own $b_i$.
+
+```{r}
+y0 <- b * x                                  # same b, same x, no noise at all
+d  <- x - xb
+s0 <- (y0 - mean(y0)) / d
+round(c(`correlation, s_i with b_i, no noise` = cor(s0, b),
+        `weighted average of s_i`             = sum(w * s0) / sum(w),
+        `weighted average of b_i`              = sum(w * b) / sum(w),
+        `OLS on this noiseless data`           = unname(coef(lm(y0 ~ x))[2])), 4)
+```
+
+The correlation is 0.14 --- still low, with no noise anywhere in the
+data.  This is the two-, three- and four-point geometry from the start
+of the chapter, applied to a whole sample instead of a handful of
+points: a ray's slope reflects where *every* point sits, not only its
+own, so when the $b_i$ genuinely differ, one point's ray does not
+recover that point's own slope even without noise.  Noise makes it
+worse, but it is not the cause of it.
+
+What survives regardless is the weighted average, which comes out at
+$0.9914$ either way and matches OLS exactly.  That is the weighted-
+average identity established earlier in this chapter: it is pure
+algebra, and needs nothing about noise or homogeneity to hold.  What the
+rest of this section adds is a separate layer on top --- once
+idiosyncratic noise $e_i$ is also present, does it wash out of that same
+weighted average, and how fast?  That question is about $e_i$ alone, and
+a single shared $b$ is what isolates it from the heterogeneity question
+just answered.
 
 ### Why averaging $s_i$ works
 
-Low correlation is not the same as bias.  Each $s_i$ is an unbiased
-estimate of $b$ on its own, so any weighted average of them is unbiased
-too --- equal weights, $d_i^2$, anything.  What the weights buy is not
-correctness but precision: some $s_i$ are far noisier than others, and
-$d_i^2$ happens to be the weighting that makes the average as precise
-as possible.
+Set the heterogeneity question aside, then --- it is handled --- and ask
+only about the noise: is $s_i$ unbiased for $b$, and why does $d_i^2$ in
+particular make a good weight?
 
 Everything below is **conditional on $X$**, as usual in regression, and
 that matters twice over: it makes $d_i=x_i-\bar x$ a known constant
@@ -213,7 +242,18 @@ rather than a random variable, and the weights are functions of $x$
 alone, so the whole weighting story only lives in the conditional world.
 
 With homogeneous truth $b$, $y_i-\bar y = b\,d_i + (e_i-\bar e)$, so
-$s_i = b + (e_i-\bar e)/d_i$ --- confirming the unbiasedness just used.  Since
+
+$$
+s_i = b + \frac{e_i-\bar e}{d_i}.
+$$
+
+Rearrange and take an expectation: $b = s_i - (e_i-\bar e)/d_i$, and
+since $E(e_i-\bar e\mid X)=0$, $E(s_i\mid X)=b$.  So $s_i$ is unbiased,
+and any weighted average of the $s_i$ --- equal weights, $d_i^2$,
+anything --- is unbiased for $b$ too.  What the weights buy is not
+correctness but precision: some $s_i$ are far noisier than others, and
+$d_i^2$ happens to be the weighting that makes the average as precise as
+possible.  Since
 $\text{Var}(e_i-\bar e)=\sigma^2-2\sigma^2/n+\sigma^2/n=\sigma^2(1-1/n)$,
 
 $$
