@@ -504,3 +504,27 @@ centring, not the noise, and it sits exactly where the weight is smallest.
 Also softened the earlier "correlation 0.019 --- none". That is Pearson on a heavy-tailed
 variable, dominated by a few exploded values; the rank correlation is much higher. The
 signal is buried, not absent — a different claim.
+
+## Audit (2026-08-02c) — five defects in `interpreting-ols.qmd`, all fixed
+
+1. **Heading level broken by the move.** "When the weighting changes the answer" was
+   `###`, so after the split it nested under "The slope of a single observation" instead
+   of standing on its own. Promoted to `##`.
+2. **Notation collision — the worst of the five.** The chapter used `w_i` for two
+   different quantities: `w_i = Vtilde_i V_i = d_i x_i` (weights `b_i`, from "Two ways to
+   read") and `d_i^2` (weights `s_i`, in the geometry sections). They are not the same
+   observation by observation — correlation 0.966 when `xbar = 0.745` — and coincide only
+   when `x` is centred, though they always sum to the same total since
+   `sum d_i x_i = sum d_i^2`. `w_i` is now reserved for the effect weight; the `s_i`
+   weight is written `d_i^2` throughout, with a paragraph naming the distinction.
+3. **`Var(s_i)` stated as exactly `sigma^2/d_i^2`.** It is `sigma^2 (1 - 1/n)/d_i^2`;
+   `ebar` appears in every `s_i`. Corrected with the approximation flagged.
+4. **Prose quoted numbers no chunk printed** — the unweighted mean of `s_i` (-23,816)
+   against the weighted one (0.999), and `max |s_i - b_i|` of 25.9 / 0.0074. All four now
+   emitted by the chunks that own them.
+5. **Panel notation used without introduction.** The simplifications table borrows
+   `x_it`, `z_i`, `T` from the panel chapter, which this one no longer defines. Added a
+   sentence saying so and noting the rule needs no panel.
+
+Verified after: 9 chunk outputs, every number quoted in prose matched against the chunk
+that produces it, heading tree correct, `w_i` appears only as the effect weight.
