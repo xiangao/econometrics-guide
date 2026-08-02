@@ -613,3 +613,30 @@ describe.
 invisible in the diff — orphaned text, stranded numbers, wrong heading levels, reversed
 cross-references. After any move, sweep directional references and re-check the heading
 tree before rendering.
+
+## Tooling (2026-08-02g) — `audit_chapters.py`
+
+Written after too many defects were found by the author rather than by me. Run it after
+any edit to `panel-data.qmd` or `interpreting-ols.qmd`:
+
+```
+quarto render && python3 audit_chapters.py
+```
+
+Checks: heading-level skips (counted outside code chunks — an R comment starting `#`
+otherwise reads as a heading); every 3+ digit number in prose appearing in some chunk
+output of that chapter; citations resolving to `references.qmd`; internal `.qmd` links
+existing; unmatched `$$`; blank lines inside `$$…$$` (this book's known rendering
+killer). Rounding like 1.845 → "about 1.85" still flags, so triage rather than treat
+every hit as an error.
+
+Two checks deliberately dropped after testing: raw-LaTeX-in-HTML fires on MathJax's
+client-side source in every chapter including untouched ones, and per-chunk variable
+scoping is already enforced by the render failing.
+
+**What it caught on its first run:** a second Słoczyński passage left behind after the
+dedicated section was added, quoting a simulation (8.8% treated, ATT 2.39, ATU 0.87,
+OLS 2.26) that no chunk in the book produces. Replaced with a cross-reference.
+
+Also verified by hand this pass: all four external links live, both DOIs resolve to the
+right papers via Crossref, zero repeated sentences within or across the two chapters.

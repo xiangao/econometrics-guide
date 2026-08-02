@@ -901,7 +901,7 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 </div>
 </div>
 <p>In (A) all three numbers agree to within sampling noise: the weighting is there and costs nothing. In (B) the estimate is 1.53 while the plain average of the true slopes is 1.01, and the weighted average, 1.54, is what the estimator was tracking all along. None of this is a defect — a unit whose <span class="math inline">\(x\)</span> barely moves genuinely carries little information about how <span class="math inline">\(y\)</span> responds, and leaning on the units that do move is efficient.</p>
-<p>Słoczyński (<a href="https://doi.org/10.1162/rest_a_00953">2022</a>) makes the same point for a binary treatment (<a href="https://xiangao.github.io/blog_book/ols-ate.html">discussed here</a>): writing <span class="math inline">\(\rho\)</span> for the treated share, the coefficient is <span class="math inline">\((1-\rho)\,\text{ATT} + \rho\,\text{ATU}\)</span>, so the <em>smaller</em> group receives the <em>larger</em> weight. In a sample that is 10% treated the weight on the ATT is <span class="math inline">\(0.9\)</span>, so the coefficient mostly reports the effect on the treated tenth, not the untreated majority. The ATE is the same two numbers with the weights reversed, and the two can be far apart: in a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the ATE is 1.00 while OLS returns 2.26.</p>
+<p>Design (B) is the continuous version of what Słoczyński describes for a binary treatment, worked through earlier in this chapter: the same weighting, aggregated to two groups instead of spread over a continuum.</p>
 <p>With homogeneous effects the weighting is harmless. With heterogeneous effects the question is never whether OLS is weighting, only whether we know what it weighted.</p>
 
 
@@ -2130,21 +2130,13 @@ true slopes, weighted         0.9816      1.5422</code></pre>
 <span id="cb30-784"><a href="#cb30-784" aria-hidden="true" tabindex="-1"></a>a unit whose $x$ barely moves genuinely carries little information about</span>
 <span id="cb30-785"><a href="#cb30-785" aria-hidden="true" tabindex="-1"></a>how $y$ responds, and leaning on the units that do move is efficient.</span>
 <span id="cb30-786"><a href="#cb30-786" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-787"><a href="#cb30-787" aria-hidden="true" tabindex="-1"></a>Słoczyński (<span class="co">[</span><span class="ot">2022</span><span class="co">](https://doi.org/10.1162/rest_a_00953)</span>) makes the same</span>
-<span id="cb30-788"><a href="#cb30-788" aria-hidden="true" tabindex="-1"></a>point for a binary treatment</span>
-<span id="cb30-789"><a href="#cb30-789" aria-hidden="true" tabindex="-1"></a>(<span class="co">[</span><span class="ot">discussed here</span><span class="co">](https://xiangao.github.io/blog_book/ols-ate.html)</span>):</span>
-<span id="cb30-790"><a href="#cb30-790" aria-hidden="true" tabindex="-1"></a>writing $\rho$ for the treated share, the coefficient is</span>
-<span id="cb30-791"><a href="#cb30-791" aria-hidden="true" tabindex="-1"></a>$(1-\rho)\,\text{ATT} + \rho\,\text{ATU}$, so the *smaller* group</span>
-<span id="cb30-792"><a href="#cb30-792" aria-hidden="true" tabindex="-1"></a>receives the *larger* weight.  In a sample that is 10% treated the</span>
-<span id="cb30-793"><a href="#cb30-793" aria-hidden="true" tabindex="-1"></a>weight on the ATT is $0.9$, so the coefficient mostly reports the effect</span>
-<span id="cb30-794"><a href="#cb30-794" aria-hidden="true" tabindex="-1"></a>on the treated tenth, not the untreated majority.  The ATE is the same</span>
-<span id="cb30-795"><a href="#cb30-795" aria-hidden="true" tabindex="-1"></a>two numbers with the weights reversed, and the two can be far apart: in</span>
-<span id="cb30-796"><a href="#cb30-796" aria-hidden="true" tabindex="-1"></a>a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the</span>
-<span id="cb30-797"><a href="#cb30-797" aria-hidden="true" tabindex="-1"></a>ATE is 1.00 while OLS returns 2.26.</span>
-<span id="cb30-798"><a href="#cb30-798" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-799"><a href="#cb30-799" aria-hidden="true" tabindex="-1"></a>With homogeneous effects the weighting is harmless.  With heterogeneous</span>
-<span id="cb30-800"><a href="#cb30-800" aria-hidden="true" tabindex="-1"></a>effects the question is never whether OLS is weighting, only whether we</span>
-<span id="cb30-801"><a href="#cb30-801" aria-hidden="true" tabindex="-1"></a>know what it weighted.</span>
+<span id="cb30-787"><a href="#cb30-787" aria-hidden="true" tabindex="-1"></a>Design (B) is the continuous version of what Słoczyński describes for a</span>
+<span id="cb30-788"><a href="#cb30-788" aria-hidden="true" tabindex="-1"></a>binary treatment, worked through earlier in this chapter: the same</span>
+<span id="cb30-789"><a href="#cb30-789" aria-hidden="true" tabindex="-1"></a>weighting, aggregated to two groups instead of spread over a continuum.</span>
+<span id="cb30-790"><a href="#cb30-790" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-791"><a href="#cb30-791" aria-hidden="true" tabindex="-1"></a>With homogeneous effects the weighting is harmless.  With heterogeneous</span>
+<span id="cb30-792"><a href="#cb30-792" aria-hidden="true" tabindex="-1"></a>effects the question is never whether OLS is weighting, only whether we</span>
+<span id="cb30-793"><a href="#cb30-793" aria-hidden="true" tabindex="-1"></a>know what it weighted.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

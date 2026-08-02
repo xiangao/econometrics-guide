@@ -760,17 +760,9 @@ what the estimator was tracking all along.  None of this is a defect ---
 a unit whose $x$ barely moves genuinely carries little information about
 how $y$ responds, and leaning on the units that do move is efficient.
 
-Słoczyński ([2022](https://doi.org/10.1162/rest_a_00953)) makes the same
-point for a binary treatment
-([discussed here](https://xiangao.github.io/blog_book/ols-ate.html)):
-writing $\rho$ for the treated share, the coefficient is
-$(1-\rho)\,\text{ATT} + \rho\,\text{ATU}$, so the *smaller* group
-receives the *larger* weight.  In a sample that is 10% treated the
-weight on the ATT is $0.9$, so the coefficient mostly reports the effect
-on the treated tenth, not the untreated majority.  The ATE is the same
-two numbers with the weights reversed, and the two can be far apart: in
-a simulation with 8.8% treated, an ATT of 2.39 and an ATU of 0.87, the
-ATE is 1.00 while OLS returns 2.26.
+Design (B) is the continuous version of what Słoczyński describes for a
+binary treatment, worked through earlier in this chapter: the same
+weighting, aggregated to two groups instead of spread over a continuum.
 
 With homogeneous effects the weighting is harmless.  With heterogeneous
 effects the question is never whether OLS is weighting, only whether we
