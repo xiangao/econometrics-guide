@@ -528,3 +528,47 @@ signal is buried, not absent — a different claim.
 
 Verified after: 9 chunk outputs, every number quoted in prose matched against the chunk
 that produces it, heading tree correct, `w_i` appears only as the effect weight.
+
+## Restructure (2026-08-02d) — build-up from two points, Angrist/Słoczyński detail, references
+
+**Opening rebuilt on the author's suggested progression.** The chapter now starts with
+two points, then three, then four, introducing `s_i` and the weight `d_i^2` concretely
+before any algebra. One reusable `show()` function; the outputs make the mechanism
+visible:
+
+- 2 points: both `s_i` = 3, weights 50/50, OLS 3 — weights are *irrelevant* when the
+  slopes agree
+- 3 points: `s_i` = 1.8 / 9.0 / 0.0, weights 59.5% / 2.4% / 38.1%, OLS 1.2857 — the
+  steepest own-slope gets 2.4% because it sits on the centroid
+- 4 points (adding `x = 9`): the new point takes 64.9% alone, and the `x = 4` point
+  falls from 38% to **0.18%** because the centroid moved to 4.25 and landed on it. OLS
+  1.29 → 0.31 without touching any existing point.
+
+That last one is the pedagogically valuable case: weight is not a property of an
+observation, it is a property relative to the sample, and adding data rewrites it
+everywhere. The `s_i` block was also moved ahead of the general rule, so the order is
+concrete → structural → general.
+
+**New section: "Angrist and Słoczyński, exactly."** Derives Angrist's weight from ours:
+with binary `d` and saturated controls, `sum_{i in x} dtilde_i d_i = n_x dhat(1-dhat)`
+because `d_i^2 = d_i`. Verified — the two weight vectors agree to 5.6e-10 and Angrist's
+weighted average reproduces OLS exactly (2.0121, and 2.8740 in a low-`rho` design).
+Notes that with a binary regressor no single observation *has* a slope, so the stratum
+is the smallest unit carrying an effect: granularity is set by the regressor.
+
+Słoczyński is the same weights aggregated to two groups, and the sharp statement is that
+`betahat -> (1-rho) ATT + rho ATU` while `ATE = rho ATT + (1-rho) ATU` — the same two
+numbers with the weights swapped. **The raw-`rho` form is exact only without covariates**;
+with controls it gives 2.029 against an exact 2.012, and 2.858 against 2.874. Both are in
+the chunk output so the approximation is visible rather than asserted.
+
+Closes with a table placing the three (what each sorts by, smallest unit with an effect,
+when exact) and Hazlett–Shinkre underneath all of them.
+
+**References added** (all verified via Crossref except the arXiv one): Frisch & Waugh
+(1933) 10.2307/1907330, Lovell (1963) 10.1080/01621459.1963.10480682, Mundlak (1978)
+10.2307/1913646, Hazlett & Shinkre (2024) arXiv:2403.03299. Mundlak initially landed
+before Moreira — alphabetical order is Moreira, Moulton, Mundlak.
+
+Also changed an R comment inside a chunk from `##` to `#`: it parses as a heading to any
+markdown tool scanning the source, even though Quarto renders it correctly.

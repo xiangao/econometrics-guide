@@ -24,110 +24,95 @@ emphasis:
 and
 [OLS cannot be ATE](https://xiangao.github.io/blog_book/ols-ate.html).
 
-## The rule
+## Start with two points
 
-The panel chapter met two weightings: by $T_i$ when a panel is
-unbalanced, and by variance when a regression mixes within and between
-variation.  Neither is a panel-specific quirk.  Both follow from one
-rule.
+Begin as small as possible.  Two points, and a regression line through
+them.  Everyone knows what that line is: it joins them.
 
-Let $V$ be the regressor of interest and $\tilde V$ be $V$ after
-residualising on every other regressor in the model.  By the
-Frisch--Waugh--Lovell theorem,
+Now describe it in a way that will keep working when there are more
+points.  Take the **centroid** $(\bar x, \bar y)$ and, for each point,
+the slope of the line running from the centroid out to it:
 
 $$
-\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
-                 {\sum_i \sum_t \tilde V_{it}^{2}} .
+s_i \;=\; \frac{y_i - \bar y}{x_i - \bar x} .
 $$
 
-Be careful what $\tilde V_{it}$ is.  A single observation has no
-variation of its own --- variation belongs to a collection.  What it has
-is a **deviation**: how far its regressor sits from what the rest of the
-model predicts for it.  With only an intercept that is distance from the
-grand mean; with unit effects it is distance from the unit's own mean.
-Which mean gets subtracted is the single most consequential detail in
-this section, and we return to it.
+Call $s_i$ that observation's own slope.  With two points the centroid
+lies on the segment joining them, so both rays *are* that segment and
+both $s_i$ are the same number.
 
-### Two ways to read the coefficient
+Attach a weight to each, $d_i^2=(x_i-\bar x)^2$, the squared horizontal
+distance from the centroid.  We will justify that choice shortly; for
+now just take the weighted average.
 
-The formula supports two readings.  They describe one estimator and
-differ in what is being weighted.
+```{r}
+show <- function(x, y) {
+  xb <- mean(x); d <- x - xb; s <- (y - mean(y)) / d; w <- d^2
+  print(round(data.frame(x, y, s_i = s, weight = w,
+                         `weight %` = 100 * w / sum(w), check.names = FALSE), 3),
+        row.names = FALSE)
+  cat(sprintf("  centroid x = %.3f | weighted avg of s_i = %.4f | OLS = %.4f\n",
+              xb, sum(w * s) / sum(w), coef(lm(y ~ x))[["x"]]))
+}
+show(c(1, 3), c(2, 8))
+```
 
-$$
-\hat\beta = \sum_i \omega_i\, y_i , \quad
-\omega_i = \frac{\tilde V_i}{\sum_j \tilde V_j^2}
-\qquad\text{versus}\qquad
-\hat\beta = \frac{\sum_i w_i\, \beta_i}{\sum_i w_i} , \quad
-w_i = \tilde V_i V_i .
-$$
+Both $s_i$ equal 3, the weights split evenly, and the average is 3 ---
+which is the fitted slope.  Note what this means: with two points the
+weights are *irrelevant*.  Any weighting of two identical numbers
+returns that number.
 
-| | Weights on outcomes, $\omega_i$ | Weights on effects, $w_i$ |
-|---|---|---|
-| Weights what | the observed $y_i$ | that observation's own effect $\beta_i$ |
-| Sign | signed, sums to zero | non-negative |
-| Computable | yes, $y$ is observed | no, the $\beta_i$ are never seen |
-| Holds when | always, it is algebra | after writing effects into $y$; the per-unit reading also needs saturation |
-| Answers | which rows drive this number, and does any enter with the wrong sign | is this the effect I meant, and whose effect is it mostly |
+## Add a third point
 
-Default to the second.  Nearly every question that motivates the topic
---- is my coefficient the average effect, whose effect does it report,
-why do smaller groups get larger weights --- is a question about the
-estimand.  Reach for the first when overlap is in doubt and you need to
-see whether observations enter negatively, which squares cannot show.
-Both are developed at length in
-[Weights in OLS in causal inference](https://xiangao.github.io/blog_book/weights-ols.html).
+```{r}
+show(c(1, 3, 4), c(2, 8, 5))
+```
 
-The square in $w_i$ is derived, not assumed.  Substituting
-$y_{it}=\beta_i V_{it}+\ldots$ into the numerator gives
-$\sum_i \beta_i \sum_t \tilde V_{it}V_{it}$, and over the whole sample
-$\sum \tilde V V=\sum \tilde V^2$ because $\tilde V$ is orthogonal to the
-fitted part of $V$.  Whether that holds *unit by unit* --- which is what
-licenses reading $\sum_t \tilde V_{it}^2$ as unit $i$'s weight ---
-depends on the residualising being done within the unit.  Demeaning
-delivers it by direct expansion,
-$\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
-=\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in
-total.  Hazlett and Shinkre make this the centre of their treatment; the
-Angrist row below assumes the saturated case.
+Now the three own-slopes disagree: 1.8, 9.0 and 0.0.  The fit has to
+choose among them, and it does so by weight --- and the weights are
+wildly uneven.  The point at $x=3$ has the steepest own-slope of the
+three, 9.0, and receives 2.4% of the say, because $x=3$ sits almost on
+the centroid at 2.667.  The answer, 1.2857, is the weighted average.
 
-In general $\sum_t \tilde V_{it}^2$ will not factor into anything
-tidier, since $\tilde V_{it}$ carries both subscripts even when $V$ does
-not.  What changes from model to model is whether it happens to
-simplify.  The table borrows the panel chapter's notation --- $x_{it}$
-varying over units and time, $z_i$ over units only, $T$ periods per
-unit --- because that is where the cases are easiest to name; nothing
-in the rule depends on having a panel.
+This is the whole mechanism.  A point close to $\bar x$ has almost no
+horizontal leverage, so however dramatic its own slope, it barely moves
+the line.
 
-| Model | $\sum_t \tilde V_{it}^2$ simplifies to |
-|---|---|
-| $z_i$ alone, nothing else varying within the unit | $T_i\,\tilde z_i^2$ |
-| a time-varying $x_{it}$, unit effects removed | $(T-1)\,\widehat{\text{Var}}_i(x)$ |
-| binary $d$ with saturated controls | $n_x\,\hat d(x)\,(1-\hat d(x))$ |
+## Add a fourth, far out
 
-Add a time-varying $x_{it}$ alongside $z_i$ in the first model and the
-simplification is gone: residualising $z_i$ on something that moves
-within the unit makes $\tilde z$ move within the unit too.  The rule
-survives, the shortcut does not, and the $T_i$ form is the one-regressor
-special case rather than the general one.  The last row is Angrist
-([1998](https://doi.org/10.2307/2998558)), whose strata weights
-$\hat d(x)(1-\hat d(x))$ are largest where treatment is closest to a
-coin flip.  Same rule, different regressor.
+```{r}
+show(c(1, 3, 4, 9), c(2, 8, 5, 6))
+```
 
-## The slope of a single observation
+Two things happened at once, and both are worth naming.
 
-There is a geometric version of the effect weights, and it is worth
-seeing because it exposes something the algebra hides.
+The new point at $x=9$ took **65% of the weight by itself**, because
+weight is squared distance and it is far from centre.  And the point at
+$x=4$, which had 38% of the say a moment ago, collapsed to **0.18%** ---
+not because it changed, but because the centroid moved out to 4.25 and
+landed almost on top of it.
 
-Take the slope of the line from the centroid $(\bar x,\bar y)$ to
-observation $i$, call it $s_i=(y_i-\bar y)/(x_i-\bar x)$.  Since
-$(x_i-\bar x)(y_i-\bar y)=(x_i-\bar x)^2 s_i$, the OLS slope is exactly
+So weight is not a property of an observation.  It is a property of an
+observation *relative to the rest of the sample*, and adding data
+anywhere rewrites it everywhere.  The fitted slope fell from 1.29 to
+0.31 without a single existing point being touched.
+
+## The identity behind it
+
+None of that was a convention.  Since
+$(x_i-\bar x)(y_i-\bar y)=(x_i-\bar x)^2 s_i$, the ordinary OLS formula
+*is* that weighted average:
 
 $$
-\hat\beta=\frac{\sum_i (x_i-\bar x)^2\, s_i}{\sum_i (x_i-\bar x)^2},
+\hat\beta
+=\frac{\sum_i (x_i-\bar x)(y_i-\bar y)}{\sum_i (x_i-\bar x)^2}
+=\frac{\sum_i (x_i-\bar x)^2\, s_i}{\sum_i (x_i-\bar x)^2}.
 $$
 
-a weighted average of those point-to-centroid slopes.  Every observation
-carries a slope of its own, and the fit averages them.
+Every observation carries a slope of its own, and the fit averages them
+with weights $d_i^2$.  The two-group example later in this chapter is
+this same arithmetic with three thousand points on each side instead of
+two.
 
 One caution on notation.  The weight here is $d_i^2=(x_i-\bar x)^2$,
 which is what multiplies $s_i$; the effect weight above was
@@ -259,7 +244,7 @@ t(sapply(c(2, 1, 0.5, 0.1, 0.01, 0), function(se) {
           `pearson, far half` = cor(ss[far], bb[far])), 3)
 }))
 
-## with no noise at all, how far is s_i from b_i?
+# with no noise at all, how far is s_i from b_i?
 dd <- xx - mean(xx); ss <- (bb * xx - mean(bb * xx)) / dd
 far <- abs(dd) > quantile(abs(dd), .5)
 round(c(`max |s-b|, all`      = max(abs(ss - bb)),
@@ -298,6 +283,206 @@ So the useful part is neither slope.  It is the **weights**, which are
 computable exactly, need no model, and are the only piece of this that
 can be reported in a paper: they say which observations the estimate is
 about, whatever the effects turn out to be.
+
+## The rule
+
+The panel chapter met two weightings: by $T_i$ when a panel is
+unbalanced, and by variance when a regression mixes within and between
+variation.  Neither is a panel-specific quirk.  Both follow from one
+rule.
+
+Let $V$ be the regressor of interest and $\tilde V$ be $V$ after
+residualising on every other regressor in the model.  By the
+Frisch--Waugh--Lovell theorem,
+
+$$
+\hat\beta = \frac{\sum_i \sum_t \tilde V_{it}\, y_{it}}
+                 {\sum_i \sum_t \tilde V_{it}^{2}} .
+$$
+
+Be careful what $\tilde V_{it}$ is.  A single observation has no
+variation of its own --- variation belongs to a collection.  What it has
+is a **deviation**: how far its regressor sits from what the rest of the
+model predicts for it.  With only an intercept that is distance from the
+grand mean; with unit effects it is distance from the unit's own mean.
+Which mean gets subtracted is the single most consequential detail in
+this section, and we return to it.
+
+### Two ways to read the coefficient
+
+The formula supports two readings.  They describe one estimator and
+differ in what is being weighted.
+
+$$
+\hat\beta = \sum_i \omega_i\, y_i , \quad
+\omega_i = \frac{\tilde V_i}{\sum_j \tilde V_j^2}
+\qquad\text{versus}\qquad
+\hat\beta = \frac{\sum_i w_i\, \beta_i}{\sum_i w_i} , \quad
+w_i = \tilde V_i V_i .
+$$
+
+| | Weights on outcomes, $\omega_i$ | Weights on effects, $w_i$ |
+|---|---|---|
+| Weights what | the observed $y_i$ | that observation's own effect $\beta_i$ |
+| Sign | signed, sums to zero | non-negative |
+| Computable | yes, $y$ is observed | no, the $\beta_i$ are never seen |
+| Holds when | always, it is algebra | after writing effects into $y$; the per-unit reading also needs saturation |
+| Answers | which rows drive this number, and does any enter with the wrong sign | is this the effect I meant, and whose effect is it mostly |
+
+Default to the second.  Nearly every question that motivates the topic
+--- is my coefficient the average effect, whose effect does it report,
+why do smaller groups get larger weights --- is a question about the
+estimand.  Reach for the first when overlap is in doubt and you need to
+see whether observations enter negatively, which squares cannot show.
+Both are developed at length in
+[Weights in OLS in causal inference](https://xiangao.github.io/blog_book/weights-ols.html).
+
+The square in $w_i$ is derived, not assumed.  Substituting
+$y_{it}=\beta_i V_{it}+\ldots$ into the numerator gives
+$\sum_i \beta_i \sum_t \tilde V_{it}V_{it}$, and over the whole sample
+$\sum \tilde V V=\sum \tilde V^2$ because $\tilde V$ is orthogonal to the
+fitted part of $V$.  Whether that holds *unit by unit* --- which is what
+licenses reading $\sum_t \tilde V_{it}^2$ as unit $i$'s weight ---
+depends on the residualising being done within the unit.  Demeaning
+delivers it by direct expansion,
+$\sum_t (V_{it}-\bar V_i)V_{it}=\sum_t V_{it}^2 - T\bar V_i^{\,2}
+=\sum_t (V_{it}-\bar V_i)^2$, while a coarser control matches only in
+total.  Hazlett and Shinkre make this the centre of their treatment; the
+Angrist row below assumes the saturated case.
+
+In general $\sum_t \tilde V_{it}^2$ will not factor into anything
+tidier, since $\tilde V_{it}$ carries both subscripts even when $V$ does
+not.  What changes from model to model is whether it happens to
+simplify.  The table borrows the panel chapter's notation --- $x_{it}$
+varying over units and time, $z_i$ over units only, $T$ periods per
+unit --- because that is where the cases are easiest to name; nothing
+in the rule depends on having a panel.
+
+| Model | $\sum_t \tilde V_{it}^2$ simplifies to |
+|---|---|
+| $z_i$ alone, nothing else varying within the unit | $T_i\,\tilde z_i^2$ |
+| a time-varying $x_{it}$, unit effects removed | $(T-1)\,\widehat{\text{Var}}_i(x)$ |
+| binary $d$ with saturated controls | $n_x\,\hat d(x)\,(1-\hat d(x))$ |
+
+Add a time-varying $x_{it}$ alongside $z_i$ in the first model and the
+simplification is gone: residualising $z_i$ on something that moves
+within the unit makes $\tilde z$ move within the unit too.  The rule
+survives, the shortcut does not, and the $T_i$ form is the one-regressor
+special case rather than the general one.  The last row is Angrist
+([1998](https://doi.org/10.2307/2998558)), whose strata weights
+$\hat d(x)(1-\hat d(x))$ are largest where treatment is closest to a
+coin flip.  Same rule, different regressor.
+
+## Angrist and Słoczyński, exactly
+
+Both results are usually met as free-standing facts about treatment
+effects.  They are the rule above, read at two different granularities.
+
+### Angrist (1998): the rule with a binary regressor
+
+Let $d$ be binary and let the controls be **saturated** --- a full set
+of dummies for each covariate stratum $x$.  Residualising $d$ on those
+dummies subtracts each stratum's own treated share, so
+$\tilde d_i = d_i - \hat d(x)$ for observation $i$ in stratum $x$.  The
+stratum's total effect weight is then
+
+$$
+\sum_{i\in x}\tilde d_i d_i
+=\sum_{i\in x} d_i^2 - \hat d(x)\!\sum_{i\in x} d_i
+= n_x\hat d(x) - n_x \hat d(x)^2
+= n_x\,\hat d(x)\bigl(1-\hat d(x)\bigr),
+$$
+
+which is Angrist's weight.  Nothing was added: it is
+$\sum \tilde V V$ with a binary $V$, where $d_i^2=d_i$ makes the sum
+collapse.  The maximum at $\hat d(x)=\tfrac12$ is just the fact that a
+binary variable has most variance when it is a coin flip.
+
+Note also what plays the role of $s_i$ here.  A single observation with
+a binary regressor has no slope --- you need one treated and one control
+to form a difference.  So the smallest unit carrying an effect is the
+*stratum*, and $s_i$ becomes the stratum difference in means.  The
+granularity of the decomposition is set by the regressor, not chosen.
+
+```{r}
+set.seed(21)
+n <- 400000
+X <- sample(1:5, n, TRUE)
+
+compare <- function(px) {
+  d  <- rbinom(n, 1, px[X]); ta <- c(0, 1, 2, 3, 4)[X]   # effect varies by stratum
+  yy <- ta * d + X + rnorm(n)
+  dt <- resid(lm(d ~ factor(X)))                          # residualised treatment
+  nx <- as.vector(table(X)); dh <- as.vector(tapply(d, X, mean))
+  DIM <- as.vector(tapply(yy[d == 1], X[d == 1], mean) -
+                   tapply(yy[d == 0], X[d == 0], mean))
+  rho <- mean(d); ATT <- weighted.mean(ta, d); ATU <- weighted.mean(ta, 1 - d)
+  c(`treated share rho`      = rho,
+    `max |ours - Angrist|`   = max(abs(as.vector(tapply(dt * d, X, sum)) - nx*dh*(1-dh))),
+    `OLS, saturated`         = unname(coef(lm(yy ~ d + factor(X)))[["d"]]),
+    `Angrist weighted avg`   = sum(nx*dh*(1-dh) * DIM) / sum(nx*dh*(1-dh)),
+    `Sloczynski, raw rho`    = (1 - rho) * ATT + rho * ATU,
+    `ATE`                    = mean(ta))
+}
+res <- cbind(`near balanced` = compare(c(.08, .20, .50, .75, .93)),
+             `few treated`   = compare(c(.02, .04, .08, .12, .20)))
+cat(sprintf("max |our weight - Angrist's| : %.1e , %.1e\n\n", res[2, 1], res[2, 2]))
+round(res[-2, ], 4)
+```
+
+The two weight vectors agree to within $6\times10^{-10}$ in both
+designs, and Angrist's weighted average reproduces the OLS coefficient
+exactly.  In the near-balanced design the coefficient is 2.012 against
+an ATE of 1.998 --- close, because balance is where the weighting does
+least.  Push the treated share down to 0.09 and the coefficient goes to
+2.874 against the same ATE of 1.998.  Nothing about the effects changed;
+only the treated share did.
+
+### Słoczyński (2022): the same weights, aggregated to two groups
+
+Angrist sorts by covariate stratum.  Słoczyński
+([2022](https://doi.org/10.1162/rest_a_00953)) sorts by treatment status
+instead, and collapses everything into two numbers: the effect on the
+treated and the effect on the untreated.  Writing $\rho$ for the treated
+share,
+
+$$
+\hat\beta \;\to\; (1-\rho)\,\text{ATT} \;+\; \rho\,\text{ATU},
+\qquad\text{while}\qquad
+\text{ATE} \;=\; \rho\,\text{ATT} + (1-\rho)\,\text{ATU} .
+$$
+
+The same two quantities with the weights **swapped**.  That is the whole
+content of "smaller groups get larger weights": at $\rho=0.1$ the
+coefficient puts $0.9$ on the effect for the treated tenth, while the
+ATE puts $0.1$ there.
+
+One caveat, and it matters.  The clean form above with the raw share
+$\rho$ is exact in the *no-covariate* case.  With covariates the weights
+are covariate-adjusted, so $\rho$ is only an approximation --- visible
+in the table above, where the raw-$\rho$ form gives 2.029 against an
+exact 2.012, and 2.858 against an exact 2.874.  Close enough to reason
+with, not close enough to quote.
+
+### Where they sit relative to each other
+
+| | Sorts observations by | Smallest unit with an effect | Exact when |
+|---|---|---|---|
+| Our rule | nothing --- observation level | the observation, $s_i$ | always (algebra) |
+| Angrist (1998) | covariate stratum | the stratum, a difference in means | controls are saturated |
+| Słoczyński (2022) | treated vs untreated | the group, ATT and ATU | no covariates, else approximate |
+
+Reading down the last column is the useful part.  The observation-level
+identity always holds and says little.  Angrist's needs saturation and
+buys an interpretable weight.  Słoczyński's needs more and buys the
+sharpest statement of all --- that the coefficient and the ATE are the
+same two numbers with the weights reversed.
+
+Hazlett and Shinkre ([2024](https://arxiv.org/abs/2403.03299)) sit
+underneath all three: they show these weights arise from, and
+characterise, the bias caused by fitting a constant effect when effects
+are heterogeneous --- and argue for estimators that tolerate
+heterogeneity rather than for diagnosing the weights after the fact.
 
 ## When the weighting changes the answer
 
