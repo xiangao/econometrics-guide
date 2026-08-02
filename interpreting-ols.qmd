@@ -124,6 +124,47 @@ observation *relative to the rest of the sample*, and adding data
 anywhere rewrites it everywhere.  The fitted slope fell from 1.29 to
 0.31 without a single existing point being touched.
 
+## Add a hundred points
+
+The same picture, at a scale where individual points can no longer be
+labelled.  A hundred points scattered around a centre, rays as before,
+thickness proportional to weight.
+
+```{r}
+#| fig-width: 6.5
+#| fig-height: 5
+set.seed(3)
+n <- 100
+x <- rnorm(n, 5, 2)
+y <- 2 * x + rnorm(n, 0, 3)
+
+xb <- mean(x); yb <- mean(y); w <- (x - xb)^2
+o <- order(w, decreasing = TRUE)
+
+plot(x, y, pch = 16, cex = 1, col = "grey40",
+     xlab = "x", ylab = "y", main = "a hundred points")
+abline(v = xb, lty = 3, col = "grey55")
+segments(xb, yb, x, y, lwd = 0.3 + 10 * w / max(w), col = "#9E431870")
+abline(lm(y ~ x), lwd = 2.5, col = "#0E6473")
+points(x, y, pch = 16, cex = 1, col = "grey25")
+points(xb, yb, pch = 21, bg = "white", col = "#0E6473", lwd = 2.5, cex = 1.8)
+
+round(c(`weight held by the 10 points nearest the mean` = 100 * sum(w[o[91:100]]) / sum(w),
+        `weight held by the 10 points furthest out`     = 100 * sum(w[o[1:10]]) / sum(w),
+        `OLS`                                            = coef(lm(y ~ x))[["x"]]), 3)
+```
+
+Look at the rays rather than the points.  Near the dotted line they are
+too thin to see at all; out at the edges they are thick enough to
+dominate the picture.  The ten points nearest the mean hold **0.14%** of
+the total weight between them.  The ten points furthest out hold
+**35%** --- from a tenth of the sample.
+
+Nothing about this is particular to having only two, three or four
+points.  It was never a small-sample curiosity: the same handful of
+extreme observations would run the fit in a sample of a hundred, a
+thousand, or more.
+
 ## The identity behind it
 
 None of that was a convention.  Since
