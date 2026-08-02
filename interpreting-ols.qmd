@@ -213,11 +213,10 @@ $$
 \qquad i\neq j .
 $$
 
-Small, of order $1/n$, but not zero --- so this is inverse-variance
-weighting, and it is *not* the meta-analysis situation, where the
-estimates being pooled are independent.  OLS is efficient here for the
-ordinary Gauss--Markov reason, not because precision weighting of
-independent estimates would be optimal.
+Small, of order $1/n$, but not zero.  So $d_i^2$ is the inverse variance
+of $s_i$, while the $s_i$ themselves are mildly correlated --- which is
+why the efficiency of OLS rests on Gauss--Markov and not on any argument
+about combining independent estimates.
 
 The weight is the inverse variance of the thing it weights.  Check it by
 splitting on $|d_i|$: the product $d_i^2\,\text{Var}(s_i)$ should be
