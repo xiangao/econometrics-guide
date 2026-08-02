@@ -617,12 +617,15 @@ content of "smaller groups get larger weights": at $\rho=0.1$ the
 coefficient puts $0.9$ on the effect for the treated tenth, while the
 ATE puts $0.1$ there.
 
-One caveat, and it matters.  The clean form above with the raw share
-$\rho$ is exact in the *no-covariate* case.  With covariates the weights
-are covariate-adjusted, so $\rho$ is only an approximation --- visible
-in the table above, where the raw-$\rho$ form gives 2.029 against an
-exact 2.012, and 2.858 against an exact 2.874.  Close enough to reason
-with, not close enough to quote.
+One caveat, and it matters.  The clean form above is exact when the
+propensity score has equal variance in the treated and untreated groups
+--- not "no covariates" as such, though no covariates is one way to get
+there trivially.  Słoczyński calls the condition itself unlikely to hold
+exactly, and offers $\rho$ as a rule of thumb regardless, cleanest when
+$\rho$ is near 0%, 50%, or 100%.  With covariates present it is
+generally an approximation --- visible in the table above, where the
+raw-$\rho$ form gives 2.029 against an exact 2.012, and 2.858 against an
+exact 2.874.  Close enough to reason with, not close enough to quote.
 
 ### Where they sit relative to each other
 
