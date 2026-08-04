@@ -154,7 +154,7 @@ The individual biases $E[s_i] - b_i$ of @eq-esi do not cancel. They reshape the 
 
 1. **OLS is not the ATE under heterogeneity.** $\hat\beta_{OLS}$ is not the plain average effect $\bar b = E[b_i]$. It is a variance-weighted parameter, and it equals the ATE only when the $b_i$ are uncorrelated with the leverage $d_i x_i = (x_i - \bar x)x_i$.
 2. **Leverage annihilates the individual bias.** @eq-esi shows $s_i$ is a hopeless estimate of $b_i$ precisely where $d_i \approx 0$. The weight $w_i = d_i^2$ zeroes out exactly those unstable points, turning biased observation-level slopes into the exact parameter of @eq-exact.
-3. **The same mechanism runs through the causal estimators.** With a binary regressor it puts the most weight where treatment is near a coin flip [Angrist, 1998]; grouped by treatment status it reverses the propensity weights, favouring the smaller group [Słoczyński, 2022]. Both are @eq-exact read at different granularities, as the rest of the chapter shows.
+3. **The same mechanism runs through the causal estimators.** With a binary regressor it puts the most weight where treatment is near a coin flip (Angrist 1998); grouped by treatment status it reverses the propensity weights, favouring the smaller group (Słoczyński 2022). Both are @eq-exact read at different granularities, as the rest of the chapter shows.
 
 We check the algebra directly.
 
@@ -249,7 +249,7 @@ $$
 \sum_{t=1}^{T} (V_{it} - \bar V_i) V_{it} = \sum_{t=1}^{T} V_{it}^2 - T \bar V_i^{\,2} = \sum_{t=1}^{T} (V_{it} - \bar V_i)^2
 $$ {#eq-within-square}
 
-while a coarser control matches only in total, not unit by unit. Hazlett and Shinkre [2024] make this within-unit cancellation the centre of their treatment.
+while a coarser control matches only in total, not unit by unit. Hazlett and Shinkre (2024) make this within-unit cancellation the centre of their treatment.
 
 ### Special cases of the effect weights
 
@@ -261,7 +261,7 @@ In general $\sum_t \tilde V_{it}^2$ within a unit does not factor into anything 
 | Panel, within-unit variation | $x_{it}$ (time-varying) | $(T-1)\, \widehat{\text{Var}}_i(x)$ |
 | Binary treatment, saturated controls | $D_i \in \{0, 1\}$ | $n_x \hat D(X)(1 - \hat D(X))$ |
 
-Add a time-varying $x_{it}$ alongside $z_i$ in the first row and the shortcut is gone: residualising $z_i$ on something that moves within the unit makes $\tilde z$ move within the unit too. The rule survives, the shortcut does not, and the $T_i$ form is the one-regressor special case. The last row is Angrist [1998], whose strata weights $\hat D(x)(1 - \hat D(x))$ peak where treatment is closest to a coin flip. Same rule, different regressor.
+Add a time-varying $x_{it}$ alongside $z_i$ in the first row and the shortcut is gone: residualising $z_i$ on something that moves within the unit makes $\tilde z$ move within the unit too. The rule survives, the shortcut does not, and the $T_i$ form is the one-regressor special case. The last row is Angrist (1998), whose strata weights $\hat D(x)(1 - \hat D(x))$ peak where treatment is closest to a coin flip. Same rule, different regressor.
 
 ## Two causal decompositions: Angrist and Słoczyński
 
@@ -375,7 +375,7 @@ One caveat. @eq-reversed is exact under equal propensity variance across groups 
 | Angrist (1998) | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
 | Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | equal propensity variance | @eq-reversed |
 
-Read down the last column. The observation identity always holds and says little. Angrist's needs saturation and buys an interpretable weight. Słoczyński's needs more and buys the sharpest statement of the three — that the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre [2024] show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
+Read down the last column. The observation identity always holds and says little. Angrist's needs saturation and buys an interpretable weight. Słoczyński's needs more and buys the sharpest statement of the three — that the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
 
 ## Within versus between, in panels
 
