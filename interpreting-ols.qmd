@@ -407,49 +407,53 @@ The fixed-effects estimate is $1.98$, because the five hundred steady units hold
 
 That result was about the *within-unit* deviation. Plain pooled OLS uses distance from the grand mean instead, and the two coincided above only because both halves were built around zero. Separate them and the algebra says exactly what happens.
 
-Take two equal-sized groups $G \in \{1, 2\}$ with means $\mu_g = E[x \mid G=g]$ and $\bar y_g = E[y \mid G=g]$, within-group variances $\sigma_g^2$, and true slopes $\beta_g$. The pooled slope is $\text{plim}\;\hat\beta_{OLS} = \text{Cov}(x, y)/\text{Var}(x)$, and the whole derivation is one move: condition on $G$ and split both the numerator and the denominator into a within piece and a between piece. By the law of total covariance,
+Let $G$ index groups — any number of them, any sizes — with shares $p_g$, group means $\mu_g = E[x \mid G=g]$ and $\bar y_g = E[y \mid G=g]$, within-group variances $\sigma_g^2$, and true slopes $\beta_g$. The pooled slope is $\text{plim}\;\hat\beta_{OLS} = \text{Cov}(x, y)/\text{Var}(x)$, and the whole derivation is one move: condition on $G$ and split numerator and denominator each into a within piece and a between piece. The laws of total covariance and total variance do this exactly,
 
 $$
-\text{Cov}(x, y) = E[\text{Cov}(x, y \mid G)] + \text{Cov}(E[x \mid G], E[y \mid G])
+\text{Cov}(x, y) = \underbrace{E[\text{Cov}(x, y \mid G)]}_{\text{within}} + \underbrace{\text{Cov}(E[x \mid G],\, E[y \mid G])}_{\text{between}}
 $$ {#eq-totcov}
 
-The first term averages each group's own covariance. Inside group $g$ the slope is $\beta_g$ and the error is uncorrelated with $x$, so $\text{Cov}(x, y \mid G=g) = \beta_g \sigma_g^2$; averaging over the two equal groups,
-
 $$
-E[\text{Cov}(x, y \mid G)] = \tfrac{1}{2}(\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2)
-$$ {#eq-within-cov}
-
-The second term is the covariance of the group centroids. Here $E[x \mid G]$ takes just two values, $\mu_1$ and $\mu_2$, each with probability $\tfrac12$, and $E[y \mid G]$ likewise. A fair two-point variable taking $a_1, a_2$ has $\text{Var} = \tfrac14(a_1 - a_2)^2$, and a pair has $\text{Cov} = \tfrac14(a_1 - a_2)(b_1 - b_2)$ — that is where every $\tfrac14$ below comes from — so
-
-$$
-\text{Cov}(E[x \mid G], E[y \mid G]) = \tfrac{1}{4}(\mu_1 - \mu_2)(\bar y_1 - \bar y_2) = \tfrac{1}{4}\Delta\mu\, \Delta\bar y
-$$ {#eq-between-cov}
-
-Applying the same split to $x$ alone, the law of total variance gives
-
-$$
-\text{Var}(x) = E[\text{Var}(x \mid G)] + \text{Var}(E[x \mid G]) = \tfrac{1}{2}(\sigma_1^2 + \sigma_2^2) + \tfrac{1}{4}\Delta\mu^2
+\text{Var}(x) = \underbrace{E[\text{Var}(x \mid G)]}_{\text{within}} + \underbrace{\text{Var}(E[x \mid G])}_{\text{between}}
 $$ {#eq-totvar}
 
-Dividing @eq-totcov by @eq-totvar gives the asymptotic pooled slope as a convex combination of a within and a between slope,
+Name each variance, and define each slope as its own covariance over its own variance:
 
 $$
-\text{plim}\;\hat\beta_{OLS} = \frac{\tfrac{1}{2}(\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2) + \tfrac{1}{4}\Delta\mu\,\Delta\bar y}{\tfrac{1}{2}(\sigma_1^2 + \sigma_2^2) + \tfrac{1}{4}\Delta\mu^2} = \frac{V_{within}\, \beta_{within} + V_{between}\, \beta_{between}}{V_{within} + V_{between}}
-$$ {#eq-pooled}
-
-with
-
-$$
-\beta_{within} = \frac{\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}, \qquad V_{within} = \tfrac{1}{2}(\sigma_1^2 + \sigma_2^2)
+V_{within} = E[\text{Var}(x \mid G)], \qquad \beta_{within} = \frac{E[\text{Cov}(x, y \mid G)]}{E[\text{Var}(x \mid G)]}
 $$ {#eq-within-comp}
 
 $$
-\beta_{between} = \frac{\Delta\bar y}{\Delta\mu}, \qquad V_{between} = \tfrac{1}{4}\Delta\mu^2
+V_{between} = \text{Var}(E[x \mid G]), \qquad \beta_{between} = \frac{\text{Cov}(E[x \mid G],\, E[y \mid G])}{\text{Var}(E[x \mid G])}
 $$ {#eq-between-comp}
 
-These are a regrouping, not new assumptions: $\tfrac{1}{2}(\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2) = V_{within}\,\beta_{within}$ and $\tfrac{1}{4}\Delta\mu\,\Delta\bar y = V_{between}\,\beta_{between}$, which is exactly what collapses the ratio into the right-hand side of @eq-pooled. The decomposition is an identity — the two laws are exact — so the only modelling input is $\text{Cov}(x, y \mid G=g) = \beta_g \sigma_g^2$ behind @eq-within-cov.
+With those definitions the within numerator of @eq-totcov *is* $V_{within}\beta_{within}$ and the between numerator *is* $V_{between}\beta_{between}$ — no algebra, just the definitions. Dividing @eq-totcov by @eq-totvar therefore gives the pooled slope as a convex combination,
 
-Two features are worth pausing on. $\beta_{within}$ is itself a variance-weighted average of the two slopes — the same $\sigma^2$ weighting as everywhere else in this chapter, one level up. And $\beta_{between}$ is a two-point slope, rise over run between the group centres, so it can take any value at all regardless of what happens inside either group. The $1/4$ is the only piece specific to equal group sizes; with shares $p$ and $1-p$ it becomes $p(1-p)$, Angrist's weight again.
+$$
+\text{plim}\;\hat\beta_{OLS} = \frac{V_{within}\, \beta_{within} + V_{between}\, \beta_{between}}{V_{within} + V_{between}}
+$$ {#eq-pooled}
+
+Nothing here used how many groups there are or that they are balanced; @eq-pooled holds for any grouping — including $G$ = the panel unit, with $N$ groups of sizes $T_i$. The only modelling input is $\text{Cov}(x, y \mid G=g) = \beta_g \sigma_g^2$, that within a group the error is uncorrelated with $x$. It makes $\beta_{within}$ an explicit share- and variance-weighted average of the group slopes, and leaves $\beta_{between}$ as the across-group regression of the group $y$-means on the group $x$-means:
+
+$$
+\beta_{within} = \frac{\sum_g p_g \beta_g \sigma_g^2}{\sum_g p_g \sigma_g^2}, \qquad
+\beta_{between} = \frac{\sum_g p_g (\mu_g - \bar\mu)(\bar y_g - \bar\mu_y)}{\sum_g p_g (\mu_g - \bar\mu)^2}
+$$ {#eq-slopes}
+
+with grand means $\bar\mu = \sum_g p_g \mu_g$ and $\bar\mu_y = \sum_g p_g \bar y_g$.
+
+The two-equal-group case in the simulation below is where these collapse to closed forms. Equal shares turn the averages into $\tfrac12$'s. The two group means then form a fair two-point variable, and such a variable taking values $a_1, a_2$ has variance $\tfrac14(a_1 - a_2)^2$ — that is where the $\tfrac14$ comes from — so
+
+$$
+V_{within} = \tfrac{1}{2}(\sigma_1^2 + \sigma_2^2), \quad
+\beta_{within} = \frac{\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}, \quad
+V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
+\beta_{between} = \frac{\Delta\bar y}{\Delta\mu}
+$$ {#eq-two-group}
+
+where $\Delta\mu = \mu_1 - \mu_2$ and $\Delta\bar y = \bar y_1 - \bar y_2$: with only two groups $\beta_{between}$ is a single rise over run between the centroids.
+
+Two features are worth pausing on. $\beta_{within}$ is a variance-weighted average of the group slopes — the same $\sigma^2$ weighting as everywhere else in this chapter, one level up. And $\beta_{between}$ depends only on where the group centroids sit, so it can take any value at all regardless of the within-group slopes. The closed forms are what is special to two equal groups: with two *unequal* groups every $\tfrac12$ becomes a share $p_g$ and the $\tfrac14$ becomes $p(1-p)$ — Angrist's weight again — and with *more than two* groups $\beta_{between}$ is the genuine across-group regression slope of @eq-slopes, not a two-point ratio.
 
 Fixed effects removes $V_{between}$ by demeaning and isolates $\beta_{within}$. As the groups pull apart, $\Delta\mu \to \infty$, $V_{between}$ swamps $V_{within}$ and drags $\hat\beta_{OLS}$ toward $\beta_{between}$.
 
