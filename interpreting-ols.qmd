@@ -342,7 +342,7 @@ $$
 \beta_{OLS} = (\alpha_1 - \alpha_0) + (\gamma_1 - \gamma_0)\, \frac{E[p^2(1 - p)]}{E[p(1 - p)]}
 $$ {#eq-sloc2}
 
-The last ratio is moment algebra. With $\mu_j = E[p \mid D = j]$ and $V_j = \text{Var}(p \mid D = j)$,
+The last ratio is moment algebra. With $\mu_j = E[p \mid D = j]$, $V_j = \text{Var}(p \mid D = j)$, and $w_1, w_0$ the weights defined in @eq-sloc-main below,
 
 $$
 \frac{E[p^2(1 - p)]}{E[p(1 - p)]} = w_1 \mu_1 + w_0 \mu_0
@@ -472,7 +472,7 @@ park <- function(shift) {
   x    <- rnorm(N * T, 0, rep(move, each = T)) + rep(c(rep(shift, half), rep(0, half)), each = T)
   y    <- rep(b, each = T) * x + rep(rnorm(N), each = T) + rnorm(N * T)
   d    <- data.frame(id = rep(1:N, each = T), x = x, y = y)
-  c(`FE (theory 1.991)` = coef(feols(y ~ x | id, d))[["x"]],
+  c(`FE estimate`       = coef(feols(y ~ x | id, d))[["x"]],
     `OLS Predicted`     = predicted(shift),
     `OLS Actual`        = coef(lm(y ~ x, d))[["x"]])
 }
