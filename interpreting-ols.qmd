@@ -483,6 +483,7 @@ Fixed effects stays flat near the theoretical $\beta_{within} = 1.991$ wherever 
 ```{r}
 #| fig-width: 9
 #| fig-height: 4.2
+#| fig-cap: "Pooled OLS as a within/between blend (@eq-pooled). Points are the two groups, open circles their centroids. The dashed line is the between-slope $\\beta_{between} = \\Delta\\bar y/\\Delta\\mu$ through the centroids; the solid line is the pooled fit $\\hat\\beta_{OLS}$. The within slopes are identical across panels; widening the centroid gap $\\Delta\\mu$ (left to right) inflates $V_{between}$ and rotates $\\hat\\beta_{OLS}$ away from $\\beta_{within}$ toward $\\beta_{between}$."
 set.seed(5)
 m <- 200
 draw <- function(shift, main) {
