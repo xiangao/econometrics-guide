@@ -83,3 +83,15 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > `b_i` — their correlation is 0.019 and `s_i` has 235 times the spread, yet their
 > weighted averages agree, which is the whole reason the decomposition is about the
 > weights rather than either slope.
+
+> **2026-08-04:** Rewrote **Interpreting OLS** into a tighter, more coherent chapter
+> (917 → 546 lines) built up from a concise draft, with equations now auto-numbered via
+> Quarto cross-references. The main improvement is the within/between decomposition: it is
+> now *derived in general* — for any number of groups of any sizes — before specializing to
+> the two-equal-group closed forms, so pooled OLS is shown to be a variance-weighted blend
+> of a within slope and a between slope without any reliance on balance or on there being
+> only two groups. Added a captioned figure linking the plot to the decomposition, an
+> opening paragraph tying panel fixed effects to the same leverage rule as cross-sectional
+> OLS (fixed effects just subtracts the unit's own mean in place of the grand mean), and a
+> note that group-demeaning collapses the "separated" panel onto the "coincident" one —
+> which is all fixed effects does. Every cited number was verified against live output.

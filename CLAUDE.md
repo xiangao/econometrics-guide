@@ -681,3 +681,73 @@ chunks comparing each against the preceding paragraph. Worth folding in if this 
 Related note from the same exchange: prefer deriving to simulating when the result is a
 few lines of algebra, and when a claim turns out to be wrong, **delete it** rather than
 qualify it in place. A denial of a claim the reader never saw is worse than the claim.
+
+## Rewrite (2026-08-04) — `interpreting-ols` rebuilt from a concise draft; within/between made general
+
+The author was unhappy with the long narrative version of the chapter and had drafted
+alternatives in a scratch repo, `~/projects/opencode/` (draft history there: `interpreting-ols.qmd`
+= v1 917-line narrative, v2/v4 narrative, v3/v5 ~368-line concise, **v6 521-line merge = the
+strongest**). Rebuilt the book chapter from v6, tightening rather than re-narrating. **917 → 546
+lines.** Three decisions taken with the author up front: (1) base on v6 and tighten; (2) convert
+equation numbering; (3) align prose to a shorter register.
+
+- **Equation numbering.** All hand-typed `\tag{13.x}` replaced with Quarto `{#eq-name}` labels
+  and `@eq-name` cross-references (32 equations). Numbers now auto-derive from the chapter's
+  position — it is chapter 13, so they render 13.1–13.32 — and survive reordering. Do not
+  reintroduce `\tag{}`.
+- **Executable code.** v6 shipped three chunks fenced ```` ```r ```` (inert) instead of
+  ```` ```{r} ````: the Angrist simulation, the `park()` shift simulation, and the two-panel
+  figure. As written their cited numbers would never have rendered. Fixed. Every number in the
+  prose was then checked against live output and matches (2.012 / 1.998 / 2.874; 2.029 / 2.858;
+  sd(s) 117.4; noiseless corr 0.14; FE 1.98 & 0.47%; 1.983→0.004, β_within 1.991, V_within 4.52,
+  numerator 9; 2.01 / 0.29 / 0.882 / 85% / −0.288; 1.53 / 1.01 / 1.54; N=100 furthest 35.4% /
+  nearest 0.14%; 2.4% / 65% / 0.18% by hand).
+- **Citations.** Normalized inline to the book's `Author (Year)` house style (v6 mixed
+  `[Angrist, 1998]` and `Angrist [1998]`). References themselves were already correct and present
+  in `references.qmd` (Angrist 1998, Słoczyński 2022, Hazlett & Shinkre 2024). The book uses **no
+  `.bib`/`@citekey`** — plain-text list — so do not convert citations to `@`.
+
+**The within/between derivation was rewritten to be general — the substantive change.** The v6
+derivation of the pooled decomposition (eq. 13.30) was written entirely in the two-equal-group
+setup (the `1/2` shares, the two-point `1/4`), so it did not actually support the "same rule for
+any grouping" claim the surrounding text makes. Now derived for **any number of groups of any
+sizes**: define `β_within = E[Cov(x,y|G)]/E[Var(x|G)]` and `β_between = Cov(E[x|G],E[y|G])/Var(E[x|G])`,
+so the convex combination `(V_w β_w + V_b β_b)/(V_w + V_b)` falls straight out of the two
+total-(co)variance laws with no equal-size or two-group assumption. The explicit share-weighted
+`β_within` and across-group-regression `β_between` are then given (eq. 13.31), and the `1/2`,
+`1/4`, `Δȳ/Δμ` closed forms presented as the two-equal-group case behind the simulation (eq. 13.32).
+The old caveat "the `1/4` is the only piece specific to equal group sizes" was **understated** and
+is fixed: with unequal sizes the `1/2`'s become shares `p_g` too, and with K>2 groups `β_between`
+is a genuine across-group regression slope, not a two-point ratio. Equation count was held constant
+across this rewrite so `eq-pooled` stays 13.30 and no downstream number shifts.
+
+**Connective material added on the author's request, section by section:**
+
+- A **figure caption** on the two-panel plot naming the elements (dashed = between-slope through
+  the centroids, solid = pooled fit) and tying the rotation of the fit to eq. 13.30.
+- A **bridging paragraph** opening the panel section: fixed effects is the opening FWL/leverage
+  rule (eq. 13.4/13.12/13.14) with the *unit* mean subtracted instead of the grand mean, so the
+  whole section is eq. 13.4 read one level down. This states in one place what had been scattered
+  across the FWL "which mean" line, the special-cases table, and the `s_i`-as-panel remark.
+- A **demeaning-as-collapse** sentence in the figure discussion: group-demeaning slides the shifted
+  strip back so the right panel collapses onto the left, and OLS on that is the within/FE slope —
+  which is why FE is flat regardless of the shift.
+
+**Consistency pass (full read-through at the author's request).** Chapter is consistent; all cited
+numbers match, all `@eq-` refs resolve, notation uniform. Two fixes applied: (1) eq. 13.23 used
+`w₁, w₀` one equation before they are defined in 13.24 — added a forward pointer (the identity
+itself was numerically verified correct; my hand-derivation doubting it was the error, not the
+chapter); (2) the `park()` column `FE (theory 1.991)` renamed `FE estimate`, since it prints the
+estimate (~1.984), not the theory value (which stays in prose). Left alone deliberately: `V` doing
+double duty as the FWL regressor and as variances, and `w` as several weights — each defined
+locally, in separate sections.
+
+**Housekeeping.** Removed the obsolete draft versions that had been sitting untracked in the book
+dir (`interpreting-ols-{draft,v2,v3,v4,v5}.{qmd,html}` and `_files/`); only `interpreting-ols.qmd`
+remains. The v1–v6 history is preserved in `~/projects/opencode/`. Rendered full book clean after
+each step; CI (Pages render-from-`_freeze`) green on every push. Commits `760f53f` and earlier this
+session.
+
+**Standing lesson:** a `` ```r `` vs `` ```{r} `` fence is a one-character difference that silently
+turns a live simulation into inert listing — its cited numbers then have no source. When importing
+a chapter drafted elsewhere, grep for `^```r$` before trusting any number in the prose.
