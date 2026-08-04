@@ -381,6 +381,8 @@ Read down the last column. The observation identity always holds and says little
 
 Pooled OLS mixes two sources of variation: within-unit, the deviations from a unit's own mean, and between-unit, the differences across unit means. Which one dominates is not chosen; it follows from the same rule. Take the within side first.
 
+Nothing new happens here — it is the opening leverage rule with a different mean subtracted. @eq-fwl weights every observation by its squared deviation $\tilde V_i^2$ from whatever the controls predict for it; @eq-weff weights each effect by $w_i = \tilde V_i V_i$. Simple OLS residualises against an intercept alone, so the deviation is from the grand mean and $w_i = (x_i - \bar x)^2$, the leverage of @eq-wavg. Panel fixed effects residualises against unit dummies, so the deviation is from the unit's *own* mean and $w_i = \sum_t (x_{it} - \bar x_i)^2$, the within-unit variance in the special-cases table. Pooled OLS drops the dummies and is back to distance from the grand mean — which is exactly why the between comparison creeps back in. So the whole section is @eq-wavg read with the unit mean in place of the grand mean.
+
 ### Within-unit weighting: an extreme case
 
 Half the units barely move ($x$ has sd $0.2$ around their own mean) and have a true slope of zero. The other half move a lot (sd $3$) and have a true slope of two. The average unit's slope is one.
