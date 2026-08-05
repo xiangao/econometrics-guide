@@ -751,3 +751,37 @@ session.
 **Standing lesson:** a `` ```r `` vs `` ```{r} `` fence is a one-character difference that silently
 turns a live simulation into inert listing — its cited numbers then have no source. When importing
 a chapter drafted elsewhere, grep for `^```r$` before trusting any number in the prose.
+
+## Split (2026-08-05) — Interpreting OLS becomes two chapters (Effect + Outcome Weights)
+
+Split the single **Interpreting OLS** chapter in two. `interpreting-ols.qmd` is retitled
+**"Interpreting OLS: Effect Weights"** (Ch. 13) and keeps the `sᵢ`/`dᵢ²` opening, `sᵢ`-vs-`bᵢ`, the
+effect-weight FWL rule `w_i = Ṽ_i V_i` (@eq-weff), Angrist, Słoczyński and within/between. The FWL
+"reads two ways" hinge, the ω/w comparison table and the outcome formula `ω_i = Ṽ_i/ΣṼ²`
+(@eq-omega) moved out to **open** the new `outcome-weights.qmd`, **"Interpreting OLS: Outcome
+Weights"** (Ch. 14, inserted before `references.qmd` in `_quarto.yml`). Ch. 14 cross-refs Ch. 13's
+@eq-fwl/@eq-weff (resolve book-wide as 13.12/13.13; its own ω is 14.1).
+
+Ch. 14 sections: (1) the two readings + ω/w table; (2) *What the outcome weights look like* — a
+100-point figure with points sized by `|ω|`, the **two-dot slope construction** (`β̂` = rise/run
+between the `|d|`-weighted centroids left and right of `x̄`) and a four-line derivation, *Why it
+collapses to two points* (`β̂ = d·y / d·x`; a zero-sum `d` turns each inner product into
+`W·(right-mean − left-mean)`, so `W` cancels); (3) *When the sign flips* — negative weights under
+thin overlap; structural-vs-wrong-sign (wrong-sign = treated `ω<0` / control `ω>0` = linear `D̂`
+outside `[0,1]` = extrapolation; verified live 17=17, 15=15), meaning (extrapolation / convex-hull
+loss) and remedies (trim / interpolate / report), the Chattopadhyay–Zubizarreta (2023)
+implied-weights framing with a **live `lmw` comparison** (its negatives = our `D̂∉[0,1]` units,
+32=32) and the mainstream propensity-score overlap check (`WeightIt` ESS + `cobalt::bal.plot`; on
+this data the logistic PS perfectly separates); (4) *Out of OLS* — the ω representation for
+AIPW/DML/causal forests (Knaus 2024, `OutcomeWeights`); (5) *From two dots to four* — regression on
+the treatment alone (two dots = group means, `β = ȳ₁−ȳ₀`) and the 2×2 DiD (four cell means, four
+slopes), closing on staggered-TWFE negative weights (de Chaisemartin & D'Haultfœuille 2020;
+Goodman-Bacon 2021) as the wrong-sign story one level up, plus a caution that the weights diagnose
+estimation/overlap, not the parallel-trends identification assumption.
+
+New render deps: **`lmw`** and **`WeightIt`** (live chunks; `cobalt` named in prose only). New
+references: Chattopadhyay–Zubizarreta (2023), Crump et al. (2009), Li–Morgan–Zaslavsky (2018), de
+Chaisemartin–D'Haultfœuille (2020), Goodman-Bacon (2021). Four figures in Ch. 14 (100-point,
+negative-weight two-panel, treatment, DiD). Full book rendered clean; all cited numbers verified
+against live output. A standalone companion note `interpreting-ols-knaus-connection.html` sits in
+the book dir but is **not** in `_quarto.yml` (not part of the rendered book, left untracked).

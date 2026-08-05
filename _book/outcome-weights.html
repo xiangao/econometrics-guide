@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>14&nbsp; Interpreting OLS: Outcome Weights – Econometrics Guide</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./interpreting-ols.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6eb2a311e0ae5a9b436ea9f7e52955e6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><script>
+try {
+  if (window.localStorage) {
+    window.localStorage.setItem("quarto-reader-mode", "false");
+  }
+} catch (e) {}
+</script><script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script><script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script><link rel="stylesheet" href="style.css">
+</head>
+<body class="nav-sidebar floating quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./outcome-weights.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Interpreting OLS: Outcome Weights</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Econometrics Guide</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://xiangao.github.io/" title="Xiang Ao home" class="quarto-navigation-tool px-1" aria-label="Xiang Ao home"><i class="bi bi-house-door-fill"></i></a>
+    <a href="https://xiangao.github.io/books.html" title="Other books" class="quarto-navigation-tool px-1" aria-label="Other books"><i class="bi bi-book"></i></a>
+    <a href="https://github.com/xiangao/econometrics-guide/" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">OLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./mle.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">The Method of Maximum Likelihood</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gls.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">GLS</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./endogeneity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Endogeneity</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./gmm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">General Method of Moments (GMM)</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./censored.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Censored, truncated or selected data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./discrete.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discrete and Limited Dependent Variables</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./count-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Count data models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./panel-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Panel Data Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./survival.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Survival Models</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./dynamic-panel.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Dynamic Panel Data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./missing-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Missing data</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./interpreting-ols.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Interpreting OLS: Effect Weights</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./outcome-weights.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Interpreting OLS: Outcome Weights</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li><a href="#the-other-reading-of-fwl" id="toc-the-other-reading-of-fwl" class="nav-link active" data-scroll-target="#the-other-reading-of-fwl"><span class="header-section-number">14.1</span> The other reading of FWL</a></li>
+  <li>
+<a href="#what-the-outcome-weights-look-like" id="toc-what-the-outcome-weights-look-like" class="nav-link" data-scroll-target="#what-the-outcome-weights-look-like"><span class="header-section-number">14.2</span> What the outcome weights look like</a>
+  <ul class="collapse">
+<li><a href="#why-it-collapses-to-two-points" id="toc-why-it-collapses-to-two-points" class="nav-link" data-scroll-target="#why-it-collapses-to-two-points"><span class="header-section-number">14.2.1</span> Why it collapses to two points</a></li>
+  </ul>
+</li>
+  <li><a href="#when-the-sign-flips" id="toc-when-the-sign-flips" class="nav-link" data-scroll-target="#when-the-sign-flips"><span class="header-section-number">14.3</span> When the sign flips</a></li>
+  <li><a href="#out-of-ols-the-same-weights-beyond-the-linear-model" id="toc-out-of-ols-the-same-weights-beyond-the-linear-model" class="nav-link" data-scroll-target="#out-of-ols-the-same-weights-beyond-the-linear-model"><span class="header-section-number">14.4</span> Out of OLS: the same weights beyond the linear model</a></li>
+  <li><a href="#from-two-dots-to-four" id="toc-from-two-dots-to-four" class="nav-link" data-scroll-target="#from-two-dots-to-four"><span class="header-section-number">14.5</span> From two dots to four</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">14.6</span> Summary</a></li>
+  </ul><div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/outcome-weights.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">
+<span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Interpreting OLS: Outcome Weights</span>
+</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><p>The companion chapter <a href="./interpreting-ols.html">Interpreting OLS: Effect Weights</a> read the OLS coefficient as a weighting of unobservable effects — it answered <em>whose</em> effect <span class="math inline">\(\hat\beta\)</span> estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the <em>observed</em> outcomes. That reading answers a different question — which rows drive the number, and in which direction — and, unlike the first, it is fully computable and generalises far past OLS. This chapter follows it.</p>
+<section id="the-other-reading-of-fwl" class="level2" data-number="14.1"><h2 data-number="14.1" class="anchored" data-anchor-id="the-other-reading-of-fwl">
+<span class="header-section-number">14.1</span> The other reading of FWL</h2>
+<p>Residualise the regressor of interest <span class="math inline">\(V\)</span> on the controls <span class="math inline">\(X\)</span>, write <span class="math inline">\(\tilde V_i\)</span> for the residual, and recall the residual-on-residual form of the coefficient, <a href="interpreting-ols.html#eq-fwl" class="quarto-xref">Equation&nbsp;<span>13.12</span></a>:</p>
+<p><span class="math display">\[ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. \]</span></p>
+<p>The previous chapter grouped each <span class="math inline">\(\tilde V_i\)</span> with <span class="math inline">\(V_i\)</span> and read <span class="math inline">\(\hat\beta\)</span> as a weighting <span class="math inline">\(w_i = \tilde V_i V_i\)</span> of effects (<a href="interpreting-ols.html#eq-weff" class="quarto-xref">Equation&nbsp;<span>13.13</span></a>). Group <span class="math inline">\(\tilde V_i\)</span> with <span class="math inline">\(y_i\)</span> instead, and the <em>same</em> expression is a linear combination of the observed outcomes:</p>
+<p><span id="eq-omega"><span class="math display">\[ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\sum_{j=1}^n \tilde V_j^2}.  \tag{14.1}\]</span></span></p>
+<p><a href="#eq-omega" class="quarto-xref">Equation&nbsp;<span>14.1</span></a> is the same algebra rearranged, but a different object from the effect weights.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>Weights on outcomes <span class="math inline">\(\omega_i\)</span>
+</th>
+<th>Weights on effects <span class="math inline">\(w_i\)</span>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Weights what</td>
+<td>the observed <span class="math inline">\(y_i\)</span>
+</td>
+<td>that observation’s own effect <span class="math inline">\(\beta_i\)</span>
+</td>
+</tr>
+<tr class="even">
+<td>Sign</td>
+<td>signed, sums to zero</td>
+<td>non-negative (under saturation)</td>
+</tr>
+<tr class="odd">
+<td>Computable</td>
+<td>yes, <span class="math inline">\(y\)</span> is observed</td>
+<td>no, the <span class="math inline">\(\beta_i\)</span> are never seen</td>
+</tr>
+<tr class="even">
+<td>Holds when</td>
+<td>always, it is algebra</td>
+<td>in expectation; per-unit needs saturation</td>
+</tr>
+<tr class="odd">
+<td>Answers</td>
+<td>which rows drive <span class="math inline">\(\hat\beta\)</span>, any wrong sign</td>
+<td>is this the effect I meant, whose effect</td>
+</tr>
+</tbody>
+</table>
+<p>Two constraints pin <span class="math inline">\(\omega_i\)</span> down, both from <a href="#eq-omega" class="quarto-xref">Equation&nbsp;<span>14.1</span></a>. An intercept among the controls makes <span class="math inline">\(\sum_i \tilde V_i = 0\)</span>, so the weights <strong>sum to zero</strong>; and <span class="math inline">\(\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2\)</span> makes the weighted regressor <strong>sum to one</strong>, <span class="math inline">\(\sum_i \omega_i V_i = 1\)</span>. A signed budget that sums to zero and the regressor spends to one — that is the whole of what <span class="math inline">\(\hat\beta\)</span> does to the sample. Reach for this reading when overlap is in doubt and a row may enter with the wrong sign, which the non-negative <span class="math inline">\(w_i\)</span> cannot show; keep the effect reading for questions about the estimand. The rest of the chapter draws <span class="math inline">\(\omega_i\)</span>, exhibits that wrong-sign case, then follows the reading out of OLS.</p>
+</section><section id="what-the-outcome-weights-look-like" class="level2" data-number="14.2"><h2 data-number="14.2" class="anchored" data-anchor-id="what-the-outcome-weights-look-like">
+<span class="header-section-number">14.2</span> What the outcome weights look like</h2>
+<p>Take the simple regression of <span class="math inline">\(y\)</span> on <span class="math inline">\(x\)</span> with an intercept, so <span class="math inline">\(\tilde V_i = x_i - \bar x = d_i\)</span> and</p>
+<p><span class="math display">\[ \omega_i = \frac{d_i}{\sum_j d_j^2}. \]</span></p>
+<p>Unlike the effect weights <span class="math inline">\(w_i = d_i^2\)</span> — non-negative, growing with the <em>square</em> of distance — this is <strong>linear in <span class="math inline">\(d_i\)</span>, and so signed</strong>: a point left of <span class="math inline">\(\bar x\)</span> enters <span class="math inline">\(\hat\beta\)</span> with a negative coefficient on its outcome, a point right of it positive. It is not a slope and does not involve <span class="math inline">\(\bar y\)</span>; it is simply a signed weight on the observed <span class="math inline">\(y_i\)</span>. The figure sizes each point by <span class="math inline">\(|\omega_i|\)</span> and colours it by sign.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">100</span>; <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">5</span>, <span class="fl">2</span><span class="op">)</span>; <span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">xb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>; <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">-</span> <span class="va">xb</span>; <span class="va">om</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>; <span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">om</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">teal</span>, <span class="va">rust</span><span class="op">)</span></span>
+<span><span class="va">R</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">&gt;</span> <span class="fl">0</span>; <span class="va">L</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">&lt;</span> <span class="fl">0</span></span>
+<span><span class="va">xR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="va">yR</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="va">y</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">R</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">xL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="va">x</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="va">yL</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span> <span class="op">*</span> <span class="va">y</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">d</span><span class="op">[</span><span class="va">L</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pch <span class="op">=</span> <span class="fl">16</span>, cex <span class="op">=</span> <span class="fl">0.35</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">om</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">om</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>     col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">col</span>, <span class="st">"99"</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"y"</span>, main <span class="op">=</span> <span class="st">"N = 100 Points"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>v <span class="op">=</span> <span class="va">xb</span>, lty <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"grey55"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span>, lwd <span class="op">=</span> <span class="fl">1.3</span>, lty <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"grey55"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="va">xL</span>, <span class="va">yL</span>, <span class="va">xR</span>, <span class="va">yR</span>, lwd <span class="op">=</span> <span class="fl">2.6</span>, col <span class="op">=</span> <span class="st">"grey15"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">xL</span>, <span class="va">xR</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">yL</span>, <span class="va">yR</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">21</span>, bg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">rust</span>, <span class="va">teal</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"white"</span>, cex <span class="op">=</span> <span class="fl">2.3</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="outcome-weights_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="624"></p>
+<figcaption>Outcome weights in a 100-point sample. Each small point’s <strong>area is its weight</strong> <span class="math inline">\(|\omega_i|\)</span>, coloured by sign — teal (<span class="math inline">\(\omega_i &gt; 0\)</span>) pushes <span class="math inline">\(\hat\beta\)</span> up, rust (<span class="math inline">\(\omega_i &lt; 0\)</span>) pulls it down; the dotted line is the fulcrum <span class="math inline">\(x = \bar x\)</span>. The two large dots are the <span class="math inline">\(|d|\)</span>-weighted centroids of the points left and right of <span class="math inline">\(\bar x\)</span>; the solid segment joining them has slope <span class="math inline">\(\hat\beta\)</span>, and the dashed line is the OLS fit (same slope, shifted through the grand mean).</figcaption></figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`sum(omega)`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span><span class="op">)</span>,      `sum(omega*x)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span> <span class="op">*</span> <span class="va">x</span><span class="op">)</span>,</span>
+<span>        `positive mass` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span><span class="op">[</span><span class="va">om</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>, `negative mass` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span><span class="op">[</span><span class="va">om</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>        `OLS`          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>, `sum(omega*y)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   sum(omega)  sum(omega*x) positive mass negative mass           OLS 
+       0.0000        1.0000        0.2486       -0.2486        1.8648 
+ sum(omega*y) 
+       1.8648 </code></pre>
+</div>
+</div>
+<p>The printed sums confirm <a href="#eq-omega" class="quarto-xref">Equation&nbsp;<span>14.1</span></a>: the weights split at <span class="math inline">\(\bar x\)</span> into a positive mass (<span class="math inline">\(+0.25\)</span>) and an equal negative one (<span class="math inline">\(-0.25\)</span>), and the regressor spends to one. But the figure shows more than the weights. Split the points at <span class="math inline">\(\bar x\)</span>, weight each side by <span class="math inline">\(|d_i|\)</span>, and take its centroid — the two large dots. <strong>The segment joining them has slope <span class="math inline">\(\hat\beta\)</span>:</strong> the OLS slope is the rise over run between the low-<span class="math inline">\(x\)</span> and high-<span class="math inline">\(x\)</span> weighted centres. The dashed fit shares that slope, shifted through the grand mean, so the two coincide only when the sides balance. That the regression collapses to two points is no coincidence; it falls out of the slope formula in a few lines.</p>
+<section id="why-it-collapses-to-two-points" class="level3" data-number="14.2.1"><h3 data-number="14.2.1" class="anchored" data-anchor-id="why-it-collapses-to-two-points">
+<span class="header-section-number">14.2.1</span> Why it collapses to two points</h3>
+<p>Write <span class="math inline">\(d_i = x_i - \bar x\)</span>, so the slope is <span class="math inline">\(\hat\beta = \sum_i d_i y_i / \sum_i d_i^2\)</span>. Two elementary facts drive everything:</p>
+<ul>
+<li>
+<span class="math inline">\(\sum_i d_i = 0\)</span> — deviations from the mean sum to zero;</li>
+<li>
+<span class="math inline">\(\sum_i d_i^2 = \sum_i d_i x_i\)</span>, since <span class="math inline">\(\sum_i d_i x_i = \sum_i d_i (d_i + \bar x) = \sum_i d_i^2 + \bar x \sum_i d_i\)</span>.</li>
+</ul>
+<p>The second fact writes the slope as a ratio of two inner products with the <em>same</em> vector <span class="math inline">\(d\)</span>:</p>
+<p><span class="math display">\[ \hat\beta = \frac{d \cdot y}{d \cdot x}. \]</span></p>
+<p>Split the observations by the sign of <span class="math inline">\(d_i\)</span>: let <span class="math inline">\(R = \{i : d_i &gt; 0\}\)</span> lie right of the mean and <span class="math inline">\(L = \{i : d_i &lt; 0\}\)</span> left, with <span class="math inline">\(d_i = 0\)</span> points contributing nothing. Let <span class="math inline">\(W = \sum_{i \in R} d_i = \sum_{i \in R} |d_i|\)</span> be the total weight on the right. Because <span class="math inline">\(\sum_i d_i = 0\)</span>, the left must carry <span class="math inline">\(\sum_{i \in L} d_i = -W\)</span>, that is <span class="math inline">\(\sum_{i \in L} |d_i| = W\)</span>: <strong>both sides hold the identical total weight <span class="math inline">\(W\)</span>.</strong></p>
+<p>Weight each side by <span class="math inline">\(|d_i|\)</span> and form its centroid, <span class="math inline">\(\bar v_R = \sum_{i \in R} |d_i| v_i / W\)</span> and <span class="math inline">\(\bar v_L = \sum_{i \in L} |d_i| v_i / W\)</span> for any variable <span class="math inline">\(v\)</span>. Using <span class="math inline">\(|d_i| = d_i\)</span> on <span class="math inline">\(R\)</span> and <span class="math inline">\(|d_i| = -d_i\)</span> on <span class="math inline">\(L\)</span>,</p>
+<p><span class="math display">\[ d \cdot v = \sum_{i \in R} d_i v_i + \sum_{i \in L} d_i v_i = W \bar v_R - W \bar v_L = W(\bar v_R - \bar v_L). \]</span></p>
+<p>An inner product with a zero-sum vector is a <em>between-group contrast</em> — the common weight <span class="math inline">\(W\)</span> times the gap between the two weighted side-means. Apply it to the numerator (<span class="math inline">\(v = y\)</span>) and the denominator (<span class="math inline">\(v = x\)</span>):</p>
+<p><span class="math display">\[ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\bar x_R - \bar x_L)} = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. \]</span></p>
+<p>The <span class="math inline">\(W\)</span> cancels, and what remains is the plain rise over run between the two <span class="math inline">\(|d|\)</span>-weighted centroids — the two dots in the figure.</p>
+<p>Two features earn a name. The construction gives <em>two</em> points because <span class="math inline">\(d_i\)</span> takes exactly two signs: a centred regressor has a left and a right of the mean, and within each side the sign is constant, so each half collapses to a single weighted centre. And the weight must be <span class="math inline">\(|d_i|\)</span>, not a plain average, because it already sits inside the OLS sums <span class="math inline">\(d \cdot y\)</span> and <span class="math inline">\(d \cdot x\)</span>; the dot is a centre of mass with mass <span class="math inline">\(|d_i|\)</span>, so the same mass fixes both its coordinates — weighting <span class="math inline">\(y\)</span> but not <span class="math inline">\(x\)</span> gives the wrong slope.</p>
+</section></section><section id="when-the-sign-flips" class="level2" data-number="14.3"><h2 data-number="14.3" class="anchored" data-anchor-id="when-the-sign-flips">
+<span class="header-section-number">14.3</span> When the sign flips</h2>
+<p>In simple regression the sign of <span class="math inline">\(\omega_i\)</span> is just the side of the mean: half the weights are negative, structurally, and a low-<span class="math inline">\(x\)</span> point <em>should</em> count against a high-<span class="math inline">\(x\)</span> one. With controls <span class="math inline">\(\tilde V_i\)</span> becomes a <em>residual</em>, and a row can flip to the sign its raw position denies — a hidden extrapolation the non-negative <span class="math inline">\(w_i\)</span> can never show.</p>
+<p>Take a binary treatment <span class="math inline">\(D\)</span> with covariate <span class="math inline">\(x\)</span> and thin overlap — controls low, treated high — and fit <span class="math inline">\(y \sim D + x\)</span>. Now <span class="math inline">\(\omega_i \propto \tilde V_i = D_i - \hat D_i\)</span>, with <span class="math inline">\(\hat D\)</span> the <em>linear</em> projection of <span class="math inline">\(D\)</span> on <span class="math inline">\((1, x)\)</span>. Where overlap fails, that <span class="math inline">\(\hat D\)</span> leaves <span class="math inline">\([0, 1]\)</span>: a treated unit with <span class="math inline">\(\hat D_i &gt; 1\)</span> gets <span class="math inline">\(\tilde V_i &lt; 0\)</span>, so its outcome is <em>subtracted</em> from <span class="math inline">\(\hat\beta\)</span> — a sign <span class="math inline">\(\tilde V_i^2 \ge 0\)</span> hides.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">11</span><span class="op">)</span></span>
+<span><span class="va">n0</span> <span class="op">&lt;-</span> <span class="fl">40</span>; <span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">40</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n0</span>, <span class="fl">2.0</span>, <span class="fl">0.7</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n1</span>, <span class="fl">5.0</span>, <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">1.0</span> <span class="op">*</span> <span class="va">d</span> <span class="op">+</span> <span class="fl">0.6</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n0</span> <span class="op">+</span> <span class="va">n1</span>, <span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">x</span><span class="op">)</span>; <span class="va">dh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html">solve</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html">crossprod</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">d</span><span class="op">)</span></span>
+<span><span class="va">vt</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">-</span> <span class="va">dh</span>; <span class="va">om</span> <span class="op">&lt;-</span> <span class="va">vt</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">vt</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">op</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2.5</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">d</span>, pch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">17</span>, <span class="fl">16</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"grey45"</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.35</span>, <span class="fl">1.35</span><span class="op">)</span>,</span>
+<span>     xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"D  and  D-hat"</span>, main <span class="op">=</span> <span class="st">"Linear D-hat leaves [0, 1]"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"grey70"</span><span class="op">)</span>; <span class="va">ox</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">ox</span><span class="op">]</span>, <span class="va">dh</span><span class="op">[</span><span class="va">ox</span><span class="op">]</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="va">teal</span><span class="op">)</span></span>
+<span><span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">om</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">teal</span>, <span class="va">rust</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, pch <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span>, <span class="fl">17</span>, <span class="fl">16</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">col</span>, <span class="st">"CC"</span><span class="op">)</span>,</span>
+<span>     cex <span class="op">=</span> <span class="fl">0.7</span> <span class="op">+</span> <span class="fl">3</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">om</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">om</span><span class="op">)</span><span class="op">)</span>, xlab <span class="op">=</span> <span class="st">"x"</span>, ylab <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Outcome-weight sign"</span><span class="op">)</span></span>
+<span><span class="va">tn</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">om</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="va">tn</span><span class="op">]</span>, <span class="va">y</span><span class="op">[</span><span class="va">tn</span><span class="op">]</span>, pch <span class="op">=</span> <span class="fl">2</span>, cex <span class="op">=</span> <span class="fl">2.3</span>, col <span class="op">=</span> <span class="va">rust</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="outcome-weights_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="864"></p>
+<figcaption>Outcome weights under thin overlap. Left: the linear projection <span class="math inline">\(\hat D\)</span> of treatment on <span class="math inline">\(x\)</span> leaves <span class="math inline">\([0,1]\)</span>, so residuals change sign in the extrapolation zone. Right: outcome weights coloured by sign (teal <span class="math inline">\(+\)</span>, rust <span class="math inline">\(-\)</span>), triangles treated and circles control, size <span class="math inline">\(\propto |\omega_i|\)</span>. Treated units at high <span class="math inline">\(x\)</span> (open rust triangles) carry <em>negative</em> weights — their outcomes are subtracted from <span class="math inline">\(\hat\beta\)</span> — a sign the effect weights <span class="math inline">\(\tilde V_i^2 \ge 0\)</span> cannot reveal.</figcaption></figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span><span class="va">op</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`treated, omega&lt;0`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">om</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>        `treated, D-hat&gt;1`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">dh</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>        `control, omega&gt;0`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">om</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>        `control, D-hat&lt;0`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">dh</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>        `beta (lm)`          <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">d</span> <span class="op">+</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"d"</span><span class="op">]</span><span class="op">]</span>,</span>
+<span>        `beta (sum omega*y)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">om</span> <span class="op">*</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span>, <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  treated, omega&lt;0   treated, D-hat&gt;1   control, omega&gt;0   control, D-hat&lt;0 
+            17.000             17.000             15.000             15.000 
+         beta (lm) beta (sum omega*y) 
+             1.287              1.287 </code></pre>
+</div>
+</div>
+<p>Seventeen of the forty treated units carry a negative weight, and <span class="math inline">\(\hat\beta\)</span> still equals <span class="math inline">\(\sum_i \omega_i y_i\)</span> exactly. Nothing is wrong with the algebra: asked to compare treated and control where they barely coexist, the linear model extrapolates, and the extrapolation surfaces as flipped signs.</p>
+<p>Which negatives matter? Regressed on the treatment alone, the signs are fixed by group — every treated unit positive, every control negative — and <span class="math inline">\(\hat\beta\)</span> is just <span class="math inline">\(\bar y_1 - \bar y_0\)</span>, the two dots now the two group means. Those signs are structural. The wrong-sign kind is the opposite pairing: a treated unit with <span class="math inline">\(\omega_i &lt; 0\)</span>, or a control with <span class="math inline">\(\omega_i &gt; 0\)</span>. It cannot happen without covariates; it fills in only when the residual <span class="math inline">\(\tilde V_i = D_i - \hat D_i\)</span> carries a fitted <span class="math inline">\(\hat D_i\)</span> outside <span class="math inline">\([0, 1]\)</span> — and the counts above confirm the treated with <span class="math inline">\(\omega_i &lt; 0\)</span> are exactly those with <span class="math inline">\(\hat D_i &gt; 1\)</span>. So the test is one line: <strong>fit the treatment on the controls; any <span class="math inline">\(\hat D_i \notin [0, 1]\)</span> is an extrapolated, wrong-sign unit</strong> — equivalently, a point where the treated and control covariates fail to overlap. (With a continuous regressor there is no bounded range to leave; a negative <span class="math inline">\(\omega_i\)</span> is then just “below the conditional mean”, and overlap is read from leverage, not sign.)</p>
+<p>A wrong-sign weight is extrapolation: the model reaches outside common support, and <span class="math inline">\(\hat\beta\)</span> can leave the convex hull of the observed outcomes — outside the range of any real comparison. This does not condemn OLS; it locates the reliance on functional form, and the responses are the usual ones — trim to common support (the negatives then vanish), interpolate instead (matching, or overlap weights that are non-negative by design), or report how far <span class="math inline">\(\hat\beta\)</span> moves when the extrapolated units are dropped.</p>
+<p>This is the implied-weights diagnostic of Chattopadhyay and Zubizarreta (2023); their <code>lmw</code> package computes the weights and the balance, extrapolation, and influence diagnostics built on them, and <code>OutcomeWeights</code> (Knaus 2024) carries it to machine-learning estimators. On the data above, <code>lmw</code>’s negative weights are exactly the units our <span class="math inline">\(\hat D \notin [0, 1]\)</span> rule flags:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ngreifer/lmw">lmw</a></span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">d</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="co"># lmw's implied weights for the same regression (y ~ d + x, ATE)</span></span>
+<span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lmw/man/lmw.html">lmw</a></span><span class="op">(</span><span class="op">~</span> <span class="va">d</span> <span class="op">+</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">df</span>, treat <span class="op">=</span> <span class="st">"d"</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span>, method <span class="op">=</span> <span class="st">"URI"</span><span class="op">)</span></span>
+<span><span class="va">manual</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">dh</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">dh</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>   <span class="co"># our flag: linear D-hat outside [0, 1]</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>`lmw negative weights`    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">L</span><span class="op">$</span><span class="va">weights</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span>,</span>
+<span>           `our D-hat outside [0,1]` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">manual</span><span class="op">)</span>,</span>
+<span>           `same units`              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="op">(</span><span class="va">L</span><span class="op">$</span><span class="va">weights</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">==</span> <span class="va">manual</span><span class="op">)</span>,</span>
+<span>           check.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  lmw negative weights our D-hat outside [0,1] same units
+1                   32                      32       TRUE</code></pre>
+</div>
+</div>
+<p>The mainstream overlap check takes the other route, through the propensity score. <code>WeightIt::weightit(d ~ x)</code> estimates it, and <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> reports the <em>effective sample size</em> — how much usable sample the weighting costs — and the weight range, where a few enormous weights betray thin overlap; <code>cobalt::bal.plot(w, "prop.score")</code> draws the two groups’ score densities mirrored, non-overlap showing wherever one has mass and the other none. The fixes are trimming (Crump et al.&nbsp;2009) or overlap weights, the <code>"ATO"</code> estimand (Li, Morgan, and Zaslavsky 2018). On this data the two routes agree at full volume — the logistic score <em>perfectly separates</em>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">WeightIt</span><span class="fu">::</span><span class="fu"><a href="https://ngreifer.github.io/WeightIt/reference/weightit.html">weightit</a></span><span class="op">(</span><span class="va">d</span> <span class="op">~</span> <span class="va">x</span>, data <span class="op">=</span> <span class="va">df</span>, method <span class="op">=</span> <span class="st">"glm"</span>, estimand <span class="op">=</span> <span class="st">"ATE"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`max control PS` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">w</span><span class="op">$</span><span class="va">ps</span><span class="op">[</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>        `min treated PS` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">w</span><span class="op">$</span><span class="va">ps</span><span class="op">[</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>max control PS min treated PS 
+             0              1 </code></pre>
+</div>
+</div>
+<p>Same diagnosis, two instruments — the implied weights (<code>lmw</code>) and the propensity score (<code>WeightIt</code>, <code>cobalt</code>). Here the separation is total, too much for weighting to rescue either; in milder designs the score route degrades gracefully — a falling effective sample size, a few large weights — just where the regression route turns up a few negative weights.</p>
+</section><section id="out-of-ols-the-same-weights-beyond-the-linear-model" class="level2" data-number="14.4"><h2 data-number="14.4" class="anchored" data-anchor-id="out-of-ols-the-same-weights-beyond-the-linear-model">
+<span class="header-section-number">14.4</span> Out of OLS: the same weights beyond the linear model</h2>
+<p>The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written <span class="math inline">\(\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y\)</span> — a linear combination of the observed outcomes — <em>has</em> outcome weights, whatever machinery produced them. Knaus (2024) makes this the organising idea, showing that augmented inverse-probability weighting, double machine learning, and the generalized random forest (causal and instrumental forests) all admit a closed-form <span class="math inline">\(\boldsymbol\omega\)</span>, obtained by the same residual-on-residual logic as OLS with the linear projection replaced by a <em>smoother</em> matrix. OLS is the base case: its weights are <span class="math inline">\(\boldsymbol\omega' = (\hat{\boldsymbol E}' \hat{\boldsymbol E})^{-1} \hat{\boldsymbol E}' \boldsymbol M_X\)</span> with <span class="math inline">\(\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D\)</span> the treatment residual — <a href="#eq-omega" class="quarto-xref">Equation&nbsp;<span>14.1</span></a> in matrix form.</p>
+<p>The payoff is practical: the diagnostics of this chapter — do the weights sum as they should, does any unit carry a sign it should not — become available for a causal forest or an AIPW estimator off the shelf, through the accompanying <code>OutcomeWeights</code> package. One caution travels with the generalisation. For OLS the weights sum to zero cleanly; Knaus further finds that partially-linear estimators such as the causal forest produce weights that sum to zero <em>overall</em> but not to <span class="math inline">\(\pm 1\)</span> within the treated and untreated groups — a property routinely assumed and, it turns out, not guaranteed. The wrong-sign case above is the OLS shadow of that larger caution.</p>
+</section><section id="from-two-dots-to-four" class="level2" data-number="14.5"><h2 data-number="14.5" class="anchored" data-anchor-id="from-two-dots-to-four">
+<span class="header-section-number">14.5</span> From two dots to four</h2>
+<p>The two-dot construction scales with how saturated the design is: each cell the regressors carve out collapses to its mean, and <span class="math inline">\(\hat\beta\)</span> is a signed contrast of those cell means. Two cases make it concrete.</p>
+<p>Regress <span class="math inline">\(y\)</span> on the treatment <span class="math inline">\(D\)</span> alone. The residual <span class="math inline">\(\tilde V_i = D_i - \bar D\)</span> is constant within each group, so the <span class="math inline">\(|d|\)</span>-weighting is uniform there and the two dots are simply the group means: <span class="math inline">\(\hat\beta = \bar y_1 - \bar y_0\)</span>, the difference in means. Every treated unit then carries positive weight, every control negative — the structural pattern of the previous section, with the wrong-sign off-diagonal empty until covariates enter.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">7</span><span class="op">)</span></span>
+<span><span class="va">n1</span> <span class="op">&lt;-</span> <span class="fl">30</span>; <span class="va">n0</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">n1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">n0</span><span class="op">)</span><span class="op">)</span>; <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n1</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n0</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dev</span> <span class="op">&lt;-</span> <span class="va">d</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>; <span class="va">om</span> <span class="op">&lt;-</span> <span class="va">dev</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">dev</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>; <span class="va">col</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">om</span> <span class="op">&gt;=</span> <span class="fl">0</span>, <span class="va">teal</span>, <span class="va">rust</span><span class="op">)</span></span>
+<span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span><span class="op">]</span><span class="op">)</span>; <span class="va">y0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/jitter.html">jitter</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0.4</span><span class="op">)</span>, <span class="va">y</span>, pch <span class="op">=</span> <span class="fl">16</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="va">col</span>, <span class="st">"55"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">0.9</span>,</span>
+<span>     xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.3</span>, <span class="fl">1.3</span><span class="op">)</span>, xaxt <span class="op">=</span> <span class="st">"n"</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">"y"</span>, main <span class="op">=</span> <span class="st">"Regression on treatment"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"control"</span>, <span class="st">"treated"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">y0</span>, <span class="fl">1</span>, <span class="va">y1</span>, lwd <span class="op">=</span> <span class="fl">2.6</span>, col <span class="op">=</span> <span class="st">"grey15"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">y0</span>, <span class="va">y1</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">21</span>, bg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">rust</span>, <span class="va">teal</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"white"</span>, cex <span class="op">=</span> <span class="fl">2.5</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="outcome-weights_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption>Regression on the treatment alone. Points are the two groups (rust control, teal treated); the large dots are the group means, and the segment joining them has slope <span class="math inline">\(\hat\beta = \bar y_1 - \bar y_0\)</span>, the difference in means.</figcaption></figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`beta (lm)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">d</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"d"</span><span class="op">]</span><span class="op">]</span>, `y1 - y0` <span class="op">=</span> <span class="va">y1</span> <span class="op">-</span> <span class="va">y0</span>,</span>
+<span>        `off-diagonal weights` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="va">om</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">d</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">om</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           beta (lm)              y1 - y0 off-diagonal weights 
+               3.318                3.318                0.000 </code></pre>
+</div>
+</div>
+<p>Add a period and interact it with the group, and the design has four cells. Each collapses to its mean, and the interaction coefficient is their double contrast,</p>
+<p><span class="math display">\[ \widehat{\text{DiD}} = (\bar y_{T,\text{post}} - \bar y_{T,\text{pre}}) - (\bar y_{C,\text{post}} - \bar y_{C,\text{pre}}). \]</span></p>
+<p>Two dots have become four, and with them four slopes — the two group trends over time and the two cross-sectional gaps. The DiD is the difference between either parallel pair, trend minus trend or gap minus gap:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>; <span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fl">3</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="va">g</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">*</span> <span class="va">p</span> <span class="op">+</span> <span class="fl">2</span> <span class="op">*</span> <span class="op">(</span><span class="va">g</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">800</span><span class="op">)</span></span>
+<span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html">tapply</a></span><span class="op">(</span><span class="va">y</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">p</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span></span>
+<span><span class="va">Tpre</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">[</span><span class="st">"1"</span>, <span class="st">"0"</span><span class="op">]</span>; <span class="va">Tpost</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">[</span><span class="st">"1"</span>, <span class="st">"1"</span><span class="op">]</span>; <span class="va">Cpre</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">[</span><span class="st">"0"</span>, <span class="st">"0"</span><span class="op">]</span>; <span class="va">Cpost</span> <span class="op">&lt;-</span> <span class="va">m</span><span class="op">[</span><span class="st">"0"</span>, <span class="st">"1"</span><span class="op">]</span></span>
+<span><span class="va">cf</span> <span class="op">&lt;-</span> <span class="va">Tpre</span> <span class="op">+</span> <span class="op">(</span><span class="va">Cpost</span> <span class="op">-</span> <span class="va">Cpre</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="cn">NA</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.15</span>, <span class="fl">1.25</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, xaxt <span class="op">=</span> <span class="st">"n"</span>, xlab <span class="op">=</span> <span class="st">""</span>, ylab <span class="op">=</span> <span class="st">"y"</span>,</span>
+<span>     main <span class="op">=</span> <span class="st">"Difference-in-differences"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/axis.html">axis</a></span><span class="op">(</span><span class="fl">1</span>, at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pre"</span>, <span class="st">"post"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">Tpre</span>, <span class="fl">1</span>, <span class="va">Tpost</span>, lwd <span class="op">=</span> <span class="fl">2.4</span>, col <span class="op">=</span> <span class="va">teal</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">Cpre</span>, <span class="fl">1</span>, <span class="va">Cpost</span>, lwd <span class="op">=</span> <span class="fl">2.4</span>, col <span class="op">=</span> <span class="va">rust</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">Tpre</span>, <span class="fl">1</span>, <span class="va">cf</span>, lty <span class="op">=</span> <span class="fl">2</span>, lwd <span class="op">=</span> <span class="fl">1.6</span>, col <span class="op">=</span> <span class="st">"grey55"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/segments.html">segments</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">cf</span>, <span class="fl">1</span>, <span class="va">Tpost</span>, lwd <span class="op">=</span> <span class="fl">4</span>, col <span class="op">=</span> <span class="st">"grey15"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">Tpre</span>, <span class="va">Tpost</span>, <span class="va">Cpre</span>, <span class="va">Cpost</span><span class="op">)</span>,</span>
+<span>       pch <span class="op">=</span> <span class="fl">21</span>, bg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">teal</span>, <span class="va">teal</span>, <span class="va">rust</span>, <span class="va">rust</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"white"</span>, cex <span class="op">=</span> <span class="fl">2.3</span>, lwd <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">1.02</span>, <span class="op">(</span><span class="va">cf</span> <span class="op">+</span> <span class="va">Tpost</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span>, <span class="st">"DiD"</span>, pos <span class="op">=</span> <span class="fl">4</span>, cex <span class="op">=</span> <span class="fl">0.9</span>, col <span class="op">=</span> <span class="st">"grey15"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="outcome-weights_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption>The 2×2 difference-in-differences: four cell means (dots), the treated (teal) and control (rust) trends, the parallel-trends counterfactual (dashed), and the DiD (black bar) as the gap between the treated post-mean and that counterfactual.</figcaption></figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>`treated trend` <span class="op">=</span> <span class="va">Tpost</span> <span class="op">-</span> <span class="va">Tpre</span>, `control trend` <span class="op">=</span> <span class="va">Cpost</span> <span class="op">-</span> <span class="va">Cpre</span>,</span>
+<span>        `pre gap` <span class="op">=</span> <span class="va">Tpre</span> <span class="op">-</span> <span class="va">Cpre</span>, `post gap` <span class="op">=</span> <span class="va">Tpost</span> <span class="op">-</span> <span class="va">Cpost</span>,</span>
+<span>        `DiD (interaction)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">g</span> <span class="op">*</span> <span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"g:p"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    treated trend     control trend           pre gap          post gap 
+            3.029             0.897             2.019             4.151 
+DiD (interaction) 
+            2.132 </code></pre>
+</div>
+</div>
+<p>The four signs are again structural, <span class="math inline">\((+, -, -, +)\)</span>, as long as every cell is populated. They stop being structural in <em>staggered</em> designs: two-way fixed-effects DiD averages many such <span class="math inline">\(2 \times 2\)</span>’s, and some enter with a <strong>negative</strong> weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D’Haultfœuille 2020; Goodman-Bacon 2021). That is the wrong-sign story of the last section one level up, a comparison entering with a sign it should not because the design has run out of clean controls. (These weight the treatment <em>effects</em> — the effect-weight cousin of this chapter’s outcome weights.)</p>
+<p>A caution to close on. These weights diagnose <em>estimation</em> — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not <em>identification</em>. Parallel trends is an assumption about the treated group’s unobserved untreated path, and no weighting of observed outcomes can test it; a negative weight and a failure of parallel trends are independent, either able to occur without the other. Pre-trends are probed by a separate regression, the event-study leads, and weights <em>chosen</em> to match the pre-treatment paths — synthetic difference-in-differences and its kin — are a different object from the ones implied here.</p>
+</section><section id="summary" class="level2" data-number="14.6"><h2 data-number="14.6" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">14.6</span> Summary</h2>
+<ol type="1">
+<li>
+<strong>The second reading.</strong> FWL writes <span class="math inline">\(\hat\beta = \sum_i \omega_i y_i\)</span> with <span class="math inline">\(\omega_i = \tilde V_i / \sum_j \tilde V_j^2\)</span> (<a href="#eq-omega" class="quarto-xref">Equation&nbsp;<span>14.1</span></a>): a signed, computable weighting of the <em>observed</em> outcomes, distinct from the effect weights <span class="math inline">\(w_i = \tilde V_i V_i\)</span>.</li>
+<li>
+<strong>Two constraints.</strong> The outcome weights sum to zero and the weighted regressor to one — <span class="math inline">\(\sum_i \omega_i = 0\)</span>, <span class="math inline">\(\sum_i \omega_i V_i = 1\)</span> — a signed budget the regressor spends.</li>
+<li>
+<strong>Signed, not squared.</strong> Because <span class="math inline">\(\omega_i \propto \tilde V_i\)</span> rather than <span class="math inline">\(\tilde V_i^2\)</span>, it reveals <em>direction</em>: which rows push <span class="math inline">\(\hat\beta\)</span> up, which down, and — under controls with thin overlap — which enter with a sign their raw position would not predict.</li>
+<li>
+<strong>It leaves OLS.</strong> Any <span class="math inline">\(\hat\tau = \boldsymbol\omega' \boldsymbol Y\)</span> has outcome weights; the same object and its diagnostics extend to AIPW, DML, and causal forests (Knaus 2024), with the caveat that the tidy sum-to-zero of OLS need not become sum-to-<span class="math inline">\(\pm 1\)</span> within groups.</li>
+<li>
+<strong>Saturation scales it.</strong> Regressed on the treatment alone, <span class="math inline">\(\hat\beta\)</span> is the difference in group means — two dots; a <span class="math inline">\(2 \times 2\)</span> difference-in-differences is a signed contrast of four cell means — four dots. Negative weights return in staggered designs, as forbidden comparisons (de Chaisemartin and D’Haultfœuille 2020).</li>
+</ol>
+
+
+<!-- -->
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/xiangao\.github\.io\/econometrics-guide\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./interpreting-ols.html" class="pagination-link" aria-label="Interpreting OLS: Effect Weights">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Interpreting OLS: Effect Weights</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Interpreting OLS: Outcome Weights</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>teal <span class="ot">&lt;-</span> <span class="st">"#0E6473"</span>; rust <span class="ot">&lt;-</span> <span class="st">"#9E4318"</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>The companion chapter <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> read the OLS coefficient as a weighting of unobservable effects — it answered *whose* effect $\hat\beta$ estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the *observed* outcomes. That reading answers a different question — which rows drive the number, and in which direction — and, unlike the first, it is fully computable and generalises far past OLS. This chapter follows it.</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="fu">## The other reading of FWL</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>Residualise the regressor of interest $V$ on the controls $X$, write $\tilde V_i$ for the residual, and recall the residual-on-residual form of the coefficient, @eq-fwl:</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>$$ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. $$</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>The previous chapter grouped each $\tilde V_i$ with $V_i$ and read $\hat\beta$ as a weighting $w_i = \tilde V_i V_i$ of effects (@eq-weff). Group $\tilde V_i$ with $y_i$ instead, and the *same* expression is a linear combination of the observed outcomes:</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>$$ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\sum_{j=1}^n \tilde V_j^2}. $$ {#eq-omega}</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>@eq-omega is the same algebra rearranged, but a different object from the effect weights.</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="pp">|</span> Weights on outcomes $\omega_i$ <span class="pp">|</span> Weights on effects $w_i$ <span class="pp">|</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|</span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Weights what <span class="pp">|</span> the observed $y_i$ <span class="pp">|</span> that observation's own effect $\beta_i$ <span class="pp">|</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Sign <span class="pp">|</span> signed, sums to zero <span class="pp">|</span> non-negative (under saturation) <span class="pp">|</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Computable <span class="pp">|</span> yes, $y$ is observed <span class="pp">|</span> no, the $\beta_i$ are never seen <span class="pp">|</span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Holds when <span class="pp">|</span> always, it is algebra <span class="pp">|</span> in expectation; per-unit needs saturation <span class="pp">|</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Answers <span class="pp">|</span> which rows drive $\hat\beta$, any wrong sign <span class="pp">|</span> is this the effect I meant, whose effect <span class="pp">|</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>Two constraints pin $\omega_i$ down, both from @eq-omega. An intercept among the controls makes $\sum_i \tilde V_i = 0$, so the weights **sum to zero**; and $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2$ makes the weighted regressor **sum to one**, $\sum_i \omega_i V_i = 1$. A signed budget that sums to zero and the regressor spends to one — that is the whole of what $\hat\beta$ does to the sample. Reach for this reading when overlap is in doubt and a row may enter with the wrong sign, which the non-negative $w_i$ cannot show; keep the effect reading for questions about the estimand. The rest of the chapter draws $\omega_i$, exhibits that wrong-sign case, then follows the reading out of OLS.</span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the outcome weights look like</span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>Take the simple regression of $y$ on $x$ with an intercept, so $\tilde V_i = x_i - \bar x = d_i$ and</span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>$$ \omega_i = \frac{d_i}{\sum_j d_j^2}. $$</span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>Unlike the effect weights $w_i = d_i^2$ — non-negative, growing with the *square* of distance — this is **linear in $d_i$, and so signed**: a point left of $\bar x$ enters $\hat\beta$ with a negative coefficient on its outcome, a point right of it positive. It is not a slope and does not involve $\bar y$; it is simply a signed weight on the observed $y_i$. The figure sizes each point by $|\omega_i|$ and colours it by sign.</span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 6.5</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 5</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Outcome weights in a 100-point sample. Each small point's **area is its weight** $|\\omega_i|$, coloured by sign — teal ($\\omega_i &gt; 0$) pushes $\\hat\\beta$ up, rust ($\\omega_i &lt; 0$) pulls it down; the dotted line is the fulcrum $x = \\bar x$. The two large dots are the $|d|$-weighted centroids of the points left and right of $\\bar x$; the solid segment joining them has slope $\\hat\\beta$, and the dashed line is the OLS fit (same slope, shifted through the grand mean)."</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span>; x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">5</span>, <span class="dv">2</span>); y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">mean</span>(x); d <span class="ot">&lt;-</span> x <span class="sc">-</span> xb; om <span class="ot">&lt;-</span> d <span class="sc">/</span> <span class="fu">sum</span>(d<span class="sc">^</span><span class="dv">2</span>); col <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(om <span class="sc">&gt;=</span> <span class="dv">0</span>, teal, rust)</span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> d <span class="sc">&gt;</span> <span class="dv">0</span>; L <span class="ot">&lt;-</span> d <span class="sc">&lt;</span> <span class="dv">0</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a>xR <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[R]) <span class="sc">*</span> x[R]) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[R])); yR <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[R]) <span class="sc">*</span> y[R]) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[R]))</span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a>xL <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[L]) <span class="sc">*</span> x[L]) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[L])); yL <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[L]) <span class="sc">*</span> y[L]) <span class="sc">/</span> <span class="fu">sum</span>(<span class="fu">abs</span>(d[L]))</span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">cex =</span> <span class="fl">0.35</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">abs</span>(om) <span class="sc">/</span> <span class="fu">max</span>(<span class="fu">abs</span>(om)),</span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="fu">paste0</span>(col, <span class="st">"99"</span>), <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">main =</span> <span class="st">"N = 100 Points"</span>)</span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> xb, <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey55"</span>)</span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x), <span class="at">lwd =</span> <span class="fl">1.3</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"grey55"</span>)</span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(xL, yL, xR, yR, <span class="at">lwd =</span> <span class="fl">2.6</span>, <span class="at">col =</span> <span class="st">"grey15"</span>)</span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">c</span>(xL, xR), <span class="fu">c</span>(yL, yR), <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="fu">c</span>(rust, teal), <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">2.3</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">sum(omega)</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(om),      <span class="st">`</span><span class="at">sum(omega*x)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(om <span class="sc">*</span> x),</span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">positive mass</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(om[om <span class="sc">&gt;</span> <span class="dv">0</span>]), <span class="st">`</span><span class="at">negative mass</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(om[om <span class="sc">&lt;</span> <span class="dv">0</span>]),</span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">OLS</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[[<span class="dv">2</span>]], <span class="st">`</span><span class="at">sum(omega*y)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(om <span class="sc">*</span> y)), <span class="dv">4</span>)</span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a>The printed sums confirm @eq-omega: the weights split at $\bar x$ into a positive mass ($+0.25$) and an equal negative one ($-0.25$), and the regressor spends to one. But the figure shows more than the weights. Split the points at $\bar x$, weight each side by $|d_i|$, and take its centroid — the two large dots. **The segment joining them has slope $\hat\beta$:** the OLS slope is the rise over run between the low-$x$ and high-$x$ weighted centres. The dashed fit shares that slope, shifted through the grand mean, so the two coincide only when the sides balance. That the regression collapses to two points is no coincidence; it falls out of the slope formula in a few lines.</span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="fu">### Why it collapses to two points</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a>Write $d_i = x_i - \bar x$, so the slope is $\hat\beta = \sum_i d_i y_i / \sum_i d_i^2$. Two elementary facts drive everything:</span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sum_i d_i = 0$ — deviations from the mean sum to zero;</span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>$\sum_i d_i^2 = \sum_i d_i x_i$, since $\sum_i d_i x_i = \sum_i d_i (d_i + \bar x) = \sum_i d_i^2 + \bar x \sum_i d_i$.</span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a>The second fact writes the slope as a ratio of two inner products with the *same* vector $d$:</span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a>$$ \hat\beta = \frac{d \cdot y}{d \cdot x}. $$</span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a>Split the observations by the sign of $d_i$: let $R = <span class="sc">\{</span>i : d_i &gt; 0<span class="sc">\}</span>$ lie right of the mean and $L = <span class="sc">\{</span>i : d_i &lt; 0<span class="sc">\}</span>$ left, with $d_i = 0$ points contributing nothing. Let $W = \sum_{i \in R} d_i = \sum_{i \in R} |d_i|$ be the total weight on the right. Because $\sum_i d_i = 0$, the left must carry $\sum_{i \in L} d_i = -W$, that is $\sum_{i \in L} |d_i| = W$: **both sides hold the identical total weight $W$.**</span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a>Weight each side by $|d_i|$ and form its centroid, $\bar v_R = \sum_{i \in R} |d_i| v_i / W$ and $\bar v_L = \sum_{i \in L} |d_i| v_i / W$ for any variable $v$. Using $|d_i| = d_i$ on $R$ and $|d_i| = -d_i$ on $L$,</span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a>$$ d \cdot v = \sum_{i \in R} d_i v_i + \sum_{i \in L} d_i v_i = W \bar v_R - W \bar v_L = W(\bar v_R - \bar v_L). $$</span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a>An inner product with a zero-sum vector is a *between-group contrast* — the common weight $W$ times the gap between the two weighted side-means. Apply it to the numerator ($v = y$) and the denominator ($v = x$):</span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a>$$ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\bar x_R - \bar x_L)} = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. $$</span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a>The $W$ cancels, and what remains is the plain rise over run between the two $|d|$-weighted centroids — the two dots in the figure.</span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a>Two features earn a name. The construction gives *two* points because $d_i$ takes exactly two signs: a centred regressor has a left and a right of the mean, and within each side the sign is constant, so each half collapses to a single weighted centre. And the weight must be $|d_i|$, not a plain average, because it already sits inside the OLS sums $d \cdot y$ and $d \cdot x$; the dot is a centre of mass with mass $|d_i|$, so the same mass fixes both its coordinates — weighting $y$ but not $x$ gives the wrong slope.</span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## When the sign flips</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a>In simple regression the sign of $\omega_i$ is just the side of the mean: half the weights are negative, structurally, and a low-$x$ point *should* count against a high-$x$ one. With controls $\tilde V_i$ becomes a *residual*, and a row can flip to the sign its raw position denies — a hidden extrapolation the non-negative $w_i$ can never show.</span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a>Take a binary treatment $D$ with covariate $x$ and thin overlap — controls low, treated high — and fit $y \sim D + x$. Now $\omega_i \propto \tilde V_i = D_i - \hat D_i$, with $\hat D$ the *linear* projection of $D$ on $(1, x)$. Where overlap fails, that $\hat D$ leaves $[0, 1]$: a treated unit with $\hat D_i &gt; 1$ gets $\tilde V_i &lt; 0$, so its outcome is *subtracted* from $\hat\beta$ — a sign $\tilde V_i^2 \ge 0$ hides.</span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 9</span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4.2</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Outcome weights under thin overlap. Left: the linear projection $\\hat D$ of treatment on $x$ leaves $[0,1]$, so residuals change sign in the extrapolation zone. Right: outcome weights coloured by sign (teal $+$, rust $-$), triangles treated and circles control, size $\\propto |\\omega_i|$. Treated units at high $x$ (open rust triangles) carry *negative* weights — their outcomes are subtracted from $\\hat\\beta$ — a sign the effect weights $\\tilde V_i^2 \\ge 0$ cannot reveal."</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">11</span>)</span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a>n0 <span class="ot">&lt;-</span> <span class="dv">40</span>; n1 <span class="ot">&lt;-</span> <span class="dv">40</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(n0, <span class="fl">2.0</span>, <span class="fl">0.7</span>), <span class="fu">rnorm</span>(n1, <span class="fl">5.0</span>, <span class="fl">0.7</span>))</span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, n0), <span class="fu">rep</span>(<span class="dv">1</span>, n1))</span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fl">1.0</span> <span class="sc">*</span> d <span class="sc">+</span> <span class="fl">0.6</span> <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n0 <span class="sc">+</span> n1, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, x); dh <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(X <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X)) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> d)</span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a>vt <span class="ot">&lt;-</span> d <span class="sc">-</span> dh; om <span class="ot">&lt;-</span> vt <span class="sc">/</span> <span class="fu">sum</span>(vt<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">2.5</span>, <span class="dv">1</span>))</span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, d, <span class="at">pch =</span> <span class="fu">ifelse</span>(d <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">17</span>, <span class="dv">16</span>), <span class="at">col =</span> <span class="st">"grey45"</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.35</span>, <span class="fl">1.35</span>),</span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"D  and  D-hat"</span>, <span class="at">main =</span> <span class="st">"Linear D-hat leaves [0, 1]"</span>)</span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col =</span> <span class="st">"grey70"</span>); ox <span class="ot">&lt;-</span> <span class="fu">order</span>(x)</span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x[ox], dh[ox], <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> teal)</span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(om <span class="sc">&gt;=</span> <span class="dv">0</span>, teal, rust)</span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">pch =</span> <span class="fu">ifelse</span>(d <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">17</span>, <span class="dv">16</span>), <span class="at">col =</span> <span class="fu">paste0</span>(col, <span class="st">"CC"</span>),</span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a>     <span class="at">cex =</span> <span class="fl">0.7</span> <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> <span class="fu">abs</span>(om) <span class="sc">/</span> <span class="fu">max</span>(<span class="fu">abs</span>(om)), <span class="at">xlab =</span> <span class="st">"x"</span>, <span class="at">ylab =</span> <span class="st">"y"</span>,</span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Outcome-weight sign"</span>)</span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a>tn <span class="ot">&lt;-</span> <span class="fu">which</span>(d <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> om <span class="sc">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(x[tn], y[tn], <span class="at">pch =</span> <span class="dv">2</span>, <span class="at">cex =</span> <span class="fl">2.3</span>, <span class="at">col =</span> rust, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(op)</span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">treated, omega&lt;0</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(d <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> om <span class="sc">&lt;</span> <span class="dv">0</span>),</span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">treated, D-hat&gt;1</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(d <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> dh <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">control, omega&gt;0</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(d <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> om <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">control, D-hat&lt;0</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">sum</span>(d <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> dh <span class="sc">&lt;</span> <span class="dv">0</span>),</span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">beta (lm)</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> d <span class="sc">+</span> x))[[<span class="st">"d"</span>]],</span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">beta (sum omega*y)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(om <span class="sc">*</span> y)), <span class="dv">4</span>)</span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a>Seventeen of the forty treated units carry a negative weight, and $\hat\beta$ still equals $\sum_i \omega_i y_i$ exactly. Nothing is wrong with the algebra: asked to compare treated and control where they barely coexist, the linear model extrapolates, and the extrapolation surfaces as flipped signs.</span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a>Which negatives matter? Regressed on the treatment alone, the signs are fixed by group — every treated unit positive, every control negative — and $\hat\beta$ is just $\bar y_1 - \bar y_0$, the two dots now the two group means. Those signs are structural. The wrong-sign kind is the opposite pairing: a treated unit with $\omega_i &lt; 0$, or a control with $\omega_i &gt; 0$. It cannot happen without covariates; it fills in only when the residual $\tilde V_i = D_i - \hat D_i$ carries a fitted $\hat D_i$ outside $<span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>$ — and the counts above confirm the treated with $\omega_i &lt; 0$ are exactly those with $\hat D_i &gt; 1$. So the test is one line: **fit the treatment on the controls; any $\hat D_i \notin [0, 1]$ is an extrapolated, wrong-sign unit** — equivalently, a point where the treated and control covariates fail to overlap. (With a continuous regressor there is no bounded range to leave; a negative $\omega_i$ is then just "below the conditional mean", and overlap is read from leverage, not sign.)</span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-135"><a href="#cb17-135" aria-hidden="true" tabindex="-1"></a>A wrong-sign weight is extrapolation: the model reaches outside common support, and $\hat\beta$ can leave the convex hull of the observed outcomes — outside the range of any real comparison. This does not condemn OLS; it locates the reliance on functional form, and the responses are the usual ones — trim to common support (the negatives then vanish), interpolate instead (matching, or overlap weights that are non-negative by design), or report how far $\hat\beta$ moves when the extrapolated units are dropped.</span>
+<span id="cb17-136"><a href="#cb17-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-137"><a href="#cb17-137" aria-hidden="true" tabindex="-1"></a>This is the implied-weights diagnostic of Chattopadhyay and Zubizarreta (2023); their <span class="in">`lmw`</span> package computes the weights and the balance, extrapolation, and influence diagnostics built on them, and <span class="in">`OutcomeWeights`</span> (Knaus 2024) carries it to machine-learning estimators. On the data above, <span class="in">`lmw`</span>'s negative weights are exactly the units our $\hat D \notin <span class="co">[</span><span class="ot">0, 1</span><span class="co">]</span>$ rule flags:</span>
+<span id="cb17-138"><a href="#cb17-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-141"><a href="#cb17-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-142"><a href="#cb17-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb17-143"><a href="#cb17-143" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmw)</span>
+<span id="cb17-144"><a href="#cb17-144" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y, d, x)</span>
+<span id="cb17-145"><a href="#cb17-145" aria-hidden="true" tabindex="-1"></a><span class="co"># lmw's implied weights for the same regression (y ~ d + x, ATE)</span></span>
+<span id="cb17-146"><a href="#cb17-146" aria-hidden="true" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="fu">lmw</span>(<span class="sc">~</span> d <span class="sc">+</span> x, <span class="at">data =</span> df, <span class="at">treat =</span> <span class="st">"d"</span>, <span class="at">estimand =</span> <span class="st">"ATE"</span>, <span class="at">method =</span> <span class="st">"URI"</span>)</span>
+<span id="cb17-147"><a href="#cb17-147" aria-hidden="true" tabindex="-1"></a>manual <span class="ot">&lt;-</span> (d <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> dh <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|</span> (d <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> dh <span class="sc">&lt;</span> <span class="dv">0</span>)   <span class="co"># our flag: linear D-hat outside [0, 1]</span></span>
+<span id="cb17-148"><a href="#cb17-148" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="st">`</span><span class="at">lmw negative weights</span><span class="st">`</span>    <span class="ot">=</span> <span class="fu">sum</span>(L<span class="sc">$</span>weights <span class="sc">&lt;</span> <span class="dv">0</span>),</span>
+<span id="cb17-149"><a href="#cb17-149" aria-hidden="true" tabindex="-1"></a>           <span class="st">`</span><span class="at">our D-hat outside [0,1]</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(manual),</span>
+<span id="cb17-150"><a href="#cb17-150" aria-hidden="true" tabindex="-1"></a>           <span class="st">`</span><span class="at">same units</span><span class="st">`</span>              <span class="ot">=</span> <span class="fu">all</span>((L<span class="sc">$</span>weights <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">==</span> manual),</span>
+<span id="cb17-151"><a href="#cb17-151" aria-hidden="true" tabindex="-1"></a>           <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb17-152"><a href="#cb17-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-153"><a href="#cb17-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-154"><a href="#cb17-154" aria-hidden="true" tabindex="-1"></a>The mainstream overlap check takes the other route, through the propensity score. <span class="in">`WeightIt::weightit(d ~ x)`</span> estimates it, and <span class="in">`summary()`</span> reports the *effective sample size* — how much usable sample the weighting costs — and the weight range, where a few enormous weights betray thin overlap; `cobalt::bal.plot(w, "prop.score")` draws the two groups' score densities mirrored, non-overlap showing wherever one has mass and the other none. The fixes are trimming (Crump et al. 2009) or overlap weights, the `"ATO"` estimand (Li, Morgan, and Zaslavsky 2018). On this data the two routes agree at full volume — the logistic score *perfectly separates*:</span>
+<span id="cb17-155"><a href="#cb17-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-158"><a href="#cb17-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-159"><a href="#cb17-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb17-160"><a href="#cb17-160" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb17-161"><a href="#cb17-161" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> WeightIt<span class="sc">::</span><span class="fu">weightit</span>(d <span class="sc">~</span> x, <span class="at">data =</span> df, <span class="at">method =</span> <span class="st">"glm"</span>, <span class="at">estimand =</span> <span class="st">"ATE"</span>)</span>
+<span id="cb17-162"><a href="#cb17-162" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">max control PS</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">max</span>(w<span class="sc">$</span>ps[d <span class="sc">==</span> <span class="dv">0</span>]),</span>
+<span id="cb17-163"><a href="#cb17-163" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">min treated PS</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">min</span>(w<span class="sc">$</span>ps[d <span class="sc">==</span> <span class="dv">1</span>])), <span class="dv">3</span>)</span>
+<span id="cb17-164"><a href="#cb17-164" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-165"><a href="#cb17-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-166"><a href="#cb17-166" aria-hidden="true" tabindex="-1"></a>Same diagnosis, two instruments — the implied weights (<span class="in">`lmw`</span>) and the propensity score (<span class="in">`WeightIt`</span>, <span class="in">`cobalt`</span>). Here the separation is total, too much for weighting to rescue either; in milder designs the score route degrades gracefully — a falling effective sample size, a few large weights — just where the regression route turns up a few negative weights.</span>
+<span id="cb17-167"><a href="#cb17-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-168"><a href="#cb17-168" aria-hidden="true" tabindex="-1"></a><span class="fu">## Out of OLS: the same weights beyond the linear model</span></span>
+<span id="cb17-169"><a href="#cb17-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-170"><a href="#cb17-170" aria-hidden="true" tabindex="-1"></a>The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written $\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y$ — a linear combination of the observed outcomes — *has* outcome weights, whatever machinery produced them. Knaus (2024) makes this the organising idea, showing that augmented inverse-probability weighting, double machine learning, and the generalized random forest (causal and instrumental forests) all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS with the linear projection replaced by a *smoother* matrix. OLS is the base case: its weights are $\boldsymbol\omega' = (\hat{\boldsymbol E}' \hat{\boldsymbol E})^{-1} \hat{\boldsymbol E}' \boldsymbol M_X$ with $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ the treatment residual — @eq-omega in matrix form.</span>
+<span id="cb17-171"><a href="#cb17-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-172"><a href="#cb17-172" aria-hidden="true" tabindex="-1"></a>The payoff is practical: the diagnostics of this chapter — do the weights sum as they should, does any unit carry a sign it should not — become available for a causal forest or an AIPW estimator off the shelf, through the accompanying <span class="in">`OutcomeWeights`</span> package. One caution travels with the generalisation. For OLS the weights sum to zero cleanly; Knaus further finds that partially-linear estimators such as the causal forest produce weights that sum to zero *overall* but not to $\pm 1$ within the treated and untreated groups — a property routinely assumed and, it turns out, not guaranteed. The wrong-sign case above is the OLS shadow of that larger caution.</span>
+<span id="cb17-173"><a href="#cb17-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-174"><a href="#cb17-174" aria-hidden="true" tabindex="-1"></a><span class="fu">## From two dots to four</span></span>
+<span id="cb17-175"><a href="#cb17-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-176"><a href="#cb17-176" aria-hidden="true" tabindex="-1"></a>The two-dot construction scales with how saturated the design is: each cell the regressors carve out collapses to its mean, and $\hat\beta$ is a signed contrast of those cell means. Two cases make it concrete.</span>
+<span id="cb17-177"><a href="#cb17-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-178"><a href="#cb17-178" aria-hidden="true" tabindex="-1"></a>Regress $y$ on the treatment $D$ alone. The residual $\tilde V_i = D_i - \bar D$ is constant within each group, so the $|d|$-weighting is uniform there and the two dots are simply the group means: $\hat\beta = \bar y_1 - \bar y_0$, the difference in means. Every treated unit then carries positive weight, every control negative — the structural pattern of the previous section, with the wrong-sign off-diagonal empty until covariates enter.</span>
+<span id="cb17-179"><a href="#cb17-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-182"><a href="#cb17-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-183"><a href="#cb17-183" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5</span></span>
+<span id="cb17-184"><a href="#cb17-184" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb17-185"><a href="#cb17-185" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Regression on the treatment alone. Points are the two groups (rust control, teal treated); the large dots are the group means, and the segment joining them has slope $\\hat\\beta = \\bar y_1 - \\bar y_0$, the difference in means."</span></span>
+<span id="cb17-186"><a href="#cb17-186" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb17-187"><a href="#cb17-187" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">30</span>; n0 <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb17-188"><a href="#cb17-188" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n1), <span class="fu">rep</span>(<span class="dv">0</span>, n0)); y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(n1, <span class="dv">5</span>), <span class="fu">rnorm</span>(n0, <span class="dv">2</span>))</span>
+<span id="cb17-189"><a href="#cb17-189" aria-hidden="true" tabindex="-1"></a>dev <span class="ot">&lt;-</span> d <span class="sc">-</span> <span class="fu">mean</span>(d); om <span class="ot">&lt;-</span> dev <span class="sc">/</span> <span class="fu">sum</span>(dev<span class="sc">^</span><span class="dv">2</span>); col <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(om <span class="sc">&gt;=</span> <span class="dv">0</span>, teal, rust)</span>
+<span id="cb17-190"><a href="#cb17-190" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[d <span class="sc">==</span> <span class="dv">1</span>]); y0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(y[d <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb17-191"><a href="#cb17-191" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">jitter</span>(d, <span class="fl">0.4</span>), y, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="fu">paste0</span>(col, <span class="st">"55"</span>), <span class="at">cex =</span> <span class="fl">0.9</span>,</span>
+<span id="cb17-192"><a href="#cb17-192" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.3</span>, <span class="fl">1.3</span>), <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">"y"</span>, <span class="at">main =</span> <span class="st">"Regression on treatment"</span>)</span>
+<span id="cb17-193"><a href="#cb17-193" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"control"</span>, <span class="st">"treated"</span>))</span>
+<span id="cb17-194"><a href="#cb17-194" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">0</span>, y0, <span class="dv">1</span>, y1, <span class="at">lwd =</span> <span class="fl">2.6</span>, <span class="at">col =</span> <span class="st">"grey15"</span>)</span>
+<span id="cb17-195"><a href="#cb17-195" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(y0, y1), <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="fu">c</span>(rust, teal), <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">2.5</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb17-196"><a href="#cb17-196" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">beta (lm)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> d))[[<span class="st">"d"</span>]], <span class="st">`</span><span class="at">y1 - y0</span><span class="st">`</span> <span class="ot">=</span> y1 <span class="sc">-</span> y0,</span>
+<span id="cb17-197"><a href="#cb17-197" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">off-diagonal weights</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>((d <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> om <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">|</span> (d <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> om <span class="sc">&gt;</span> <span class="dv">0</span>))), <span class="dv">3</span>)</span>
+<span id="cb17-198"><a href="#cb17-198" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-199"><a href="#cb17-199" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-200"><a href="#cb17-200" aria-hidden="true" tabindex="-1"></a>Add a period and interact it with the group, and the design has four cells. Each collapses to its mean, and the interaction coefficient is their double contrast,</span>
+<span id="cb17-201"><a href="#cb17-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-202"><a href="#cb17-202" aria-hidden="true" tabindex="-1"></a>$$ \widehat{\text{DiD}} = (\bar y_{T,\text{post}} - \bar y_{T,\text{pre}}) - (\bar y_{C,\text{post}} - \bar y_{C,\text{pre}}). $$</span>
+<span id="cb17-203"><a href="#cb17-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-204"><a href="#cb17-204" aria-hidden="true" tabindex="-1"></a>Two dots have become four, and with them four slopes — the two group trends over time and the two cross-sectional gaps. The DiD is the difference between either parallel pair, trend minus trend or gap minus gap:</span>
+<span id="cb17-205"><a href="#cb17-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-208"><a href="#cb17-208" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb17-209"><a href="#cb17-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-width: 5</span></span>
+<span id="cb17-210"><a href="#cb17-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-height: 4</span></span>
+<span id="cb17-211"><a href="#cb17-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "The 2×2 difference-in-differences: four cell means (dots), the treated (teal) and control (rust) trends, the parallel-trends counterfactual (dashed), and the DiD (black bar) as the gap between the treated post-mean and that counterfactual."</span></span>
+<span id="cb17-212"><a href="#cb17-212" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">3</span>)</span>
+<span id="cb17-213"><a href="#cb17-213" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">each =</span> <span class="dv">200</span>); p <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">each =</span> <span class="dv">200</span>)</span>
+<span id="cb17-214"><a href="#cb17-214" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> g <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> p <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (g <span class="sc">*</span> p) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">800</span>)</span>
+<span id="cb17-215"><a href="#cb17-215" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">tapply</span>(y, <span class="fu">list</span>(g, p), mean)</span>
+<span id="cb17-216"><a href="#cb17-216" aria-hidden="true" tabindex="-1"></a>Tpre <span class="ot">&lt;-</span> m[<span class="st">"1"</span>, <span class="st">"0"</span>]; Tpost <span class="ot">&lt;-</span> m[<span class="st">"1"</span>, <span class="st">"1"</span>]; Cpre <span class="ot">&lt;-</span> m[<span class="st">"0"</span>, <span class="st">"0"</span>]; Cpost <span class="ot">&lt;-</span> m[<span class="st">"0"</span>, <span class="st">"1"</span>]</span>
+<span id="cb17-217"><a href="#cb17-217" aria-hidden="true" tabindex="-1"></a>cf <span class="ot">&lt;-</span> Tpre <span class="sc">+</span> (Cpost <span class="sc">-</span> Cpre)</span>
+<span id="cb17-218"><a href="#cb17-218" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="cn">NA</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.15</span>, <span class="fl">1.25</span>), <span class="at">ylim =</span> <span class="fu">range</span>(y), <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">ylab =</span> <span class="st">"y"</span>,</span>
+<span id="cb17-219"><a href="#cb17-219" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Difference-in-differences"</span>)</span>
+<span id="cb17-220"><a href="#cb17-220" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"pre"</span>, <span class="st">"post"</span>))</span>
+<span id="cb17-221"><a href="#cb17-221" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">0</span>, Tpre, <span class="dv">1</span>, Tpost, <span class="at">lwd =</span> <span class="fl">2.4</span>, <span class="at">col =</span> teal)</span>
+<span id="cb17-222"><a href="#cb17-222" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">0</span>, Cpre, <span class="dv">1</span>, Cpost, <span class="at">lwd =</span> <span class="fl">2.4</span>, <span class="at">col =</span> rust)</span>
+<span id="cb17-223"><a href="#cb17-223" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">0</span>, Tpre, <span class="dv">1</span>, cf, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="fl">1.6</span>, <span class="at">col =</span> <span class="st">"grey55"</span>)</span>
+<span id="cb17-224"><a href="#cb17-224" aria-hidden="true" tabindex="-1"></a><span class="fu">segments</span>(<span class="dv">1</span>, cf, <span class="dv">1</span>, Tpost, <span class="at">lwd =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"grey15"</span>)</span>
+<span id="cb17-225"><a href="#cb17-225" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="fu">c</span>(Tpre, Tpost, Cpre, Cpost),</span>
+<span id="cb17-226"><a href="#cb17-226" aria-hidden="true" tabindex="-1"></a>       <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">bg =</span> <span class="fu">c</span>(teal, teal, rust, rust), <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">cex =</span> <span class="fl">2.3</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb17-227"><a href="#cb17-227" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fl">1.02</span>, (cf <span class="sc">+</span> Tpost) <span class="sc">/</span> <span class="dv">2</span>, <span class="st">"DiD"</span>, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">cex =</span> <span class="fl">0.9</span>, <span class="at">col =</span> <span class="st">"grey15"</span>)</span>
+<span id="cb17-228"><a href="#cb17-228" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(<span class="st">`</span><span class="at">treated trend</span><span class="st">`</span> <span class="ot">=</span> Tpost <span class="sc">-</span> Tpre, <span class="st">`</span><span class="at">control trend</span><span class="st">`</span> <span class="ot">=</span> Cpost <span class="sc">-</span> Cpre,</span>
+<span id="cb17-229"><a href="#cb17-229" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">pre gap</span><span class="st">`</span> <span class="ot">=</span> Tpre <span class="sc">-</span> Cpre, <span class="st">`</span><span class="at">post gap</span><span class="st">`</span> <span class="ot">=</span> Tpost <span class="sc">-</span> Cpost,</span>
+<span id="cb17-230"><a href="#cb17-230" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">DiD (interaction)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> g <span class="sc">*</span> p))[[<span class="st">"g:p"</span>]]), <span class="dv">3</span>)</span>
+<span id="cb17-231"><a href="#cb17-231" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb17-232"><a href="#cb17-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-233"><a href="#cb17-233" aria-hidden="true" tabindex="-1"></a>The four signs are again structural, $(+, -, -, +)$, as long as every cell is populated. They stop being structural in *staggered* designs: two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the wrong-sign story of the last section one level up, a comparison entering with a sign it should not because the design has run out of clean controls. (These weight the treatment *effects* — the effect-weight cousin of this chapter's outcome weights.)</span>
+<span id="cb17-234"><a href="#cb17-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-235"><a href="#cb17-235" aria-hidden="true" tabindex="-1"></a>A caution to close on. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*. Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it; a negative weight and a failure of parallel trends are independent, either able to occur without the other. Pre-trends are probed by a separate regression, the event-study leads, and weights *chosen* to match the pre-treatment paths — synthetic difference-in-differences and its kin — are a different object from the ones implied here.</span>
+<span id="cb17-236"><a href="#cb17-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-237"><a href="#cb17-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb17-238"><a href="#cb17-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-239"><a href="#cb17-239" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**The second reading.** FWL writes $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ (@eq-omega): a signed, computable weighting of the *observed* outcomes, distinct from the effect weights $w_i = \tilde V_i V_i$.</span>
+<span id="cb17-240"><a href="#cb17-240" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Two constraints.** The outcome weights sum to zero and the weighted regressor to one — $\sum_i \omega_i = 0$, $\sum_i \omega_i V_i = 1$ — a signed budget the regressor spends.</span>
+<span id="cb17-241"><a href="#cb17-241" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Signed, not squared.** Because $\omega_i \propto \tilde V_i$ rather than $\tilde V_i^2$, it reveals *direction*: which rows push $\hat\beta$ up, which down, and — under controls with thin overlap — which enter with a sign their raw position would not predict.</span>
+<span id="cb17-242"><a href="#cb17-242" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**It leaves OLS.** Any $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights; the same object and its diagnostics extend to AIPW, DML, and causal forests (Knaus 2024), with the caveat that the tidy sum-to-zero of OLS need not become sum-to-$\pm 1$ within groups.</span>
+<span id="cb17-243"><a href="#cb17-243" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span>**Saturation scales it.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means — two dots; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means — four dots. Negative weights return in staggered designs, as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/outcome-weights.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

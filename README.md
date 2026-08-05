@@ -9,12 +9,12 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
 | **Foundations** | OLS, Maximum Likelihood, GLS |
 | **Causal Inference & IV** | Endogeneity & Instrumental Variables, GMM |
 | **Limited Dependent Variables** | Censored/Truncated/Selection Models, Discrete Choice, Count Data |
-| **Advanced Topics** | Panel Data, Survival Models, Dynamic Panels, Missing Data, Interpreting OLS |
+| **Advanced Topics** | Panel Data, Survival Models, Dynamic Panels, Missing Data, Interpreting OLS (Effect Weights & Outcome Weights) |
 
 ## Prerequisites
 
 - [Quarto](https://quarto.org/docs/get-started/) (>= 1.3)
-- R with packages: `car`, `stats4`, `dplyr`, `mvtnorm`, `MASS`, `AER`, `ivreg`, `gmm`, `strucchange`, `ggfortify`, `survival`, `fixest`
+- R with packages: `car`, `stats4`, `dplyr`, `mvtnorm`, `MASS`, `AER`, `ivreg`, `gmm`, `strucchange`, `ggfortify`, `survival`, `fixest`, `lmw`, `WeightIt`
 
 ## Legacy file
 
@@ -95,3 +95,17 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > OLS (fixed effects just subtracts the unit's own mean in place of the grand mean), and a
 > note that group-demeaning collapses the "separated" panel onto the "coincident" one —
 > which is all fixed effects does. Every cited number was verified against live output.
+
+> **2026-08-05:** Split **Interpreting OLS** into two chapters — *Effect Weights* (the original,
+> retitled: leverage weighting, `sᵢ`-vs-`bᵢ`, Angrist, Słoczyński, within/between) and a new
+> *Outcome Weights* chapter. The new chapter reads the coefficient as `β̂ = Σ ωᵢ yᵢ`, a signed
+> weighting of the observed outcomes: it draws the weights, derives the two-dot slope construction
+> (`β̂` is the rise-over-run between the `|d|`-weighted centroids of the two sides of the mean), and
+> treats negative weights as an extrapolation diagnostic — the wrong-sign units are exactly those
+> the linear propensity `D̂` pushes outside `[0,1]`, reproduced with the `lmw` package and contrasted
+> with the propensity-score overlap check (`WeightIt`/`cobalt`). It closes with the outcome-weight
+> view of the treatment regression (difference in means) and the 2×2 difference-in-differences
+> (four cell means), plus the staggered-DiD negative-weights caveat (de Chaisemartin &
+> D'Haultfœuille 2020; Goodman-Bacon 2021) and a note that the weights diagnose estimation/overlap,
+> not the parallel-trends assumption. New render deps: `lmw`, `WeightIt`. Rendered clean; every cited
+> number verified against live output.

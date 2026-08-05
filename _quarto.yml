@@ -34,6 +34,7 @@ book:
     - dynamic-panel.qmd
     - missing-data.qmd
     - interpreting-ols.qmd
+    - outcome-weights.qmd
     - references.qmd
 
 format:

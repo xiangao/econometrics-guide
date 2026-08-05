@@ -1,4 +1,4 @@
-# Interpreting OLS
+# Interpreting OLS: Effect Weights
 
 ```{r}
 #| include: false
@@ -213,25 +213,15 @@ $$ {#eq-fwl}
 
 Be careful what $\tilde V_i$ is. A single observation has no variation of its own; variation belongs to a collection. What it has is a *deviation* — how far its regressor sits from what the rest of the model predicts for it. With only an intercept, that is distance from the grand mean. With unit fixed effects, it is distance from the unit's own mean. Which mean gets subtracted is the most consequential detail in this section, and we come back to it.
 
-@eq-fwl reads two ways.
+@eq-fwl reads two ways. This chapter takes the first; the second opens the companion chapter [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
 
-1. **Weights on outcomes.**
-   $$ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\sum_{j=1}^n \tilde V_j^2} $$ {#eq-omega}
-   The $\omega_i$ are signed, sum to zero, and say how each observed $y_i$ moves $\hat\beta$.
+**Weights on effects.** Under a heterogeneous model $y_i = \beta_i V_i + X_i \gamma + e_i$,
 
-2. **Weights on effects.** Under a heterogeneous model $y_i = \beta_i V_i + X_i \gamma + e_i$,
-   $$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
-   When $X$ holds saturated indicators or fixed effects, $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$.
+$$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
 
-| | Weights on outcomes $\omega_i$ | Weights on effects $w_i$ |
-|---|---|---|
-| Weights what | the observed $y_i$ | that observation's own effect $\beta_i$ |
-| Sign | signed, sums to zero | non-negative |
-| Computable | yes, $y$ is observed | no, the $\beta_i$ are never seen |
-| Holds when | always, it is algebra | after writing effects into $y$; the per-unit reading also needs saturation |
-| Answers | which rows drive this number, and does any enter with the wrong sign | is this the effect I meant, and whose effect is it mostly |
+When $X$ holds saturated indicators or fixed effects, $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$. This is the reading that answers *whose* effect $\hat\beta$ estimates. In @eq-wavg the weight $d_i^2$ sat on $s_i$, because $s_i$ was what we were averaging; here $w_i = \tilde V_i V_i$ sits on $\beta_i$. The two differ observation by observation and coincide only when $x$ is centred, though they always sum to the same total, since $\sum_i d_i x_i = \sum_i d_i^2$.
 
-These are different objects. In @eq-wavg the weight $d_i^2$ sat on $s_i$, because $s_i$ was what we were averaging; here $w_i = \tilde V_i V_i$ sits on $\beta_i$. They differ observation by observation and coincide only when $x$ is centred, though they always sum to the same total, since $\sum_i d_i x_i = \sum_i d_i^2$. Default to the effect reading: nearly every question that sends people here — why do smaller groups get more weight — is a question about the estimand. Reach for the outcome reading when overlap is in doubt and rows may enter with the wrong sign, which squares cannot reveal.
+The same identity also weights the observed outcomes directly, $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ — a signed combination that says which rows drive the number and whether any enters with the wrong sign. That is a different object with its own uses, and it is the subject of the next chapter.
 
 ### Where the square comes from
 
@@ -557,3 +547,5 @@ In (A) all three numbers agree to within sampling noise: the weighting is there 
 2. **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates the variance-weighted parameter $\sum_i w_i b_i / \sum_i w_i$ (@eq-exact). It equals the ATE only when the $b_i$ are uncorrelated with the weights.
 3. **Between bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
 4. **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous *and* the heterogeneity aligns with the weight. With homogeneous effects it is harmless. With heterogeneous effects the question is never whether OLS is weighting — only whether we know what it weighted.
+
+Everything here is the *effect* reading — weights on the unobservable $\beta_i$, answering what $\hat\beta$ estimates. The same FWL identity also weights the *observed* outcomes, a signed and fully computable combination that answers which rows drive the number and reaches, unchanged, into estimators far beyond OLS. That is the companion chapter, [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
