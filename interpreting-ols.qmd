@@ -76,7 +76,7 @@ show(c(1, 3, 4, 9), c(2, 8, 5, 6), "Four Points")
 
 Add an extreme point at $x=9$ and $\bar x$ moves to $4.25$. That one observation now carries $65\%$ of the total weight, while $x=4$ falls to $0.18\%$ because it has landed near the new centroid. The weights are relative to the whole sample: add data anywhere and the weights everywhere change.
 
-The concentration does not wash out in larger samples.
+**Simulation — a 100-point sample.** The concentration does not wash out in larger samples. We draw $n = 100$ points, $x_i \sim N(5, 2^2)$ and $y_i = 2 x_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 3^2)$, and compare the weight held by the ten points nearest $\bar x$ against the ten furthest.
 
 ```{r}
 #| fig-width: 6.5
@@ -156,7 +156,7 @@ The individual biases $E[s_i] - b_i$ of @eq-esi do not cancel. They reshape the 
 2. **Leverage annihilates the individual bias.** @eq-esi shows $s_i$ is a hopeless estimate of $b_i$ precisely where $d_i \approx 0$. The weight $w_i = d_i^2$ zeroes out exactly those unstable points, turning biased observation-level slopes into the exact parameter of @eq-exact.
 3. **The same mechanism runs through the causal estimators.** With a binary regressor it puts the most weight where treatment is near a coin flip (Angrist 1998); grouped by treatment status it reverses the propensity weights, favouring the smaller group (Słoczyński 2022). Both are @eq-exact read at different granularities, as the rest of the chapter shows.
 
-We check the algebra directly.
+**Simulation — deviation slopes versus true effects.** We check the algebra directly, drawing $n = 2000$ with heterogeneous slopes $b_i \sim N(1, 0.5^2)$, regressor $x_i \sim N(0, 2^2)$, and $y_i = b_i x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 2^2)$.
 
 ```{r}
 set.seed(6)
@@ -278,6 +278,8 @@ $$
 $$ {#eq-angrist}
 
 so strata with propensity near $\hat D(x) = 0.5$ get the most weight per observation.
+
+**Simulation — Angrist and Słoczyński weights.** Five covariate strata with stratum effects $(0, 1, 2, 3, 4)$ and $y = \tau_x D + X + \varepsilon$; the treatment probability varies by stratum, run once balanced ($\rho \approx 0.5$) and once unbalanced ($\rho \approx 0.09$).
 
 ```{r}
 set.seed(21)
@@ -445,9 +447,13 @@ $$ {#eq-two-group}
 
 where $\Delta\mu = \mu_1 - \mu_2$ and $\Delta\bar y = \bar y_1 - \bar y_2$: with only two groups $\beta_{between}$ is a single rise over run between the centroids.
 
-Two features are worth pausing on. $\beta_{within}$ is a variance-weighted average of the group slopes — the same $\sigma^2$ weighting as everywhere else in this chapter, one level up. And $\beta_{between}$ depends only on where the group centroids sit, so it can take any value at all regardless of the within-group slopes. The closed forms are what is special to two equal groups: with two *unequal* groups every $\tfrac12$ becomes a share $p_g$ and the $\tfrac14$ becomes $p(1-p)$ — Angrist's weight again — and with *more than two* groups $\beta_{between}$ is the genuine across-group regression slope of @eq-slopes, not a two-point ratio.
+$\beta_{within}$ is a variance-weighted average of the group slopes — the same $\sigma^2$ weighting as everywhere else in this chapter, one level up. And $\beta_{between}$ depends only on where the group centroids sit, so it can take any value at all, regardless of the within-group slopes.
+
+The closed forms are special to two equal groups. With two *unequal* groups every $\tfrac12$ becomes a share $p_g$ and the $\tfrac14$ becomes $p(1-p)$ — Angrist's weight again; with *more than two* groups $\beta_{between}$ is the genuine across-group regression slope of @eq-slopes, not a two-point ratio.
 
 Fixed effects removes $V_{between}$ by demeaning and isolates $\beta_{within}$. As the groups pull apart, $\Delta\mu \to \infty$, $V_{between}$ swamps $V_{within}$ and drags $\hat\beta_{OLS}$ toward $\beta_{between}$.
+
+**Simulation — pulling the groups apart.** The same two half-samples as above, now shifting the steady group's mean $x$ by $0$, $10$, and $100$, so only the centroid gap $\Delta\mu$ changes while the within slopes stay fixed.
 
 ```{r}
 b_within <- (0 * 0.2^2 + 2 * 3^2) / (0.2^2 + 3^2)
@@ -506,7 +512,11 @@ round(cbind(`Delta mu = 0` = a, `Delta mu = 10` = b), 3)
 
 Read the two columns. The slopes inside each group barely change — about $2$ for the wobbly cloud, indistinguishable from zero for the steady strip (the $-0.288$ is noisy, since a regression on an $x$ that hardly varies has a standard error near $0.35$). What changes is the weight on the between comparison: $0.03\%$ when the centres coincide, $85\%$ when they are ten apart. So the fit lands on $2.01$ in the first panel and $0.29$ in the second.
 
-Two details earn a name. The between slope reported on the left, $0.882$, is meaningless — and harmlessly so: with the centres nearly on top of each other $\Delta\mu \approx 0$, so an unstable ratio is multiplied by a vanishing weight and contributes nothing. And the strip has influence on the right despite barely moving: influence is distance from the mean of $x$, and the strip sits ten units from it. What it contributes is not its slope but its position — it anchors one end of the dashed line. A group dummy removes that channel and returns the within answer, and the picture shows exactly how: demeaning subtracts each cloud's *own* mean, sliding the shifted strip back to the centre so the right panel collapses onto the left one, centroids coinciding. Run OLS on that and the solid fit swings back up to the within slope — which is all fixed effects is, and why its slope matches the left panel's line regardless of how far the strip had been pushed.
+The between slope reported on the left, $0.882$, is meaningless — and harmlessly so: with the centres nearly on top of each other $\Delta\mu \approx 0$, an unstable ratio is multiplied by a vanishing weight and contributes nothing.
+
+The strip has influence on the right despite barely moving. Influence is distance from the mean of $x$, and the strip sits ten units from it; what it contributes is not its slope but its position — it anchors one end of the dashed line.
+
+A group dummy removes that channel. Demeaning subtracts each cloud's *own* mean, sliding the shifted strip back to the centre, so the right panel collapses onto the left — centroids coinciding. Run OLS on that and the solid fit swings back up to the within slope. That is all fixed effects is, and why its slope matches the left panel's regardless of how far the strip had been pushed.
 
 So "the weight is how much $x$ moves" is the demeaned case only. It is exact once unit effects are removed, and false in general, because with the halves at different levels of $x$ part of the fitted line is a comparison *between* them rather than a weighting of within-unit slopes.
 
