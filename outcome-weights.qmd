@@ -5,7 +5,7 @@
 teal <- "#0E6473"; rust <- "#9E4318"
 ```
 
-The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) read the OLS coefficient as a weighting of unobservable effects — it answered *whose* effect $\hat\beta$ estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the *observed* outcomes. That reading answers a different question — which rows drive the number, and in which direction — and, unlike the first, it is fully computable and generalises far past OLS. This chapter follows it.
+The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) read the OLS coefficient as a weighting of unobservable effects — it answered *whose* effect $\hat\beta$ estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the *observed* outcomes. This reading answers a different question — which rows drive $\hat\beta$, and in which direction — and, unlike the first, it is computable and generalises past OLS. This chapter follows it.
 
 ## The other reading of FWL
 
@@ -27,7 +27,9 @@ $$ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\s
 | Holds when | always, it is algebra | in expectation; per-unit needs saturation |
 | Answers | which rows drive $\hat\beta$, any wrong sign | is this the effect I meant, whose effect |
 
-Two constraints pin $\omega_i$ down, both from @eq-omega. An intercept among the controls makes $\sum_i \tilde V_i = 0$, so the weights **sum to zero**; and $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2$ makes the weighted regressor **sum to one**, $\sum_i \omega_i V_i = 1$. A signed budget that sums to zero and the regressor spends to one — that is the whole of what $\hat\beta$ does to the sample. Reach for this reading when overlap is in doubt and a row may enter with the wrong sign, which the non-negative $w_i$ cannot show; keep the effect reading for questions about the estimand. The rest of the chapter draws $\omega_i$, exhibits that wrong-sign case, then follows the reading out of OLS.
+Two constraints pin $\omega_i$ down, both from @eq-omega. An intercept among the controls makes $\sum_i \tilde V_i = 0$, so the weights **sum to zero**. And $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2$ makes the weighted regressor **sum to one**, $\sum_i \omega_i V_i = 1$.
+
+Use this reading when overlap is in doubt and a row may enter with the wrong sign — which the non-negative $w_i$ cannot show. Keep the effect reading for questions about the estimand.
 
 ## What the outcome weights look like
 
@@ -58,7 +60,11 @@ round(c(`sum(omega)`   = sum(om),      `sum(omega*x)` = sum(om * x),
         `OLS`          = coef(lm(y ~ x))[[2]], `sum(omega*y)` = sum(om * y)), 4)
 ```
 
-The printed sums confirm @eq-omega: the weights split at $\bar x$ into a positive mass ($+0.25$) and an equal negative one ($-0.25$), and the regressor spends to one. But the figure shows more than the weights. Split the points at $\bar x$, weight each side by $|d_i|$, and take its centroid — the two large dots. **The segment joining them has slope $\hat\beta$:** the OLS slope is the rise over run between the low-$x$ and high-$x$ weighted centres. The dashed fit shares that slope, shifted through the grand mean, so the two coincide only when the sides balance. That the regression collapses to two points is no coincidence; it falls out of the slope formula in a few lines.
+The printed sums confirm @eq-omega: the weights split at $\bar x$ into a positive mass ($+0.25$) and an equal negative one ($-0.25$), and $\sum_i \omega_i x_i = 1$.
+
+But the figure shows more. Split the points at $\bar x$, weight each side by $|d_i|$, and take its centroid — the two large dots. **The segment joining them has slope $\hat\beta$:** the OLS slope is the rise over run between the low-$x$ and high-$x$ weighted centres.
+
+The dashed fit shares that slope, shifted through the grand mean, so the two coincide only when the sides balance. This collapse to two points falls out of the slope formula.
 
 ### Why it collapses to two points
 
@@ -83,7 +89,9 @@ $$ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\ba
 
 The $W$ cancels, and what remains is the plain rise over run between the two $|d|$-weighted centroids — the two dots in the figure.
 
-Two features earn a name. The construction gives *two* points because $d_i$ takes exactly two signs: a centred regressor has a left and a right of the mean, and within each side the sign is constant, so each half collapses to a single weighted centre. And the weight must be $|d_i|$, not a plain average, because it already sits inside the OLS sums $d \cdot y$ and $d \cdot x$; the dot is a centre of mass with mass $|d_i|$, so the same mass fixes both its coordinates — weighting $y$ but not $x$ gives the wrong slope.
+The construction gives exactly *two* points because $d_i$ takes two signs: a centred regressor has a left and a right of the mean, and the sign is constant within each side, so each half collapses to a single weighted centre.
+
+The weight must be $|d_i|$, not a plain average, because it already sits inside the OLS sums $d \cdot y$ and $d \cdot x$: the dot is a centre of mass with mass $|d_i|$, and the same mass fixes both coordinates — weighting $y$ but not $x$ gives the wrong slope.
 
 ## When the sign flips
 
@@ -124,9 +132,17 @@ round(c(`treated, omega<0`   = sum(d == 1 & om < 0),
 
 Seventeen of the forty treated units carry a negative weight, and $\hat\beta$ still equals $\sum_i \omega_i y_i$ exactly. Nothing is wrong with the algebra: asked to compare treated and control where they barely coexist, the linear model extrapolates, and the extrapolation surfaces as flipped signs.
 
-Which negatives matter? Regressed on the treatment alone, the signs are fixed by group — every treated unit positive, every control negative — and $\hat\beta$ is just $\bar y_1 - \bar y_0$, the two dots now the two group means. Those signs are structural. The wrong-sign kind is the opposite pairing: a treated unit with $\omega_i < 0$, or a control with $\omega_i > 0$. It cannot happen without covariates; it fills in only when the residual $\tilde V_i = D_i - \hat D_i$ carries a fitted $\hat D_i$ outside $[0, 1]$ — and the counts above confirm the treated with $\omega_i < 0$ are exactly those with $\hat D_i > 1$. So the test is one line: **fit the treatment on the controls; any $\hat D_i \notin [0, 1]$ is an extrapolated, wrong-sign unit** — equivalently, a point where the treated and control covariates fail to overlap. (With a continuous regressor there is no bounded range to leave; a negative $\omega_i$ is then just "below the conditional mean", and overlap is read from leverage, not sign.)
+Which negatives matter? Two kinds.
 
-A wrong-sign weight is extrapolation: the model reaches outside common support, and $\hat\beta$ can leave the convex hull of the observed outcomes — outside the range of any real comparison. This does not condemn OLS; it locates the reliance on functional form, and the responses are the usual ones — trim to common support (the negatives then vanish), interpolate instead (matching, or overlap weights that are non-negative by design), or report how far $\hat\beta$ moves when the extrapolated units are dropped.
+*Structural:* regressed on the treatment alone, every treated unit is positive and every control negative, and $\hat\beta = \bar y_1 - \bar y_0$.
+
+*Wrong-sign:* the opposite pairing — a treated unit with $\omega_i < 0$, or a control with $\omega_i > 0$. This cannot happen without covariates. It appears only when the residual $\tilde V_i = D_i - \hat D_i$ carries a fitted $\hat D_i$ outside $[0, 1]$, and the counts above confirm the treated units with $\omega_i < 0$ are exactly those with $\hat D_i > 1$.
+
+So the test is one line: **fit the treatment on the controls; any $\hat D_i \notin [0, 1]$ is an extrapolated, wrong-sign unit** — a point where treated and control covariates fail to overlap. (With a continuous regressor there is no bounded range to leave: a negative $\omega_i$ just means "below the conditional mean", and overlap is read from leverage, not sign.)
+
+A wrong-sign weight is extrapolation: the model reaches outside common support, and $\hat\beta$ can leave the convex hull of the observed outcomes — outside the range of any real comparison.
+
+This is no failure of OLS; it locates the reliance on functional form. The responses are the usual ones: trim to common support (the negatives then vanish), interpolate instead (matching, or overlap weights that are non-negative by design), or report how far $\hat\beta$ moves when the extrapolated units are dropped.
 
 This is the implied-weights diagnostic of Chattopadhyay and Zubizarreta (2023); their `lmw` package computes the weights and the balance, extrapolation, and influence diagnostics built on them, and `OutcomeWeights` (Knaus 2024) carries it to machine-learning estimators. On the data above, `lmw`'s negative weights are exactly the units our $\hat D \notin [0, 1]$ rule flags:
 
@@ -143,7 +159,9 @@ data.frame(`lmw negative weights`    = sum(L$weights < 0),
            check.names = FALSE)
 ```
 
-The mainstream overlap check takes the other route, through the propensity score. `WeightIt::weightit(d ~ x)` estimates it, and `summary()` reports the *effective sample size* — how much usable sample the weighting costs — and the weight range, where a few enormous weights betray thin overlap; `cobalt::bal.plot(w, "prop.score")` draws the two groups' score densities mirrored, non-overlap showing wherever one has mass and the other none. The fixes are trimming (Crump et al. 2009) or overlap weights, the `"ATO"` estimand (Li, Morgan, and Zaslavsky 2018). On this data the two routes agree at full volume — the logistic score *perfectly separates*:
+The mainstream overlap check takes the other route, through the propensity score. `WeightIt` estimates it and reports the effective sample size and weight range, `cobalt::bal.plot` draws the two groups' score densities, and the fixes are trimming (Crump et al. 2009) or overlap weights, the `"ATO"` estimand (Li, Morgan, and Zaslavsky 2018).
+
+On this data both routes agree — the logistic score *perfectly separates*:
 
 ```{r}
 #| warning: false
@@ -155,11 +173,63 @@ round(c(`max control PS` = max(w$ps[d == 0]),
 
 Same diagnosis, two instruments — the implied weights (`lmw`) and the propensity score (`WeightIt`, `cobalt`). Here the separation is total, too much for weighting to rescue either; in milder designs the score route degrades gracefully — a falling effective sample size, a few large weights — just where the regression route turns up a few negative weights.
 
+On data with partial overlap the diagnostic is a routine check: does the reported coefficient depend on the extrapolation? The answer can go either way, and trimming the flagged units and refitting is what settles it.
+
+Here it depends, and by a lot. Suppose the outcome is convex in $x$, with controls low on the curve and treated high, so the two groups sit on different parts of it. Fit the straight $y \sim D + x$ regardless and it reports a treatment gap of $\hat\beta = 0.69$, a third short of the true effect of $1$ — an artifact of one line forced through a curve the groups do not share.
+
+```{r}
+#| fig-width: 6.2
+#| fig-height: 4.6
+#| message: false
+#| warning: false
+#| fig-cap: "A fragile OLS gap. The two curves are the true means — control (rust, solid) and treated (teal, dotted), a constant $1$ apart: that gap is the true effect (arrow). Controls sit low on the curve and treated high, so the groups share only the middle. Ringed points are the extrapolating units the one-line rule flags, where the groups do not overlap. Forcing a straight $y \\sim D + x$ across the whole range reports $\\hat\\beta = 0.69$; dropping the flagged units, or reweighting to the overlap, restores $\\approx 1$."
+set.seed(7)
+n <- 150
+x <- c(rnorm(n, 2.5, 1.1), rnorm(n, 4.5, 1.1))
+d <- c(rep(0, n), rep(1, n))
+y <- 1.0 * d + 0.8 * (x - 3.5)^2 + 0.3 * x + rnorm(2 * n, 0, 0.5)
+df <- data.frame(y, d, x)
+X <- cbind(1, x); dh <- as.vector(X %*% solve(crossprod(X)) %*% t(X) %*% d)
+flag <- (d == 1 & dh > 1) | (d == 0 & dh < 0)
+pch <- ifelse(d == 1, 17, 16); col <- ifelse(d == 1, teal, rust)
+plot(x, y, type = "n", xlab = "x", ylab = "y")
+xs <- seq(min(x), max(x), length = 200)
+mc <- function(z) 0.8 * (z - 3.5)^2 + 0.3 * z              # true control mean E[y | x, D = 0]
+lines(xs, mc(xs),     col = rust, lwd = 2.4)               # control mean
+lines(xs, mc(xs) + 1, col = teal, lwd = 2.4, lty = 3)      # treated mean = control + true effect (1)
+points(x, y, pch = pch, col = paste0(col, "88"), cex = 0.85)               # all points, by group
+points(x[flag], y[flag], pch = 1, col = "grey15", cex = 1.7, lwd = 1.4)    # ring the flagged units
+arrows(3.5, mc(3.5), 3.5, mc(3.5) + 1, code = 3, length = 0.05, angle = 90, lwd = 2.4, col = "grey10")
+segments(3.5, mc(3.5) + 0.5, 2.05, 13.3, col = "grey55", lwd = 1)
+text(2.0, 14, "gap = true effect = 1", pos = 4, cex = 0.82, col = "grey10")
+legend("bottomright", bty = "n", cex = 0.82,
+       legend = c("control", "treated", "flagged (trimmed)", "control mean", "treated mean"),
+       pch = c(16, 17, 1, NA, NA), lty = c(NA, NA, NA, 1, 3),
+       col = c(rust, teal, "grey15", rust, teal))
+w_ato <- WeightIt::weightit(d ~ x, data = df, method = "glm", estimand = "ATO")
+round(c(`flagged units`      = sum(flag),
+        `beta (full)`        = coef(lm(y ~ d + x))[["d"]],
+        `beta (trimmed)`     = coef(lm(y ~ d + x, data = df[!flag, ]))[["d"]],
+        `beta (overlap-wtd)` = coef(lm(y ~ d + x, weights = w_ato$weights))[["d"]]), 3)
+```
+
+The outcome weights find the artifact. Thirty-seven units carry the wrong sign, all in the non-overlapping tails. Trim them and refit and $\hat\beta$ returns to $0.99$; reweight to the overlap instead — the `"ATO"` weights — and it returns $0.98$. Either way the coefficient had leaned on the extrapolation, and the diagnostic showed it, read off the regression itself with no separate model.
+
+The reading need not be adverse. Pull the groups onto a straight-line relationship they share, and the same trim moves $\hat\beta$ by $0.01$: the extrapolation is there but harmless. Same diagnostic, opposite answer.
+
+And it survives where the propensity score cannot. On the perfectly-separated data above the logistic model fails to converge and inverse-probability weighting collapses, yet the implied weights still flag every extrapolating unit.
+
 ## Out of OLS: the same weights beyond the linear model
 
-The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written $\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y$ — a linear combination of the observed outcomes — *has* outcome weights, whatever machinery produced them. Knaus (2024) makes this the organising idea, showing that augmented inverse-probability weighting, double machine learning, and the generalized random forest (causal and instrumental forests) all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS with the linear projection replaced by a *smoother* matrix. OLS is the base case: its weights are $\boldsymbol\omega' = (\hat{\boldsymbol E}' \hat{\boldsymbol E})^{-1} \hat{\boldsymbol E}' \boldsymbol M_X$ with $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ the treatment residual — @eq-omega in matrix form.
+The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written $\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y$ — a linear combination of the observed outcomes — *has* outcome weights, whatever machinery produced them.
 
-The payoff is practical: the diagnostics of this chapter — do the weights sum as they should, does any unit carry a sign it should not — become available for a causal forest or an AIPW estimator off the shelf, through the accompanying `OutcomeWeights` package. One caution travels with the generalisation. For OLS the weights sum to zero cleanly; Knaus further finds that partially-linear estimators such as the causal forest produce weights that sum to zero *overall* but not to $\pm 1$ within the treated and untreated groups — a property routinely assumed and, it turns out, not guaranteed. The wrong-sign case above is the OLS shadow of that larger caution.
+Knaus (2024) makes this the organising idea. Augmented inverse-probability weighting, double machine learning, and the generalized random forest (causal and instrumental forests) all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS with the linear projection replaced by a *smoother* matrix.
+
+OLS is the base case: its weights are $\boldsymbol\omega' = (\hat{\boldsymbol E}' \hat{\boldsymbol E})^{-1} \hat{\boldsymbol E}' \boldsymbol M_X$ with $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ the treatment residual — @eq-omega in matrix form.
+
+The payoff is practical: the diagnostics of this chapter — do the weights sum as they should, does any unit carry a sign it should not — become available for a causal forest or an AIPW estimator off the shelf, through the accompanying `OutcomeWeights` package.
+
+One caution travels with it. For OLS the weights sum to zero cleanly; Knaus further finds that partially-linear estimators such as the causal forest produce weights that sum to zero *overall* but not to $\pm 1$ within the treated and untreated groups — a property routinely assumed and, it turns out, not guaranteed. The wrong-sign case above is the OLS shadow of that larger caution.
 
 ## From two dots to four
 
@@ -216,14 +286,20 @@ round(c(`treated trend` = Tpost - Tpre, `control trend` = Cpost - Cpre,
         `DiD (interaction)` = coef(lm(y ~ g * p))[["g:p"]]), 3)
 ```
 
-The four signs are again structural, $(+, -, -, +)$, as long as every cell is populated. They stop being structural in *staggered* designs: two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the wrong-sign story of the last section one level up, a comparison entering with a sign it should not because the design has run out of clean controls. (These weight the treatment *effects* — the effect-weight cousin of this chapter's outcome weights.)
+The four signs are again structural, $(+, -, -, +)$, as long as every cell is populated.
 
-A caution to close on. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*. Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it; a negative weight and a failure of parallel trends are independent, either able to occur without the other. Pre-trends are probed by a separate regression, the event-study leads, and weights *chosen* to match the pre-treatment paths — synthetic difference-in-differences and its kin — are a different object from the ones implied here.
+They stop being structural in *staggered* designs: two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the wrong-sign story of the last section one level up: a comparison entering with a sign it should not, because the design has run out of clean controls. (These weight the treatment *effects* — the effect-weight cousin of this chapter's outcome weights.)
+
+A closing caution. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*.
+
+Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it: a negative weight and a failure of parallel trends are independent, either able to occur without the other.
+
+Pre-trends are probed separately, by the event-study leads. And weights *chosen* to match the pre-treatment paths — synthetic difference-in-differences and its kin — are a different object from the ones implied here.
 
 ## Summary
 
 1. **The second reading.** FWL writes $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ (@eq-omega): a signed, computable weighting of the *observed* outcomes, distinct from the effect weights $w_i = \tilde V_i V_i$.
-2. **Two constraints.** The outcome weights sum to zero and the weighted regressor to one — $\sum_i \omega_i = 0$, $\sum_i \omega_i V_i = 1$ — a signed budget the regressor spends.
+2. **Two constraints.** The outcome weights sum to zero and the weighted regressor to one: $\sum_i \omega_i = 0$, $\sum_i \omega_i V_i = 1$.
 3. **Signed, not squared.** Because $\omega_i \propto \tilde V_i$ rather than $\tilde V_i^2$, it reveals *direction*: which rows push $\hat\beta$ up, which down, and — under controls with thin overlap — which enter with a sign their raw position would not predict.
 4. **It leaves OLS.** Any $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights; the same object and its diagnostics extend to AIPW, DML, and causal forests (Knaus 2024), with the caveat that the tidy sum-to-zero of OLS need not become sum-to-$\pm 1$ within groups.
 5. **Saturation scales it.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means — two dots; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means — four dots. Negative weights return in staggered designs, as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).
