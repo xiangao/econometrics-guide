@@ -229,15 +229,9 @@ And it survives where the propensity score cannot. On the perfectly-separated da
 
 The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written $\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y$ — a linear combination of the observed outcomes — *has* outcome weights, whatever machinery produced them.
 
-Knaus (2024) makes this the organising idea. Augmented inverse-probability weighting, double machine learning, and the generalized random forest (causal and instrumental forests) all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS with the linear projection replaced by a *smoother* matrix.
+Knaus (2024) makes this the organising idea: augmented inverse-probability weighting, double machine learning, and the generalized random forest all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS and computed off the shelf by his `OutcomeWeights` package. We derive it below; first, what it shows.
 
-OLS is the base case: its weights are $\boldsymbol\omega' = (\hat{\boldsymbol E}' \hat{\boldsymbol E})^{-1} \hat{\boldsymbol E}' \boldsymbol M_X$ with $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ the treatment residual — @eq-omega in matrix form.
-
-The payoff is practical: the diagnostics of this chapter — do the weights sum as they should, does any unit carry a sign it should not — become available for a causal forest or an AIPW estimator off the shelf, through the accompanying `OutcomeWeights` package.
-
-One caution travels with it. For OLS the weights sum to zero cleanly; Knaus further finds that partially-linear estimators such as the causal forest produce weights that sum to zero *overall* but not to $\pm 1$ within the treated and untreated groups — a property routinely assumed and, it turns out, not guaranteed. The wrong-sign case above is the OLS shadow of that larger caution.
-
-**Simulation — heterogeneous effects (DML).** Both claims — the exact reproduction and the broken within-group budget — are one call away in the `OutcomeWeights` package, and a *heterogeneous* effect makes them earn their keep. We simulate $n = 2000$ units: five standard-normal covariates $X$, selection $W_i \sim \text{Bernoulli}(\Lambda(-1 + 1.2\,X_{i1}))$ with $\Lambda$ the logistic function (treatment is scarce and tied to $X_1$), and outcome $Y_i = \tau_i W_i + X_{i1} + 0.5\,X_{i2} + \varepsilon_i$ with an effect $\tau_i = 1 + X_{i1}$ that varies across units — a $W \times X_1$ interaction. The average effect is $E[\tau] = 1$, but units with larger $X_1$ have larger effects. `dml_with_smoother` returns a partially-linear (PLR) and an AIPW estimator; `get_outcome_weights` extracts the weight matrix $\boldsymbol\omega$, one row per estimator.
+**Simulation — heterogeneous effects (DML).** A *heterogeneous* effect makes the weights earn their keep. We simulate $n = 2000$ units: five standard-normal covariates $X$, selection $W_i \sim \text{Bernoulli}(\Lambda(-1 + 1.2\,X_{i1}))$ with $\Lambda$ the logistic function (treatment is scarce and tied to $X_1$), and outcome $Y_i = \tau_i W_i + X_{i1} + 0.5\,X_{i2} + \varepsilon_i$ with an effect $\tau_i = 1 + X_{i1}$ that varies across units — a $W \times X_1$ interaction. The average effect is $E[\tau] = 1$, but units with larger $X_1$ have larger effects. `dml_with_smoother` returns a partially-linear (PLR) and an AIPW estimator; `get_outcome_weights` extracts the weight matrix $\boldsymbol\omega$, one row per estimator.
 
 ```{r}
 #| message: false
@@ -268,7 +262,9 @@ Two things stand out. First, the estimators now *disagree* — PLR reports $1.29
 
 Second, the weights still reproduce each estimate exactly ($\boldsymbol\omega' \boldsymbol Y$ equals the point estimate) and still sum to zero overall — but only AIPW splits into $\pm 1$ within the groups; PLR sums to $\pm 0.99$, the budget OLS and AIPW keep and the partially-linear estimators do not.
 
-That divergence shows what the representation is for. Knaus (2024) frames the weighted-outcome view as doing three things beyond producing the estimate: it puts OLS, IPW, AIPW, DML, and the causal forest on **one footing**, comparable through the single object $\boldsymbol\omega' \boldsymbol Y$; it **characterises the target population** each estimator reports — exactly the PLR-versus-AIPW gap above, two weightings of one set of outcomes; and it lets you **check covariate balance** by handing $\boldsymbol\omega$ to `cobalt`, and flag when an implementation's weights fail a property usually taken for granted — the within-group sum-to-$\pm 1$ that PLR breaks here. (The signed-extrapolation and leverage reading of §4 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.)
+That divergence shows what the representation is for. In Knaus's (2024) framing it does three things beyond producing the estimate. It puts OLS, IPW, AIPW, DML, and the causal forest on **one footing**, comparable through the single object $\boldsymbol\omega' \boldsymbol Y$. It **characterises the target population** each estimator reports — exactly the PLR-versus-AIPW gap above, two weightings of one set of outcomes. And it **checks covariate balance**, by handing $\boldsymbol\omega$ to `cobalt`, and flags when weights fail a property usually assumed — the within-group sum-to-$\pm 1$ that PLR breaks here.
+
+The signed-extrapolation and leverage reading of §4 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.
 
 ### The weights, derived
 
