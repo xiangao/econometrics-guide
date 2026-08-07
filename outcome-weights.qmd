@@ -3,6 +3,8 @@
 ```{r}
 #| include: false
 teal <- "#0E6473"; rust <- "#9E4318"
+vtab <- function(x, d = 3) knitr::kable(data.frame(value = round(x, d)), col.names = "value")
+mtab <- function(x, d = 3) knitr::kable(round(x, d))
 ```
 
 The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) read the OLS coefficient as a weighting of unobservable effects — it answered *whose* effect $\hat\beta$ estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the *observed* outcomes. This reading answers a different question — which rows drive $\hat\beta$, and in which direction — and, unlike the first, it is computable and generalises past OLS. This chapter follows it.
@@ -57,7 +59,7 @@ abline(v = xb, lty = 3, col = "grey55")
 abline(lm(y ~ x), lwd = 1.3, lty = 2, col = "grey55")
 segments(xL, yL, xR, yR, lwd = 2.6, col = "grey15")
 points(c(xL, xR), c(yL, yR), pch = 21, bg = c(rust, teal), col = "white", cex = 2.3, lwd = 2)
-round(c(`sum(omega)`   = sum(om),      `sum(omega*x)` = sum(om * x),
+vtab(c(`sum(omega)`   = sum(om),      `sum(omega*x)` = sum(om * x),
         `positive mass` = sum(om[om > 0]), `negative mass` = sum(om[om < 0]),
         `OLS`          = coef(lm(y ~ x))[[2]], `sum(omega*y)` = sum(om * y)), 4)
 ```
@@ -126,7 +128,7 @@ plot(x, y, pch = ifelse(d == 1, 17, 16), col = paste0(col, "CC"),
 tn <- which(d == 1 & om < 0)
 points(x[tn], y[tn], pch = 2, cex = 2.3, col = rust, lwd = 2)
 par(op)
-round(c(`treated, omega<0`   = sum(d == 1 & om < 0),
+vtab(c(`treated, omega<0`   = sum(d == 1 & om < 0),
         `treated, D-hat>1`   = sum(d == 1 & dh > 1),
         `control, omega>0`   = sum(d == 0 & om > 0),
         `control, D-hat<0`   = sum(d == 0 & dh < 0),
@@ -157,10 +159,13 @@ df <- data.frame(y, d, x)
 # lmw's implied weights for the same regression (y ~ d + x, ATE)
 L <- lmw(~ d + x, data = df, treat = "d", estimand = "ATE", method = "URI")
 manual <- (d == 1 & dh > 1) | (d == 0 & dh < 0)   # our flag: linear D-hat outside [0, 1]
-data.frame(`lmw negative weights`    = sum(L$weights < 0),
-           `our D-hat outside [0,1]` = sum(manual),
-           `same units`              = all((L$weights < 0) == manual),
-           check.names = FALSE)
+knitr::kable(
+  data.frame(
+    quantity = c("lmw negative weights", "our D-hat outside [0, 1]", "same units flagged"),
+    value    = c(as.character(sum(L$weights < 0)),
+                 as.character(sum(manual)),
+                 as.character(all((L$weights < 0) == manual)))),
+  col.names = c("", "value"), align = c("l", "r"))
 ```
 
 The mainstream overlap check takes the other route, through the propensity score. `WeightIt` estimates it and reports the effective sample size and weight range, `cobalt::bal.plot` draws the two groups' score densities, and the fixes are trimming (Crump et al. 2009) or overlap weights, the `"ATO"` estimand (Li, Morgan, and Zaslavsky 2018).
@@ -171,11 +176,13 @@ On this data both routes agree — the logistic score *perfectly separates*:
 #| warning: false
 #| message: false
 w <- WeightIt::weightit(d ~ x, data = df, method = "glm", estimand = "ATE")
-round(c(`max control PS` = max(w$ps[d == 0]),
+vtab(c(`max control PS` = max(w$ps[d == 0]),
         `min treated PS` = min(w$ps[d == 1])), 3)
 ```
 
-Same diagnosis, two instruments — the implied weights (`lmw`) and the propensity score (`WeightIt`, `cobalt`). Here the separation is total, too much for weighting to rescue either; in milder designs the score route degrades gracefully — a falling effective sample size, a few large weights — just where the regression route turns up a few negative weights.
+Both routes point to the same problem — the groups barely overlap — using different tools: the regression's own implied weights (`lmw`), or a separate propensity-score model (`WeightIt`, `cobalt`). Here overlap fails completely, so neither can help; there is no shared region to weight toward.
+
+When overlap is only partial, both diagnostics still work. The propensity-score route shows it through a shrinking effective sample size and a few large weights; the regression route, through a few negative weights. The next example is that milder case.
 
 On data with partial overlap the diagnostic is a routine check: does the reported coefficient depend on the extrapolation? The answer can go either way, and trimming the flagged units and refitting is what settles it.
 
@@ -213,7 +220,7 @@ legend("bottomright", bty = "n", cex = 0.82,
        pch = c(16, 17, 1, NA, NA), lty = c(NA, NA, NA, 1, 3),
        col = c(rust, teal, "grey15", rust, teal))
 w_ato <- WeightIt::weightit(d ~ x, data = df, method = "glm", estimand = "ATO")
-round(c(`flagged units`      = sum(flag),
+vtab(c(`flagged units`      = sum(flag),
         `beta (full)`        = coef(lm(y ~ d + x))[["d"]],
         `beta (trimmed)`     = coef(lm(y ~ d + x, data = df[!flag, ]))[["d"]],
         `beta (overlap-wtd)` = coef(lm(y ~ d + x, weights = w_ato$weights))[["d"]]), 3)
@@ -221,7 +228,7 @@ round(c(`flagged units`      = sum(flag),
 
 The outcome weights find the artifact. Thirty-seven units carry the wrong sign, all in the non-overlapping tails. Trim them and refit and $\hat\beta$ returns to $0.99$; reweight to the overlap instead — the `"ATO"` weights — and it returns $0.98$. Either way the coefficient had leaned on the extrapolation, and the diagnostic showed it, read off the regression itself with no separate model.
 
-The reading need not be adverse. Pull the groups onto a straight-line relationship they share, and the same trim moves $\hat\beta$ by $0.01$: the extrapolation is there but harmless. Same diagnostic, opposite answer.
+Whether it matters depends on the data. Here trimming moved $\hat\beta$ a lot, so the estimate leaned on the extrapolation. Had the outcome been linear — the two groups sharing one straight line — the same trim would barely move $\hat\beta$: the negative weights are still there, but dropping those units changes almost nothing. The check tells you which case you are in.
 
 And it survives where the propensity score cannot. On the perfectly-separated data above the logistic model fails to converge and inverse-probability weighting collapses, yet the implied weights still flag every extrapolating unit.
 
@@ -231,7 +238,7 @@ The outcome reading has one advantage the effect reading lacks: it survives leav
 
 Knaus (2024) makes this the organising idea: augmented inverse-probability weighting, double machine learning, and the generalized random forest all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS and computed off the shelf by his `OutcomeWeights` package. We derive it below; first, what it shows.
 
-**Simulation — heterogeneous effects (DML).** A *heterogeneous* effect makes the weights earn their keep. We simulate $n = 2000$ units: five standard-normal covariates $X$, selection $W_i \sim \text{Bernoulli}(\Lambda(-1 + 1.2\,X_{i1}))$ with $\Lambda$ the logistic function (treatment is scarce and tied to $X_1$), and outcome $Y_i = \tau_i W_i + X_{i1} + 0.5\,X_{i2} + \varepsilon_i$ with an effect $\tau_i = 1 + X_{i1}$ that varies across units — a $W \times X_1$ interaction. The average effect is $E[\tau] = 1$, but units with larger $X_1$ have larger effects. `dml_with_smoother` returns a partially-linear (PLR) and an AIPW estimator; `get_outcome_weights` extracts the weight matrix $\boldsymbol\omega$, one row per estimator.
+**Simulation — heterogeneous effects (DML).** Under a heterogeneous effect the two estimators diverge, and the weights show why. We simulate $n = 2000$ units: five standard-normal covariates $X$, selection $W_i \sim \text{Bernoulli}(\Lambda(-1 + 1.2\,X_{i1}))$ with $\Lambda$ the logistic function (treatment is scarce and tied to $X_1$), and outcome $Y_i = \tau_i W_i + X_{i1} + 0.5\,X_{i2} + \varepsilon_i$ with an effect $\tau_i = 1 + X_{i1}$ that varies across units — a $W \times X_1$ interaction. The average effect is $E[\tau] = 1$, but units with larger $X_1$ have larger effects. `dml_with_smoother` returns a partially-linear (PLR) and an AIPW estimator; `get_outcome_weights` extracts the weight matrix $\boldsymbol\omega$, one row per estimator.
 
 ```{r}
 #| message: false
@@ -253,12 +260,13 @@ tab <- t(sapply(rownames(om$omega), function(nm) {
   c(estimate = s[nm, 1], `omega %*% Y` = sum(w * Y),
     treated = sum(w[W1]), control = sum(w[!W1]))
 }))
-ov <- etrue * (1 - etrue)                                # overlap tilt e(1 - e)
+ov <- etrue * (1 - etrue)                                # e(1-e): PLR's per-unit weight
+# ATE = plain mean of tau; overlap-ATE = e(1-e)-weighted mean of tau (PLR's target)
 cat(sprintf("true ATE = %.2f   true overlap-ATE = %.2f\n", mean(tau), sum(ov * tau) / sum(ov)))
-round(tab, 3)
+mtab(tab, 3)
 ```
 
-Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong: AIPW targets the sample ATE ($\approx 1$), while PLR targets the overlap-weighted effect ($\approx 1.3$), the average over units where treatment varies most. Under a heterogeneous effect these are different estimands, and the weights are what say so: the same outcomes $\boldsymbol Y$, weighted two ways, give two population-averages of $\tau$.
+Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong; they target different populations. PLR weights each unit by $e(X)(1 - e(X))$, the conditional variance of treatment — Angrist's propensity-variance weight from the previous chapter — so it leans on units where treatment is near a coin flip; its estimand is that $e(1-e)$-weighted average of the unit effects ($\approx 1.3$). AIPW instead reweights by $1/e$ and $1/(1-e)$ to undo selection, returning the plain average, the ATE ($\approx 1$). Same outcomes $\boldsymbol Y$, weighted two ways, two population-averages of $\tau$ — and the weights are what make the difference visible.
 
 Second, the weights still reproduce each estimate exactly ($\boldsymbol\omega' \boldsymbol Y$ equals the point estimate) and still sum to zero overall — but only AIPW splits into $\pm 1$ within the groups; PLR sums to $\pm 0.99$, the budget OLS and AIPW keep and the partially-linear estimators do not.
 
@@ -268,15 +276,17 @@ The signed-extrapolation and leverage reading of §4 carries over too, but that 
 
 ### The weights, derived
 
-We have the OLS weights (@eq-omega); the machine-learning estimators carry the same object, and the derivation is short. Write each estimator as a ratio that is linear in the outcomes,
+We have the OLS weights (@eq-omega); the same object exists for the machine-learning estimators. It is not derived from a deeper principle — it is read off a *shape* these estimators share. Each can be written as a ratio in which the outcomes enter linearly and only in the numerator,
 
 $$ \hat\tau = \frac{\tilde{\boldsymbol Z}' \boldsymbol T \boldsymbol Y}{\tilde{\boldsymbol Z}' \tilde{\boldsymbol D}}, $$
 
-with a score $\tilde{\boldsymbol Z}$, a denominator $\tilde{\boldsymbol D}$, and an operator $\boldsymbol T$ built from $(\boldsymbol X, \boldsymbol D)$ but never from $\boldsymbol Y$. Then $\boldsymbol Y$ enters through the numerator alone, and the outcome weights are simply its coefficient:
+where the score $\tilde{\boldsymbol Z}$, the denominator $\tilde{\boldsymbol D}$, and the operator $\boldsymbol T$ are built from $(\boldsymbol X, \boldsymbol D)$ but never from $\boldsymbol Y$. This is a claim about each estimator, not an identity true in advance; the three cases below verify it one at a time.
+
+Grant the shape and the weights follow with no work: $\boldsymbol Y$ sits only in the numerator, so it enters $\hat\tau$ with coefficient
 
 $$ \hat\tau = \boldsymbol\omega' \boldsymbol Y, \qquad \boldsymbol\omega' = \frac{\tilde{\boldsymbol Z}' \boldsymbol T}{\tilde{\boldsymbol Z}' \tilde{\boldsymbol D}}. $$ {#eq-omega-ml}
 
-Extracting the weights is reading off @eq-omega-ml. Three estimators are the same formula with different $(\tilde{\boldsymbol Z}, \tilde{\boldsymbol D}, \boldsymbol T)$.
+So @eq-omega-ml is the easy step; the content is showing each estimator has the shape. Three do, with different $(\tilde{\boldsymbol Z}, \tilde{\boldsymbol D}, \boldsymbol T)$.
 
 *OLS.* The treatment residual is $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ and $\hat\tau = (\hat{\boldsymbol E}'\hat{\boldsymbol E})^{-1}\hat{\boldsymbol E}'\boldsymbol Y$, so $\tilde{\boldsymbol Z} = \tilde{\boldsymbol D} = \hat{\boldsymbol E}$ and $\boldsymbol T = \boldsymbol M_X$ — this is @eq-omega.
 
@@ -298,8 +308,8 @@ e <- dml$NuPa.hat$predictions$D.hat[, 1]    # fitted propensity
 Wtil <- W - e                               # treatment residual E-hat
 # PLR (eq-omega-ml): Z-tilde = D-tilde = Wtil, T = I - S, so omega = (I - S)' Wtil / (Wtil' Wtil)
 omega_by_hand <- as.numeric((Wtil - crossprod(S, Wtil)) / sum(Wtil^2))
-c(`max |by hand - package|`   = max(abs(omega_by_hand - om$omega["PLR", ])),
-  `omega' Y (reproduces PLR)` = sum(omega_by_hand * Y))
+vtab(c(`max |by hand - package|`   = max(abs(omega_by_hand - om$omega["PLR", ])),
+       `omega' Y (reproduces PLR)` = sum(omega_by_hand * Y)))
 ```
 
 Agreement to machine precision, and $\boldsymbol\omega' \boldsymbol Y$ returns the PLR estimate. The AIPW row follows from its $\boldsymbol T$ above, and OLS is the projection case: when $\boldsymbol S = \boldsymbol P_X$ is idempotent and symmetric, $\mathbf I - \boldsymbol S = \boldsymbol M_X$ and @eq-omega-ml collapses back to the plain $\tilde V_i / \sum_j \tilde V_j^2$ of @eq-omega. A forest's $\boldsymbol S$ is no projection, so the $\mathbf I - \boldsymbol S$ factor stays.
@@ -324,7 +334,7 @@ plot(jitter(d, 0.4), y, pch = 16, col = paste0(col, "55"), cex = 0.9,
 axis(1, at = c(0, 1), labels = c("control", "treated"))
 segments(0, y0, 1, y1, lwd = 2.6, col = "grey15")
 points(c(0, 1), c(y0, y1), pch = 21, bg = c(rust, teal), col = "white", cex = 2.5, lwd = 2)
-round(c(`beta (lm)` = coef(lm(y ~ d))[["d"]], `y1 - y0` = y1 - y0,
+vtab(c(`beta (lm)` = coef(lm(y ~ d))[["d"]], `y1 - y0` = y1 - y0,
         `off-diagonal weights` = sum((d == 1 & om < 0) | (d == 0 & om > 0))), 3)
 ```
 
@@ -356,7 +366,7 @@ segments(1, cf, 1, Tpost, lwd = 4, col = "grey15")
 points(c(0, 1, 0, 1), c(Tpre, Tpost, Cpre, Cpost),
        pch = 21, bg = c(teal, teal, rust, rust), col = "white", cex = 2.3, lwd = 2)
 text(1.02, (cf + Tpost) / 2, "DiD", pos = 4, cex = 0.9, col = "grey15")
-round(c(`treated trend` = Tpost - Tpre, `control trend` = Cpost - Cpre,
+vtab(c(`treated trend` = Tpost - Tpre, `control trend` = Cpost - Cpre,
         `pre gap` = Tpre - Cpre, `post gap` = Tpost - Cpost,
         `DiD (interaction)` = coef(lm(y ~ g * p))[["g:p"]]), 3)
 ```

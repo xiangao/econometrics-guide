@@ -4,6 +4,8 @@
 #| include: false
 library(fixest)
 N <- 1000; T <- 6
+vtab <- function(x, d = 3) knitr::kable(data.frame(value = round(x, d)), col.names = "value")
+mtab <- function(x, d = 3) knitr::kable(round(x, d))
 ```
 
 An OLS regression returns one number, $\hat\beta$. What that number estimates when effects are heterogeneous, and how each observation contributes to it, depends on the geometry of the sample and on what else is in the model. This chapter derives the implicit weights OLS uses, and follows them across cross-sectional and panel settings.
@@ -95,7 +97,7 @@ segments(xb, yb, x, y, lwd = 0.3 + 10 * w / max(w), col = "#9E431870")
 abline(lm(y ~ x), lwd = 2.5, col = "#0E6473")
 points(xb, yb, pch = 21, bg = "white", col = "#0E6473", lwd = 2.5, cex = 1.8)
 
-round(c(`Weight 10 Nearest Mean (%)` = 100 * sum(w[o[91:100]]) / sum(w),
+vtab(c(`Weight 10 Nearest Mean (%)` = 100 * sum(w[o[91:100]]) / sum(w),
         `Weight 10 Furthest (%)`     = 100 * sum(w[o[1:10]]) / sum(w),
         `OLS Estimate`                = coef(lm(y ~ x))[["x"]]), 3)
 ```
@@ -167,7 +169,7 @@ y <- b * x + rnorm(n, 0, 2)
 xb <- mean(x); w <- (x - xb)^2
 s  <- (y - mean(y)) / (x - xb)
 
-round(cbind(value = c(
+mtab(cbind(value = c(
   `cor(s_i, b_i)`            = cor(s, b),
   `sd(b_i)`                  = sd(b),
   `sd(s_i)`                  = sd(s),
@@ -176,14 +178,14 @@ round(cbind(value = c(
   `OLS Estimate`             = unname(coef(lm(y ~ x))[2]))), 3)
 ```
 
-The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$, as @eq-esi predicts. Yet their leverage-weighted average matches $\hat\beta_{OLS}$ exactly (@eq-wavg), and the same weighting of the true $b_i$ converges to it too (@eq-exact). The near-zero Pearson correlation is an artefact of the explosive tails — a few points near $\bar x$ dominate it — while the rank correlation on the same data is much higher. The signal is buried, which is not the same as absent.
+The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$, as @eq-esi predicts. Yet their leverage-weighted average matches $\hat\beta_{OLS}$ exactly (@eq-wavg), and the same weighting of the true $b_i$ converges to it too (@eq-exact). The near-zero Pearson correlation is an artefact of the explosive tails — a few points near $\bar x$ dominate it — while the rank correlation on the same data is much higher. The signal is buried, not absent.
 
 Noise is not what distorts $s_i$. Turn it off entirely, set $y_i = b_i x_i$, and ask how well each $s_i$ tracks its own $b_i$:
 
 ```{r}
 y0 <- b * x
 s0 <- (y0 - mean(y0)) / (x - xb)
-round(c(`cor(s_i, b_i), no noise` = cor(s0, b),
+vtab(c(`cor(s_i, b_i), no noise` = cor(s0, b),
         `Weighted Avg of s_i`     = sum(w * s0) / sum(w),
         `Weighted Avg of b_i`     = sum(w * b) / sum(w),
         `OLS, noiseless`          = unname(coef(lm(y0 ~ x))[2])), 4)
@@ -302,7 +304,7 @@ compare <- function(px) {
 }
 res <- cbind(`Balanced (rho ~ 0.5)`   = compare(c(.08, .20, .50, .75, .93)),
              `Unbalanced (rho ~ 0.09)` = compare(c(.02, .04, .08, .12, .20)))
-round(res[-2, ], 4)
+mtab(res[-2, ], 4)
 ```
 
 The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — agree to within $6 \times 10^{-10}$ in both designs, and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is $2.012$ against an ATE of $1.998$: close, because balance is where the weighting does least. Push the treated share to $0.09$ and the coefficient jumps to $2.874$ against the same $1.998$. Nothing about the effects changed. Only the treated share did.
@@ -357,7 +359,7 @@ $$ {#eq-reversed}
 
 the same two quantities as the ATE in @eq-ate, with the weights **swapped**. At $\rho = 0.1$ the coefficient puts $0.9$ on the effect for the treated tenth; the ATE puts $0.1$ there.
 
-One caveat. @eq-reversed is exact under equal propensity variance across groups — not "no covariates," though no covariates is one trivial way to get there. Słoczyński calls the condition unlikely to hold exactly and offers $\rho$ as a rule of thumb, cleanest near $\rho = 0\%$, $50\%$, or $100\%$. In the simulation above the raw-$\rho$ form gives $2.029$ against an exact $2.012$, and $2.858$ against an exact $2.874$: close enough to reason with, not close enough to quote.
+One caveat. @eq-reversed is exact under equal propensity variance across groups — not "no covariates," though no covariates is one trivial way to get there. Słoczyński calls the condition unlikely to hold exactly and offers $\rho$ as a rule of thumb, cleanest near $\rho = 0\%$, $50\%$, or $100\%$. In the simulation above the raw-$\rho$ form gives $2.029$ against an exact $2.012$, and $2.858$ against an exact $2.874$ — within about a percent, but the exact weights are what to report.
 
 ### The three, side by side
 
@@ -367,7 +369,7 @@ One caveat. @eq-reversed is exact under equal propensity variance across groups 
 | Angrist (1998) | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
 | Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | equal propensity variance | @eq-reversed |
 
-Read down the last column. The observation identity always holds and says little. Angrist's needs saturation and buys an interpretable weight. Słoczyński's needs more and buys the sharpest statement of the three — that the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
+Read down the last column. The observation identity always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
 
 ## Within versus between, in panels
 
@@ -389,7 +391,7 @@ g$x <- rnorm(N * T, 0, g$move)
 g$y <- g$b * g$x + rep(rnorm(N), each = T) + rnorm(N * T)
 
 wg <- tapply(resid(feols(x ~ 1 | id, g))^2, g$id, sum)
-round(cbind(value = c(
+mtab(cbind(value = c(
   `average of the two true slopes`      = mean(c(0, 2)),
   `FE estimate`                         = coef(feols(y ~ x | id, g))[["x"]],
   `weight held by the steady half (%)`  = 100 * sum(wg[1:half]) / sum(wg))), 3)
@@ -473,7 +475,7 @@ park <- function(shift) {
     `OLS Actual`        = coef(lm(y ~ x, d))[["x"]])
 }
 
-round(t(sapply(c(`shift 0` = 0, `shift 10` = 10, `shift 100` = 100), park)), 3)
+mtab(t(sapply(c(`shift 0` = 0, `shift 10` = 10, `shift 100` = 100), park)), 3)
 ```
 
 Fixed effects stays flat near the theoretical $\beta_{within} = 1.991$ wherever the steady group sits. Plain OLS falls from $1.983$ to $0.004$ on identical true slopes: as $\Delta\mu$ grows, the between weight $\tfrac{1}{4}\Delta\mu^2$ swamps the fixed within weight $4.52$, and the coefficient is dragged toward $\beta_{between} = 0$ like $9/(4.52 + \Delta\mu^2/4)$, the numerator $\tfrac{1}{2}(\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2) = 9$.
@@ -507,7 +509,7 @@ op <- par(mfrow = c(1, 2), mar = c(4, 4, 2.5, 1))
 a <- draw(0,  "Centroids Coincide (Delta mu = 0)")
 b <- draw(10, "Separated Centroids (Delta mu = 10)")
 par(op)
-round(cbind(`Delta mu = 0` = a, `Delta mu = 10` = b), 3)
+mtab(cbind(`Delta mu = 0` = a, `Delta mu = 10` = b), 3)
 ```
 
 Read the two columns. The slopes inside each group barely change — about $2$ for the wobbly cloud, indistinguishable from zero for the steady strip (the $-0.288$ is noisy, since a regression on an $x$ that hardly varies has a standard error near $0.35$). What changes is the weight on the between comparison: $0.03\%$ when the centres coincide, $85\%$ when they are ten apart. So the fit lands on $2.01$ in the first panel and $0.29$ in the second.
@@ -545,7 +547,7 @@ b1 <- rnorm(N, 1, 1)
 b2 <- 1 + 0.8 * (sdX - 1.6)
 h1 <- panel(b1); h2 <- panel(b2)
 
-round(cbind(`(A) unrelated` = compareAB(h1, b1),
+mtab(cbind(`(A) unrelated` = compareAB(h1, b1),
             `(B) aligned`   = compareAB(h2, b2)), 4)
 ```
 
