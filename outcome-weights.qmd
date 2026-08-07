@@ -350,11 +350,11 @@ Raw, the groups are badly imbalanced — the largest covariate SMD is $1.11$, si
 
 They differ on extrapolation. PLR carries 21 wrong-sign controls — it leans slightly off common support — while AIPW carries none. Neither is disqualifying here; the point is that balance and extrapolation are now *checkable*, on estimators that never exposed a weighting.
 
-## From two dots to four
+## The DiD setting
 
-The two-dot construction scales with how saturated the design is: each cell the regressors carve out collapses to its mean, and $\hat\beta$ is a signed contrast of those cell means. Two cases make it concrete.
+When the regressor is a treatment indicator, every unit in a group gets the same weight, so $\hat\beta$ reduces to a contrast of group means. Regressed on the treatment alone it is the difference in means between treated and control. Add a time period and its interaction with treatment and it becomes a difference-in-differences across four group-by-period cells. We take these in turn, then bring in covariates.
 
-**Simulation — treatment alone.** Regress $y$ on the treatment $D$ alone — here 30 treated drawn $y \sim N(5, 1)$ and 50 controls $y \sim N(2, 1)$. The residual $\tilde V_i = D_i - \bar D$ is constant within each group, so the $|d|$-weighting is uniform there and the two dots are simply the group means: $\hat\beta = \bar y_1 - \bar y_0$, the difference in means. Every treated unit then carries positive weight, every control negative — the structural pattern of the previous section, with the wrong-sign off-diagonal empty until covariates enter.
+**Simulation — treatment alone.** Regress $y$ on the treatment $D$ alone — here 30 treated drawn $y \sim N(5, 1)$ and 50 controls $y \sim N(2, 1)$. The residual $\tilde V_i = D_i - \bar D$ is constant within each group, so the weight is uniform within a group and $\hat\beta$ reduces to the two group means: $\hat\beta = \bar y_1 - \bar y_0$, the difference in means. Every treated unit then carries positive weight, every control negative — the structural pattern of the previous section, with the wrong-sign off-diagonal empty until covariates enter.
 
 ```{r}
 #| fig-width: 5
@@ -380,7 +380,7 @@ The estimate equals $\bar y_1 - \bar y_0$, and no weight carries the wrong sign 
 
 $$ \widehat{\text{DiD}} = (\bar y_{T,\text{post}} - \bar y_{T,\text{pre}}) - (\bar y_{C,\text{post}} - \bar y_{C,\text{pre}}). $$
 
-Two dots have become four, and with them four slopes — the two group trends over time and the two cross-sectional gaps. The DiD is the difference between either parallel pair, trend minus trend or gap minus gap. We simulate 200 units in each group×period cell from $y = 3 + 2g + p + 2\,(g \cdot p) + \varepsilon$, so the true DiD (the interaction) is $2$:
+Now there are four cell means, and with them four slopes — the two group trends over time and the two cross-sectional gaps. The DiD is the difference between either parallel pair, trend minus trend or gap minus gap. We simulate 200 units in each group×period cell from $y = 3 + 2g + p + 2\,(g \cdot p) + \varepsilon$, so the true DiD (the interaction) is $2$:
 
 ```{r}
 #| fig-width: 5
@@ -458,8 +458,8 @@ Pre-trends are probed separately, by the event-study leads. And weights *chosen*
 
 ## Summary
 
-1. **The second reading.** FWL writes $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ (@eq-omega): a signed, computable weighting of the *observed* outcomes, distinct from the effect weights $w_i = \tilde V_i V_i$.
-2. **Two constraints.** The outcome weights sum to zero and the weighted regressor to one: $\sum_i \omega_i = 0$, $\sum_i \omega_i V_i = 1$.
-3. **Signed, not squared.** Because $\omega_i \propto \tilde V_i$ rather than $\tilde V_i^2$, it reveals *direction*: which rows push $\hat\beta$ up, which down, and — under controls with thin overlap — which enter with a sign their raw position would not predict.
-4. **It leaves OLS.** Any $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights; the same object and its diagnostics extend to AIPW, DML, and causal forests (Knaus 2024), with the caveat that the tidy sum-to-zero of OLS need not become sum-to-$\pm 1$ within groups.
-5. **Saturation scales it.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means — two dots; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means — four dots. With covariates a doubly-robust DiD is a weighting of the outcome *changes*, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same diagnostics; negative weights return in staggered designs as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).
+1. **A signed weighting of the outcomes.** FWL writes $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ (@eq-omega): a signed, computable weighting of the observed outcomes, different from the effect weights $w_i = \tilde V_i V_i$.
+2. **Two constraints.** The weights sum to zero and the weighted regressor sums to one: $\sum_i \omega_i = 0$ and $\sum_i \omega_i V_i = 1$.
+3. **The sign shows direction.** Because $\omega_i$ is proportional to $\tilde V_i$, not to $\tilde V_i^2$, it carries a sign: it shows which rows push $\hat\beta$ up and which pull it down, and, under controls with thin overlap, which enter with the sign their raw position would not predict.
+4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024) — though the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
+5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks; negative weights return in staggered designs as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).

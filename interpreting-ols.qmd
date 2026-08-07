@@ -555,9 +555,9 @@ In (A) all three numbers agree to within sampling noise: the weighting is there 
 
 ## Summary
 
-1. **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg). Units that vary more dominate the slope.
-2. **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates the variance-weighted parameter $\sum_i w_i b_i / \sum_i w_i$ (@eq-exact). It equals the ATE only when the $b_i$ are uncorrelated with the weights.
-3. **Between bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
-4. **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous *and* the heterogeneity aligns with the weight. With homogeneous effects it is harmless. With heterogeneous effects the question is never whether OLS is weighting — only whether we know what it weighted.
+1. **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg); units that vary more dominate the slope.
+2. **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates the variance-weighted parameter $\sum_i w_i b_i / \sum_i w_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with the weights.
+3. **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
+4. **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
 
 Everything here is the *effect* reading — weights on the unobservable $\beta_i$, answering what $\hat\beta$ estimates. The same FWL identity also weights the *observed* outcomes, a signed and fully computable combination that answers which rows drive the number and reaches, unchanged, into estimators far beyond OLS. That is the companion chapter, [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
