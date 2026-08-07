@@ -465,7 +465,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 </div>
 <p>Read the table down. The collapsed regression returns about 1.85, badly biased, because it is the between estimator and <span class="math inline">\(\bar x_i\)</span> carries <span class="math inline">\(c_i\)</span> with it. Pooled OLS returns about 1.48 — closer, since some within variation is mixed in, but still inconsistent. The within estimator returns about 0.99, and only the long format can compute it: once we collapse there is nothing left to demean. Mundlak delivers both at once, exactly as described above — 0.99 on <span class="math inline">\(x_{it}\)</span>, 0.85 on <span class="math inline">\(\bar x_i\)</span>, and <span class="math inline">\(0.99+0.85\)</span> recovers the between estimate.</p>
 <p>So the argument for the long format is not precision. It is that demeaning, the Hausman comparison, unit-specific slopes, lagged dependent variables and anything else built on within variation stop existing once the panel is collapsed. Dynamic models are the extreme case, and they get their own chapter, <a href="./dynamic-panel.html">Dynamic Panel Data</a>.</p>
-<p>The rule behind that <span class="math inline">\(T_i\)</span>, and behind the variance weighting in the between-versus-within comparison, is not specific to panels. It is set out in <a href="./interpreting-ols.html">Interpreting OLS</a>, the final chapter.</p>
+<p>The rule behind that <span class="math inline">\(T_i\)</span>, and behind the variance weighting in the between-versus-within comparison, is not specific to panels. It is set out in <a href="./interpreting-ols.html">Interpreting OLS: Effect Weights</a> and its companion, <a href="./outcome-weights.html">Outcome Weights</a>.</p>
 
 
 <!-- -->
@@ -1252,7 +1252,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
 <span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
-<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS</span><span class="co">](interpreting-ols.qmd)</span>, the final chapter.</span>
+<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -15,7 +15,7 @@ Residualise the regressor of interest $V$ on the controls $X$, write $\tilde V_i
 
 $$ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. $$
 
-The previous chapter grouped each $\tilde V_i$ with $V_i$ and read $\hat\beta$ as a weighting $w_i = \tilde V_i V_i$ of effects (@eq-weff). Group $\tilde V_i$ with $y_i$ instead, and the *same* expression is a linear combination of the observed outcomes:
+The previous chapter grouped each $\tilde V_i$ with $V_i$ and read $\hat\beta$ as a weighting $w_i = \tilde V_i V_i$ of effects (@eq-weff). Group $\tilde V_i$ with $y_i$ instead — pairing each residual with its own outcome in the numerator — and the *same* expression is a linear combination of the observed outcomes:
 
 $$ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\sum_{j=1}^n \tilde V_j^2}. $$ {#eq-omega}
 
@@ -46,7 +46,7 @@ Unlike the effect weights $w_i = d_i^2$ — non-negative, growing with the *squa
 ```{r}
 #| fig-width: 6.5
 #| fig-height: 5
-#| fig-cap: "Outcome weights in a 100-point sample. Each small point's **area is its weight** $|\\omega_i|$, coloured by sign — teal ($\\omega_i > 0$) pushes $\\hat\\beta$ up, rust ($\\omega_i < 0$) pulls it down; the dotted line is the fulcrum $x = \\bar x$. The two large dots are the $|d|$-weighted centroids of the points left and right of $\\bar x$; the solid segment joining them has slope $\\hat\\beta$, and the dashed line is the OLS fit (same slope, shifted through the grand mean)."
+#| fig-cap: "Outcome weights in a 100-point sample. Each small point's **size scales with its weight** $|\\omega_i|$, coloured by sign — teal ($\\omega_i > 0$) pushes $\\hat\\beta$ up, rust ($\\omega_i < 0$) pulls it down; the dotted line is the fulcrum $x = \\bar x$. The two large dots are the $|d|$-weighted centroids of the points left and right of $\\bar x$; the solid segment joining them has slope $\\hat\\beta$, and the dashed line is the OLS fit (same slope, shifted through the grand mean)."
 set.seed(3)
 n <- 100; x <- rnorm(n, 5, 2); y <- 2 * x + rnorm(n, 0, 3)
 xb <- mean(x); d <- x - xb; om <- d / sum(d^2); col <- ifelse(om >= 0, teal, rust)
@@ -64,7 +64,7 @@ vtab(c(`sum(omega)`   = sum(om),      `sum(omega*x)` = sum(om * x),
         `OLS`          = coef(lm(y ~ x))[[2]], `sum(omega*y)` = sum(om * y)), 4)
 ```
 
-The printed sums confirm @eq-omega: the weights split at $\bar x$ into a positive mass ($+0.25$) and an equal negative one ($-0.25$), and $\sum_i \omega_i x_i = 1$.
+The printed sums confirm @eq-omega: the weights split at $\bar x$ into a positive mass ($\approx +0.25$) and an equal negative one ($\approx -0.25$), and $\sum_i \omega_i x_i = 1$.
 
 But the figure shows more. Split the points at $\bar x$, weight each side by $|d_i|$, and take its centroid — the two large dots. **The segment joining them has slope $\hat\beta$:** the OLS slope is the rise over run between the low-$x$ and high-$x$ weighted centres.
 
@@ -268,51 +268,87 @@ mtab(tab, 3)
 
 Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong; they target different populations. PLR weights each unit by $e(X)(1 - e(X))$, the conditional variance of treatment — Angrist's propensity-variance weight from the previous chapter — so it leans on units where treatment is near a coin flip; its estimand is that $e(1-e)$-weighted average of the unit effects ($\approx 1.3$). AIPW instead reweights by $1/e$ and $1/(1-e)$ to undo selection, returning the plain average, the ATE ($\approx 1$). Same outcomes $\boldsymbol Y$, weighted two ways, two population-averages of $\tau$ — and the weights are what make the difference visible.
 
-Second, the weights still reproduce each estimate exactly ($\boldsymbol\omega' \boldsymbol Y$ equals the point estimate) and still sum to zero overall — but only AIPW splits into $\pm 1$ within the groups; PLR sums to $\pm 0.99$, the budget OLS and AIPW keep and the partially-linear estimators do not.
+Second, the weights still reproduce each estimate exactly and sum to zero overall. They part on the other constraint from §1, $\sum_i \omega_i V_i = 1$: for a binary treatment that constraint is the treated weights summing to $+1$ (and, with the zero total, controls to $-1$). AIPW keeps it exactly; the partially-linear estimator sums to $\pm 0.99$, quietly breaking the within-group budget that OLS and AIPW hold.
 
 That divergence shows what the representation is for. In Knaus's (2024) framing it does three things beyond producing the estimate. It puts OLS, IPW, AIPW, DML, and the causal forest on **one footing**, comparable through the single object $\boldsymbol\omega' \boldsymbol Y$. It **characterises the target population** each estimator reports — exactly the PLR-versus-AIPW gap above, two weightings of one set of outcomes. And it **checks covariate balance**, by handing $\boldsymbol\omega$ to `cobalt`, and flags when weights fail a property usually assumed — the within-group sum-to-$\pm 1$ that PLR breaks here.
 
-The signed-extrapolation and leverage reading of §4 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.
+The signed-extrapolation and leverage reading of §3 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.
 
 ### The weights, derived
 
-We have the OLS weights (@eq-omega); the same object exists for the machine-learning estimators. It is not derived from a deeper principle — it is read off a *shape* these estimators share. Each can be written as a ratio in which the outcomes enter linearly and only in the numerator,
+We have the OLS weights (@eq-omega); the same weights exist for the machine-learning estimators, derived the same way — residualise, then read off the coefficient on $\boldsymbol Y$. Take the partially-linear estimator (the R-learner behind the causal forest). It is FWL with the projections done by a flexible learner: residualise treatment and outcome on the covariates, then regress one residual on the other,
 
-$$ \hat\tau = \frac{\tilde{\boldsymbol Z}' \boldsymbol T \boldsymbol Y}{\tilde{\boldsymbol Z}' \tilde{\boldsymbol D}}, $$
+$$ \hat\tau = \frac{\sum_i (D_i - \hat e_i)(Y_i - \hat m_i)}{\sum_i (D_i - \hat e_i)^2}, $$
 
-where the score $\tilde{\boldsymbol Z}$, the denominator $\tilde{\boldsymbol D}$, and the operator $\boldsymbol T$ are built from $(\boldsymbol X, \boldsymbol D)$ but never from $\boldsymbol Y$. This is a claim about each estimator, not an identity true in advance; the three cases below verify it one at a time.
+with $\hat e = \hat E[D \mid X]$ and $\hat m = \hat E[Y \mid X]$ the fitted nuisances.
 
-Grant the shape and the weights follow with no work: $\boldsymbol Y$ sits only in the numerator, so it enters $\hat\tau$ with coefficient
+The outcome nuisance is a *smoother*: its fitted values are a linear map of the training outcomes, $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$ — true for OLS, ridge, kernels, and honest forests alike. So the outcome residual is $\boldsymbol Y - \hat{\boldsymbol m} = (\mathbf I - \boldsymbol S)\boldsymbol Y$. Writing $\tilde{\boldsymbol D} = \boldsymbol D - \hat{\boldsymbol e}$ for the treatment residual and substituting,
 
-$$ \hat\tau = \boldsymbol\omega' \boldsymbol Y, \qquad \boldsymbol\omega' = \frac{\tilde{\boldsymbol Z}' \boldsymbol T}{\tilde{\boldsymbol Z}' \tilde{\boldsymbol D}}. $$ {#eq-omega-ml}
+$$ \hat\tau = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,\boldsymbol Y}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$
 
-So @eq-omega-ml is the easy step; the content is showing each estimator has the shape. Three do, with different $(\tilde{\boldsymbol Z}, \tilde{\boldsymbol D}, \boldsymbol T)$.
+Now $\boldsymbol Y$ appears once, linearly, in the numerator. Read off its coefficient and the weights are done:
 
-*OLS.* The treatment residual is $\hat{\boldsymbol E} = \boldsymbol M_X \boldsymbol D$ and $\hat\tau = (\hat{\boldsymbol E}'\hat{\boldsymbol E})^{-1}\hat{\boldsymbol E}'\boldsymbol Y$, so $\tilde{\boldsymbol Z} = \tilde{\boldsymbol D} = \hat{\boldsymbol E}$ and $\boldsymbol T = \boldsymbol M_X$ — this is @eq-omega.
+$$ \hat\tau = \boldsymbol\omega'\boldsymbol Y, \qquad \boldsymbol\omega' = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$ {#eq-omega-ml}
 
-*Partially linear (R-learner, causal forest).* Estimate $E[Y \mid X]$ by a smoother, $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$, and the propensity $\hat{\boldsymbol e}$. With residuals $\tilde{\boldsymbol Y} = (\mathbf I - \boldsymbol S)\boldsymbol Y$ and $\tilde{\boldsymbol D} = \boldsymbol D - \hat{\boldsymbol e}$, Robinson's estimator $\hat\tau = \tilde{\boldsymbol D}'\tilde{\boldsymbol Y} / (\tilde{\boldsymbol D}'\tilde{\boldsymbol D})$ has $\tilde{\boldsymbol Z} = \tilde{\boldsymbol D}$ and $\boldsymbol T = \mathbf I - \boldsymbol S$. It is @eq-omega with the projection $\boldsymbol M_X$ replaced by the smoother annihilator $\mathbf I - \boldsymbol S$.
+That is @eq-omega — the OLS weights — with the projection annihilator $\boldsymbol M_X$ replaced by the smoother annihilator $\mathbf I - \boldsymbol S$. OLS is the case of a linear learner, $\boldsymbol S = \boldsymbol P_X$: there $\boldsymbol S$ is a projection, $\mathbf I - \boldsymbol S = \boldsymbol M_X$, and @eq-omega-ml is @eq-omega exactly.
+
+Three moves did it: write the estimator, substitute the smoother $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$, read off the coefficient on $\boldsymbol Y$. They work for any estimator built from smoothers; only the operator on $\boldsymbol Y$ changes. AIPW is worth carrying through, because its operator is more than $\mathbf I - \boldsymbol S$.
 
 *AIPW.* With outcome smoothers $\hat{\boldsymbol\mu}_1 = \boldsymbol S_1 \boldsymbol Y$, $\hat{\boldsymbol\mu}_0 = \boldsymbol S_0 \boldsymbol Y$ and propensity $\hat{\boldsymbol e}$, the score of unit $i$ is
 
 $$ \psi_i = \hat\mu_{1i} - \hat\mu_{0i} + \frac{D_i}{\hat e_i}\,(Y_i - \hat\mu_{1i}) - \frac{1 - D_i}{1 - \hat e_i}\,(Y_i - \hat\mu_{0i}), \qquad \hat\tau = \frac1n \sum_i \psi_i. $$
 
-Every $\psi_i$ is linear in $\boldsymbol Y$; collecting the coefficient gives $\tilde{\boldsymbol Z} = \tilde{\boldsymbol D} = \mathbf 1$ and
+Each $\hat\mu_{ji}$ is $(\boldsymbol S_j \boldsymbol Y)_i$, so $\boldsymbol Y$ again enters only linearly; collecting its coefficient gives $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ with
 
 $$ \boldsymbol T = \boldsymbol S_1 - \boldsymbol S_0 + \operatorname{diag}\!\Big(\tfrac{\boldsymbol D}{\hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_1) - \operatorname{diag}\!\Big(\tfrac{1 - \boldsymbol D}{1 - \hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_0), \qquad \boldsymbol\omega' = \frac{\mathbf 1' \boldsymbol T}{n}. $$
 
-The package reads $(\boldsymbol S, \boldsymbol S_0, \boldsymbol S_1, \hat{\boldsymbol e})$ from the fitted object, forms $(\tilde{\boldsymbol Z}, \tilde{\boldsymbol D}, \boldsymbol T)$, and applies @eq-omega-ml — nothing more. The partially-linear case is one line we can run against it:
+These derived weights are exactly the rows of the table above. Multiply either $\boldsymbol\omega$ into $\boldsymbol Y$ and you recover that estimator's point estimate; sum them within the treated and control groups and you get the $\pm 1$ (AIPW) and $\pm 0.99$ (PLR) reported there. That is the use of deriving $\boldsymbol\omega$: once you have it, the reproduction check, the within-group budget, and the balance and overlap diagnostics all run on the same object, for any estimator built from smoothers.
+
+The package does exactly this — reads $(\boldsymbol S, \boldsymbol S_0, \boldsymbol S_1, \hat{\boldsymbol e})$ from the fitted object, forms these operators, and reads off $\boldsymbol\omega$. The formulas above take a few lines to compute by hand; here we do it for both PLR and AIPW and check they match the package's weights:
 
 ```{r}
-S <- dml$NuPa.hat$smoothers$S[1, , ]        # forest smoother: Y.hat = S %*% Y
-e <- dml$NuPa.hat$predictions$D.hat[, 1]    # fitted propensity
-Wtil <- W - e                               # treatment residual E-hat
-# PLR (eq-omega-ml): Z-tilde = D-tilde = Wtil, T = I - S, so omega = (I - S)' Wtil / (Wtil' Wtil)
-omega_by_hand <- as.numeric((Wtil - crossprod(S, Wtil)) / sum(Wtil^2))
-vtab(c(`max |by hand - package|`   = max(abs(omega_by_hand - om$omega["PLR", ])),
-       `omega' Y (reproduces PLR)` = sum(omega_by_hand * Y)))
+n  <- length(Y)
+S  <- dml$NuPa.hat$smoothers$S[1, , ]         # outcome smoother E[Y|X]
+S1 <- dml$NuPa.hat$smoothers$S.d1[1, , ]      # E[Y|X, D=1] smoother
+S0 <- dml$NuPa.hat$smoothers$S.d0[1, , ]      # E[Y|X, D=0] smoother
+e  <- dml$NuPa.hat$predictions$D.hat[, 1]     # fitted propensity
+
+# PLR:  omega = (I - S)'(W - e) / ||W - e||^2
+Wtil   <- W - e
+om_plr <- as.numeric((Wtil - crossprod(S, Wtil)) / sum(Wtil^2))
+
+# AIPW: omega = 1'T / n,  T = S1 - S0 + diag(W/e)(I - S1) - diag((1-W)/(1-e))(I - S0)
+Imat    <- diag(n)
+Tm      <- S1 - S0 + (W / e) * (Imat - S1) - ((1 - W) / (1 - e)) * (Imat - S0)
+om_aipw <- colSums(Tm) / n
+
+vtab(c(`PLR:  max |by hand - package|` = max(abs(om_plr  - om$omega["PLR", ])),
+       `PLR:  omega' Y`                = sum(om_plr  * Y),
+       `AIPW: max |by hand - package|` = max(abs(om_aipw - om$omega["AIPW-ATE", ])),
+       `AIPW: omega' Y`                = sum(om_aipw * Y)), 4)
 ```
 
-Agreement to machine precision, and $\boldsymbol\omega' \boldsymbol Y$ returns the PLR estimate. The AIPW row follows from its $\boldsymbol T$ above, and OLS is the projection case: when $\boldsymbol S = \boldsymbol P_X$ is idempotent and symmetric, $\mathbf I - \boldsymbol S = \boldsymbol M_X$ and @eq-omega-ml collapses back to the plain $\tilde V_i / \sum_j \tilde V_j^2$ of @eq-omega. A forest's $\boldsymbol S$ is no projection, so the $\mathbf I - \boldsymbol S$ factor stays.
+Agreement to machine precision: both by-hand $\boldsymbol\omega$ vectors match the package, and each $\boldsymbol\omega' \boldsymbol Y$ returns its point estimate — the derivation above, in code.
+
+### Two uses: balance and extrapolation
+
+Having $\boldsymbol\omega$, two checks run directly on it. Does the estimator's implied weighting balance the covariates? Hand $\boldsymbol\omega$ to `cobalt` and read the largest standardised mean difference. And is it extrapolating? Count the wrong-sign weights — a control with $\omega_i > 0$ or a treated unit with $\omega_i < 0$, the §3 signature of a comparison reaching off common support.
+
+```{r}
+#| message: false
+#| warning: false
+library(cobalt)
+uses <- t(sapply(rownames(om$omega), function(nm) {
+  w <- om$omega[nm, ]
+  c(`max |SMD|`        = max(abs(bal.tab(as.data.frame(X), treat = W, weights = w)$Balance$Diff.Adj)),
+    `wrong-sign units` = sum((om$treat == 1 & w < 0) | (om$treat == 0 & w > 0)))
+}))
+mtab(uses, 3)
+```
+
+Raw, the groups are badly imbalanced — the largest covariate SMD is $1.11$, since treatment was tied to $X_1$. Both weightings pull it down to near zero ($0.03$ for PLR, $0.09$ for AIPW): each balances the covariates, which for a causal forest you could not otherwise check.
+
+They differ on extrapolation. PLR carries 21 wrong-sign controls — it leans slightly off common support — while AIPW carries none. Neither is disqualifying here; the point is that balance and extrapolation are now *checkable*, on estimators that never exposed a weighting.
 
 ## From two dots to four
 
@@ -373,7 +409,46 @@ vtab(c(`treated trend` = Tpost - Tpre, `control trend` = Cpost - Cpre,
 
 The estimated interaction recovers the true DiD of $2$, and the four cell-mean weights carry the structural signs $(+, -, -, +)$ as long as every cell is populated.
 
-They stop being structural in *staggered* designs: two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the wrong-sign story of the last section one level up: a comparison entering with a sign it should not, because the design has run out of clean controls. (These weight the treatment *effects* — the effect-weight cousin of this chapter's outcome weights.)
+The clean $2 \times 2$ has trivial weights — four cell means, each $\pm 1$. Real difference-in-differences carries covariates: parallel trends holds only *conditional* on $X$, and the comparison has to be modelled. That model is a weighting of outcomes too.
+
+The doubly-robust DiD of Sant'Anna and Zhao (2020) is AIPW read on the outcome *change* $\Delta Y = Y_1 - Y_0$: a propensity for treatment, a control-group regression of $\Delta Y$ on $X$, combined. By the recipe of the last section its estimate is $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$, with $\boldsymbol\omega' = \boldsymbol a'(\mathbf I - \boldsymbol S)$ — the control-trend smoother $\boldsymbol S$ and the group weights $\boldsymbol a = \boldsymbol w_{\text{treat}} - \boldsymbol w_{\text{cont}}$.
+
+**Simulation — doubly-robust DiD.** Two periods and $n = 2000$: treatment is selected on $x_1$ with thin overlap, $\Pr(D = 1) = \Lambda(-0.5 + 2 x_1)$; the control trend depends on $x_1$, so trends are parallel only given $X$; the true ATT is $1$. We fit DR-DiD with `DRDID`, rebuild its weights by hand, and check.
+
+```{r}
+#| message: false
+#| warning: false
+library(DRDID)
+set.seed(2)
+n  <- 2000
+x1 <- rnorm(n); x2 <- rnorm(n); Xcov <- cbind(1, x1, x2)
+D  <- rbinom(n, 1, plogis(-0.5 + 2 * x1))        # selection into treatment on x1 (thin overlap)
+y0 <- 1 + x1 + 0.5 * x2 + rnorm(n)               # pre-period outcome
+y1 <- y0 + (0.5 + 0.4 * x1) + 1 * D + rnorm(n)   # control trend depends on x1; true ATT = 1
+dY <- y1 - y0
+att <- drdid_panel(y1 = y1, y0 = y0, D = D, covariates = Xcov, boot = FALSE)$ATT
+
+# rebuild the DR-DiD weights: omega = (I - S)' a, acting on the outcome change dY
+e    <- pmin(as.vector(glm(D ~ x1 + x2, family = binomial)$fitted), 1 - 1e-6)
+keep <- rep(TRUE, n); keep[D == 0] <- e[D == 0] < 0.995     # DRDID's control trimming
+Xc   <- Xcov[D == 0, ]
+S    <- matrix(0, n, n); S[, D == 0] <- Xcov %*% solve(crossprod(Xc)) %*% t(Xc)
+w.t  <- keep * D
+w.c  <- keep * e * (1 - D) / (1 - e)
+a    <- w.t / sum(w.t) - w.c / sum(w.c)          # group weights, treated minus reweighted control
+omega <- as.vector(a - crossprod(S, a))
+
+Xk <- cbind(x1, x2); sds <- apply(Xk, 2, sd)
+vtab(c(`DRDID ATT`                = att,
+       `omega' dY`                = sum(omega * dY),
+       `wrong-sign weights`       = sum((D == 1 & omega < 0) | (D == 0 & omega > 0)),
+       `covariate imbalance, raw` = max(abs((colMeans(Xk[D == 1, ]) - colMeans(Xk[D == 0, ])) / sds)),
+       `covariate imbalance, wtd` = max(abs(as.vector(a %*% Xk) / sds))), 3)
+```
+
+$\boldsymbol\omega' \Delta Y$ reproduces the `DRDID` estimate exactly — the difference-in-differences is a signed weighting of observed outcome *changes*, and the diagnostics of this chapter apply to it. The weighting balances the covariate that drove selection (its standardised imbalance falls from $1.20$ to $0.09$). And $151$ units carry a wrong-sign weight — a treated unit subtracted, or a control added — the §3 signature of a comparison reaching past common support.
+
+Negative weights return in *staggered* designs one level up — among the comparisons rather than the units. Two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight: the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). Those weight the treatment *effects*, not the outcomes — the effect-weight cousin — but the reading is the one just seen: a comparison entering with a sign it should not, because the design has run out of clean controls.
 
 A closing caution. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*.
 
@@ -387,4 +462,4 @@ Pre-trends are probed separately, by the event-study leads. And weights *chosen*
 2. **Two constraints.** The outcome weights sum to zero and the weighted regressor to one: $\sum_i \omega_i = 0$, $\sum_i \omega_i V_i = 1$.
 3. **Signed, not squared.** Because $\omega_i \propto \tilde V_i$ rather than $\tilde V_i^2$, it reveals *direction*: which rows push $\hat\beta$ up, which down, and — under controls with thin overlap — which enter with a sign their raw position would not predict.
 4. **It leaves OLS.** Any $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights; the same object and its diagnostics extend to AIPW, DML, and causal forests (Knaus 2024), with the caveat that the tidy sum-to-zero of OLS need not become sum-to-$\pm 1$ within groups.
-5. **Saturation scales it.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means — two dots; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means — four dots. Negative weights return in staggered designs, as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).
+5. **Saturation scales it.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means — two dots; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means — four dots. With covariates a doubly-robust DiD is a weighting of the outcome *changes*, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same diagnostics; negative weights return in staggered designs as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).

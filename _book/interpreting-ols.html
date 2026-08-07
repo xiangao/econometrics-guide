@@ -497,16 +497,16 @@ E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_{i=1}^n d_i x_i b_i}{\sum_{i=1}^n d_i 
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">*</span> <span class="va">x</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">xb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>; <span class="va">w</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">xb</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></span>
-<span><span class="va">s</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">xb</span><span class="op">)</span></span>
+<span><span class="va">xb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>; <span class="va">d</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">-</span> <span class="va">xb</span>; <span class="va">w</span> <span class="op">&lt;-</span> <span class="va">d</span><span class="op">^</span><span class="fl">2</span></span>
+<span><span class="va">s</span>  <span class="op">&lt;-</span> <span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="va">d</span></span>
 <span></span>
 <span><span class="fu">mtab</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
-<span>  `cor(s_i, b_i)`            <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">b</span><span class="op">)</span>,</span>
-<span>  `sd(b_i)`                  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span>,</span>
-<span>  `sd(s_i)`                  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span>,</span>
-<span>  `Weighted Avg of s_i`      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">s</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span>
-<span>  `Weighted Avg of b_i`      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span>
-<span>  `OLS Estimate`             <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span>  `cor(s_i, b_i), Pearson`    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">b</span><span class="op">)</span>,</span>
+<span>  `cor(s_i, b_i), Spearman`   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">b</span>, method <span class="op">=</span> <span class="st">"spearman"</span><span class="op">)</span>,</span>
+<span>  `sd(s_i)`                   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span>,</span>
+<span>  `Weighted Avg of s_i`       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span> <span class="op">*</span> <span class="va">s</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span>,</span>
+<span>  `OLS Estimate`              <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  `E[beta | x, b] (eq-exact)` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">*</span> <span class="va">x</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">d</span> <span class="op">*</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead><tr class="header">
@@ -515,12 +515,12 @@ E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_{i=1}^n d_i x_i b_i}{\sum_{i=1}^n d_i 
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">cor(s_i, b_i)</td>
+<td style="text-align: left;">cor(s_i, b_i), Pearson</td>
 <td style="text-align: right;">0.019</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">sd(b_i)</td>
-<td style="text-align: right;">0.500</td>
+<td style="text-align: left;">cor(s_i, b_i), Spearman</td>
+<td style="text-align: right;">0.258</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sd(s_i)</td>
@@ -531,18 +531,18 @@ E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_{i=1}^n d_i x_i b_i}{\sum_{i=1}^n d_i 
 <td style="text-align: right;">0.950</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Weighted Avg of b_i</td>
-<td style="text-align: right;">0.992</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">OLS Estimate</td>
 <td style="text-align: right;">0.950</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E[beta | x, b] (eq-exact)</td>
+<td style="text-align: right;">0.991</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>The <span class="math inline">\(s_i\)</span> are wildly dispersed (<span class="math inline">\(\text{sd}(s_i) &gt; 100\)</span>) and barely correlated with the true <span class="math inline">\(b_i\)</span>, as <a href="#eq-esi" class="quarto-xref">Equation&nbsp;<span>13.7</span></a> predicts. Yet their leverage-weighted average matches <span class="math inline">\(\hat\beta_{OLS}\)</span> exactly (<a href="#eq-wavg" class="quarto-xref">Equation&nbsp;<span>13.4</span></a>), and the same weighting of the true <span class="math inline">\(b_i\)</span> converges to it too (<a href="#eq-exact" class="quarto-xref">Equation&nbsp;<span>13.10</span></a>). The near-zero Pearson correlation is an artefact of the explosive tails — a few points near <span class="math inline">\(\bar x\)</span> dominate it — while the rank correlation on the same data is much higher. The signal is buried, not absent.</p>
+<p>The <span class="math inline">\(s_i\)</span> are wildly dispersed (<span class="math inline">\(\text{sd}(s_i) &gt; 100\)</span>) and barely correlated with the true <span class="math inline">\(b_i\)</span> — Pearson <span class="math inline">\(0.02\)</span>, though the rank correlation is <span class="math inline">\(0.26\)</span>, higher once the explosive tails near <span class="math inline">\(\bar x\)</span> are set aside. Their leverage-weighted average equals <span class="math inline">\(\hat\beta_{OLS}\)</span> exactly; that is <a href="#eq-wavg" class="quarto-xref">Equation&nbsp;<span>13.4</span></a>, an identity. The same leverage applied to the true <span class="math inline">\(b_i\)</span> gives <span class="math inline">\(0.99\)</span>, the value <span class="math inline">\(\hat\beta\)</span> estimates <em>in expectation</em> (<a href="#eq-exact" class="quarto-xref">Equation&nbsp;<span>13.10</span></a>) — and this sample’s <span class="math inline">\(\hat\beta = 0.95\)</span> sits about two standard errors below it, a reminder that <a href="#eq-exact" class="quarto-xref">Equation&nbsp;<span>13.10</span></a> governs the expectation, not any one draw. The signal is buried, not absent.</p>
 <p>Noise is not what distorts <span class="math inline">\(s_i\)</span>. Turn it off entirely, set <span class="math inline">\(y_i = b_i x_i\)</span>, and ask how well each <span class="math inline">\(s_i\)</span> tracks its own <span class="math inline">\(b_i\)</span>:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">y0</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">*</span> <span class="va">x</span></span>
@@ -687,9 +687,14 @@ w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \
 <span><span class="op">}</span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>`Balanced (rho ~ 0.5)`   <span class="op">=</span> <span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.08</span>, <span class="fl">.20</span>, <span class="fl">.50</span>, <span class="fl">.75</span>, <span class="fl">.93</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>             `Unbalanced (rho ~ 0.09)` <span class="op">=</span> <span class="fu">compare</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.02</span>, <span class="fl">.04</span>, <span class="fl">.08</span>, <span class="fl">.12</span>, <span class="fl">.20</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">mtab</span><span class="op">(</span><span class="va">res</span><span class="op">[</span><span class="op">-</span><span class="fl">2</span>, <span class="op">]</span>, <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">mtab</span><span class="op">(</span><span class="va">res</span>, <span class="fl">4</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 28%">
+<col style="width: 32%">
+</colgroup>
 <thead><tr class="header">
 <th style="text-align: left;"></th>
 <th style="text-align: right;">Balanced (rho ~ 0.5)</th>
@@ -702,21 +707,26 @@ w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \
 <td style="text-align: right;">0.0909</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Max |Weight Diff|</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">OLS Saturated</td>
 <td style="text-align: right;">2.0121</td>
 <td style="text-align: right;">2.8740</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Angrist Weighted</td>
 <td style="text-align: right;">2.0121</td>
 <td style="text-align: right;">2.8740</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Sloczynski Approx</td>
 <td style="text-align: right;">2.0293</td>
 <td style="text-align: right;">2.8577</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">ATE</td>
 <td style="text-align: right;">1.9978</td>
 <td style="text-align: right;">1.9978</td>
@@ -725,7 +735,7 @@ w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \
 </table>
 </div>
 </div>
-<p>The two weight vectors — the stratum sums <span class="math inline">\(\sum \tilde D_i D_i\)</span> and Angrist’s <span class="math inline">\(n_x \hat D(x)(1 - \hat D(x))\)</span> — agree to within <span class="math inline">\(6 \times 10^{-10}\)</span> in both designs, and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is <span class="math inline">\(2.012\)</span> against an ATE of <span class="math inline">\(1.998\)</span>: close, because balance is where the weighting does least. Push the treated share to <span class="math inline">\(0.09\)</span> and the coefficient jumps to <span class="math inline">\(2.874\)</span> against the same <span class="math inline">\(1.998\)</span>. Nothing about the effects changed. Only the treated share did.</p>
+<p>The two weight vectors — the stratum sums <span class="math inline">\(\sum \tilde D_i D_i\)</span> and Angrist’s <span class="math inline">\(n_x \hat D(x)(1 - \hat D(x))\)</span> — are the same, below <span class="math inline">\(10^{-9}\)</span> (the <code>Max |Weight Diff|</code> row, <span class="math inline">\(0\)</span> to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is <span class="math inline">\(2.012\)</span> against an ATE of <span class="math inline">\(1.998\)</span>: close, because balance is where the weighting does least. Push the treated share to <span class="math inline">\(0.09\)</span> and the coefficient jumps to <span class="math inline">\(2.874\)</span> against the same <span class="math inline">\(1.998\)</span>. Nothing about the effects changed. Only the treated share did.</p>
 </section><section id="słoczyński-2022-aggregating-to-two-groups" class="level3" data-number="13.4.2"><h3 data-number="13.4.2" class="anchored" data-anchor-id="słoczyński-2022-aggregating-to-two-groups">
 <span class="header-section-number">13.4.2</span> Słoczyński (2022): aggregating to two groups</h3>
 <p>Angrist sorts by covariate stratum. Słoczyński sorts by treatment status instead, collapsing everything into two numbers — the effect on the treated and the effect on the untreated. Aggregating the stratum effects <span class="math inline">\(\hat\delta_x\)</span> of <a href="#eq-angrist" class="quarto-xref">Equation&nbsp;<span>13.17</span></a> with each stratum’s count of treated or untreated units gives</p>
@@ -737,7 +747,7 @@ w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \
 <p><span id="eq-ate"><span class="math display">\[
 \text{ATE} = \rho\, \text{ATT} + (1 - \rho)\, \text{ATU}
 \tag{13.19}\]</span></span></p>
-<p>The OLS weights of <a href="#eq-angrist" class="quarto-xref">Equation&nbsp;<span>13.17</span></a> go as the propensity <em>variance</em> <span class="math inline">\(\hat D(x)(1 - \hat D(x))\)</span>; the group weights of <a href="#eq-attatu" class="quarto-xref">Equation&nbsp;<span>13.18</span></a> go as the propensity itself or its complement. The relation between the two is Słoczyński’s result. Write <span class="math inline">\(p = \hat D(X)\)</span> for the cell propensity. Because the design is saturated, residualising <span class="math inline">\(D\)</span> on the strata leaves exactly <span class="math inline">\(\tilde D = D - p\)</span>, so the coefficient is <span class="math inline">\(E[\tilde D\, Y]/E[p(1-p)]\)</span>. Since <span class="math inline">\(p\)</span> is constant within a stratum, <span class="math inline">\(Y\)</span> enters only through the group means <span class="math inline">\(m_j(p) = E[Y \mid p, D = j]\)</span>, and, using <span class="math inline">\(\tilde D = 1 - p\)</span> for treated and <span class="math inline">\(-p\)</span> for untreated units,</p>
+<p>The OLS weights of <a href="#eq-angrist" class="quarto-xref">Equation&nbsp;<span>13.17</span></a> go as the propensity <em>variance</em> <span class="math inline">\(\hat D(x)(1 - \hat D(x))\)</span>; the group weights of <a href="#eq-attatu" class="quarto-xref">Equation&nbsp;<span>13.18</span></a> go as the propensity itself or its complement. The relation between the two is Słoczyński’s result. Write <span class="math inline">\(p = \hat D(X)\)</span> for the cell propensity. Because the design is saturated — the controls are a full set of stratum dummies — residualising <span class="math inline">\(D\)</span> on the strata leaves exactly <span class="math inline">\(\tilde D = D - p\)</span>, so the coefficient is <span class="math inline">\(E[\tilde D\, Y]/E[p(1-p)]\)</span>. Since <span class="math inline">\(p\)</span> is constant within a stratum, <span class="math inline">\(Y\)</span> enters only through the group means <span class="math inline">\(m_j(p) = E[Y \mid p, D = j]\)</span>, and, using <span class="math inline">\(\tilde D = 1 - p\)</span> for treated and <span class="math inline">\(-p\)</span> for untreated units,</p>
 <p><span id="eq-sloc1"><span class="math display">\[
 \beta_{OLS} = \frac{\rho\, E[(1 - p)\, m_1(p) \mid D = 1] - (1 - \rho)\, E[p\, m_0(p) \mid D = 0]}{E[p(1 - p)]}
 \tag{13.20}\]</span></span></p>
@@ -745,7 +755,7 @@ w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \
 <p><span id="eq-sloc2"><span class="math display">\[
 \beta_{OLS} = (\alpha_1 - \alpha_0) + (\gamma_1 - \gamma_0)\, \frac{E[p^2(1 - p)]}{E[p(1 - p)]}
 \tag{13.21}\]</span></span></p>
-<p>The last ratio is moment algebra. With <span class="math inline">\(\mu_j = E[p \mid D = j]\)</span>, <span class="math inline">\(V_j = \text{Var}(p \mid D = j)\)</span>, and <span class="math inline">\(w_1, w_0\)</span> the weights defined in <a href="#eq-sloc-main" class="quarto-xref">Equation&nbsp;<span>13.23</span></a> below,</p>
+<p>The last ratio is moment algebra — an identity in the first three moments of <span class="math inline">\(p\)</span>, exact for any distribution. With <span class="math inline">\(\mu_j = E[p \mid D = j]\)</span>, <span class="math inline">\(V_j = \text{Var}(p \mid D = j)\)</span>, and <span class="math inline">\(w_1, w_0\)</span> the weights defined in <a href="#eq-sloc-main" class="quarto-xref">Equation&nbsp;<span>13.23</span></a> below,</p>
 <p><span id="eq-moment"><span class="math display">\[
 \frac{E[p^2(1 - p)]}{E[p(1 - p)]} = w_1 \mu_1 + w_0 \mu_0
 \tag{13.22}\]</span></span></p>
@@ -1717,19 +1727,19 @@ V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
 <span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
 <span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
 <span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> b <span class="sc">*</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2</span>)</span>
-<span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">mean</span>(x); w <span class="ot">&lt;-</span> (x <span class="sc">-</span> xb)<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> (y <span class="sc">-</span> <span class="fu">mean</span>(y)) <span class="sc">/</span> (x <span class="sc">-</span> xb)</span>
+<span id="cb14-181"><a href="#cb14-181" aria-hidden="true" tabindex="-1"></a>xb <span class="ot">&lt;-</span> <span class="fu">mean</span>(x); d <span class="ot">&lt;-</span> x <span class="sc">-</span> xb; w <span class="ot">&lt;-</span> d<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb14-182"><a href="#cb14-182" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> (y <span class="sc">-</span> <span class="fu">mean</span>(y)) <span class="sc">/</span> d</span>
 <span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a><span class="fu">mtab</span>(<span class="fu">cbind</span>(<span class="at">value =</span> <span class="fu">c</span>(</span>
-<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">cor(s_i, b_i)</span><span class="st">`</span>            <span class="ot">=</span> <span class="fu">cor</span>(s, b),</span>
-<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">sd(b_i)</span><span class="st">`</span>                  <span class="ot">=</span> <span class="fu">sd</span>(b),</span>
-<span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">sd(s_i)</span><span class="st">`</span>                  <span class="ot">=</span> <span class="fu">sd</span>(s),</span>
-<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Weighted Avg of s_i</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> s) <span class="sc">/</span> <span class="fu">sum</span>(w),</span>
-<span id="cb14-189"><a href="#cb14-189" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Weighted Avg of b_i</span><span class="st">`</span>      <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(w),</span>
-<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">OLS Estimate</span><span class="st">`</span>             <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]))), <span class="dv">3</span>)</span>
+<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">cor(s_i, b_i), Pearson</span><span class="st">`</span>    <span class="ot">=</span> <span class="fu">cor</span>(s, b),</span>
+<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">cor(s_i, b_i), Spearman</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">cor</span>(s, b, <span class="at">method =</span> <span class="st">"spearman"</span>),</span>
+<span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">sd(s_i)</span><span class="st">`</span>                   <span class="ot">=</span> <span class="fu">sd</span>(s),</span>
+<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Weighted Avg of s_i</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">sum</span>(w <span class="sc">*</span> s) <span class="sc">/</span> <span class="fu">sum</span>(w),</span>
+<span id="cb14-189"><a href="#cb14-189" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">OLS Estimate</span><span class="st">`</span>              <span class="ot">=</span> <span class="fu">unname</span>(<span class="fu">coef</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))[<span class="dv">2</span>]),</span>
+<span id="cb14-190"><a href="#cb14-190" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">E[beta | x, b] (eq-exact)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">sum</span>(d <span class="sc">*</span> x <span class="sc">*</span> b) <span class="sc">/</span> <span class="fu">sum</span>(d <span class="sc">*</span> x))), <span class="dv">3</span>)</span>
 <span id="cb14-191"><a href="#cb14-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb14-192"><a href="#cb14-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a>The $s_i$ are wildly dispersed ($\text{sd}(s_i) &gt; 100$) and barely correlated with the true $b_i$, as @eq-esi predicts. Yet their leverage-weighted average matches $\hat\beta_{OLS}$ exactly (@eq-wavg), and the same weighting of the true $b_i$ converges to it too (@eq-exact). The near-zero Pearson correlation is an artefact of the explosive tails — a few points near $\bar x$ dominate it — while the rank correlation on the same data is much higher. The signal is buried, not absent.</span>
+<span id="cb14-193"><a href="#cb14-193" aria-hidden="true" tabindex="-1"></a>The $s_i$ are wildly dispersed ($\text{sd}(s_i) &gt; 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, though the rank correlation is $0.26$, higher once the explosive tails near $\bar x$ are set aside. Their leverage-weighted average equals $\hat\beta_{OLS}$ exactly; that is @eq-wavg, an identity. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta$ estimates *in expectation* (@eq-exact) — and this sample's $\hat\beta = 0.95$ sits about two standard errors below it, a reminder that @eq-exact governs the expectation, not any one draw. The signal is buried, not absent.</span>
 <span id="cb14-194"><a href="#cb14-194" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-195"><a href="#cb14-195" aria-hidden="true" tabindex="-1"></a>Noise is not what distorts $s_i$. Turn it off entirely, set $y_i = b_i x_i$, and ask how well each $s_i$ tracks its own $b_i$:</span>
 <span id="cb14-196"><a href="#cb14-196" aria-hidden="true" tabindex="-1"></a></span>
@@ -1855,10 +1865,10 @@ V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
 <span id="cb14-320"><a href="#cb14-320" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb14-321"><a href="#cb14-321" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="st">`</span><span class="at">Balanced (rho ~ 0.5)</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">08</span>, .<span class="dv">20</span>, .<span class="dv">50</span>, .<span class="dv">75</span>, .<span class="dv">93</span>)),</span>
 <span id="cb14-322"><a href="#cb14-322" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Unbalanced (rho ~ 0.09)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">compare</span>(<span class="fu">c</span>(.<span class="dv">02</span>, .<span class="dv">04</span>, .<span class="dv">08</span>, .<span class="dv">12</span>, .<span class="dv">20</span>)))</span>
-<span id="cb14-323"><a href="#cb14-323" aria-hidden="true" tabindex="-1"></a><span class="fu">mtab</span>(res[<span class="sc">-</span><span class="dv">2</span>, ], <span class="dv">4</span>)</span>
+<span id="cb14-323"><a href="#cb14-323" aria-hidden="true" tabindex="-1"></a><span class="fu">mtab</span>(res, <span class="dv">4</span>)</span>
 <span id="cb14-324"><a href="#cb14-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb14-325"><a href="#cb14-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-326"><a href="#cb14-326" aria-hidden="true" tabindex="-1"></a>The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — agree to within $6 \times 10^{-10}$ in both designs, and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is $2.012$ against an ATE of $1.998$: close, because balance is where the weighting does least. Push the treated share to $0.09$ and the coefficient jumps to $2.874$ against the same $1.998$. Nothing about the effects changed. Only the treated share did.</span>
+<span id="cb14-326"><a href="#cb14-326" aria-hidden="true" tabindex="-1"></a>The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the <span class="in">`Max |Weight Diff|`</span> row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is $2.012$ against an ATE of $1.998$: close, because balance is where the weighting does least. Push the treated share to $0.09$ and the coefficient jumps to $2.874$ against the same $1.998$. Nothing about the effects changed. Only the treated share did.</span>
 <span id="cb14-327"><a href="#cb14-327" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-328"><a href="#cb14-328" aria-hidden="true" tabindex="-1"></a><span class="fu">### Słoczyński (2022): aggregating to two groups</span></span>
 <span id="cb14-329"><a href="#cb14-329" aria-hidden="true" tabindex="-1"></a></span>
@@ -1875,7 +1885,7 @@ V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
 <span id="cb14-340"><a href="#cb14-340" aria-hidden="true" tabindex="-1"></a>\text{ATE} = \rho\, \text{ATT} + (1 - \rho)\, \text{ATU}</span>
 <span id="cb14-341"><a href="#cb14-341" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ate}</span>
 <span id="cb14-342"><a href="#cb14-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-343"><a href="#cb14-343" aria-hidden="true" tabindex="-1"></a>The OLS weights of @eq-angrist go as the propensity *variance* $\hat D(x)(1 - \hat D(x))$; the group weights of @eq-attatu go as the propensity itself or its complement. The relation between the two is Słoczyński's result. Write $p = \hat D(X)$ for the cell propensity. Because the design is saturated, residualising $D$ on the strata leaves exactly $\tilde D = D - p$, so the coefficient is $E<span class="co">[</span><span class="ot">\tilde D\, Y</span><span class="co">]</span>/E<span class="co">[</span><span class="ot">p(1-p)</span><span class="co">]</span>$. Since $p$ is constant within a stratum, $Y$ enters only through the group means $m_j(p) = E<span class="co">[</span><span class="ot">Y \mid p, D = j</span><span class="co">]</span>$, and, using $\tilde D = 1 - p$ for treated and $-p$ for untreated units,</span>
+<span id="cb14-343"><a href="#cb14-343" aria-hidden="true" tabindex="-1"></a>The OLS weights of @eq-angrist go as the propensity *variance* $\hat D(x)(1 - \hat D(x))$; the group weights of @eq-attatu go as the propensity itself or its complement. The relation between the two is Słoczyński's result. Write $p = \hat D(X)$ for the cell propensity. Because the design is saturated — the controls are a full set of stratum dummies — residualising $D$ on the strata leaves exactly $\tilde D = D - p$, so the coefficient is $E<span class="co">[</span><span class="ot">\tilde D\, Y</span><span class="co">]</span>/E<span class="co">[</span><span class="ot">p(1-p)</span><span class="co">]</span>$. Since $p$ is constant within a stratum, $Y$ enters only through the group means $m_j(p) = E<span class="co">[</span><span class="ot">Y \mid p, D = j</span><span class="co">]</span>$, and, using $\tilde D = 1 - p$ for treated and $-p$ for untreated units,</span>
 <span id="cb14-344"><a href="#cb14-344" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-345"><a href="#cb14-345" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb14-346"><a href="#cb14-346" aria-hidden="true" tabindex="-1"></a>\beta_{OLS} = \frac{\rho\, E<span class="co">[</span><span class="ot">(1 - p)\, m_1(p) \mid D = 1</span><span class="co">]</span> - (1 - \rho)\, E<span class="co">[</span><span class="ot">p\, m_0(p) \mid D = 0</span><span class="co">]</span>}{E<span class="co">[</span><span class="ot">p(1 - p)</span><span class="co">]</span>}</span>
@@ -1887,7 +1897,7 @@ V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
 <span id="cb14-352"><a href="#cb14-352" aria-hidden="true" tabindex="-1"></a>\beta_{OLS} = (\alpha_1 - \alpha_0) + (\gamma_1 - \gamma_0)\, \frac{E<span class="co">[</span><span class="ot">p^2(1 - p)</span><span class="co">]</span>}{E<span class="co">[</span><span class="ot">p(1 - p)</span><span class="co">]</span>}</span>
 <span id="cb14-353"><a href="#cb14-353" aria-hidden="true" tabindex="-1"></a>$$ {#eq-sloc2}</span>
 <span id="cb14-354"><a href="#cb14-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-355"><a href="#cb14-355" aria-hidden="true" tabindex="-1"></a>The last ratio is moment algebra. With $\mu_j = E<span class="co">[</span><span class="ot">p \mid D = j</span><span class="co">]</span>$, $V_j = \text{Var}(p \mid D = j)$, and $w_1, w_0$ the weights defined in @eq-sloc-main below,</span>
+<span id="cb14-355"><a href="#cb14-355" aria-hidden="true" tabindex="-1"></a>The last ratio is moment algebra — an identity in the first three moments of $p$, exact for any distribution. With $\mu_j = E<span class="co">[</span><span class="ot">p \mid D = j</span><span class="co">]</span>$, $V_j = \text{Var}(p \mid D = j)$, and $w_1, w_0$ the weights defined in @eq-sloc-main below,</span>
 <span id="cb14-356"><a href="#cb14-356" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-357"><a href="#cb14-357" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb14-358"><a href="#cb14-358" aria-hidden="true" tabindex="-1"></a>\frac{E<span class="co">[</span><span class="ot">p^2(1 - p)</span><span class="co">]</span>}{E<span class="co">[</span><span class="ot">p(1 - p)</span><span class="co">]</span>} = w_1 \mu_1 + w_0 \mu_0</span>

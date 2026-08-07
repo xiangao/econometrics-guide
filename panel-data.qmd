@@ -319,4 +319,4 @@ case, and they get their own chapter,
 
 The rule behind that $T_i$, and behind the variance weighting in the
 between-versus-within comparison, is not specific to panels.  It is set
-out in [Interpreting OLS](interpreting-ols.qmd), the final chapter.
+out in [Interpreting OLS: Effect Weights](interpreting-ols.qmd) and its companion, [Outcome Weights](outcome-weights.qmd).

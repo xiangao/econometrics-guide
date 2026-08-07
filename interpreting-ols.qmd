@@ -166,19 +166,19 @@ n <- 2000
 b <- rnorm(n, 1, 0.5)
 x <- rnorm(n, 0, 2)
 y <- b * x + rnorm(n, 0, 2)
-xb <- mean(x); w <- (x - xb)^2
-s  <- (y - mean(y)) / (x - xb)
+xb <- mean(x); d <- x - xb; w <- d^2
+s  <- (y - mean(y)) / d
 
 mtab(cbind(value = c(
-  `cor(s_i, b_i)`            = cor(s, b),
-  `sd(b_i)`                  = sd(b),
-  `sd(s_i)`                  = sd(s),
-  `Weighted Avg of s_i`      = sum(w * s) / sum(w),
-  `Weighted Avg of b_i`      = sum(w * b) / sum(w),
-  `OLS Estimate`             = unname(coef(lm(y ~ x))[2]))), 3)
+  `cor(s_i, b_i), Pearson`    = cor(s, b),
+  `cor(s_i, b_i), Spearman`   = cor(s, b, method = "spearman"),
+  `sd(s_i)`                   = sd(s),
+  `Weighted Avg of s_i`       = sum(w * s) / sum(w),
+  `OLS Estimate`              = unname(coef(lm(y ~ x))[2]),
+  `E[beta | x, b] (eq-exact)` = sum(d * x * b) / sum(d * x))), 3)
 ```
 
-The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$, as @eq-esi predicts. Yet their leverage-weighted average matches $\hat\beta_{OLS}$ exactly (@eq-wavg), and the same weighting of the true $b_i$ converges to it too (@eq-exact). The near-zero Pearson correlation is an artefact of the explosive tails — a few points near $\bar x$ dominate it — while the rank correlation on the same data is much higher. The signal is buried, not absent.
+The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, though the rank correlation is $0.26$, higher once the explosive tails near $\bar x$ are set aside. Their leverage-weighted average equals $\hat\beta_{OLS}$ exactly; that is @eq-wavg, an identity. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta$ estimates *in expectation* (@eq-exact) — and this sample's $\hat\beta = 0.95$ sits about two standard errors below it, a reminder that @eq-exact governs the expectation, not any one draw. The signal is buried, not absent.
 
 Noise is not what distorts $s_i$. Turn it off entirely, set $y_i = b_i x_i$, and ask how well each $s_i$ tracks its own $b_i$:
 
@@ -304,10 +304,10 @@ compare <- function(px) {
 }
 res <- cbind(`Balanced (rho ~ 0.5)`   = compare(c(.08, .20, .50, .75, .93)),
              `Unbalanced (rho ~ 0.09)` = compare(c(.02, .04, .08, .12, .20)))
-mtab(res[-2, ], 4)
+mtab(res, 4)
 ```
 
-The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — agree to within $6 \times 10^{-10}$ in both designs, and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is $2.012$ against an ATE of $1.998$: close, because balance is where the weighting does least. Push the treated share to $0.09$ and the coefficient jumps to $2.874$ against the same $1.998$. Nothing about the effects changed. Only the treated share did.
+The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `Max |Weight Diff|` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. In the balanced design the coefficient is $2.012$ against an ATE of $1.998$: close, because balance is where the weighting does least. Push the treated share to $0.09$ and the coefficient jumps to $2.874$ against the same $1.998$. Nothing about the effects changed. Only the treated share did.
 
 ### Słoczyński (2022): aggregating to two groups
 
@@ -324,7 +324,7 @@ $$
 \text{ATE} = \rho\, \text{ATT} + (1 - \rho)\, \text{ATU}
 $$ {#eq-ate}
 
-The OLS weights of @eq-angrist go as the propensity *variance* $\hat D(x)(1 - \hat D(x))$; the group weights of @eq-attatu go as the propensity itself or its complement. The relation between the two is Słoczyński's result. Write $p = \hat D(X)$ for the cell propensity. Because the design is saturated, residualising $D$ on the strata leaves exactly $\tilde D = D - p$, so the coefficient is $E[\tilde D\, Y]/E[p(1-p)]$. Since $p$ is constant within a stratum, $Y$ enters only through the group means $m_j(p) = E[Y \mid p, D = j]$, and, using $\tilde D = 1 - p$ for treated and $-p$ for untreated units,
+The OLS weights of @eq-angrist go as the propensity *variance* $\hat D(x)(1 - \hat D(x))$; the group weights of @eq-attatu go as the propensity itself or its complement. The relation between the two is Słoczyński's result. Write $p = \hat D(X)$ for the cell propensity. Because the design is saturated — the controls are a full set of stratum dummies — residualising $D$ on the strata leaves exactly $\tilde D = D - p$, so the coefficient is $E[\tilde D\, Y]/E[p(1-p)]$. Since $p$ is constant within a stratum, $Y$ enters only through the group means $m_j(p) = E[Y \mid p, D = j]$, and, using $\tilde D = 1 - p$ for treated and $-p$ for untreated units,
 
 $$
 \beta_{OLS} = \frac{\rho\, E[(1 - p)\, m_1(p) \mid D = 1] - (1 - \rho)\, E[p\, m_0(p) \mid D = 0]}{E[p(1 - p)]}
@@ -336,7 +336,7 @@ $$
 \beta_{OLS} = (\alpha_1 - \alpha_0) + (\gamma_1 - \gamma_0)\, \frac{E[p^2(1 - p)]}{E[p(1 - p)]}
 $$ {#eq-sloc2}
 
-The last ratio is moment algebra. With $\mu_j = E[p \mid D = j]$, $V_j = \text{Var}(p \mid D = j)$, and $w_1, w_0$ the weights defined in @eq-sloc-main below,
+The last ratio is moment algebra — an identity in the first three moments of $p$, exact for any distribution. With $\mu_j = E[p \mid D = j]$, $V_j = \text{Var}(p \mid D = j)$, and $w_1, w_0$ the weights defined in @eq-sloc-main below,
 
 $$
 \frac{E[p^2(1 - p)]}{E[p(1 - p)]} = w_1 \mu_1 + w_0 \mu_0
