@@ -182,11 +182,7 @@ vtab(c(`max control PS` = max(w$ps[d == 0]),
 
 Both routes point to the same problem — the groups barely overlap — using different tools: the regression's own implied weights (`lmw`), or a separate propensity-score model (`WeightIt`, `cobalt`). Here overlap fails completely, so neither can help; there is no shared region to weight toward.
 
-When overlap is only partial, both diagnostics still work. The propensity-score route shows it through a shrinking effective sample size and a few large weights; the regression route, through a few negative weights. The next example is that milder case.
-
-On data with partial overlap the diagnostic is a routine check: does the reported coefficient depend on the extrapolation? The answer can go either way, and trimming the flagged units and refitting is what settles it.
-
-Here it depends, and by a lot. Suppose the outcome is convex in $x$, with controls low on the curve and treated high, so the two groups sit on different parts of it. Fit the straight $y \sim D + x$ regardless and it reports a treatment gap of $\hat\beta = 0.69$, a third short of the true effect of $1$ — an artifact of one line forced through a curve the groups do not share.
+When overlap is partial, the diagnostic becomes a sensitivity check: trim the flagged units, refit, and see whether the estimate moves. Here it moves by a lot. The outcome is convex in $x$, controls sit low on the curve and treated sit high, and the straight $y \sim D + x$ reports $\hat\beta = 0.69$ — a third short of the true effect of $1$, an artifact of one line forced through a curve the groups do not share.
 
 **Simulation — fragile estimate under misspecification.** The DGP: 150 controls near $x = 2.5$ and 150 treated near $x = 4.5$ (both sd $1.1$), with $y_i = D_i + 0.8\,(x_i - 3.5)^2 + 0.3\,x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 0.5^2)$ — a constant true effect of $1$ sitting on a convex baseline.
 
@@ -270,7 +266,7 @@ Two things stand out. First, the estimators now *disagree* — PLR reports $1.29
 
 Second, the weights still reproduce each estimate exactly and sum to zero overall. They part on the other constraint from §1, $\sum_i \omega_i V_i = 1$: for a binary treatment that constraint is the treated weights summing to $+1$ (and, with the zero total, controls to $-1$). AIPW keeps it exactly; the partially-linear estimator sums to $\pm 0.99$, quietly breaking the within-group budget that OLS and AIPW hold.
 
-That divergence shows what the representation is for. In Knaus's (2024) framing it does three things beyond producing the estimate. It puts OLS, IPW, AIPW, DML, and the causal forest on **one footing**, comparable through the single object $\boldsymbol\omega' \boldsymbol Y$. It **characterises the target population** each estimator reports — exactly the PLR-versus-AIPW gap above, two weightings of one set of outcomes. And it **checks covariate balance**, by handing $\boldsymbol\omega$ to `cobalt`, and flags when weights fail a property usually assumed — the within-group sum-to-$\pm 1$ that PLR breaks here.
+That divergence shows what the representation is for. In Knaus's (2024) framing $\boldsymbol\omega$ does three things: it puts OLS, IPW, AIPW, DML, and the causal forest on **one footing** ($\boldsymbol\omega' \boldsymbol Y$); it **characterises the target population** each reports — the PLR-versus-AIPW gap above; and it **checks covariate balance** via `cobalt`, flagging when weights break a property usually assumed — the sum-to-$\pm 1$ within treated and control groups that PLR violates here.
 
 The signed-extrapolation and leverage reading of §3 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.
 
@@ -448,13 +444,111 @@ vtab(c(`DRDID ATT`                = att,
 
 $\boldsymbol\omega' \Delta Y$ reproduces the `DRDID` estimate exactly — the difference-in-differences is a signed weighting of observed outcome *changes*, and the diagnostics of this chapter apply to it. The weighting balances the covariate that drove selection (its standardised imbalance falls from $1.20$ to $0.09$). And $151$ units carry a wrong-sign weight — a treated unit subtracted, or a control added — the §3 signature of a comparison reaching past common support.
 
-Negative weights return in *staggered* designs one level up — among the comparisons rather than the units. Two-way fixed-effects DiD averages many such $2 \times 2$'s, and some enter with a **negative** weight: the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). Those weight the treatment *effects*, not the outcomes — the effect-weight cousin — but the reading is the one just seen: a comparison entering with a sign it should not, because the design has run out of clean controls.
+### Staggered designs: TWFE at the observation level
 
-A closing caution. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*.
+Negative weights in staggered designs are usually described at the level of two-by-two comparisons: TWFE averages many such comparisons, and some enter with a negative weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the effect-weight reading. The outcome-weight reading goes one level down, to the individual $y_{it}$.
 
-Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it: a negative weight and a failure of parallel trends are independent, either able to occur without the other.
+TWFE is still FWL: residualise $D_{it}$ on unit and time fixed effects to get $\tilde D_{it}$, and $\hat\beta = \sum_{it} \omega_{it} y_{it}$ with $\omega_{it} = \tilde D_{it} / \sum_{jt} \tilde D_{jt}^2$. A treated observation with $\omega_{it} < 0$ is a cell whose outcome is subtracted from the estimated effect — used as a control even though it is treated. An untreated observation with $\omega_{it} > 0$ enters as though it were treated. Both are the §3 sign-flip, caused by the unit-and-time residualisation pushing $\tilde D_{it}$ past zero: treated cells in late periods of early cohorts, where the fixed-effect prediction of $D_{it}$ exceeds $1$, and untreated cells in early periods of never-treated units, where it falls below $0$.
 
-Pre-trends are probed separately, by the event-study leads. And weights *chosen* to match the pre-treatment paths — synthetic difference-in-differences and its kin — are a different object from the ones implied here.
+**Simulation — staggered panel.** Three cohorts: never-treated ($20\%$), early-treated at period $3$ with effect $\tau = 3$ ($40\%$), and late-treated at period $6$ with effect $\tau = 1$ ($40\%$), observed across $T = 8$ periods; $y_{it} = \alpha_i + \gamma_t + \tau_g D_{it} + \varepsilon_{it}$. The high treated share makes the forbidden comparison visible.
+
+```{r}
+#| message: false
+library(fixest)
+set.seed(5)
+N <- 300; TT <- 8
+g <- sample(c(0, 3, 6), N, TRUE, prob = c(.2, .4, .4))
+panel <- data.frame(id = rep(1:N, each = TT), t = rep(1:TT, N))
+panel$g <- g[panel$id]
+panel$D <- as.integer(panel$g > 0 & panel$t >= panel$g)
+tau <- ifelse(panel$g == 3, 3, ifelse(panel$g == 6, 1, 0))
+alpha <- rnorm(N); gamma <- seq(0, 1.4, length.out = TT)
+panel$y <- alpha[panel$id] + gamma[panel$t] + tau * panel$D + rnorm(nrow(panel), 0, 0.5)
+
+Dtil <- resid(feols(D ~ 1 | id + t, data = panel))
+omega_tw <- Dtil / sum(Dtil^2)
+n1 <- sum(panel$D)
+vtab(c(`true ATT`              = mean(tau[panel$D == 1]),
+       `TWFE`                  = coef(feols(y ~ D | id + t, panel))[["D"]],
+       `omega' y`              = sum(omega_tw * panel$y),
+       `treated, omega < 0`    = sum(panel$D == 1 & omega_tw < 0),
+       `untreated, omega > 0`  = sum(panel$D == 0 & omega_tw > 0)), 3)
+```
+
+The TWFE coefficient sits well below the true ATT, and $\sum \omega_{it} y_{it}$ reproduces it exactly. Hundreds of treated cells carry a negative weight: these are the early cohort's cells in periods $6$–$8$, the ones where the unit-and-time prediction of $D$ exceeds $1$ and the residual $\tilde D_{it}$ flips sign. Their outcomes are subtracted from $\hat\beta$ — the observation-level signature of the Bacon forbidden comparison. (Untreated cells with $\omega > 0$ also appear, a consequence of the same overshooting in the opposite direction; these are less interpretable as a diagnostic, since they arise from the fixed-effect structure on imbalanced data rather than from any comparison being used backwards.)
+
+### Imputation as a smoother
+
+The imputation estimator of Borusyak, Jaravel, and Spiess (2024) fits the outcome model on untreated observations alone and imputes each treated cell's counterfactual. With unit and time fixed effects the imputed value is $\hat Y_{it}(0) = \hat\alpha_i + \hat\gamma_t$, the coefficients from $Y_{jt} = \alpha_j + \gamma_t + \varepsilon_{jt}$ run on $\{(j,t) : D_{jt} = 0\}$.
+
+That regression is a smoother: $\hat{\boldsymbol Y}(0) = \boldsymbol S \boldsymbol Y$ with $\boldsymbol S = \boldsymbol X (\boldsymbol X_0'\boldsymbol X_0)^{-1} \boldsymbol X_0' \boldsymbol P_0$, where $\boldsymbol X_0$ and $\boldsymbol P_0$ restrict to untreated rows. The ATT averages the treated residuals,
+
+$$
+\widehat{\text{ATT}} = \frac{1}{n_1} \sum_{D_{it}=1} (Y_{it} - \hat Y_{it}(0)) = \boldsymbol a'(\mathbf I - \boldsymbol S)\boldsymbol Y = \boldsymbol\omega'\boldsymbol Y
+$$ {#eq-bjs}
+
+with $a_{it} = 1/n_1$ for treated cells and zero otherwise — the recipe of §4. Because the smoother draws only on untreated outcomes — column $j$ of $\boldsymbol S$ is zero when $D_j = 1$ — the weight on every treated cell reduces to $\omega_{it} = 1/n_1$: **each treated observation carries the same positive weight.** Untreated cells carry varying weights that sum to $-1$; individual cells can be positive or negative, since the OLS fit on unbalanced untreated data couples the fixed effects.
+
+```{r}
+unt <- panel$D == 0
+X <- model.matrix(~ factor(id) + factor(t), data = panel)
+X0 <- X[unt, ]
+coefs <- solve(crossprod(X0), crossprod(X0, panel$y[unt]))
+panel$y0hat <- as.vector(X %*% coefs)
+att_imp <- mean(panel$y[panel$D == 1] - panel$y0hat[panel$D == 1])
+
+a <- ifelse(panel$D == 1, 1 / n1, 0)
+v <- solve(crossprod(X0), crossprod(X, a))
+Sta <- numeric(nrow(panel)); Sta[unt] <- as.vector(X0 %*% v)
+omega_imp <- a - Sta
+
+vtab(c(`imputation ATT`          = att_imp,
+       `omega' y`                = sum(omega_imp * panel$y),
+       `treated, omega < 0`      = sum(panel$D == 1 & omega_imp < 0),
+       `untreated, omega > 0`    = sum(!panel$D & omega_imp > 0),
+       `max |treated wt - 1/n1|` = max(abs(omega_imp[panel$D == 1] - 1/n1))), 3)
+```
+
+The imputation ATT recovers the true value, $\boldsymbol\omega'\boldsymbol Y$ reproduces it, and no treated cell carries a negative weight — the key diagnostic. The maximum deviation of a treated weight from $1/n_1$ is at machine precision, confirming the structural guarantee. Untreated cells with $\omega > 0$ still appear (as in TWFE), but these reflect the coupling in the fixed-effect estimation, not a comparison running backwards.
+
+```{r}
+#| fig-width: 9
+#| fig-height: 4.2
+#| fig-cap: "Cell-level outcome weights in the staggered panel, summed within each cohort-period cell. TWFE (left): the early cohort's treated cells (teal triangles) turn negative in periods $6$--$8$ — those outcomes are subtracted from $\\hat\\beta$, the observation-level signature of the forbidden comparison. Imputation (right): every treated cell stays positive; no treated observation can count as a control."
+cols <- c("grey50", teal, rust)
+pchs <- c(16, 17, 15)
+cell_tw  <- tapply(omega_tw,  list(panel$g, panel$t), sum)
+cell_imp <- tapply(omega_imp, list(panel$g, panel$t), sum)
+ylim <- range(cell_tw, cell_imp)
+
+plot_cells <- function(cells, main) {
+  plot(NA, xlim = c(0.5, 8.5), ylim = ylim, xlab = "period",
+       ylab = "total cell weight", main = main, xaxt = "n")
+  axis(1, at = 1:8)
+  abline(h = 0, lty = 3, col = "grey55")
+  for (k in 1:3) {
+    lines(1:8, cells[k, ], col = cols[k], lwd = 2)
+    points(1:8, cells[k, ], pch = pchs[k], col = cols[k], cex = 1.4)
+  }
+}
+
+op <- par(mfrow = c(1, 2), mar = c(4, 4.5, 2.5, 1))
+plot_cells(cell_tw, "TWFE")
+legend("bottomleft", legend = c("never (g=0)", "early (g=3)", "late (g=6)"),
+       pch = pchs, col = cols, lty = 1, lwd = 2, bty = "n", cex = 0.85)
+plot_cells(cell_imp, "Imputation")
+par(op)
+```
+
+The two panels locate the structural difference. TWFE residualises the treatment indicator over the full panel, so when the early cohort's treated cells sit in a period where many units are treated, their residual turns negative and their outcomes count as controls. The imputation estimator's smoother, fitted on untreated cells alone, cannot reach treated outcomes, so no treated cell can count as a control — the forbidden-comparison problem that defines staggered TWFE bias is structurally absent.
+
+The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. A single unit can have $\omega_{it} > 0$ in some periods and $\omega_{it} < 0$ in others — in the simulation above, every early-cohort unit is positive in periods $3$–$5$ and negative in periods $6$–$8$. This changes the response. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming means dropping specific $(i, t)$ cells, which removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is not to trim but to switch estimators — imputation, Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction.
+
+### Implied versus chosen
+
+One distinction cuts across everything above. OLS, AIPW, DML, TWFE, and the imputation estimator all *imply* weights — they fall out of the estimation and are diagnosed afterward. Synthetic controls and synthetic difference-in-differences *choose* weights as part of the design, selecting $\boldsymbol\omega$ to balance pre-treatment outcomes or covariates. For those estimators $\hat\tau = \boldsymbol\omega'\boldsymbol Y$ is the definition, not a decomposition; the balance and extrapolation checks of this chapter still apply, but what they diagnose is the designer's choice rather than a side effect of the estimator.
+
+A closing caution. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*. Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it: a negative weight and a failure of parallel trends are independent, either able to occur without the other. Pre-trends are probed separately, by the event-study leads.
 
 ## Summary
 
@@ -462,4 +556,5 @@ Pre-trends are probed separately, by the event-study leads. And weights *chosen*
 2. **Two constraints.** The weights sum to zero and the weighted regressor sums to one: $\sum_i \omega_i = 0$ and $\sum_i \omega_i V_i = 1$.
 3. **The sign shows direction.** Because $\omega_i$ is proportional to $\tilde V_i$, not to $\tilde V_i^2$, it carries a sign: it shows which rows push $\hat\beta$ up and which pull it down, and, under controls with thin overlap, which enter with the sign their raw position would not predict.
 4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024) — though the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
-5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks; negative weights return in staggered designs as forbidden comparisons (de Chaisemartin and D'Haultfœuille 2020).
+5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks.
+6. **Staggered designs and imputation.** In staggered TWFE the outcome weights flag both treated cells used as controls and untreated cells used as treated — the observation-level version of the Bacon (2021) forbidden comparisons. The imputation estimator of Borusyak, Jaravel, and Spiess (2024) is a smoother on untreated outcomes (@eq-bjs) and cannot assign negative weight to any treated cell: every treated cell carries the same weight $1/n_1$, so the forbidden-comparison diagnostic is clean by construction.
