@@ -232,7 +232,64 @@ And it survives where the propensity score cannot. On the perfectly-separated da
 
 The outcome reading has one advantage the effect reading lacks: it survives leaving OLS. Any estimator that can be written $\hat\tau = \sum_i \omega_i Y_i = \boldsymbol\omega' \boldsymbol Y$ — a linear combination of the observed outcomes — *has* outcome weights, whatever machinery produced them.
 
-Knaus (2024) makes this the organising idea: augmented inverse-probability weighting, double machine learning, and the generalized random forest all admit a closed-form $\boldsymbol\omega$, obtained by the same residual-on-residual logic as OLS and computed off the shelf by his `OutcomeWeights` package. We derive it below; first, what it shows.
+Knaus (2024) makes this the organising idea, and his `OutcomeWeights` package computes $\boldsymbol\omega$ for AIPW, double machine learning, and the causal forest.
+
+### The weights, derived
+
+The OLS outcome weights (@eq-omega) followed from one fact: in the FWL numerator $\sum_i \tilde V_i y_i$, the outcome $y_i$ appears once, linearly, so $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$. The same fact holds whenever the outcome model is a *smoother* — a map $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$ that is linear in the training outcomes. Substituting $\boldsymbol S \boldsymbol Y$ for $\hat{\boldsymbol m}$ keeps $\boldsymbol Y$ linear in the numerator, and reading off its coefficient gives $\boldsymbol\omega$. We carry this out for PLR and AIPW.
+
+*PLR.* Take the partially-linear estimator (the R-learner behind the causal forest). It is FWL with the projections done by a flexible learner: residualise treatment and outcome on the covariates, then regress one residual on the other,
+
+$$ \hat\tau = \frac{\sum_i (D_i - \hat e_i)(Y_i - \hat m_i)}{\sum_i (D_i - \hat e_i)^2}, $$
+
+with $\hat e = \hat E[D \mid X]$ and $\hat m = \hat E[Y \mid X]$ the fitted nuisances.
+
+The outcome nuisance is a *smoother*: its fitted values are a linear map of the training outcomes, $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$ — true for OLS, ridge, kernels, and honest forests alike. So the outcome residual is $\boldsymbol Y - \hat{\boldsymbol m} = (\mathbf I - \boldsymbol S)\boldsymbol Y$. Writing $\tilde{\boldsymbol D} = \boldsymbol D - \hat{\boldsymbol e}$ for the treatment residual and substituting,
+
+$$ \hat\tau = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,\boldsymbol Y}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$
+
+Now $\boldsymbol Y$ appears once, linearly, in the numerator. Read off its coefficient and the weights are done:
+
+$$ \hat\tau = \boldsymbol\omega'\boldsymbol Y, \qquad \boldsymbol\omega' = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$ {#eq-omega-ml}
+
+That is @eq-omega — the OLS weights — with the projection annihilator $\boldsymbol M_X$ replaced by the smoother annihilator $\mathbf I - \boldsymbol S$. OLS is the case of a linear learner, $\boldsymbol S = \boldsymbol P_X$: there $\boldsymbol S$ is a projection, $\mathbf I - \boldsymbol S = \boldsymbol M_X$, and @eq-omega-ml is @eq-omega exactly. Component by component, the weight on observation $i$ is
+
+$$ \omega_i = \frac{\tilde D_i - \sum_j S_{ji}\,\tilde D_j}{\sum_k \tilde D_k^2}: $$ {#eq-omega-plr-i}
+
+the treatment residual of unit $i$, minus how much other units' treatment residuals leak to $i$ through the outcome smoother, normalised by the total treatment-residual variance.
+
+The outcome weights tell which rows drive the estimate; the *effect* weights tell whose effect it estimates. Substitute $Y_i = \tau_i D_i + m(X_i) + \varepsilon_i$ into the PLR numerator. With consistent nuisances $\hat m \approx m$, the noise vanishes in expectation and the numerator reduces to $\sum_i \tilde D_i D_i \tau_i$, so the effect weight on $\tau_i$ is $\tilde D_i D_i = (D_i - e_i) D_i$. Since $D$ is binary ($D_i^2 = D_i$),
+
+$$ E[\tilde D_i D_i \mid X_i] = E[D_i \mid X_i] - e_i\, E[D_i \mid X_i] = e_i - e_i^2 = e_i(1 - e_i). $$
+
+The denominator $\tilde{\boldsymbol D}'\tilde{\boldsymbol D} = \sum_i \tilde D_i^2$ has the same expectation, $\sum_i e_i(1 - e_i)$, since $\text{Var}(D_i \mid X_i) = e_i(1 - e_i)$. Both numerator and denominator weight by propensity variance, and the ratio is the variance-weighted average treatment effect,
+
+$$ \tau_{\text{VWATE}} = \frac{\sum_i e(X_i)(1 - e(X_i))\,\tau(X_i)}{\sum_i e(X_i)(1 - e(X_i))}, $$ {#eq-vwate}
+
+not the plain ATE $\bar\tau = n^{-1}\sum_i \tau_i$. The two coincide only when effects are constant or treatment is randomly assigned. The weighting is the same $e(1-e)$ that appeared in the previous chapter's @eq-angrist, where Angrist (1998) showed OLS with saturated strata weights each stratum by $n_x \hat D(x)(1 - \hat D(x))$. That result required discrete strata and saturated controls; @eq-vwate is the same propensity-variance weighting with continuous covariates and a flexible learner. The individual $\tau(X_i)$ are never observed or estimated — they are the structural unit-level effects in $Y_i = \tau(X_i) D_i + m(X_i) + \varepsilon_i$. PLR returns one number, $\hat\tau$, that converges to their $e(1-e)$-weighted average; to estimate $\tau(X_i)$ itself one needs a CATE estimator (a causal forest, say).
+
+Three moves did it: write the estimator, substitute the smoother $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$, read off the coefficient on $\boldsymbol Y$. They work for any estimator built from smoothers; only the operator on $\boldsymbol Y$ changes. AIPW is worth carrying through, because its operator is more than $\mathbf I - \boldsymbol S$.
+
+*AIPW.* With outcome smoothers $\hat{\boldsymbol\mu}_1 = \boldsymbol S_1 \boldsymbol Y$, $\hat{\boldsymbol\mu}_0 = \boldsymbol S_0 \boldsymbol Y$ and propensity $\hat{\boldsymbol e}$, the score of unit $i$ is
+
+$$ \psi_i = \hat\mu_{1i} - \hat\mu_{0i} + \frac{D_i}{\hat e_i}\,(Y_i - \hat\mu_{1i}) - \frac{1 - D_i}{1 - \hat e_i}\,(Y_i - \hat\mu_{0i}), \qquad \hat\tau = \frac1n \sum_i \psi_i. $$
+
+Each $\hat\mu_{ji}$ is $(\boldsymbol S_j \boldsymbol Y)_i$, so $\boldsymbol Y$ again enters only linearly; collecting its coefficient gives $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ with
+
+$$ \boldsymbol T = \boldsymbol S_1 - \boldsymbol S_0 + \operatorname{diag}\!\Big(\tfrac{\boldsymbol D}{\hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_1) - \operatorname{diag}\!\Big(\tfrac{1 - \boldsymbol D}{1 - \hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_0), \qquad \boldsymbol\omega' = \frac{\mathbf 1' \boldsymbol T}{n}. $$
+
+That is, $\omega_j$ is the $j$-th column-sum of $\boldsymbol T$ divided by $n$: observation $j$'s outcome enters the ATE through its direct IPW term and through its indirect contribution via the two outcome smoothers $\boldsymbol S_1$, $\boldsymbol S_0$ to every other unit's augmentation correction.
+
+Comparing the two:
+
+| | PLR (@eq-omega-ml) | AIPW |
+|---|---|---|
+| Matrix form | $\boldsymbol\omega' = \tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,/\,\tilde{\boldsymbol D}'\tilde{\boldsymbol D}$ | $\boldsymbol\omega' = \mathbf 1'\boldsymbol T\,/\,n$ |
+| Per unit | $\omega_i = \bigl(\tilde D_i - \sum_j S_{ji}\tilde D_j\bigr)\,/\,\sum_k \tilde D_k^2$ | $\omega_j = \frac{1}{n}\sum_i T_{ij}$ |
+| Smoother | one $\boldsymbol S$ (outcome on $X$) | two: $\boldsymbol S_1$ (treated), $\boldsymbol S_0$ (control) |
+| Normalisation | treatment-residual variance | sample size $n$ |
+
+Both follow the same recipe — substitute the smoother $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$, read off $\boldsymbol Y$'s coefficient — and differ only in the operator acting on $\boldsymbol Y$.
 
 **Simulation — heterogeneous effects (DML).** Under a heterogeneous effect the two estimators diverge, and the weights show why. We simulate $n = 2000$ units: five standard-normal covariates $X$, selection $W_i \sim \text{Bernoulli}(\Lambda(-1 + 1.2\,X_{i1}))$ with $\Lambda$ the logistic function (treatment is scarce and tied to $X_1$), and outcome $Y_i = \tau_i W_i + X_{i1} + 0.5\,X_{i2} + \varepsilon_i$ with an effect $\tau_i = 1 + X_{i1}$ that varies across units — a $W \times X_1$ interaction. The average effect is $E[\tau] = 1$, but units with larger $X_1$ have larger effects. `dml_with_smoother` returns a partially-linear (PLR) and an AIPW estimator; `get_outcome_weights` extracts the weight matrix $\boldsymbol\omega$, one row per estimator.
 
@@ -262,43 +319,11 @@ cat(sprintf("true ATE = %.2f   true overlap-ATE = %.2f\n", mean(tau), sum(ov * t
 mtab(tab, 3)
 ```
 
-Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong; they target different populations. PLR weights each unit by $e(X)(1 - e(X))$, the conditional variance of treatment — Angrist's propensity-variance weight from the previous chapter — so it leans on units where treatment is near a coin flip; its estimand is that $e(1-e)$-weighted average of the unit effects ($\approx 1.3$). AIPW instead reweights by $1/e$ and $1/(1-e)$ to undo selection, returning the plain average, the ATE ($\approx 1$). Same outcomes $\boldsymbol Y$, weighted two ways, two population-averages of $\tau$ — and the weights are what make the difference visible.
+Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong; they target different populations. PLR targets the VWATE (@eq-vwate), not the ATE. Here treatment selection loads on $X_1$ through $e = \Lambda(-1 + 1.2\,X_1)$, and $\tau = 1 + X_1$ also rises in $X_1$, so the units PLR overweights — those with $e$ near $\tfrac12$, around $X_1 \approx 0.8$ — carry above-average effects, pushing PLR's estimate above the true ATE. AIPW instead reweights by $1/e$ and $1/(1-e)$ to undo selection, returning the plain average, the ATE ($\approx 1$). Same outcomes $\boldsymbol Y$, weighted two ways, two population-averages of $\tau$ — and the weights are what make the difference visible.
 
 Second, the weights still reproduce each estimate exactly and sum to zero overall. They part on the other constraint from §1, $\sum_i \omega_i V_i = 1$: for a binary treatment that constraint is the treated weights summing to $+1$ (and, with the zero total, controls to $-1$). AIPW keeps it exactly; the partially-linear estimator sums to $\pm 0.99$, quietly breaking the within-group budget that OLS and AIPW hold.
 
 That divergence shows what the representation is for. In Knaus's (2024) framing $\boldsymbol\omega$ does three things: it puts OLS, IPW, AIPW, DML, and the causal forest on **one footing** ($\boldsymbol\omega' \boldsymbol Y$); it **characterises the target population** each reports — the PLR-versus-AIPW gap above; and it **checks covariate balance** via `cobalt`, flagging when weights break a property usually assumed — the sum-to-$\pm 1$ within treated and control groups that PLR violates here.
-
-The signed-extrapolation and leverage reading of §3 carries over too, but that is the `lmw` lineage the representation shares, not Knaus's own emphasis.
-
-### The weights, derived
-
-We have the OLS weights (@eq-omega); the same weights exist for the machine-learning estimators, derived the same way — residualise, then read off the coefficient on $\boldsymbol Y$. Take the partially-linear estimator (the R-learner behind the causal forest). It is FWL with the projections done by a flexible learner: residualise treatment and outcome on the covariates, then regress one residual on the other,
-
-$$ \hat\tau = \frac{\sum_i (D_i - \hat e_i)(Y_i - \hat m_i)}{\sum_i (D_i - \hat e_i)^2}, $$
-
-with $\hat e = \hat E[D \mid X]$ and $\hat m = \hat E[Y \mid X]$ the fitted nuisances.
-
-The outcome nuisance is a *smoother*: its fitted values are a linear map of the training outcomes, $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$ — true for OLS, ridge, kernels, and honest forests alike. So the outcome residual is $\boldsymbol Y - \hat{\boldsymbol m} = (\mathbf I - \boldsymbol S)\boldsymbol Y$. Writing $\tilde{\boldsymbol D} = \boldsymbol D - \hat{\boldsymbol e}$ for the treatment residual and substituting,
-
-$$ \hat\tau = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,\boldsymbol Y}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$
-
-Now $\boldsymbol Y$ appears once, linearly, in the numerator. Read off its coefficient and the weights are done:
-
-$$ \hat\tau = \boldsymbol\omega'\boldsymbol Y, \qquad \boldsymbol\omega' = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$ {#eq-omega-ml}
-
-That is @eq-omega — the OLS weights — with the projection annihilator $\boldsymbol M_X$ replaced by the smoother annihilator $\mathbf I - \boldsymbol S$. OLS is the case of a linear learner, $\boldsymbol S = \boldsymbol P_X$: there $\boldsymbol S$ is a projection, $\mathbf I - \boldsymbol S = \boldsymbol M_X$, and @eq-omega-ml is @eq-omega exactly.
-
-Three moves did it: write the estimator, substitute the smoother $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$, read off the coefficient on $\boldsymbol Y$. They work for any estimator built from smoothers; only the operator on $\boldsymbol Y$ changes. AIPW is worth carrying through, because its operator is more than $\mathbf I - \boldsymbol S$.
-
-*AIPW.* With outcome smoothers $\hat{\boldsymbol\mu}_1 = \boldsymbol S_1 \boldsymbol Y$, $\hat{\boldsymbol\mu}_0 = \boldsymbol S_0 \boldsymbol Y$ and propensity $\hat{\boldsymbol e}$, the score of unit $i$ is
-
-$$ \psi_i = \hat\mu_{1i} - \hat\mu_{0i} + \frac{D_i}{\hat e_i}\,(Y_i - \hat\mu_{1i}) - \frac{1 - D_i}{1 - \hat e_i}\,(Y_i - \hat\mu_{0i}), \qquad \hat\tau = \frac1n \sum_i \psi_i. $$
-
-Each $\hat\mu_{ji}$ is $(\boldsymbol S_j \boldsymbol Y)_i$, so $\boldsymbol Y$ again enters only linearly; collecting its coefficient gives $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ with
-
-$$ \boldsymbol T = \boldsymbol S_1 - \boldsymbol S_0 + \operatorname{diag}\!\Big(\tfrac{\boldsymbol D}{\hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_1) - \operatorname{diag}\!\Big(\tfrac{1 - \boldsymbol D}{1 - \hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_0), \qquad \boldsymbol\omega' = \frac{\mathbf 1' \boldsymbol T}{n}. $$
-
-These derived weights are exactly the rows of the table above. Multiply either $\boldsymbol\omega$ into $\boldsymbol Y$ and you recover that estimator's point estimate; sum them within the treated and control groups and you get the $\pm 1$ (AIPW) and $\pm 0.99$ (PLR) reported there. That is the use of deriving $\boldsymbol\omega$: once you have it, the reproduction check, the within-group budget, and the balance and overlap diagnostics all run on the same object, for any estimator built from smoothers.
 
 The package does exactly this — reads $(\boldsymbol S, \boldsymbol S_0, \boldsymbol S_1, \hat{\boldsymbol e})$ from the fitted object, forms these operators, and reads off $\boldsymbol\omega$. The formulas above take a few lines to compute by hand; here we do it for both PLR and AIPW and check they match the package's weights:
 
@@ -555,6 +580,6 @@ A closing caution. These weights diagnose *estimation* — which comparisons a d
 1. **A signed weighting of the outcomes.** FWL writes $\hat\beta = \sum_i \omega_i y_i$ with $\omega_i = \tilde V_i / \sum_j \tilde V_j^2$ (@eq-omega): a signed, computable weighting of the observed outcomes, different from the effect weights $w_i = \tilde V_i V_i$.
 2. **Two constraints.** The weights sum to zero and the weighted regressor sums to one: $\sum_i \omega_i = 0$ and $\sum_i \omega_i V_i = 1$.
 3. **The sign shows direction.** Because $\omega_i$ is proportional to $\tilde V_i$, not to $\tilde V_i^2$, it carries a sign: it shows which rows push $\hat\beta$ up and which pull it down, and, under controls with thin overlap, which enter with the sign their raw position would not predict.
-4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024) — though the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
+4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024). PLR's denominator $\tilde{\boldsymbol D}'\tilde{\boldsymbol D}$ reveals its estimand as the VWATE (@eq-vwate), not the ATE; and the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
 5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks.
 6. **Staggered designs and imputation.** In staggered TWFE the outcome weights flag both treated cells used as controls and untreated cells used as treated — the observation-level version of the Bacon (2021) forbidden comparisons. The imputation estimator of Borusyak, Jaravel, and Spiess (2024) is a smoother on untreated outcomes (@eq-bjs) and cannot assign negative weight to any treated cell: every treated cell carries the same weight $1/n_1$, so the forbidden-comparison diagnostic is clean by construction.
