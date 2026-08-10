@@ -1,0 +1,557 @@
+<title>Two Readings of One Coefficient — Interpreting OLS &amp; Knaus (2024)</title>
+<style>
+  :root {
+    --paper:    #FCFBF9;
+    --raised:   #F5F3ED;
+    --ink:      #1C2529;
+    --ink-soft: #4A575D;
+    --ink-faint:#7C868B;
+    --rule:     #E6E2D8;
+    --teal:     #0E6473;
+    --teal-ink: #0A4B57;
+    --teal-bg:  rgba(14,100,115,0.065);
+    --rust:     #9E4318;
+    --rust-ink: #8A3A13;
+    --rust-bg:  rgba(158,67,24,0.065);
+    --shadow:   rgba(28,37,41,0.07);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Charter, Georgia, serif;
+    --sans:  ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+    --measure: 68ch;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:    #13181A;
+      --raised:   #1B2225;
+      --ink:      #E9E7E1;
+      --ink-soft: #A6AFB3;
+      --ink-faint:#727C80;
+      --rule:     #2A3236;
+      --teal:     #55B7C7;
+      --teal-ink: #7FCEDB;
+      --teal-bg:  rgba(85,183,199,0.10);
+      --rust:     #DB925F;
+      --rust-ink: #E8A778;
+      --rust-bg:  rgba(219,146,95,0.10);
+      --shadow:   rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper:#FCFBF9; --raised:#F5F3ED; --ink:#1C2529; --ink-soft:#4A575D; --ink-faint:#7C868B;
+    --rule:#E6E2D8; --teal:#0E6473; --teal-ink:#0A4B57; --teal-bg:rgba(14,100,115,0.065);
+    --rust:#9E4318; --rust-ink:#8A3A13; --rust-bg:rgba(158,67,24,0.065); --shadow:rgba(28,37,41,0.07);
+  }
+  :root[data-theme="dark"] {
+    --paper:#13181A; --raised:#1B2225; --ink:#E9E7E1; --ink-soft:#A6AFB3; --ink-faint:#727C80;
+    --rule:#2A3236; --teal:#55B7C7; --teal-ink:#7FCEDB; --teal-bg:rgba(85,183,199,0.10);
+    --rust:#DB925F; --rust-ink:#E8A778; --rust-bg:rgba(219,146,95,0.10); --shadow:rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .wrap { max-width: var(--measure); margin: 0 auto; padding: 0 24px; }
+
+  /* ---- eyebrow / labels ---- */
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---- hero ---- */
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: clamp(3.5rem, 9vw, 6rem) 0 clamp(2.5rem, 6vw, 4rem);
+  }
+  .kicker { margin-bottom: 1.4rem; }
+  .kicker .teal-tag { color: var(--teal); }
+  .kicker .rust-tag { color: var(--rust); }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 6.2vw, 3.5rem);
+    line-height: 1.06;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0 0 1.1rem;
+  }
+  h1 em { font-style: italic; color: var(--ink-soft); }
+  .standfirst {
+    font-size: clamp(1.08rem, 2.3vw, 1.28rem);
+    line-height: 1.5;
+    color: var(--ink-soft);
+    max-width: 40ch;
+    margin: 0;
+  }
+  .standfirst b { color: var(--ink); font-weight: 600; }
+
+  /* ---- the split diagram ---- */
+  .split {
+    margin: clamp(2.5rem, 6vw, 4rem) 0 0.5rem;
+  }
+  .split-top {
+    display: flex; justify-content: center;
+    margin-bottom: 0.4rem;
+  }
+  .node {
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.7rem 1.15rem;
+    text-align: center;
+    box-shadow: 0 1px 2px var(--shadow);
+  }
+  .node .node-eq { font-size: 1.05rem; }
+  .node .node-lab {
+    font-family: var(--sans); font-size: 0.66rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint);
+    margin-top: 0.25rem;
+  }
+  .stem { display:flex; justify-content:center; }
+  .stem svg { display:block; }
+  .stem svg line, .stem svg path { stroke: var(--rule); stroke-width: 1.5; fill: none; }
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 560px) { .branches { grid-template-columns: 1fr; } }
+  .branch {
+    border-radius: 3px;
+    padding: 1.15rem 1.15rem 1.25rem;
+    border: 1px solid var(--rule);
+  }
+  .branch.teal { background: var(--teal-bg); border-color: color-mix(in srgb, var(--teal) 32%, var(--rule)); }
+  .branch.rust { background: var(--rust-bg); border-color: color-mix(in srgb, var(--rust) 32%, var(--rule)); }
+  .branch .b-tag {
+    font-family: var(--sans); font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .branch.teal .b-tag { color: var(--teal); }
+  .branch.rust .b-tag { color: var(--rust); }
+  .branch .b-eq { font-size: 1.12rem; margin: 0.1rem 0 0.55rem; }
+  .branch .b-desc { font-size: 0.92rem; line-height: 1.45; color: var(--ink-soft); margin: 0; }
+  .branch .b-desc strong { color: var(--ink); font-weight: 600; }
+  .split-cap { text-align: center; font-family: var(--sans); font-size: 0.8rem; line-height: 1.5; color: var(--ink-soft); max-width: 54ch; margin: 1.15rem auto 0; }
+
+  /* ---- body sections ---- */
+  section { padding: clamp(2.4rem, 5.5vw, 3.6rem) 0; border-bottom: 1px solid var(--rule); }
+  h2 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 3.4vw, 1.85rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 0.35rem;
+  }
+  h2 .sec-no {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+    color: var(--ink-faint); vertical-align: 0.35em; margin-right: 0.7rem;
+  }
+  .lead-in { color: var(--ink-soft); font-size: 1.02rem; margin: 0 0 1.5rem; }
+  p { margin: 0 0 1.05rem; }
+  p:last-child { margin-bottom: 0; }
+  a { color: var(--teal-ink); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--teal) 40%, transparent); }
+  a:hover { border-bottom-color: var(--teal); }
+  a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 2px; }
+  strong { font-weight: 600; }
+  .tw { color: var(--teal-ink); font-weight: 600; }
+  .rw { color: var(--rust-ink); font-weight: 600; }
+  code {
+    font-family: var(--mono); font-size: 0.86em;
+    background: var(--raised); padding: 0.08em 0.36em; border-radius: 3px;
+    border: 1px solid var(--rule);
+  }
+
+  /* ---- equations ---- */
+  .eqn {
+    font-family: var(--serif);
+    font-style: normal;
+    text-align: center;
+    font-size: 1.16rem;
+    line-height: 1.5;
+    margin: 1.4rem 0;
+    padding: 1rem 1rem;
+    background: var(--raised);
+    border-left: 3px solid var(--rule);
+    border-radius: 0 3px 3px 0;
+    overflow-x: auto;
+  }
+  .eqn.teal { border-left-color: var(--teal); background: var(--teal-bg); }
+  .eqn.rust { border-left-color: var(--rust); background: var(--rust-bg); }
+  .eqn .note {
+    display:block; font-family: var(--sans); font-style: normal;
+    font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); margin-top: 0.55rem;
+  }
+  var { font-style: italic; font-family: var(--serif); }
+  .op { font-style: normal; padding: 0 0.12em; }
+
+  /* ---- correspondence table ---- */
+  .tbl-scroll { overflow-x: auto; margin: 1.5rem 0 0.5rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.94rem; min-width: 460px; }
+  caption {
+    font-family: var(--sans); font-size: 0.72rem; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--ink-faint); text-align: left;
+    padding-bottom: 0.7rem;
+  }
+  th, td { text-align: left; padding: 0.62rem 0.9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  thead th { font-family: var(--sans); font-size: 0.74rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  thead th:nth-child(2) { color: var(--teal); }
+  thead th:nth-child(3) { color: var(--rust); }
+  tbody th { font-weight: 600; color: var(--ink-soft); font-family: var(--serif); }
+  tbody td:nth-child(2) { color: var(--teal-ink); }
+  tbody td:nth-child(3) { color: var(--rust-ink); }
+  tbody tr:last-child th, tbody tr:last-child td { border-bottom: none; }
+  .row-label { font-family: var(--sans); font-size: 0.82rem; }
+
+  /* ---- divergence diagram ---- */
+  .diverge {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: stretch;
+    gap: 0;
+    margin: 1.6rem 0 0.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  @media (max-width: 620px) { .diverge { grid-template-columns: 1fr; } }
+  .dcol { padding: 1.15rem 1.2rem; }
+  .dcol.mid {
+    background: var(--raised);
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; border-left: 1px solid var(--rule); border-right: 1px solid var(--rule);
+    min-width: 150px;
+  }
+  @media (max-width: 620px) {
+    .dcol.mid { border-left: none; border-right: none; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  }
+  .dcol.teal { background: var(--teal-bg); }
+  .dcol.rust { background: var(--rust-bg); }
+  .dcol .arrow { font-family: var(--sans); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+  .dcol .who { font-family: var(--sans); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.35rem; }
+  .dcol.teal .who { color: var(--teal); }
+  .dcol.rust .who { color: var(--rust); }
+  .dcol h3 { font-family: var(--serif); font-size: 1.08rem; font-weight: 600; margin: 0 0 0.55rem; line-height: 1.2; }
+  .dcol ul { margin: 0; padding: 0; list-style: none; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+  .dcol ul li { padding-left: 0.9rem; position: relative; margin-bottom: 0.15rem; }
+  .dcol ul li::before { content: "›"; position: absolute; left: 0; color: var(--ink-faint); }
+  .dcol.mid .core-eq { font-size: 1rem; margin: 0.3rem 0; }
+  .dcol.mid .core-lab { font-family: var(--sans); font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+
+  /* ---- continuation tracks ---- */
+  .tracks { display: flex; flex-direction: column; gap: 12px; margin: 1.7rem 0 0.5rem; }
+  .track { border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1.15rem 1.1rem; }
+  .track.teal { background: var(--teal-bg); border-color: color-mix(in srgb, var(--teal) 30%, var(--rule)); }
+  .track.rust { background: var(--rust-bg); border-color: color-mix(in srgb, var(--rust) 30%, var(--rule)); }
+  .track-head { font-family: var(--sans); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: baseline; gap: 0.5rem; }
+  .track.teal .track-head { color: var(--teal); }
+  .track.rust .track-head { color: var(--rust); }
+  .track-head var { font-size: 0.95rem; text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
+  .track-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.45rem; font-family: var(--sans); font-size: 0.82rem; }
+  .chip { background: var(--paper); border: 1px solid var(--rule); border-radius: 100px; padding: 0.28rem 0.75rem; color: var(--ink-soft); white-space: nowrap; }
+  .chip.filled { color: var(--ink); font-weight: 600; }
+  .track.teal .chip.filled { border-color: var(--teal); }
+  .track.rust .chip.filled { border-color: var(--rust); }
+  .arr { color: var(--ink-faint); font-size: 0.85rem; }
+  .track-end { font-family: var(--sans); font-size: 0.72rem; color: var(--ink-faint); white-space: nowrap; }
+  .handoff { font-family: var(--sans); font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--teal-ink); border: 1px dashed var(--teal); border-radius: 100px; padding: 0.28rem 0.72rem; background: transparent; white-space: nowrap; }
+
+  /* ---- callout ---- */
+  .callout {
+    background: var(--raised);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 1.2rem 1.35rem;
+    margin: 1.5rem 0 0.5rem;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+  .callout .co-tag {
+    font-family: var(--sans); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-faint); display: block; margin-bottom: 0.5rem;
+  }
+
+  /* ---- footer ---- */
+  footer { padding: 2.6rem 0 3.5rem; }
+  footer .refs { font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; }
+  footer .refs p { margin: 0 0 0.6rem; }
+  footer .refs .src { font-variant: small-caps; letter-spacing: 0.02em; color: var(--ink-faint); font-family: var(--sans); font-size: 0.7rem; text-transform: uppercase; }
+  footer .colophon { margin-top: 1.6rem; font-family: var(--sans); font-size: 0.74rem; color: var(--ink-faint); line-height: 1.5; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .fade { opacity: 0; transform: translateY(8px); animation: rise 0.7s cubic-bezier(0.2,0.7,0.2,1) forwards; }
+    .fade.d1 { animation-delay: 0.08s; }
+    .fade.d2 { animation-delay: 0.16s; }
+    .fade.d3 { animation-delay: 0.24s; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="kicker eyebrow fade">
+      Interpreting OLS &nbsp;·&nbsp; a connection note &nbsp;·&nbsp;
+      <span class="teal-tag">outcome weights</span> &nbsp;/&nbsp; <span class="rust-tag">effect weights</span>
+    </div>
+    <h1 class="fade d1">Two readings of one coefficient</h1>
+    <p class="standfirst fade d2">
+      The chapter <em>Interpreting OLS</em> already gives the weighted-outcome reading of a coefficient &mdash; it
+      just goes no further with it. Knaus&rsquo;s <b>Treatment Effect Estimators as Weighted Outcomes</b> (2024) picks
+      up that exact thread and carries it past OLS. A handoff on one Frisch&ndash;Waugh&ndash;Lovell identity.
+    </p>
+
+    <div class="split fade d3">
+      <div class="split-top">
+        <div class="node">
+          <div class="node-eq"><var>&beta;&#770;</var> <span class="op">=</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>V&#771;</var><sub><var>i</var></sub> <var>y</var><sub><var>i</var></sub> <span class="op">/</span> <span class="op">&sum;</span><sub><var>j</var></sub> <var>V&#771;</var><sub><var>j</var></sub><sup>2</sup></div>
+          <div class="node-lab">One FWL coefficient</div>
+        </div>
+      </div>
+      <div class="stem" aria-hidden="true">
+        <svg width="240" height="34" viewBox="0 0 240 34">
+          <line x1="120" y1="0" x2="120" y2="12"></line>
+          <path d="M120 12 C 120 24, 64 12, 64 32"></path>
+          <path d="M120 12 C 120 24, 176 12, 176 32"></path>
+        </svg>
+      </div>
+      <div class="branches">
+        <div class="branch teal">
+          <div class="b-tag">Weights on outcomes</div>
+          <div class="b-eq"><var>&beta;&#770;</var> <span class="op">=</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>&omega;</var><sub><var>i</var></sub> <var>y</var><sub><var>i</var></sub></div>
+          <p class="b-desc">Signed, sum to zero, <strong>computable</strong> &mdash; because <var>y</var> is observed. Holds always: it is algebra.</p>
+        </div>
+        <div class="branch rust">
+          <div class="b-tag">Weights on effects</div>
+          <div class="b-eq"><var>&beta;&#770;</var> <span class="op">=</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>w</var><sub><var>i</var></sub> <var>&beta;</var><sub><var>i</var></sub> <span class="op">/</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>w</var><sub><var>i</var></sub></div>
+          <p class="b-desc">Non-negative, <strong>not computable</strong> &mdash; the per-unit <var>&beta;</var><sub><var>i</var></sub> are never seen. Holds only in expectation.</p>
+        </div>
+      </div>
+      <p class="split-cap">Both readings are the chapter&rsquo;s. It develops the effect reading in full; it defines the outcome reading and goes no further &mdash; which is exactly where Knaus picks up.</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2><span class="sec-no">01</span>The same identity, split two ways</h2>
+      <p class="lead-in">Both papers start from Frisch&ndash;Waugh&ndash;Lovell. The chapter reads it twice; Knaus builds his whole framework on the first reading.</p>
+      <p>
+        The chapter&rsquo;s central move (its section <em>The general rule: FWL</em>) is that a single OLS
+        coefficient admits two readings. Write <var>V&#771;</var><sub><var>i</var></sub> for the regressor of interest
+        after the controls are residualized out. Then
+      </p>
+      <div class="eqn teal">
+        <var>&beta;&#770;</var> <span class="op">=</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>&omega;</var><sub><var>i</var></sub> <var>y</var><sub><var>i</var></sub><span class="op">,</span>
+        &nbsp;&nbsp; <var>&omega;</var><sub><var>i</var></sub> <span class="op">=</span> <var>V&#771;</var><sub><var>i</var></sub> <span class="op">/</span> <span class="op">&sum;</span><sub><var>j</var></sub> <var>V&#771;</var><sub><var>j</var></sub><sup>2</sup>
+        <span class="note">weights on outcomes &mdash; which rows drive the number</span>
+      </div>
+      <div class="eqn rust">
+        <var>&beta;&#770;</var> <span class="op">=</span> <span class="op">(&sum;</span><sub><var>i</var></sub> <var>w</var><sub><var>i</var></sub> <var>&beta;</var><sub><var>i</var></sub><span class="op">)</span> <span class="op">/</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>w</var><sub><var>i</var></sub><span class="op">,</span>
+        &nbsp;&nbsp; <var>w</var><sub><var>i</var></sub> <span class="op">=</span> <var>V&#771;</var><sub><var>i</var></sub> <var>V</var><sub><var>i</var></sub>
+        <span class="note">weights on effects &mdash; whose effect is being estimated</span>
+      </div>
+      <p>
+        Knaus&rsquo;s entire paper is about the <span class="tw">first</span> object. His Equation&nbsp;(1),
+        <var>&tau;&#770;</var> <span class="op">=</span> <span class="op">&sum;</span><sub><var>i</var></sub> <var>&omega;</var><sub><var>i</var></sub> <var>Y</var><sub><var>i</var></sub> <span class="op">=</span> <var>&omega;</var><span class="op">&prime;</span><var>Y</var>,
+        is precisely the chapter&rsquo;s outcome-weight reading. And his running OLS example derives the closed form
+      </p>
+      <div class="eqn">
+        <var>&omega;</var><sup>ols</sup><span class="op">&prime;</span> <span class="op">=</span> <span class="op">(</span><var>E&#770;</var><span class="op">&prime;</span><var>E&#770;</var><span class="op">)</span><sup>&minus;1</sup> <var>E&#770;</var><span class="op">&prime;</span> <var>M</var><sub><var>X</var></sub><span class="op">,</span>
+        &nbsp;&nbsp; <var>E&#770;</var> <span class="op">=</span> <var>M</var><sub><var>X</var></sub> <var>D</var>
+        <span class="note">Knaus, Eq. 7</span>
+      </div>
+      <p>
+        which <em>is</em> the chapter&rsquo;s <var>&omega;</var><sub><var>i</var></sub>: the treatment residual <var>E&#770;</var> is
+        the chapter&rsquo;s <var>V&#771;</var>, and applying the residual-maker <var>M</var><sub><var>X</var></sub> to <var>Y</var>
+        is just the FWL residualizing of the outcome. The chapter&rsquo;s outcome-weight formula is the base case of
+        Knaus&rsquo;s framework.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2><span class="sec-no">02</span>The same distinction, drawn by both</h2>
+      <p class="lead-in">The chapter&rsquo;s comparison table and Knaus&rsquo;s taxonomy are the same two columns under two names.</p>
+      <p>
+        Knaus separates <span class="tw">outcome weights</span> from <span class="rw">effect weights</span> in almost the
+        chapter&rsquo;s words: outcome weights &ldquo;apply to observed outcomes and numerically reproduce the estimate
+        without further assumptions, while [effect] weights weight inherently unobservable effects and usually reproduce
+        the estimate only in expectation.&rdquo; Line up the two vocabularies and they coincide exactly.
+      </p>
+      <div class="tbl-scroll">
+        <table>
+          <caption>The chapter&rsquo;s &omega;&nbsp;/&nbsp;w table = Knaus&rsquo;s outcome / effect weights</caption>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Weights on outcomes &omega;<sub>i</sub></th>
+              <th scope="col">Weights on effects w<sub>i</sub></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row" class="row-label">Weights what</th>
+              <td>the observed <var>y</var><sub><var>i</var></sub></td>
+              <td>that unit&rsquo;s own effect <var>&beta;</var><sub><var>i</var></sub></td>
+            </tr>
+            <tr>
+              <th scope="row" class="row-label">Sign</th>
+              <td>signed, sums to zero</td>
+              <td>non-negative</td>
+            </tr>
+            <tr>
+              <th scope="row" class="row-label">Computable?</th>
+              <td>yes &mdash; <var>y</var> is observed</td>
+              <td>no &mdash; the <var>&beta;</var><sub><var>i</var></sub> are unseen</td>
+            </tr>
+            <tr>
+              <th scope="row" class="row-label">Holds when</th>
+              <td>always, it is algebra</td>
+              <td>in expectation; per-unit needs saturation</td>
+            </tr>
+            <tr>
+              <th scope="row" class="row-label">Answers</th>
+              <td>which rows drive this number; any wrong-sign?</td>
+              <td>is this the effect I meant; whose effect?</td>
+            </tr>
+            <tr>
+              <th scope="row" class="row-label">Knaus&rsquo;s name</th>
+              <td>outcome weights (his focus)</td>
+              <td>effect weights (bracketed as separate)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:1.3rem;">
+        The mnemonic runs through the chapter&rsquo;s own figures: the <span class="rw">rust rays</span> that draw the
+        weights on the sample geometry are the effect weights; the <span class="tw">teal fit line</span> they average
+        into is the outcome-weight combination. The two colors on this page carry the same code.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2><span class="sec-no">03</span>Where the chapter stops, Knaus continues</h2>
+      <p class="lead-in">Not opposite directions &mdash; the same thread. The chapter defines the outcome-weight reading and sets it down after one step; Knaus is the rest of that walk.</p>
+      <p>
+        The chapter runs two threads. It develops the <span class="rw">effect-weight</span> reading in full &mdash;
+        Angrist, S&#322;oczy&#324;ski, within vs. between &mdash; all inside OLS, fixed effects, and panels, where that
+        reading naturally lives. It also states the <span class="tw">outcome-weight</span> reading: it defines
+        <var>&omega;</var><sub><var>i</var></sub>, gives it one diagnostic use (overlap in doubt, wrong-sign rows), and
+        then goes no further &mdash; &ldquo;default to the effect reading,&rdquo; it says. Knaus takes that same object
+        and carries it past OLS.
+      </p>
+
+      <div class="tracks">
+        <div class="track rust">
+          <div class="track-head">Effect weights <var>w<sub>i</sub></var></div>
+          <div class="track-flow">
+            <span class="chip filled">Chapter defines</span>
+            <span class="arr">&rarr;</span>
+            <span class="chip">Angrist 1998</span>
+            <span class="arr">&rarr;</span>
+            <span class="chip">S&#322;oczy&#324;ski 2022</span>
+            <span class="arr">&rarr;</span>
+            <span class="chip">Hazlett &amp; Shinkre</span>
+            <span class="track-end">&mdash; developed in full, stays in OLS &amp; panels</span>
+          </div>
+        </div>
+        <div class="track teal">
+          <div class="track-head">Outcome weights <var>&omega;<sub>i</sub></var></div>
+          <div class="track-flow">
+            <span class="chip filled">Chapter defines + one use</span>
+            <span class="handoff">chapter stops &middot; Knaus continues</span>
+            <span class="chip">DML</span>
+            <span class="arr">&rarr;</span>
+            <span class="chip">Causal &amp; instrumental forests</span>
+            <span class="arr">&rarr;</span>
+            <span class="chip">AIPW &middot; TSLS &middot; IPW</span>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:1.5rem;">
+        So the join is a handoff, not a contrast. The chapter&rsquo;s <var>&omega;</var><sub><var>i</var></sub> is
+        Knaus&rsquo;s base case, and his framework is the continuation the chapter names but does not pursue &mdash; the
+        same outcome-weight object, now computed for a causal forest, an AIPW estimator, DML, and the rest through a
+        single transformation matrix. The effect-weight thread, by contrast, is one the chapter follows to the end and
+        Knaus deliberately brackets as separate.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2><span class="sec-no">04</span>The practical bridge</h2>
+      <p class="lead-in">If you ever want the chapter&rsquo;s outcome reading for something richer than plain OLS, Knaus hands you the tool.</p>
+      <p>
+        The chapter recommends the outcome reading precisely when overlap is in doubt and rows may enter with the wrong
+        sign &mdash; a diagnostic the squared effect weights cannot reveal. That is exactly Knaus&rsquo;s motivating
+        use-case list: covariate-balance checks, extrapolation diagnostics for negative weights, target-population
+        characterization.
+      </p>
+      <div class="callout">
+        <span class="co-tag">Off the shelf</span>
+        Knaus&rsquo;s R package <a href="https://github.com/MCKnaus/OutcomeWeights">OutcomeWeights</a> computes the signed
+        <var>&omega;</var><sub><var>i</var></sub> for a causal forest, an AIPW estimator, DML, and the rest &mdash; the
+        same object the chapter defines for OLS, now available beyond the linear model. The chapter <em>defines</em> the
+        object; Knaus <em>operationalizes</em> it.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2><span class="sec-no">05</span>One caveat where they connect</h2>
+      <p class="lead-in">The chapter&rsquo;s clean &ldquo;sum to zero&rdquo; is exactly what stops being clean past OLS.</p>
+      <p>
+        The chapter notes the outcome weights <var>&omega;</var><sub><var>i</var></sub> sum to zero &mdash; a tidy
+        algebraic fact for OLS. Knaus&rsquo;s headline empirical finding is that partially-linear-regression-based
+        estimators, such as causal forests, produce outcome weights that sum to zero <em>overall</em> but
+        <strong>not</strong> to (minus) one within the treated and untreated groups &mdash; a property often assumed
+        desirable. That subtlety only surfaces once you leave OLS, where the chapter&rsquo;s clean statement lives. The
+        chapter&rsquo;s base case is where Knaus&rsquo;s complication has not yet appeared.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="refs">
+      <p><span class="src">Chapter</span><br>
+        <em>Interpreting OLS</em> &mdash; Ch. 13 of the econometrics guide. OLS as a weighted average; deviation slopes
+        vs. true effects; the FWL rule; Angrist and S&#322;oczy&#324;ski decompositions; within vs. between in panels.</p>
+      <p><span class="src">Paper</span><br>
+        Michael&nbsp;C.&nbsp;Knaus (2024), <em>Treatment Effect Estimators as Weighted Outcomes.</em>
+        arXiv:2411.11559v2 &middot; R package
+        <a href="https://github.com/MCKnaus/OutcomeWeights">MCKnaus/OutcomeWeights</a>.</p>
+    </div>
+    <p class="colophon">
+      Color code throughout &mdash; teal: outcome weights (Knaus, observable) &middot; rust: effect weights (the chapter,
+      unobservable). Palette drawn from the chapter&rsquo;s own plot colors.
+    </p>
+  </div>
+</footer>

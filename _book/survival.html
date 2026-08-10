@@ -320,47 +320,47 @@ window.Quarto = {
 <li>we are trying to explain (predict) the occurrence of an event with some predictors (explanatory variables).</li>
 </ol>
 <p>Let <span class="math inline">\(T\)</span> denote the time variable, a nonnegative, continuous random variable with PDF <span class="math inline">\(f(t)\)</span> and CDF <span class="math inline">\(F(t)\)</span>, where <span class="math inline">\(t\)</span> is a realization of <span class="math inline">\(T\)</span>. The survival function is defined by</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-1"><span class="math display">\[
 S(t) = Pr(T&gt;t) = 1-F(t)
-\]</span></p>
+\tag{10.1}\]</span></span></p>
 <p>The graph of <span class="math inline">\(S(t)\)</span> against <span class="math inline">\(t\)</span> is known as the survival curve. If there is no censoring, then the survival function is easy to estimate by the ratio of the number of units surviving beyond <span class="math inline">\(t\)</span> to the total number of units in the sample. The most common method to estimate the survival function with a survival data set containing censored observations is the Kaplan-Meier method. The basic idea is to use the product of a series of conditional probabilities.</p>
 <p>First sort the event times from the smallest to the largest:</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-2"><span class="math display">\[
 t_{(1)} \le t_{(2)} \le ... \le t_{(r)}
-\]</span></p>
+\tag{10.2}\]</span></span></p>
 <p>Then the survival curve is estimated by:</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-3"><span class="math display">\[
 \hat S(t) = \prod_{j | t_{(j)} \le t} (1-\frac{d_j}{r_j}),
-\]</span></p>
+\tag{10.3}\]</span></span></p>
 <p>where <span class="math inline">\(r_j\)</span> is the number of units at risk at <span class="math inline">\(t_{(j)}\)</span> and <span class="math inline">\(d_j\)</span> is the number of “failure” or events at <span class="math inline">\(t_{(j)}\)</span>. Note that units censored at <span class="math inline">\(t_{(j)}\)</span> are included in <span class="math inline">\(r_j\)</span>.</p>
 <p>The variance of this estimator can be estimated by:</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-4"><span class="math display">\[
 \hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t_{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.
-\]</span></p>
+\tag{10.4}\]</span></span></p>
 </section><section id="hazard-function" class="level2" data-number="10.2"><h2 data-number="10.2" class="anchored" data-anchor-id="hazard-function">
 <span class="header-section-number">10.2</span> Hazard function</h2>
 <p>We are often interested in which periods have the highest or lowest change of “death” or “failure” or other events. That is, we may be interested in the probability that a state ends between <span class="math inline">\(t\)</span> and <span class="math inline">\(t+
 \Delta t\)</span> conditional on having reached <span class="math inline">\(t\)</span> in the first place.</p>
-<p>The probability is <span class="math display">\[
+<p>The probability is <span id="eq-survival-5"><span class="math display">\[
 \mbox{Pr} (t&lt;T \leq t+\Delta t | T \geq t)=\frac{F(t+\Delta
 t)-F(t)}{S(t)}
-\]</span></p>
-<p>The hazard function is defined by <span class="math display">\[
+\tag{10.5}\]</span></span></p>
+<p>The hazard function is defined by <span id="eq-survival-6"><span class="math display">\[
 h(t)=\lim_{\Delta t \rightarrow 0}\frac{\mbox{Pr} (t&lt;T \leq t+\Delta t |
 T \geq t)}{\Delta t}=\frac{f(t)}{S(t)}=\frac{f(t)}{1-F(t)}
-\]</span></p>
-<p>One of the simplest functional forms is the exponential distribution <span class="math display">\[
+\tag{10.6}\]</span></span></p>
+<p>One of the simplest functional forms is the exponential distribution <span id="eq-survival-7"><span class="math display">\[
 f(t,\theta)=\theta e^{-\theta t}
-\]</span></p>
-<p>Therefore, the hazard function is <span class="math display">\[
+\tag{10.7}\]</span></span></p>
+<p>Therefore, the hazard function is <span id="eq-survival-8"><span class="math display">\[
 h(t)=\theta
-\]</span></p>
-<p>A much more flexible functional form is Weibull, with CDF, survival, and density <span class="math display">\[
+\tag{10.8}\]</span></span></p>
+<p>A much more flexible functional form is Weibull, with CDF, survival, and density <span id="eq-survival-9"><span class="math display">\[
 F(t,\theta, \alpha)=1-\exp(-(\theta t)^{\alpha}), \quad S(t)=\exp(-(\theta t)^{\alpha}), \quad f(t)=\alpha \theta^{\alpha} t^{\alpha-1}\exp(-(\theta t)^{\alpha}).
-\]</span></p>
-<p>Hazard function can be shown to be <span class="math display">\[
+\tag{10.9}\]</span></span></p>
+<p>Hazard function can be shown to be <span id="eq-survival-10"><span class="math display">\[
 h(t)=\alpha \theta^{\alpha} t^{\alpha-1}
-\]</span></p>
+\tag{10.10}\]</span></span></p>
 <p>However, Weibull distribution does not allow for the possibility that the hazard may first increase then decrease over time. Log-normal distribution does allow this.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="davidson2.png" class="img-fluid figure-img"></p>
@@ -369,48 +369,48 @@ h(t)=\alpha \theta^{\alpha} t^{\alpha-1}
 </section><section id="log-likelihood-function" class="level2" data-number="10.3"><h2 data-number="10.3" class="anchored" data-anchor-id="log-likelihood-function">
 <span class="header-section-number">10.3</span> Log-likelihood function</h2>
 <p>Suppose we have <span class="math inline">\(n\)</span> units with a survival function <span class="math inline">\(S(t)\)</span>, density <span class="math inline">\(f(t)\)</span>, and hazard <span class="math inline">\(h(t)\)</span>. If for unit <span class="math inline">\(i\)</span>, the event happens at <span class="math inline">\(t_i\)</span>, it’s contribution to the likelihood function is the density at that point:</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-11"><span class="math display">\[
 L_i=f(t_i)=S(t_i)h(t_i)
-\]</span></p>
-<p>If no event at <span class="math inline">\(t_i\)</span>, all we know is that the lifetime exceeds <span class="math inline">\(t_i\)</span>. The probability is <span class="math display">\[
+\tag{10.11}\]</span></span></p>
+<p>If no event at <span class="math inline">\(t_i\)</span>, all we know is that the lifetime exceeds <span class="math inline">\(t_i\)</span>. The probability is <span id="eq-survival-12"><span class="math display">\[
 L_i=S(t_i),
-\]</span> which is the contribution to the likelihood function from a censored observation.</p>
-<p>Therefore, if <span class="math inline">\(U\)</span> denotes the set of uncensored observations, the log-likelihood function for the entire sample can be written as <span class="math display">\[
-\ell (t, \theta)=\sum_{i \in U} \log h(t_i | {\bf X}_i,
-\theta)+\sum_{i=1}^n \log S(t_i | {\bf X}_i, \theta)
-\]</span></p>
+\tag{10.12}\]</span></span> which is the contribution to the likelihood function from a censored observation.</p>
+<p>Therefore, if <span class="math inline">\(U\)</span> denotes the set of uncensored observations, the log-likelihood function for the entire sample can be written as <span id="eq-survival-13"><span class="math display">\[
+\ell (t, \theta)=\sum_{i \in U} \log h(t_i | {{\symbf{X}}}_i,
+\theta)+\sum_{i=1}^n \log S(t_i | {{\symbf{X}}}_i, \theta)
+\tag{10.13}\]</span></span></p>
 </section><section id="proportional-hazard-models" class="level2" data-number="10.4"><h2 data-number="10.4" class="anchored" data-anchor-id="proportional-hazard-models">
 <span class="header-section-number">10.4</span> Proportional Hazard Models</h2>
 <section id="model-and-likelihood" class="level3" data-number="10.4.1"><h3 data-number="10.4.1" class="anchored" data-anchor-id="model-and-likelihood">
 <span class="header-section-number">10.4.1</span> Model and likelihood</h3>
-<p>One class of models that is quite widely used is the proportional hazard models (based on Cox (1972)). <span class="math display">\[
-h(t | {\bf x}_i)=h_0(t)\exp ({\bf x}'_i \beta),
-\]</span></p>
-<p>In this model <span class="math inline">\(h_0(t)\)</span> is called baseline hazard rate; it describes the risk for units with <span class="math inline">\(\bf x_i = 0\)</span>. <span class="math inline">\(\exp ({\bf x}'_i \beta)\)</span> represents the relative risk, a proportionate increase or decrease in risk, due to <span class="math inline">\(\bf x_i\)</span>. The interpretation of <span class="math inline">\(\beta\)</span> is that <span class="math inline">\(\exp(\beta_i)\)</span> gives the relative risk change associated with an increase of one unit in <span class="math inline">\(x_i\)</span>, all other explanatory variables remaining constant.</p>
+<p>One class of models that is quite widely used is the proportional hazard models (based on Cox (1972)). <span id="eq-survival-14"><span class="math display">\[
+h(t | {{\symbf{x}}}_i)=h_0(t)\exp ({{\symbf{x}}}'_i \beta),
+\tag{10.14}\]</span></span></p>
+<p>In this model <span class="math inline">\(h_0(t)\)</span> is called baseline hazard rate; it describes the risk for units with <span class="math inline">\({\symbf{x_i = 0}}\)</span>. <span class="math inline">\(\exp ({{\symbf{x}}}'_i \beta)\)</span> represents the relative risk, a proportionate increase or decrease in risk, due to <span class="math inline">\({\symbf{x_i}}\)</span>. The interpretation of <span class="math inline">\(\beta\)</span> is that <span class="math inline">\(\exp(\beta_i)\)</span> gives the relative risk change associated with an increase of one unit in <span class="math inline">\(x_i\)</span>, all other explanatory variables remaining constant.</p>
 <p><span class="math inline">\(\beta\)</span> is estimated by maximizing a partial likelihood function. It is partial likelihood function since the baseline hazard is factored out. Suppose one event happens at time <span class="math inline">\(t_j\)</span>. Conditional on this event the probability that case <span class="math inline">\(i\)</span> dies (meaning this event happened to case <span class="math inline">\(i\)</span>, not other cases in the risk set) is</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-15"><span class="math display">\[
 L_i=\frac{h_0(t_j) \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j) h_0(t_j) \exp(x_l' \beta)}=\frac{ \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j)  \exp(x_l' \beta)}
-\]</span></p>
+\tag{10.15}\]</span></span></p>
 <p>We can see here that Cox’s model is for continuous time survival data. It is assumed there is no ties at time <span class="math inline">\(t_j\)</span> (in continuous time is not possible for two events to happen at the same time). In reality, we observe ties of event time, because in many situations, we observe grouped data. For example, we observe case <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span> have events at the same time <span class="math inline">\(j\)</span>. In that case, in the denominator, whether we include case <span class="math inline">\(m\)</span> in the calculation of the likelihood of case <span class="math inline">\(n\)</span> is ambiguous. In that case, special treatment is needed. A standard approximation (Breslow and Peto) is to let</p>
-<p><span class="math display">\[
+<p><span id="eq-survival-16"><span class="math display">\[
 L_{m \in D(t_j)} \simeq \frac{ \prod_{m \in D(t_j)} \exp(x_m' \beta)} {[\sum_{l \in R(t_j)} \exp(x_l' \beta)]^{d_j}}
-\]</span></p>
+\tag{10.16}\]</span></span></p>
 <p>where <span class="math inline">\(D(t_j)\)</span> is the set of cases that die at time <span class="math inline">\(t_j\)</span> and <span class="math inline">\(d_j\)</span> denotes the number of cases that die at time <span class="math inline">\(t_j\)</span>. This approximation works well with small number of ties relative to total number of cases at risk.</p>
 <p>One important feature (disadvantage?) for the proportional hazard model is that for all units, the effect is the same at all time <span class="math inline">\(t\)</span>. To see this:</p>
-<p><span class="math display">\[
-\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({\bf x}_1' \beta)}{h_0(t)\exp ({\bf x}_2' \beta)}= \frac{\exp ({\bf x}_1' \beta)}{\exp ({\bf x}_2' \beta)},
-\]</span> which does not depend on <span class="math inline">\(t\)</span>.</p>
+<p><span id="eq-survival-17"><span class="math display">\[
+\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({{\symbf{x}}}_1' \beta)}{h_0(t)\exp ({{\symbf{x}}}_2' \beta)}= \frac{\exp ({{\symbf{x}}}_1' \beta)}{\exp ({{\symbf{x}}}_2' \beta)},
+\tag{10.17}\]</span></span> which does not depend on <span class="math inline">\(t\)</span>.</p>
 <p>One advantage of Cox’s model is that it is considered as a semi-parametric model since it does not have to specify the distribution of the survival time. The estimation process relies only on the order in which events occur, not the exact time they occur. Parameter estimates are derived assuming continuous survival times.</p>
 </section><section id="interpretation" class="level3" data-number="10.4.2"><h3 data-number="10.4.2" class="anchored" data-anchor-id="interpretation">
 <span class="header-section-number">10.4.2</span> Interpretation</h3>
 <p>In the equation above, if we would like to calculate the partial effect of <span class="math inline">\(x_j\)</span> on <span class="math inline">\(h\)</span>, we have:</p>
-<p><span class="math display">\[
-\partial h(t | {\bf x}_i) / \partial x_j=h_0(t)\exp ({\bf x}'_i \beta) \beta_j = \beta_j h(t | {\bf x}_i),
-\]</span></p>
+<p><span id="eq-survival-18"><span class="math display">\[
+\partial h(t | {{\symbf{x}}}_i) / \partial x_j=h_0(t)\exp ({{\symbf{x}}}'_i \beta) \beta_j = \beta_j h(t | {{\symbf{x}}}_i),
+\tag{10.18}\]</span></span></p>
 <p>If we do it the other way, plug in <span class="math inline">\(x_j + 1\)</span> will generate</p>
-<p><span class="math display">\[
-h_0(t)\exp ({\bf x}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{\bf x}_i)
-\]</span></p>
+<p><span id="eq-survival-19"><span class="math display">\[
+h_0(t)\exp ({{\symbf{x}}}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{{\symbf{x}}}_i)
+\tag{10.19}\]</span></span></p>
 <p>Therefore, a one unit change in <span class="math inline">\(x_j\)</span> multiplies the hazard by <span class="math inline">\(\exp(\beta_j)\)</span> (a proportionate change of <span class="math inline">\(\exp(\beta_j)-1\)</span>).</p>
 </section><section id="example-in-r" class="level3" data-number="10.4.3"><h3 data-number="10.4.3" class="anchored" data-anchor-id="example-in-r">
 <span class="header-section-number">10.4.3</span> Example in R</h3>
@@ -523,12 +523,12 @@ n= 228 </code></pre>
 </section></section><section id="discrete-time-survival-models" class="level2" data-number="10.5"><h2 data-number="10.5" class="anchored" data-anchor-id="discrete-time-survival-models">
 <span class="header-section-number">10.5</span> Discrete-time Survival Models</h2>
 <p>Cox (1972) is the <em>continuous-time</em> proportional hazards model; the discrete-time analogue models the odds of an event at time <span class="math inline">\(t_j\)</span> given survival up to that point. This proportional-odds specification for the discrete hazard,</p>
-<p><span class="math display">\[
-\frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j)}{1- h_0(t_j)} \exp({\bf x}'_i \beta),
-\]</span> is a discrete-time <em>proportional-odds</em> hazard model rather than a direct discretization of Cox’s continuous-time proportional hazards model. (The complementary log-log link is the discrete-time form that corresponds more directly to a grouped continuous-time proportional hazards model.) If we take logs on both sides, we have</p>
-<p><span class="math display">\[
-{\rm logit} (h(t_j | {\bf x}_i)) = \alpha_j +  {\bf x}'_i \beta,
-\]</span> This looks very similar to a logit model. In fact, we can fit a discrete-time proportional hazard model by running a logistic regression on a set of pseudo observations generated by “filling in” the observations between the start time to the event time or time at the end of the study period (censored). The outcome of this process is 0 unless there is an event, then it turns 1. It is treated as independent Bernoulli observations with probability given by hazard <span class="math inline">\(h_{ij}\)</span> for individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t_j\)</span>. The likelihood function for the discrete-time survival model coincides with the likelihood of a sequence of independent Bernoulli trials (Singer and Willett, 1993, has more details).</p>
+<p><span id="eq-survival-20"><span class="math display">\[
+\frac{h(t_j | {{\symbf{x}}}_i)}{1- h(t_j | {{\symbf{x}}}_i)} = \frac{h_0(t_j)}{1- h_0(t_j)} \exp({{\symbf{x}}}'_i \beta),
+\tag{10.20}\]</span></span> is a discrete-time <em>proportional-odds</em> hazard model rather than a direct discretization of Cox’s continuous-time proportional hazards model. (The complementary log-log link is the discrete-time form that corresponds more directly to a grouped continuous-time proportional hazards model.) If we take logs on both sides, we have</p>
+<p><span id="eq-survival-21"><span class="math display">\[
+{{\mathrm{logit}}} (h(t_j | {{\symbf{x}}}_i)) = \alpha_j +  {{\symbf{x}}}'_i \beta,
+\tag{10.21}\]</span></span> This looks very similar to a logit model. In fact, we can fit a discrete-time proportional hazard model by running a logistic regression on a set of pseudo observations generated by “filling in” the observations between the start time to the event time or time at the end of the study period (censored). The outcome of this process is 0 unless there is an event, then it turns 1. It is treated as independent Bernoulli observations with probability given by hazard <span class="math inline">\(h_{ij}\)</span> for individual <span class="math inline">\(i\)</span> at time <span class="math inline">\(t_j\)</span>. The likelihood function for the discrete-time survival model coincides with the likelihood of a sequence of independent Bernoulli trials (Singer and Willett, 1993, has more details).</p>
 <section id="do-it-in-stata" class="level3" data-number="10.5.1"><h3 data-number="10.5.1" class="anchored" data-anchor-id="do-it-in-stata">
 <span class="header-section-number">10.5.1</span> Do it in Stata</h3>
 <p>To do a discrete-time survival model in Stata, your data set needs to be set up as by unit-time. For example, observations by company month. The event (or failure) variable needs to be set to zero until the event happens. If no event until the end of the study period, then it is censored. A data set by unit-time can be analyzed by logit model, optionally with clustered standard error. To set up a structure like this, user-written programs called <span class="math inline">\(dthaz\)</span> and <span class="math inline">\(prsnperd\)</span> (means person-period) can be used.</p>
@@ -1023,7 +1023,7 @@ n= 228 </code></pre>
 <span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>S(t) = Pr(T&gt;t) = 1-F(t)</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>$$ {#eq-survival-1}</span>
 <span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>The graph of $S(t)$ against $t$ is known as the survival curve.  If</span>
 <span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>there is no censoring, then the survival function is easy to estimate</span>
@@ -1037,14 +1037,14 @@ n= 228 </code></pre>
 <span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>t_{(1)} \le t_{(2)} \le ... \le t_{(r)}</span>
-<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>$$ {#eq-survival-2}</span>
 <span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>Then the survival curve is estimated by:</span>
 <span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>\hat S(t) = \prod_{j | t_{(j)} \le t} (1-\frac{d_j}{r_j}),</span>
-<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>$$ {#eq-survival-3}</span>
 <span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>where $r_j$ is the number of units at risk at $t_{(j)}$ and $d_j$ is</span>
 <span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>the number of "failure" or events at $t_{(j)}$.  Note that units</span>
@@ -1054,7 +1054,7 @@ n= 228 </code></pre>
 <span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a>\hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t_{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.</span>
-<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>$$ {#eq-survival-4}</span>
 <span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a></span>
@@ -1069,34 +1069,34 @@ n= 228 </code></pre>
 <span id="cb10-71"><a href="#cb10-71" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb10-72"><a href="#cb10-72" aria-hidden="true" tabindex="-1"></a>\mbox{Pr} (t<span class="dt">&lt;</span><span class="kw">T</span><span class="ot"> </span><span class="er">\</span><span class="ot">leq t</span><span class="er">+\</span><span class="ot">Delta t </span><span class="er">|</span><span class="ot"> T </span><span class="er">\</span><span class="ot">geq t)</span><span class="op">=</span><span class="st">\frac{F(t+\Delta</span></span>
 <span id="cb10-73"><a href="#cb10-73" aria-hidden="true" tabindex="-1"></a><span class="ot">t)-F(t)</span><span class="er">}{</span><span class="ot">S(t)</span><span class="er">}</span></span>
-<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-74"><a href="#cb10-74" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-5</span><span class="er">}</span></span>
 <span id="cb10-75"><a href="#cb10-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-76"><a href="#cb10-76" aria-hidden="true" tabindex="-1"></a><span class="ot">The hazard function is defined by</span></span>
 <span id="cb10-77"><a href="#cb10-77" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-78"><a href="#cb10-78" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\lim_{\Delta</span><span class="ot"> t </span><span class="er">\</span><span class="ot">rightarrow </span><span class="er">0}\</span><span class="ot">frac</span><span class="er">{\</span><span class="ot">mbox</span><span class="er">{</span><span class="ot">Pr</span><span class="er">}</span><span class="ot"> (t</span><span class="er">&lt;</span><span class="ot">T </span><span class="er">\</span><span class="ot">leq t</span><span class="er">+\</span><span class="ot">Delta t </span><span class="er">|</span></span>
 <span id="cb10-79"><a href="#cb10-79" aria-hidden="true" tabindex="-1"></a><span class="ot">T </span><span class="er">\</span><span class="ot">geq t)</span><span class="er">}{\</span><span class="ot">Delta t</span><span class="er">}</span><span class="op">=</span><span class="st">\frac{f(t)}{S(t)}</span><span class="er">=</span><span class="st">\frac{f(t)}{1-F(t)}</span></span>
-<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-80"><a href="#cb10-80" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-6</span><span class="er">}</span></span>
 <span id="cb10-81"><a href="#cb10-81" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-82"><a href="#cb10-82" aria-hidden="true" tabindex="-1"></a><span class="ot">One of the simplest functional forms is the exponential</span></span>
 <span id="cb10-83"><a href="#cb10-83" aria-hidden="true" tabindex="-1"></a><span class="ot">distribution</span></span>
 <span id="cb10-84"><a href="#cb10-84" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-85"><a href="#cb10-85" aria-hidden="true" tabindex="-1"></a><span class="ot">f(t</span><span class="er">,\</span><span class="ot">theta)</span><span class="op">=</span><span class="st">\theta</span><span class="ot"> e</span><span class="er">^{-\</span><span class="ot">theta t</span><span class="er">}</span></span>
-<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-86"><a href="#cb10-86" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-7</span><span class="er">}</span></span>
 <span id="cb10-87"><a href="#cb10-87" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-88"><a href="#cb10-88" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> the hazard function is</span></span>
 <span id="cb10-89"><a href="#cb10-89" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-90"><a href="#cb10-90" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\theta</span></span>
-<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-91"><a href="#cb10-91" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-8</span><span class="er">}</span></span>
 <span id="cb10-92"><a href="#cb10-92" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-93"><a href="#cb10-93" aria-hidden="true" tabindex="-1"></a><span class="ot">A much more flexible functional form is Weibull</span><span class="er">,</span><span class="ot"> with CDF</span><span class="er">,</span><span class="ot"> survival</span><span class="er">,</span><span class="ot"> and density</span></span>
 <span id="cb10-94"><a href="#cb10-94" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-95"><a href="#cb10-95" aria-hidden="true" tabindex="-1"></a><span class="ot">F(t</span><span class="er">,\</span><span class="ot">theta</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">alpha)</span><span class="op">=</span><span class="st">1-\exp(-(\theta</span><span class="ot"> t)</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}),</span><span class="ot"> </span><span class="er">\</span><span class="ot">quad S(t)</span><span class="op">=</span><span class="st">\exp(-(\theta</span><span class="ot"> t)</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}),</span><span class="ot"> </span><span class="er">\</span><span class="ot">quad f(t)</span><span class="op">=</span><span class="st">\alpha</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}</span><span class="ot"> t</span><span class="er">^{\</span><span class="ot">alpha-1</span><span class="er">}\</span><span class="ot">exp(-(</span><span class="er">\</span><span class="ot">theta t)</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}).</span></span>
-<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-96"><a href="#cb10-96" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-9</span><span class="er">}</span></span>
 <span id="cb10-97"><a href="#cb10-97" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-98"><a href="#cb10-98" aria-hidden="true" tabindex="-1"></a><span class="ot">Hazard function can be shown to be</span></span>
 <span id="cb10-99"><a href="#cb10-99" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-100"><a href="#cb10-100" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t)</span><span class="op">=</span><span class="st">\alpha</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta</span><span class="er">^{\</span><span class="ot">alpha</span><span class="er">}</span><span class="ot"> t</span><span class="er">^{\</span><span class="ot">alpha-1</span><span class="er">}</span></span>
-<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-101"><a href="#cb10-101" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-10</span><span class="er">}</span></span>
 <span id="cb10-102"><a href="#cb10-102" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-103"><a href="#cb10-103" aria-hidden="true" tabindex="-1"></a><span class="ot">However</span><span class="er">,</span><span class="ot"> Weibull distribution does not allow for the possibility</span></span>
 <span id="cb10-104"><a href="#cb10-104" aria-hidden="true" tabindex="-1"></a><span class="ot">that the hazard may first increase then decrease over time.</span></span>
@@ -1111,22 +1111,22 @@ n= 228 </code></pre>
 <span id="cb10-113"><a href="#cb10-113" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-114"><a href="#cb10-114" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-115"><a href="#cb10-115" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">f(t_i)</span><span class="er">=</span><span class="st">S(t_i)h(t_i)</span></span>
-<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-116"><a href="#cb10-116" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-11</span><span class="er">}</span></span>
 <span id="cb10-117"><a href="#cb10-117" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a><span class="ot">If no event at </span><span class="er">$</span><span class="ot">t_i</span><span class="er">$,</span><span class="ot"> all we know is that the lifetime exceeds </span><span class="er">$</span><span class="ot">t_i</span><span class="er">$.</span><span class="ot">  The probability is</span></span>
 <span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">S(t_i),</span></span>
-<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-12</span><span class="er">}</span></span>
 <span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a><span class="ot">which is the contribution to the likelihood function from a censored</span></span>
 <span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="ot">observation.</span></span>
 <span id="cb10-125"><a href="#cb10-125" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-126"><a href="#cb10-126" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> if </span><span class="er">$</span><span class="ot">U</span><span class="er">$</span><span class="ot"> denotes the set of uncensored observations</span><span class="er">,</span><span class="ot"> the</span></span>
 <span id="cb10-127"><a href="#cb10-127" aria-hidden="true" tabindex="-1"></a><span class="ot">log-likelihood function for the entire sample can be written as</span></span>
 <span id="cb10-128"><a href="#cb10-128" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">ell (t</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span><span class="op">=</span><span class="st">\sum_{i</span><span class="ot"> </span><span class="er">\</span><span class="ot">in U</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">log h(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf X</span><span class="er">}</span><span class="ot">_i</span><span class="er">,</span></span>
-<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">theta)</span><span class="er">+\</span><span class="ot">sum_</span><span class="er">{</span><span class="ot">i</span><span class="op">=</span><span class="st">1}^n</span><span class="ot"> </span><span class="er">\</span><span class="ot">log S(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf X</span><span class="er">}</span><span class="ot">_i</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span></span>
-<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-129"><a href="#cb10-129" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">ell (t</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span><span class="op">=</span><span class="st">\sum_{i</span><span class="ot"> </span><span class="er">\</span><span class="ot">in U</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">log h(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">X</span><span class="er">}}}</span><span class="ot">_i</span><span class="er">,</span></span>
+<span id="cb10-130"><a href="#cb10-130" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">theta)</span><span class="er">+\</span><span class="ot">sum_</span><span class="er">{</span><span class="ot">i</span><span class="op">=</span><span class="st">1}^n</span><span class="ot"> </span><span class="er">\</span><span class="ot">log S(t_i </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">X</span><span class="er">}}}</span><span class="ot">_i</span><span class="er">,</span><span class="ot"> </span><span class="er">\</span><span class="ot">theta)</span></span>
+<span id="cb10-131"><a href="#cb10-131" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-13</span><span class="er">}</span></span>
 <span id="cb10-132"><a href="#cb10-132" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-133"><a href="#cb10-133" aria-hidden="true" tabindex="-1"></a><span class="ot">## Proportional Hazard Models</span></span>
 <span id="cb10-134"><a href="#cb10-134" aria-hidden="true" tabindex="-1"></a></span>
@@ -1135,13 +1135,13 @@ n= 228 </code></pre>
 <span id="cb10-137"><a href="#cb10-137" aria-hidden="true" tabindex="-1"></a><span class="ot">One class of models that is quite widely used is the proportional</span></span>
 <span id="cb10-138"><a href="#cb10-138" aria-hidden="true" tabindex="-1"></a><span class="ot">hazard models (based on Cox (1972)).</span></span>
 <span id="cb10-139"><a href="#cb10-139" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
-<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-140"><a href="#cb10-140" aria-hidden="true" tabindex="-1"></a><span class="ot">h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
+<span id="cb10-141"><a href="#cb10-141" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-14</span><span class="er">}</span></span>
 <span id="cb10-142"><a href="#cb10-142" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-143"><a href="#cb10-143" aria-hidden="true" tabindex="-1"></a><span class="ot">In this model </span><span class="er">$</span><span class="ot">h_0(t)</span><span class="er">$</span><span class="ot"> is called baseline hazard rate</span><span class="er">;</span><span class="ot"> it describes</span></span>
-<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="ot">the risk for units with </span><span class="er">$\</span><span class="ot">bf x_i </span><span class="op">=</span> <span class="st">0$.</span><span class="ot"> </span><span class="er">$\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">$</span></span>
+<span id="cb10-144"><a href="#cb10-144" aria-hidden="true" tabindex="-1"></a><span class="ot">the risk for units with </span><span class="er">${\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x_i </span><span class="op">=</span> <span class="st">0}}$.</span><span class="ot"> </span><span class="er">$\</span><span class="ot">exp (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">$</span></span>
 <span id="cb10-145"><a href="#cb10-145" aria-hidden="true" tabindex="-1"></a><span class="ot">represents the relative risk</span><span class="er">,</span><span class="ot"> a proportionate increase or decrease in</span></span>
-<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="ot">risk</span><span class="er">,</span><span class="ot"> due to </span><span class="er">$\</span><span class="ot">bf x_i</span><span class="er">$.</span><span class="ot">  The interpretation of </span><span class="er">$\</span><span class="ot">beta</span><span class="er">$</span><span class="ot"> is that</span></span>
+<span id="cb10-146"><a href="#cb10-146" aria-hidden="true" tabindex="-1"></a><span class="ot">risk</span><span class="er">,</span><span class="ot"> due to </span><span class="er">${\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x_i</span><span class="er">}}$.</span><span class="ot">  The interpretation of </span><span class="er">$\</span><span class="ot">beta</span><span class="er">$</span><span class="ot"> is that</span></span>
 <span id="cb10-147"><a href="#cb10-147" aria-hidden="true" tabindex="-1"></a><span class="er">$\</span><span class="ot">exp(</span><span class="er">\</span><span class="ot">beta_i)</span><span class="er">$</span><span class="ot"> gives the relative risk change associated with an</span></span>
 <span id="cb10-148"><a href="#cb10-148" aria-hidden="true" tabindex="-1"></a><span class="ot">increase of one unit in </span><span class="er">$</span><span class="ot">x_i</span><span class="er">$,</span><span class="ot"> all other explanatory variables remaining</span></span>
 <span id="cb10-149"><a href="#cb10-149" aria-hidden="true" tabindex="-1"></a><span class="ot">constant.</span></span>
@@ -1155,7 +1155,7 @@ n= 228 </code></pre>
 <span id="cb10-157"><a href="#cb10-157" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-158"><a href="#cb10-158" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-159"><a href="#cb10-159" aria-hidden="true" tabindex="-1"></a><span class="ot">L_i</span><span class="op">=</span><span class="st">\frac{h_0(t_j)</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_i</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{\</span><span class="ot">sum_l I(T_l </span><span class="er">\</span><span class="ot">ge t_j) h_0(t_j) </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="op">=</span><span class="st">\frac{</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_i</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{\</span><span class="ot">sum_l I(T_l </span><span class="er">\</span><span class="ot">ge t_j)  </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span></span>
-<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-160"><a href="#cb10-160" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-15</span><span class="er">}</span></span>
 <span id="cb10-161"><a href="#cb10-161" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-162"><a href="#cb10-162" aria-hidden="true" tabindex="-1"></a><span class="ot">We can see here that Cox</span><span class="er">'</span><span class="ot">s model is for continuous time survival data.</span></span>
 <span id="cb10-163"><a href="#cb10-163" aria-hidden="true" tabindex="-1"></a><span class="ot">It is assumed there is no ties at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$</span><span class="ot"> (in continuous time is</span></span>
@@ -1169,7 +1169,7 @@ n= 228 </code></pre>
 <span id="cb10-171"><a href="#cb10-171" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-172"><a href="#cb10-172" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
 <span id="cb10-173"><a href="#cb10-173" aria-hidden="true" tabindex="-1"></a><span class="ot">L_</span><span class="er">{</span><span class="ot">m </span><span class="er">\</span><span class="ot">in D(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">simeq </span><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot"> </span><span class="er">\</span><span class="ot">prod_</span><span class="er">{</span><span class="ot">m </span><span class="er">\</span><span class="ot">in D(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_m</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="ot"> </span><span class="er">{</span><span class="ot">[</span><span class="er">\</span><span class="ot">sum_</span><span class="er">{</span><span class="ot">l </span><span class="er">\</span><span class="ot">in R(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(x_l</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)]</span><span class="er">^{</span><span class="ot">d_j</span><span class="er">}}</span></span>
-<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-174"><a href="#cb10-174" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-16</span><span class="er">}</span></span>
 <span id="cb10-175"><a href="#cb10-175" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-176"><a href="#cb10-176" aria-hidden="true" tabindex="-1"></a><span class="ot">where </span><span class="er">$</span><span class="ot">D(t_j)</span><span class="er">$</span><span class="ot"> is the set of cases that die at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$</span><span class="ot"> and </span><span class="er">$</span><span class="ot">d_j</span><span class="er">$</span></span>
 <span id="cb10-177"><a href="#cb10-177" aria-hidden="true" tabindex="-1"></a><span class="ot">denotes the number of cases that die at time </span><span class="er">$</span><span class="ot">t_j</span><span class="er">$.</span><span class="ot">  This</span></span>
@@ -1182,8 +1182,8 @@ n= 228 </code></pre>
 <span id="cb10-184"><a href="#cb10-184" aria-hidden="true" tabindex="-1"></a><span class="ot">To see this:</span></span>
 <span id="cb10-185"><a href="#cb10-185" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-186"><a href="#cb10-186" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h_1(t)</span><span class="er">}{</span><span class="ot">h_2(t)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_1</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{</span><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_2</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="op">=</span> <span class="st">\frac{\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_1</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_2</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">},</span></span>
-<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-187"><a href="#cb10-187" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h_1(t)</span><span class="er">}{</span><span class="ot">h_2(t)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t)\exp</span><span class="ot"> (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_1</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{</span><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_2</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}</span><span class="op">=</span> <span class="st">\frac{\exp</span><span class="ot"> (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_1</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">}{\</span><span class="ot">exp (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_2</span><span class="er">'</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta)</span><span class="er">},</span></span>
+<span id="cb10-188"><a href="#cb10-188" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-17</span><span class="er">}</span></span>
 <span id="cb10-189"><a href="#cb10-189" aria-hidden="true" tabindex="-1"></a><span class="ot">which does not depend on </span><span class="er">$</span><span class="ot">t</span><span class="er">$.</span></span>
 <span id="cb10-190"><a href="#cb10-190" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-191"><a href="#cb10-191" aria-hidden="true" tabindex="-1"></a><span class="ot">One advantage of Cox</span><span class="er">'</span><span class="ot">s model is that it is considered as a</span></span>
@@ -1197,14 +1197,14 @@ n= 228 </code></pre>
 <span id="cb10-199"><a href="#cb10-199" aria-hidden="true" tabindex="-1"></a><span class="ot">In the equation above</span><span class="er">,</span><span class="ot"> if we would like to calculate the partial effect of </span><span class="er">$</span><span class="ot">x_j</span><span class="er">$</span><span class="ot"> on </span><span class="er">$</span><span class="ot">h</span><span class="er">$,</span><span class="ot"> we have:</span></span>
 <span id="cb10-200"><a href="#cb10-200" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-201"><a href="#cb10-201" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">partial h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i) </span><span class="er">/</span><span class="ot"> </span><span class="er">\</span><span class="ot">partial x_j</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta) </span><span class="er">\</span><span class="ot">beta_j </span><span class="op">=</span> <span class="st">\beta_j</span><span class="ot"> h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">,</span></span>
-<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-202"><a href="#cb10-202" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">partial h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i) </span><span class="er">/</span><span class="ot"> </span><span class="er">\</span><span class="ot">partial x_j</span><span class="op">=</span><span class="st">h_0(t)\exp</span><span class="ot"> (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta) </span><span class="er">\</span><span class="ot">beta_j </span><span class="op">=</span> <span class="st">\beta_j</span><span class="ot"> h(t </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)</span><span class="er">,</span></span>
+<span id="cb10-203"><a href="#cb10-203" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-18</span><span class="er">}</span></span>
 <span id="cb10-204"><a href="#cb10-204" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-205"><a href="#cb10-205" aria-hidden="true" tabindex="-1"></a><span class="ot">If we do it the other way</span><span class="er">,</span><span class="ot"> plug in </span><span class="er">$</span><span class="ot">x_j </span><span class="er">+</span><span class="ot"> </span><span class="er">1$</span><span class="ot"> will generate</span></span>
 <span id="cb10-206"><a href="#cb10-206" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-207"><a href="#cb10-207" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta </span><span class="er">+</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta_j) </span><span class="op">=</span> <span class="st">\exp</span><span class="ot"> (</span><span class="er">\</span><span class="ot">beta_j) h(t</span><span class="er">|{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span></span>
-<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-208"><a href="#cb10-208" aria-hidden="true" tabindex="-1"></a><span class="ot">h_0(t)</span><span class="er">\</span><span class="ot">exp (</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta </span><span class="er">+</span><span class="ot"> </span><span class="er">\</span><span class="ot">beta_j) </span><span class="op">=</span> <span class="st">\exp</span><span class="ot"> (</span><span class="er">\</span><span class="ot">beta_j) h(t</span><span class="er">|{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)</span></span>
+<span id="cb10-209"><a href="#cb10-209" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-19</span><span class="er">}</span></span>
 <span id="cb10-210"><a href="#cb10-210" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a><span class="ot">Therefore</span><span class="er">,</span><span class="ot"> a one unit change in </span><span class="er">$</span><span class="ot">x_j</span><span class="er">$</span><span class="ot"> multiplies the hazard by </span><span class="er">$\</span><span class="ot">exp(</span><span class="er">\</span><span class="ot">beta_j)</span><span class="er">$</span><span class="ot"> (a proportionate change of </span><span class="er">$\</span><span class="ot">exp(</span><span class="er">\</span><span class="ot">beta_j)-1</span><span class="er">$).</span></span>
@@ -1258,8 +1258,8 @@ n= 228 </code></pre>
 <span id="cb10-266"><a href="#cb10-266" aria-hidden="true" tabindex="-1"></a><span class="ot">the discrete hazard</span><span class="er">,</span></span>
 <span id="cb10-267"><a href="#cb10-267" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-268"><a href="#cb10-268" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}{1-</span><span class="ot"> h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t_j)}{1-</span><span class="ot"> h_0(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(</span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
-<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-269"><a href="#cb10-269" aria-hidden="true" tabindex="-1"></a><span class="er">\</span><span class="ot">frac</span><span class="er">{</span><span class="ot">h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)</span><span class="er">}{1-</span><span class="ot"> h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)</span><span class="er">}</span><span class="ot"> </span><span class="op">=</span> <span class="st">\frac{h_0(t_j)}{1-</span><span class="ot"> h_0(t_j)</span><span class="er">}</span><span class="ot"> </span><span class="er">\</span><span class="ot">exp(</span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta)</span><span class="er">,</span></span>
+<span id="cb10-270"><a href="#cb10-270" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-20</span><span class="er">}</span></span>
 <span id="cb10-271"><a href="#cb10-271" aria-hidden="true" tabindex="-1"></a><span class="ot">is a discrete-time *proportional-odds* hazard model rather than a</span></span>
 <span id="cb10-272"><a href="#cb10-272" aria-hidden="true" tabindex="-1"></a><span class="ot">direct discretization of Cox</span><span class="er">'</span><span class="ot">s continuous-time proportional hazards</span></span>
 <span id="cb10-273"><a href="#cb10-273" aria-hidden="true" tabindex="-1"></a><span class="ot">model.  (The complementary log-log link is the discrete-time form that</span></span>
@@ -1267,8 +1267,8 @@ n= 228 </code></pre>
 <span id="cb10-275"><a href="#cb10-275" aria-hidden="true" tabindex="-1"></a><span class="ot">hazards model.)  If we take logs on both sides</span><span class="er">,</span><span class="ot"> we have</span></span>
 <span id="cb10-276"><a href="#cb10-276" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-277"><a href="#cb10-277" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
-<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a><span class="er">{\</span><span class="ot">rm logit</span><span class="er">}</span><span class="ot"> (h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}</span><span class="ot">_i)) </span><span class="op">=</span> <span class="st">\alpha_j</span><span class="ot"> </span><span class="er">+</span><span class="ot">  </span><span class="er">{\</span><span class="ot">bf x</span><span class="er">}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta</span><span class="er">,</span></span>
-<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span></span>
+<span id="cb10-278"><a href="#cb10-278" aria-hidden="true" tabindex="-1"></a><span class="er">{{\</span><span class="ot">mathrm</span><span class="er">{</span><span class="ot">logit</span><span class="er">}}}</span><span class="ot"> (h(t_j </span><span class="er">|</span><span class="ot"> </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}</span><span class="ot">_i)) </span><span class="op">=</span> <span class="st">\alpha_j</span><span class="ot"> </span><span class="er">+</span><span class="ot">  </span><span class="er">{{\</span><span class="ot">symbf</span><span class="er">{</span><span class="ot">x</span><span class="er">}}}'</span><span class="ot">_i </span><span class="er">\</span><span class="ot">beta</span><span class="er">,</span></span>
+<span id="cb10-279"><a href="#cb10-279" aria-hidden="true" tabindex="-1"></a><span class="er">$$</span><span class="ot"> </span><span class="er">{</span><span class="ot">#eq-survival-21</span><span class="er">}</span></span>
 <span id="cb10-280"><a href="#cb10-280" aria-hidden="true" tabindex="-1"></a><span class="ot">This looks very similar to a logit model.  In fact</span><span class="er">,</span><span class="ot"> we can fit a</span></span>
 <span id="cb10-281"><a href="#cb10-281" aria-hidden="true" tabindex="-1"></a><span class="ot">discrete-time proportional hazard model by running a logistic</span></span>
 <span id="cb10-282"><a href="#cb10-282" aria-hidden="true" tabindex="-1"></a><span class="ot">regression on a set of pseudo observations generated by </span><span class="er">"</span><span class="ot">filling in</span><span class="er">"</span></span>

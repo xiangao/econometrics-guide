@@ -13,14 +13,14 @@ moments.
 
 Maximum likelihood estimation is to find the set of parameters which makes the current sample most likely given the statistical model.
 
-Suppose we have a sample of $n$ independent and identically distributed (IID) observations.  Each of them comes from some distribution function $f(\cdot, \bf \theta)$, where  parameters $\bf \theta$ is fixed.  The joint distribution of all the data points would be
+Suppose we have a sample of $n$ independent and identically distributed (IID) observations.  Each of them comes from some distribution function $f(\cdot, {\symbf{\theta)}}$, where  parameters ${\symbf{\theta}}$ is fixed.  The joint distribution of all the data points would be
 
-$$ f(x_1, x_2, \dots, x_n | \theta) = f(x_1 | \theta) \times f(x_2 | \theta) \times \dots \times f(x_n | \theta). $$
+$$ f(x_1, x_2, \dots, x_n | \theta) = f(x_1 | \theta) \times f(x_2 | \theta) \times \dots \times f(x_n | \theta). $$ {#eq-mle-1}
 
 It is referred to as the likelihood function of the model for the
 given data set.
 
-Then it's natural to estimate $\theta$ by picking the $\theta$ that maximize this joint distribution function.    A parameter vector $\hat \bf \theta$ at which the
+Then it's natural to estimate $\theta$ by picking the $\theta$ that maximize this joint distribution function.    A parameter vector $\hat {\symbf{\theta}}$ at which the
 likelihood takes on its maximum value is called a maximum likelihood
 estimate, or MLE, of the parameters.
 
@@ -31,73 +31,73 @@ Usually the log form of the likelihood function is preferred for computational p
 Consider the classical normal linear model:
 
 $$
-\bf y=X\beta+u, \quad u \sim N(0, \sigma^2 I)
-$$
+{\symbf{y=X\beta+u, \quad u \sim N(0, \sigma^2 I)
+}}$$ {#eq-mle-2}
 
-In this case, we have two parameters to estimate, $\sigma$ and $\bf \beta$.  The distribution of $\bf y | X$ is
+In this case, we have two parameters to estimate, $\sigma$ and ${\symbf{\beta}}$.  The distribution of ${\symbf{y | X}}$ is
 
-$$ f({\bf y} \mid {\bf X}, \beta, \sigma) = (2 \pi \sigma^2)^{-n/2} \exp\left(-  \frac{({\bf y- X \beta})'({\bf y- X \beta})}{2 \sigma^2}\right)$$
+$$ f({{\symbf{y}}} \mid {{\symbf{X}}}, \beta, \sigma) = (2 \pi \sigma^2)^{-n/2} \exp\left(-  \frac{({{\symbf{y- X \beta}}})'({{\symbf{y- X \beta}}})}{2 \sigma^2}\right)$$ {#eq-mle-3}
 
 The log-likelihood function is
 
-$$ l({\bf y, \beta, \sigma}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} \bf (y-X \beta)'(y-X \beta) $$
+$$ l({{\symbf{y, \beta, \sigma}}}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} {\symbf{(y-X \beta)'(y-X \beta) }}$$ {#eq-mle-4}
 
-The maximization of the log-likelihood function will lead to the same estimator as the OLS estimator, for $\bf \beta$.  For $\sigma^2$, the MLE estimator is slightly different in limited sample, but asymptotically the same.  This is strictly based on the assumption of normally distributed error term.  Otherwise, these two estimators will be different.
+The maximization of the log-likelihood function will lead to the same estimator as the OLS estimator, for ${\symbf{\beta}}$.  For $\sigma^2$, the MLE estimator is slightly different in limited sample, but asymptotically the same.  This is strictly based on the assumption of normally distributed error term.  Otherwise, these two estimators will be different.
 
 
 ## Asymptotic Properties of MLE
 
 1.  Consistency
 $$
-{\rm plim} (\bf \hat \theta)=\theta.
-$$
+{{\mathrm{plim}}} ({\symbf{\hat \theta)=\theta.
+}}$$ {#eq-mle-5}
 
 This is to say that MLE estimator can get arbitrarily close to the true parameter if the sample size gets to infinity.
 
 2.  Asymptotic Normality
 $$
-{\bf \sqrt{n}(\hat \theta - \theta)} \xrightarrow{d} N(\bf 0, I^{-1}(\theta)),
-$$
-where $\bf I(\theta)$ below is the *per-observation* information.
+{{\symbf{\sqrt{n}(\hat \theta - \theta)}}} \xrightarrow{d} N({\symbf{0, I^{-1}(\theta)),
+}}$$ {#eq-mle-6}
+where ${\symbf{I(\theta)}}$ below is the *per-observation* information.
 Equivalently, in finite-sample terms,
 $$
-{\bf \hat \theta} \approx N(\bf \theta, I_n^{-1}(\theta)), \qquad I_n(\theta) = n\, I(\theta),
-$$
-with $\bf I_n(\theta)$ the *full-sample* information.  The $\sqrt{n}$
+{{\symbf{\hat \theta}}} \approx N({\symbf{\theta, I_n^{-1}(\theta)), \qquad I_n(\theta) = n\, I(\theta),
+}}$$ {#eq-mle-7}
+with ${\symbf{I_n(\theta)}}$ the *full-sample* information.  The $\sqrt{n}$
 scaling (equivalently, dividing the full-sample information by $n$) is
 what makes the statement well-defined; writing
 $\hat\theta \sim N(\theta, I^{-1}(\theta))$ without specifying which
 information is meant is ambiguous.
 
-This states that the asymptotic distribution of $\bf \hat \theta$
-is normal with mean $\bf \theta$ and variance given by the inverse
+This states that the asymptotic distribution of ${\symbf{\hat \theta}}$
+is normal with mean ${\symbf{\theta}}$ and variance given by the inverse
 of the information, where the per-observation information matrix
-$\bf I(\theta)$ is defined using the single-observation log-likelihood
+${\symbf{I(\theta)}}$ is defined using the single-observation log-likelihood
 contribution $l_t$ (so that the full-sample log-likelihood is
 $l=\sum_{t=1}^n l_t$):
 
 $$
-{\bf I(\theta)}=E[(\frac{\partial l_t}{\partial
+{{\symbf{I(\theta)}}}=E[(\frac{\partial l_t}{\partial
 \theta})(\frac{\partial l_t}{\partial
 \theta})']=-E[(\frac{\partial^2 l_t}{\partial \theta \partial
 \theta'})]
-$$
+$$ {#eq-mle-8}
 
 The information matrix is the expected value of the outer product of the gradient of a single observation's log-likelihood contribution, or the negative value of the expected value of its Hessian (second derivative). Using the *full-sample* $l$ here instead of $l_t$ would give the full-sample information $I_n(\theta) = n\,I(\theta)$, not $I(\theta)$ itself.
 
 3.  Asymptotic efficiency.
 
-If $\bf \hat \theta$ is the MLE estimator of $\theta$ and $\bf V$ denotes its
+If ${\symbf{\hat \theta}}$ is the MLE estimator of $\theta$ and ${\symbf{V}}$ denotes its
 *asymptotic* variance matrix -- the variance of the limiting distribution of
-$\sqrt n (\hat \theta - \theta)$, not of $\bf \hat \theta$ itself, the two
+$\sqrt n (\hat \theta - \theta)$, not of ${\symbf{\hat \theta}}$ itself, the two
 differing by a factor of $n$ exactly as with the information matrix above --
 then
 $$
-\sqrt n (\hat \theta -\theta) \rightarrow^d N(\bf 0, V), \qquad \bf V = I^{-1}(\theta).
-$$
+\sqrt n (\hat \theta -\theta) \rightarrow^d N({\symbf{0, V), \qquad V = I^{-1}(\theta).
+}}$$ {#eq-mle-9}
 
-If $\bf \tilde V$ denotes the asymptotic variance matrix of any other *regular*
-consistent, asymptotically normal estimator, then $\bf \tilde V- V$ is a positive
+If ${\symbf{\tilde V}}$ denotes the asymptotic variance matrix of any other *regular*
+consistent, asymptotically normal estimator, then ${\symbf{\tilde V- V}}$ is a positive
 semidefinite matrix.  That is, the MLE is the best estimator, in terms of
 asymptotic variance, in that class.  The regularity qualifier is not pedantry:
 without it the statement is false, since superefficient estimators such as
@@ -152,80 +152,80 @@ summary(lm1)
 
 Linear hypothesis can be framed as
 $$
-\rm H_0: \ \ \bf R\beta -r=0,
-$$
-where $\bf R$ is a $q \times k$ matrix of known constants, with $q <
-k$, and $\bf r$ is a $q$-vector of known constants.
+{\symbf{H_0: \ \ R\beta -r=0,
+}}$$ {#eq-mle-10}
+where ${\symbf{R}}$ is a $q \times k$ matrix of known constants, with $q <
+k$, and ${\symbf{r}}$ is a $q$-vector of known constants.
 
 We assume that $u_i$ are normally distributed.
 
 $$
-\bf u \sim N(0, \sigma^2 I)
-$$
+{\symbf{u \sim N(0, \sigma^2 I)
+}}$$ {#eq-mle-11}
 
-Even if this assumption does not hold, we still have asymptotic normality for $\bf \hat \beta$, so the tests below remain valid asymptotically.
+Even if this assumption does not hold, we still have asymptotic normality for ${\symbf{\hat \beta}}$, so the tests below remain valid asymptotically.
 
 Since linear combination of normal variables are also normally
 distributed,
 $$
 \begin{aligned}
-\bf \hat \beta &\sim N(\beta, \sigma^2 (X'X)^{-1})\\
-\bf R \hat \beta &\sim N(R \beta, \sigma^2 R(X'X)^{-1}R')\\
-\bf R (\hat \beta - \beta) &\sim N(0, \sigma^2 R(X'X)^{-1}R')
-\end{aligned}
-$$
+{\symbf{\hat \beta }}&{\symbf{\sim N(\beta, \sigma^2 (X'X)^{-1})}}\\{\symbf{
+R \hat \beta }}&{\symbf{\sim N(R \beta, \sigma^2 R(X'X)^{-1}R')}}\\{\symbf{
+R (\hat \beta - \beta) }}&{\symbf{\sim N(0, \sigma^2 R(X'X)^{-1}R')
+}}\end{aligned}
+$$ {#eq-mle-12}
 
 Under null hypothesis,
 
 $$
-\bf (R \hat \beta - r) \sim N(0, \sigma^2 R(X'X)^{-1}R')
-$$
+{\symbf{(R \hat \beta - r) \sim N(0, \sigma^2 R(X'X)^{-1}R')
+}}$$ {#eq-mle-13}
 
 Therefore,
 $$
-{\bf (R \hat \beta - r)'[\sigma^2 R(X'X)^{-1}R']^{-1} (R \hat
-\beta - r)} \sim \chi^2(q)
-$$
+{{\symbf{(R \hat \beta - r)'[\sigma^2 R(X'X)^{-1}R']^{-1} (R \hat
+\beta - r)}}} \sim \chi^2(q)
+$$ {#eq-mle-14}
 
 Here we don't know $\sigma^2$.  However, it can be shown that
 $$
-{\bf \frac{\hat u' \hat u}{\sigma^2}} \sim \chi^2(n-k)
-$$
+{{\symbf{\frac{\hat u' \hat u}{\sigma^2}}}} \sim \chi^2(n-k)
+$$ {#eq-mle-15}
 
 Then we have
 $$
-{\bf \frac{(R \hat \beta - r)'[ R(X'X)^{-1}R']^{-1} (R \hat \beta
-- r)/q}{\hat u' \hat u / (n-k)}} \sim F(q, n-k)
-$$
+{{\symbf{\frac{(R \hat \beta - r)'[ R(X'X)^{-1}R']^{-1} (R \hat \beta
+- r)/q}{\hat u' \hat u / (n-k)}}}} \sim F(q, n-k)
+$$ {#eq-mle-16}
 
 This is an example of the $F$ test for any linear hypotheses testing.  $t$ test will be a special case of this.
 
 ### The three classical tests: LR, Wald and LM
 
 The $F$ test above leans on normal errors.  The general machinery for testing
-$\rm H_0: \bf R\theta - r = 0$ after maximum likelihood needs only the asymptotic
+${\symbf{H_0: R\theta - r = 0}}$ after maximum likelihood needs only the asymptotic
 results already established, and it comes in three forms.  Write $\hat\theta_u$ for
 the unrestricted MLE, $\hat\theta_r$ for the MLE subject to the restriction,
 $s(\theta) = \partial \ell / \partial \theta$ for the score, and
-$\bf I_n(\theta) = n\,I(\theta)$ for the full-sample information.
+${\symbf{I_n(\theta) = n\,I(\theta)}}$ for the full-sample information.
 
 **Likelihood ratio.** Compare the two maximized log-likelihoods:
 $$
 LR = 2\bigl[\ell(\hat\theta_u) - \ell(\hat\theta_r)\bigr] \xrightarrow{d} \chi^2(q).
-$$
+$$ {#eq-mle-17}
 
 **Wald.** Ask whether the *unrestricted* estimate is far from satisfying the
 restriction, measuring distance in units of its own estimated variance:
 $$
-W = ({\bf R}\hat\theta_u - {\bf r})' \bigl[{\bf R\, I}_n^{-1}(\hat\theta_u)\,{\bf R}'\bigr]^{-1} ({\bf R}\hat\theta_u - {\bf r}) \xrightarrow{d} \chi^2(q).
-$$
+W = ({{\symbf{R}}}\hat\theta_u - {{\symbf{r}}})' \bigl[{{\symbf{R\, I}}}_n^{-1}(\hat\theta_u)\,{{\symbf{R}}}'\bigr]^{-1} ({{\symbf{R}}}\hat\theta_u - {{\symbf{r}}}) \xrightarrow{d} \chi^2(q).
+$$ {#eq-mle-18}
 
 **Lagrange multiplier (score).** Ask whether the score, evaluated at the
 *restricted* estimate, is far from zero -- if the restriction is harmless, the
 restricted point should already be nearly a maximum:
 $$
-LM = s(\hat\theta_r)'\, {\bf I}_n^{-1}(\hat\theta_r)\, s(\hat\theta_r) \xrightarrow{d} \chi^2(q).
-$$
+LM = s(\hat\theta_r)'\, {{\symbf{I}}}_n^{-1}(\hat\theta_r)\, s(\hat\theta_r) \xrightarrow{d} \chi^2(q).
+$$ {#eq-mle-19}
 
 The three are asymptotically equivalent under the null and have the same local
 power, so the choice among them is one of convenience: **Wald needs only the
@@ -255,89 +255,78 @@ period.  It is natural to think of a test on whether consumption
 function parameters differ between prewar and postwar periods.  The
 null hypothesis is that there is no difference.
 
-Let $\bf y_i$, $\bf X_i$ ($i=1,2)$ indicate the appropriate
+Let ${\symbf{y_i}}$, ${\symbf{X_i}}$ ($i=1,2)$ indicate the appropriate
 partitioning of the data.  The unrestricted model may be written
 
-$$\bf
-\begin{bmatrix}\bf
-y_1 \\ \bf y_2
-\end{bmatrix}=
-\begin{bmatrix}\bf
-X_1 & \bf 0 \\ \bf 0 & \bf X_2
-\end{bmatrix}
-\begin{bmatrix}\bf
-\beta_1 \\ \bf \beta_2
-\end{bmatrix}
+$${\symbf{}}\begin{bmatrix}{\symbf{y_1 }}\\{\symbf{ y_2
+}}\end{bmatrix}=
+\begin{bmatrix}{\symbf{X_1 }}&{\symbf{ 0 }}\\{\symbf{ 0 }}&{\symbf{ X_2
+}}\end{bmatrix}
+\begin{bmatrix}{\symbf{\beta_1 }}\\{\symbf{ \beta_2
+}}\end{bmatrix}
 +u \quad u \sim N(0, \sigma^2I)
-$$
+$$ {#eq-mle-20}
 
 The null hypothesis of no structural break is
 
 $$
-\rm H_0: \ \ \bf \beta_1 = \beta_2.
-$$
+{\symbf{H_0: \ \ \beta_1 = \beta_2.
+}}$$ {#eq-mle-21}
 
 Running OLS on two equations separately, we have
 
-$$\bf
-\begin{bmatrix}\bf
-\hat \beta_1 \\ \bf \hat \beta_2
-\end{bmatrix}=
-\begin{bmatrix}\bf
-X_1' X_1 & \bf 0 \\ \bf 0 & \bf X_2' X_2
-\end{bmatrix}^{-1}
-\begin{bmatrix}\bf
-X_1' y_1 \\ \bf X_2' y_2
-\end{bmatrix}
-=\begin{bmatrix}\bf (X_1' X_1)^{-1}X_1'y_1 \\ \bf (X_2' X_2)^{-1}
+$${\symbf{}}\begin{bmatrix}{\symbf{\hat \beta_1 }}\\{\symbf{ \hat \beta_2
+}}\end{bmatrix}=
+\begin{bmatrix}{\symbf{X_1' X_1 }}&{\symbf{ 0 }}\\{\symbf{ 0 }}&{\symbf{ X_2' X_2
+}}\end{bmatrix}^{-1}
+\begin{bmatrix}{\symbf{X_1' y_1 }}\\{\symbf{ X_2' y_2
+}}\end{bmatrix}
+=\begin{bmatrix}{\symbf{(X_1' X_1)^{-1}X_1'y_1 }}\\{\symbf{ (X_2' X_2)^{-1}
 X_2' y_2
-\end{bmatrix}
-$$
+}}\end{bmatrix}
+$$ {#eq-mle-22}
 
 Restricted model under null hypothesis
 
-$$\bf
-\begin{bmatrix}\bf
-y_1 \\ \bf y_2
-\end{bmatrix}=
-\begin{bmatrix}\bf
-X_1 \\ \bf X_2
-\end{bmatrix}
-\bf \beta +u
-$$
+$${\symbf{}}\begin{bmatrix}{\symbf{y_1 }}\\{\symbf{ y_2
+}}\end{bmatrix}=
+\begin{bmatrix}{\symbf{X_1 }}\\{\symbf{ X_2
+}}\end{bmatrix}
+{\symbf{\beta +u
+}}$$ {#eq-mle-23}
 
 The test of the null hypothesis is given by
 
 $$
-{\bf F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat
-u/ (n-2k)}} \sim F(k , n-2k)
-$$
+{{\symbf{F= \frac{(\hat u_*' \hat u_*- \hat u' \hat u)/k}{\hat u' \hat
+u/ (n-2k)}}}} \sim F(k , n-2k)
+$$ {#eq-mle-24}
 where $\hat u_*$ is the residual of the restricted model, $\hat u$ is the stacked residual of two unrestricted models.
 
 For example, for prewar period (suppose there is $n_1$ observations):
 
 $$
 y_1 = \beta_0 + \beta_1 x_1 + \beta_2 x_2
-$$
+$$ {#eq-mle-25}
 
 For postwar period  (suppose there is $n_2$ observations):
 
 $$
 y_2 = \gamma_0 + \gamma_1 x_1 + \gamma_2 x_2
-$$
+$$ {#eq-mle-26}
 
 The null hypothesis of no structural break is
 
 $$
-\rm H_0: \ \ \bf \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.
-$$
+{\symbf{H_0: \ \ \beta_0 = \gamma_0, \beta_1 = \gamma_1, \beta_2 = \gamma_2.
+}}$$ {#eq-mle-27}
 
 Running OLS on two equations separately, we have two sums of squares
 of error ($SSR_1$ and $SSR_2$).  The unrestricted error sum of squares
 is
 $$
 SSR_U = SSR_1 + SSR_2
-$$
+$$ {#eq-mle-28}
 
 
 Then run the regression on the stacked sample of $n_1+n_2$ observations
@@ -347,7 +336,7 @@ Then
 
 $$
 \frac{(SSR_R-SSR_U)/k}{SSR_U/(n_1+n_2-2k)} \sim F_{k, n_1+n_2-2k}.
-$$
+$$ {#eq-mle-29}
 
 $k$ is number of restrictions; in this example, it is 3.
 
@@ -365,7 +354,7 @@ For our earlier example, we would estimate the model:
 $$
 y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2
 x_2 d
-$$
+$$ {#eq-mle-30}
 
 Here $d$ is a dummy variable for postwar period.  The Chow test is
 simply a test on the hypothesis that all the coefficients involving
@@ -373,8 +362,8 @@ $d$ are zero.  A regression of the above model with $n+m$ observations
 and a $F$ test are easy to do.
 
 $$
-\rm H_0: \ \ \bf \eta_0 = \eta_1 = \eta_2 = 0.
-$$
+{\symbf{H_0: \ \ \eta_0 = \eta_1 = \eta_2 = 0.
+}}$$ {#eq-mle-31}
 
 ### An example of Chow test in R
 Here we use an example from the "strucchange" library.
@@ -405,10 +394,10 @@ summary(fm1)
 
 ### Variance estimator under homoscedasticity
 
-In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${\rm var} \bf (\hat \beta) = {\rm E}\bf [(\hat \beta-\beta)(\hat \beta -\beta)']
-= {\rm E}\bf [(X'X)^{-1}X'uu'X(X'X)^{-1}] = \bf \sigma^2 (X'X)^{-1} $$
+In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${{\mathrm{var}}} {\symbf{(\hat \beta) = {E}[(\hat \beta-\beta)(\hat \beta -\beta)']
+= {E}[(X'X)^{-1}X'uu'X(X'X)^{-1}] = \sigma^2 (X'X)^{-1} }}$$ {#eq-mle-32}
 
- if $${\rm var} \bf (u)=\sigma^2 I$$.
+ if $${{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}$$ {#eq-mle-33}.
 
 That is, the error term has mean zero and constant variance
 (homoscedasticity). The pairwise correlation between error terms
@@ -417,59 +406,59 @@ is always zero (no serial correlation).
 The estimation of $\sigma^2$:
 
 $$
-s^2=\frac{ \bf \hat u' \hat u}{n-k}
-$$
+s^2=\frac{ {\symbf{\hat u' \hat u}}}{n-k}
+$$ {#eq-mle-34}
 is an unbiased estimator of $\sigma^2$ (proof omitted).
 
 The standard estimate of the variance-covariance matrix of the OLS
 parameter estimates under the assumption of IID errors is
 $$
-{\rm \hat {Var}}(\hat \beta)=s^2 \bf (X'X)^{-1}
-$$
+{{\mathrm{\hat {Var}}}}(\hat \beta)=s^2 {\symbf{(X'X)^{-1}
+}}$$ {#eq-mle-35}
 
 ### White’s estimator
 
 We made strong assumption that the error terms of the regression
 model are IID when we estimate the variance-covariance matrix of
 OLS estimator.  Under this assumption, the usual estimator of
-variance-covariance matrix of $\bf \hat \beta$ is consistent.  Now
+variance-covariance matrix of ${\symbf{\hat \beta}}$ is consistent.  Now
 let's relax this assumption to only independent but not
 identically distributed.  Again, the linear regression models is
 
 $$
-\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,
-$$
-where $\bf \Omega$ is the error variance-covariance matrix with
+{\symbf{y=X\beta+u, \quad {E} (u)=0, \quad {E} (u u')=\Omega,
+}}$$ {#eq-mle-36}
+where ${\symbf{\Omega}}$ is the error variance-covariance matrix with
 diagonal elements being $\sigma_t^2$ for $t^{th}$ element,
 off-diagonal elements being zero.  In other words, the error terms
 are heteroscedastic.
 
-The variance-covariance matrix of the OLS estimator $\bf \hat
-\beta$ is equal to
+The variance-covariance matrix of the OLS estimator ${\symbf{\hat
+\beta}}$ is equal to
 $$
 \begin{aligned}
-{\rm Var} \bf (\hat \beta) &= {\rm E}\bf [(\hat \beta
+{{\mathrm{Var}}} {\symbf{(\hat \beta) }}&{\symbf{= {E}[(\hat \beta
 -\beta)(\hat
-\beta -\beta)'] \\
-&= \bf [(X'X)^{-1}X'({\rm E}(uu'))X(X'X)^{-1}] \\
-&= \bf  (X'X)^{-1} X' \Omega X (X'X)^{-1}
-\end{aligned}
-$$
+\beta -\beta)'] }}\\{\symbf{
+}}&{\symbf{= [(X'X)^{-1}X'({E}(uu'))X(X'X)^{-1}] }}\\{\symbf{
+}}&{\symbf{=  (X'X)^{-1} X' \Omega X (X'X)^{-1}
+}}\end{aligned}
+$$ {#eq-mle-37}
 
 If we know $\sigma_t^2$, then we would be able to estimate this
 "sandwich covariance matrix".  But we don't.
 $$
-{\rm Var} \bf (\hat \beta) = \bf \frac{1}{n}
+{{\mathrm{Var}}} {\symbf{(\hat \beta) = \frac{1}{n}
 [\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X'\Omega
 X][\frac{1}{n}(X'X)]^{-1}
-$$
+}}$$ {#eq-mle-38}
 
 Let $y_t$ denote the $t$th observation on the dependent variable,
 and $x_t'=[1 x_{2t} \cdots x_{kt}]$ denote the $t$th row of the
-$\bf X$ matrix.  Then
+${\symbf{X}}$ matrix.  Then
 $$
-\bf X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'
-$$
+{\symbf{X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'
+}}$$ {#eq-mle-39}
 
 The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,
 the estimated OLS residuals.  This provides a consistent estimator of
@@ -480,13 +469,13 @@ form of the heteroscedasticity.
 Therefore,
 $$
 \begin{aligned}
-\hat {\rm Var} \bf (\hat \beta) &= \bf \frac{1}{n}
+\hat {{\mathrm{Var}}} {\symbf{(\hat \beta) }}&{\symbf{= \frac{1}{n}
 [\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X' \hat \Omega
-X][\frac{1}{n}(X'X)]^{-1}\\
-\bf \hat \Omega &= \rm{diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
+X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
+\hat \Omega }}&{\symbf{= {diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
 \hat u_n^2})
-\end{aligned}
-$$
+}}\end{aligned}
+$$ {#eq-mle-40}
 
 ### Newey-West estimator
 
@@ -508,13 +497,13 @@ estimated, relatively easily.  However, in the case of time series
 data, autocorrelation usually exists.  We may be concerned the CLT may
 not work in this case.
 
-Fortunately, as proved in Hamilton (1994), if $\bf y_t$ is a
+Fortunately, as proved in Hamilton (1994), if ${\symbf{y_t}}$ is a
 covariance-stationary (meaning that the covariance is not a function
 of time) vector process, then the sample mean satisfies:
 
-$$\bf \bar y_t \to \mu , $$
-$$ {\bf S} = \lim_{T \to \infty} \bf  {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . $$
-where $\bf \Gamma_v$ is the variance-covariance matrix for $\bf y_t$ and $\bf y_{t-v}$.
+$${\symbf{\bar y_t \to \mu , }}$$ {#eq-mle-41}
+$$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}
+where ${\symbf{\Gamma_v}}$ is the variance-covariance matrix for ${\symbf{y_t}}$ and ${\symbf{y_{t-v}}}$.
 
 The first one says for a covariance-stationary vector process, the law
 of large numbers still holds.  The second one is used to calculate the
@@ -522,47 +511,47 @@ standard error.
 
 If the data were generated by a vector MA(q) process, then
 
-$$ {\bf S} = \sum_{v=-q}^{q} \Gamma_v . $$
+$$ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v . $$ {#eq-mle-43}
 
 A natural estimate is
 
-$$ \bf \hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),$$
+$$ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}}$$ {#eq-mle-44}
 
-where  $$ \bf \hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. $$
+where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }}$$ {#eq-mle-45}
 
-This gives a consistent estimate of $\bf S$; however, it sometimes is
+This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is
 not positive semidefinite.
 
 Newey-West (1987) suggested putting in a weight:
 
-$$ {\bf \hat S = \hat \Gamma_0} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_v + \hat \Gamma_v' ), $$
+$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}
 where $q$ is from the MA($q$) process.
 
 
 Consider a linear regression model:
-$$ y_t={ \bf x_t' \beta} + u_t $$
+$$ y_t={ {\symbf{x_t' \beta}}} + u_t $$ {#eq-mle-47}
 
-Suppose we have the OLS estimator $\bf b_T$, then
-$$ \sqrt{T} ({\bf b_T - \beta}) = [(1/T) {\sum_{t=1}^T \bf x_t
-  x_t'}]^{-1} [(1/{\sqrt{T}}) {\sum_{t=1}^{T} \bf x_t u_t}] $$
+Suppose we have the OLS estimator ${\symbf{b_T}}$, then
+$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t
+  x_t'}}}]^{-1} [(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}] $$ {#eq-mle-48}
 
 The first term converges in probability to some constant.  The second
-term is $\sqrt{T}$ times the sample mean of the vector $\bf x_t u_t$,
+term is $\sqrt{T}$ times the sample mean of the vector ${\symbf{x_t u_t}}$,
 which is exactly the form to which a central limit theorem applies.
 
 Under general conditions,
 
-$$ \sqrt{T} ({\bf b_T - \beta}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$
+$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$ {#eq-mle-49}
 
-where $Q = {\rm plim} \, (1/T)\sum_{t=1}^T {\bf x_t x_t'} = {\rm E}[{\bf x_t x_t'}]$, and $S$ can be estimated by
-$$ {\bf \hat S_T = \hat \Gamma_{0T}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} (\bf \hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), $$
+where $Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}[{{\symbf{x_t x_t'}}}]$, and $S$ can be estimated by
+$$ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }}$$ {#eq-mle-50}
 where
-$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$
+$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$ {#eq-mle-51}
 where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.
 
-Overall, the variance of $\bf b_T$ is approximated by
+Overall, the variance of ${\symbf{b_T}}$ is approximated by
 
-$$\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1} $$
+$$\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1} $$ {#eq-mle-52}
 
 
 This estimation obviously depends on the selection of $q$, the lag

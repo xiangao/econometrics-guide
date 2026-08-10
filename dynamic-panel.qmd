@@ -3,11 +3,11 @@
 ## When Is It a Problem
 
 Model setup:
-$$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$
+$$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$ {#eq-dynamic-panel-1}
 
 Pooled regression is biased and inconsistent.  The problem is:
 
-$$Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}$$
+$$Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}$$ {#eq-dynamic-panel-2}
 
 Random effects model is biased and inconsistent, for the same reason
 that $y_{i,t-1}$ is necessarily correlated with $C_i$, which is part
@@ -15,7 +15,7 @@ of the composite error term in the random effect model.
 
 Fixed effect model setup:
 
-$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$
+$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$ {#eq-dynamic-panel-3}
 
 where $\overline{y_{i,-1}}$ is the unit mean of the *lagged* dependent
 variable.  This is not exactly $\bar y_i$ (the mean of current
@@ -25,7 +25,7 @@ convention.
 
 Nickell (1981) shows that (see also Anderson and Hsiao 1981)
 
-$$Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$
+$$Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]$$ {#eq-dynamic-panel-4}
 
 which indicates that the demeaned lagged $y$
 is correlated with the demeaned error term.  The correlation may be
@@ -45,11 +45,11 @@ But a simulation study (Judson and Owen 1999) shows that  the bias can be as big
 
 Anderson and Hsiao (1981) suggested looking at the first difference estimator:
 
-$$ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) $$
+$$ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) $$ {#eq-dynamic-panel-5}
 
 or
 
-$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$
+$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$ {#eq-dynamic-panel-6}
 
 This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$, assuming error is not auto-correlated.
 
@@ -66,7 +66,7 @@ y_{i,1} & \  0 & \ 0 & \ 0
 \ 0 & \  0 & \ 0 & \ \cdots & \ 0 & \  0 & \ 0 \\  0 & \ 0 & \  0 & \
 y_{i,1} & \ y_{i,2} & \ y_{i,3}  & \ \cdots & \ 0 & \  0 & \ 0  \\   \vdots  & \  \vdots & \  \vdots & \  \vdots & \  \vdots & \  \ddots  & \ \cdots & \ \vdots & \  \vdots & \ \vdots \\ 0 & \  0 & \  0 & \ 0 & \ 0 & \ \cdots  & \ 0 & \ y_{i,1} & \  \cdots & \ y_{i,T-2}
 \end{bmatrix}
-$$
+$$ {#eq-dynamic-panel-7}
 
 
 This is the so called difference GMM estimator.

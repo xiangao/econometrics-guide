@@ -48,6 +48,18 @@ format:
     code-tools: true
     number-sections: true
     toc-depth: 3
+  pdf:
+    documentclass: scrbook
+    papersize: letter
+    latex-auto-install: false
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    code-overflow: wrap
+    colorlinks: true
+    toc: true
+    toc-depth: 2
+    number-sections: true
 
 execute:
   freeze: auto

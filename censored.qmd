@@ -50,7 +50,7 @@ the estimation of effect of education on income.
 Consider the model
 $$
 y_t^0=\beta_1 +\beta_2 x_t +u_t, \ u_t \sim NID(0, \sigma^2),
-$$
+$$ {#eq-censored-1}
 where $y_t^0$ is a latent variable.  We actually observe $y_t$, which
 differs from $y_t^0$ , because it's either truncated or censored.
 
@@ -82,11 +82,11 @@ latent variable model has a known distribution, then MLE estimator can
 be applied.  The most popular choice is Gaussian.
 $$
 \begin{aligned}
-\mbox{Pr}(y_t^0 \geq 0) & = \mbox{Pr} ({\bf X}_t \beta +u_t \geq 0) \\
-& = 1- \mbox{Pr} (u_t/\sigma < - {{\bf X}_t \beta} / \sigma) \\
-& = 1- \Phi (-{{\bf X}_t \beta} / \sigma)=\Phi ({{\bf X}_t \beta} / \sigma)
+\mbox{Pr}(y_t^0 \geq 0) & = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \geq 0) \\
+& = 1- \mbox{Pr} (u_t/\sigma < - {{{\symbf{X}}}_t \beta} / \sigma) \\
+& = 1- \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)=\Phi ({{{\symbf{X}}}_t \beta} / \sigma)
 \end{aligned}
-$$
+$$ {#eq-censored-2}
 
 The density of $y_t$ is proportional to the density of $y_t^0$
 when $y_t^0 \geq 0$ and $y_t$ is observed.  It is 0 elsewhere. The
@@ -94,16 +94,16 @@ factor of proportionality, which is needed to ensure that the
 density integrates to unity, is the inverse of the probability
 that $y_t^0 \geq 0$.  The density of $y_t$ can be written as
 $$
-\frac{\sigma^{-1} \phi ((y_t - {\bf X}_t \beta)/\sigma)}{\Phi
-({\bf X}_t \beta / \sigma)}
-$$
+\frac{\sigma^{-1} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)}{\Phi
+({{\symbf{X}}}_t \beta / \sigma)}
+$$ {#eq-censored-3}
 
 This implies the log-likelihood function,
 $$
-\ell ({\bf y, \beta}, \sigma)=- \frac{n}{2} \log(2 \pi) -n
-\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{\bf X}_t
-\beta)^2 - \sum_{t=1}^n \log \Phi ({\bf X}_t \beta / \sigma).
-$$
+\ell ({{\symbf{y, \beta}}}, \sigma)=- \frac{n}{2} \log(2 \pi) -n
+\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{{\symbf{X}}}_t
+\beta)^2 - \sum_{t=1}^n \log \Phi ({{\symbf{X}}}_t \beta / \sigma).
+$$ {#eq-censored-4}
 
 This can be estimated by MLE.  In Stata, truncreg is the command to do
 truncated regression model.
@@ -113,37 +113,37 @@ truncated regression model.
 The most popular censored model is Tobit model.
 $$
 \begin{aligned}
-y_t^0 & = {\bf X}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) \\
+y_t^0 & = {{\symbf{X}}}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) \\
 y_t & = y_t^0 \ \mbox{if} \ y_t^0 > 0; \ y_t=0 \ \mbox{otherwise}.
 \end{aligned}
-$$
+$$ {#eq-censored-5}
 
 We see that
 $$
 \begin{aligned}
-\mbox{Pr}(y_t= 0) & = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({\bf X}_t \beta +u_t \leq 0) \\
-& = \mbox{Pr} (u_t/\sigma < - {{\bf X}_t \beta} / \sigma) \\
-& = \Phi (-{{\bf X}_t \beta} / \sigma)
+\mbox{Pr}(y_t= 0) & = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \leq 0) \\
+& = \mbox{Pr} (u_t/\sigma < - {{{\symbf{X}}}_t \beta} / \sigma) \\
+& = \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)
 \end{aligned}
-$$
+$$ {#eq-censored-6}
 
 The contribution to the log-likelihood function made by
 observations with $y_t=0$ is
 $$
-\ell_t(y_t, \beta, \sigma) = \log \Phi (-{\bf X}_t \beta/\sigma).
-$$
+\ell_t(y_t, \beta, \sigma) = \log \Phi (-{{\symbf{X}}}_t \beta/\sigma).
+$$ {#eq-censored-7}
 
 If $y_t$ is positive, the contribution to the log-likelihood is the
 logarithm of the density,
 $$
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta) / \sigma )).
-$$
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta) / \sigma )).
+$$ {#eq-censored-8}
 
 The log-likelihood function of the tobit model is
 $$
-\sum_{y_t=0} \log \Phi (-{\bf X}_t \beta/\sigma) + \sum_{y_t>0}
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma ))
-$$
+\sum_{y_t=0} \log \Phi (-{{\symbf{X}}}_t \beta/\sigma) + \sum_{y_t>0}
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma ))
+$$ {#eq-censored-9}
 
 This can be estimated by MLE. In Stata, tobit or intreg can be used
 for censoring models.
@@ -161,15 +161,15 @@ $$
 \begin{bmatrix}
 y_t^0 \\ z_t^0
 \end{bmatrix}
-=\begin{bmatrix} {\bf X}_t \beta \\ {\bf W}_t \gamma
+=\begin{bmatrix} {{\symbf{X}}}_t \beta \\ {{\symbf{W}}}_t \gamma
 \end{bmatrix}+
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
-\end{bmatrix} \sim NID({\bf 0},
+\end{bmatrix} \sim NID({{\symbf{0}}},
 \begin{bmatrix} \sigma^2 & \rho\sigma  \\ \rho\sigma  & 1
 \end{bmatrix})
-$$
+$$ {#eq-censored-10}
 
 Here $\rho$ is the correlation between $u_t$ and $v_t$; since
 $\mbox{Var}(u_t)=\sigma^2$ and $\mbox{Var}(v_t)=1$, their covariance
@@ -179,36 +179,36 @@ We observe $y_t$ and $z_t$:
 $$
  y_t  =  y_t^0 \ \mbox{if} \ z_t^0 > 0;  \ y_t \ \mbox{unobservable otherwise}; \\
  z_t  =  1  \ \mbox{if} \ z_t^0 > 0; \ z_t=0 \ \mbox{otherwise}.
-$$
+$$ {#eq-censored-11}
 
 There are two types of observations, ones we observe $y_t=y_t^0$
-and $z_t=1$, along with both $\bf X_t$ and $\bf W_t$, and ones we
-observe only $z_t=0$ and $\bf W_t$.
+and $z_t=1$, along with both ${\symbf{X_t}}$ and ${\symbf{W_t}}$, and ones we
+observe only $z_t=0$ and ${\symbf{W_t}}$.
 
 Each observation contributes to the likelihood function by
 $$
 I(z_t=0)\mbox{Pr}(z_t=0)+I(z_t=1)\mbox{Pr}(z_t=1)f(y_t^0 | z_t=1),
-$$
+$$ {#eq-censored-12}
 
 Under the normality assumption,
 $$
 u_t=\rho\sigma v_t+e_t
-$$
+$$ {#eq-censored-13}
 where $e_t$ is independent of $v_t \sim N(0,1)$, with
 $\mbox{Var}(e_t)=\sigma^2(1-\rho^2)$.  A useful fact
 about the standard normal distribution is that
 $$
-{\rm E} (v_t | v_t>-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}
-$$
+{{\mathrm{E}}} (v_t | v_t>-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}
+$$ {#eq-censored-14}
 and the function $\lambda(x)$ is called the inverse Mills ratio.
 
 The log-likelihood function can be shown to be
 $$
-\sum_{z_t=0} \log \Phi(-{\bf W}_t \gamma)+\sum_{z_t=1}
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma)) +
-\sum_{z_t=1} \log \Phi (\frac{{\bf W}_t \gamma+\rho (y_t-{\bf X}_t
+\sum_{z_t=0} \log \Phi(-{{\symbf{W}}}_t \gamma)+\sum_{z_t=1}
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)) +
+\sum_{z_t=1} \log \Phi (\frac{{{\symbf{W}}}_t \gamma+\rho (y_t-{{\symbf{X}}}_t
 \beta)/\sigma}{(1-\rho^2)^{1/2}})
-$$
+$$ {#eq-censored-15}
 
 So this model can be estimated by MLE.
 
@@ -217,8 +217,8 @@ It is also popular to use Heckman's two-step method.
 Heckman's method is based on the fact that the original latent
 model can be rewritten as
 $$
-y_t={\bf X}_t \beta + \rho\sigma v_t +e_t
-$$
+y_t={{\symbf{X}}}_t \beta + \rho\sigma v_t +e_t
+$$ {#eq-censored-16}
 
 Here the error term $u_t$ is divided into two parts, one
 perfectly correlated with $v_t$, and one independent of $v_t$.
@@ -228,26 +228,26 @@ consistent estimates $\hat \gamma$ of the parameters of the
 selection equation.
 
 In the second step, the unobserved $v_t$ is replaced by the
-selectivity regressor $\frac{\phi({\bf W}_t \hat
-\gamma)}{\Phi({\bf W}_t \hat \gamma)}$.
+selectivity regressor $\frac{\phi({{\symbf{W}}}_t \hat
+\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)}$.
 
 Therefore, the regression becomes
 $$
-y_t={\bf X}_t \beta + \rho\sigma \frac{\phi({\bf W}_t \hat
-\gamma)}{\Phi({\bf W}_t \hat \gamma)} + e_t
-$$
+y_t={{\symbf{X}}}_t \beta + \rho\sigma \frac{\phi({{\symbf{W}}}_t \hat
+\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)} + e_t
+$$ {#eq-censored-17}
 
 Or,
 $$
-y_t={\bf X}_t \beta + \rho\sigma \hat \lambda_t + e_t
-$$
+y_t={{\symbf{X}}}_t \beta + \rho\sigma \hat \lambda_t + e_t
+$$ {#eq-censored-18}
 
 (Strictly, conditional on selection the error also contains
 $\rho\sigma(v_t-\lambda_t)$, which is why the second-step OLS standard
 errors require correction; the coefficient $\rho\sigma$ on $\hat
 \lambda_t$ is unaffected.)
 
-One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with $\bf X_t$, if $\bf W_t$ is the same as $\bf X_t$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require $\bf W_t$ contains at least one extra variable than $\bf X_t$, which is sometimes called exclusion restriction.  In many situations, $\bf W_t$ contains all $\bf X_t$ variables, and at least one more variable.  The reason to contain all $\bf X_t$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the $\bf X_t$'s.
+One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to contain all ${\symbf{X_t}}$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the ${\symbf{X_t}}$'s.
 
 
 In Stata, heckman is the command to do sample selection models.  It
@@ -272,21 +272,21 @@ $$
 \begin{bmatrix}
 y_t \\ z_t^0
 \end{bmatrix}
-=\begin{bmatrix} {\bf X}_t \beta \\ {\bf W}_t \gamma
+=\begin{bmatrix} {{\symbf{X}}}_t \beta \\ {{\symbf{W}}}_t \gamma
 \end{bmatrix}+ \delta \begin{bmatrix} {z_t} \\ 0
 \end{bmatrix} +
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
-\end{bmatrix} \sim NID({\bf 0},
+\end{bmatrix} \sim NID({{\symbf{0}}},
 \begin{bmatrix} \sigma^2 & \rho\sigma  \\ \rho\sigma  & 1
 \end{bmatrix})
-$$
+$$ {#eq-censored-19}
 
 We observe $y_t$ and $z_t$:
 $$
 z_t = 1 \ \mbox{if} \ z_t^0 > 0; \ z_t=0 \ \mbox{otherwise}.
-$$
+$$ {#eq-censored-20}
 
 Notice that the only difference between this model and the
 selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.
@@ -299,13 +299,13 @@ effect is $\delta$ for everyone. That is the treatment-effects model. A
 differ by regime,
 
 $$
-y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
-\qquad z_t^0 = {\bf W}_t \gamma + v_t,
-$$
+y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 + u_{0t}),
+\qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,
+$$ {#eq-censored-21}
 
 with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection
 parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the
-treatment effect ${\bf X}_t(\beta_1-\beta_0)$ then varies with $\bf X_t$ instead
+treatment effect ${{\symbf{X}}}_t(\beta_1-\beta_0)$ then varies with ${\symbf{X_t}}$ instead
 of being a constant. The distinction matters in practice: if the returns to
 education genuinely differ between union and non-union jobs, the common-slope model
 above will report a single $\delta$ that is some average of them and will not reveal

@@ -13,7 +13,7 @@ The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) r
 
 Residualise the regressor of interest $V$ on the controls $X$, write $\tilde V_i$ for the residual, and recall the residual-on-residual form of the coefficient, @eq-fwl:
 
-$$ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. $$
+$$ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. $$ {#eq-outcome-weights-1}
 
 The previous chapter grouped each $\tilde V_i$ with $V_i$ and read $\hat\beta$ as a weighting $w_i = \tilde V_i V_i$ of effects (@eq-weff). Group $\tilde V_i$ with $y_i$ instead — pairing each residual with its own outcome in the numerator — and the *same* expression is a linear combination of the observed outcomes:
 
@@ -37,7 +37,7 @@ Use this reading when overlap is in doubt and a row may enter with the wrong sig
 
 Take the simple regression of $y$ on $x$ with an intercept, so $\tilde V_i = x_i - \bar x = d_i$ and
 
-$$ \omega_i = \frac{d_i}{\sum_j d_j^2}. $$
+$$ \omega_i = \frac{d_i}{\sum_j d_j^2}. $$ {#eq-outcome-weights-2}
 
 Unlike the effect weights $w_i = d_i^2$ — non-negative, growing with the *square* of distance — this is **linear in $d_i$, and so signed**: a point left of $\bar x$ enters $\hat\beta$ with a negative coefficient on its outcome, a point right of it positive. It is not a slope and does not involve $\bar y$; it is simply a signed weight on the observed $y_i$.
 
@@ -79,17 +79,17 @@ Write $d_i = x_i - \bar x$, so the slope is $\hat\beta = \sum_i d_i y_i / \sum_i
 
 The second fact writes the slope as a ratio of two inner products with the *same* vector $d$:
 
-$$ \hat\beta = \frac{d \cdot y}{d \cdot x}. $$
+$$ \hat\beta = \frac{d \cdot y}{d \cdot x}. $$ {#eq-outcome-weights-3}
 
 Split the observations by the sign of $d_i$: let $R = \{i : d_i > 0\}$ lie right of the mean and $L = \{i : d_i < 0\}$ left, with $d_i = 0$ points contributing nothing. Let $W = \sum_{i \in R} d_i = \sum_{i \in R} |d_i|$ be the total weight on the right. Because $\sum_i d_i = 0$, the left must carry $\sum_{i \in L} d_i = -W$, that is $\sum_{i \in L} |d_i| = W$: **both sides hold the identical total weight $W$.**
 
 Weight each side by $|d_i|$ and form its centroid, $\bar v_R = \sum_{i \in R} |d_i| v_i / W$ and $\bar v_L = \sum_{i \in L} |d_i| v_i / W$ for any variable $v$. Using $|d_i| = d_i$ on $R$ and $|d_i| = -d_i$ on $L$,
 
-$$ d \cdot v = \sum_{i \in R} d_i v_i + \sum_{i \in L} d_i v_i = W \bar v_R - W \bar v_L = W(\bar v_R - \bar v_L). $$
+$$ d \cdot v = \sum_{i \in R} d_i v_i + \sum_{i \in L} d_i v_i = W \bar v_R - W \bar v_L = W(\bar v_R - \bar v_L). $$ {#eq-outcome-weights-4}
 
 An inner product with a zero-sum vector is a *between-group contrast* — the common weight $W$ times the gap between the two weighted side-means. Apply it to the numerator ($v = y$) and the denominator ($v = x$):
 
-$$ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\bar x_R - \bar x_L)} = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. $$
+$$ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\bar x_R - \bar x_L)} = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. $$ {#eq-outcome-weights-5}
 
 The $W$ cancels, and what remains is the plain rise over run between the two $|d|$-weighted centroids — the two dots in the figure.
 
@@ -240,13 +240,13 @@ The OLS outcome weights (@eq-omega) followed from one fact: in the FWL numerator
 
 *PLR.* Take the partially-linear estimator (the R-learner behind the causal forest). It is FWL with the projections done by a flexible learner: residualise treatment and outcome on the covariates, then regress one residual on the other,
 
-$$ \hat\tau = \frac{\sum_i (D_i - \hat e_i)(Y_i - \hat m_i)}{\sum_i (D_i - \hat e_i)^2}, $$
+$$ \hat\tau = \frac{\sum_i (D_i - \hat e_i)(Y_i - \hat m_i)}{\sum_i (D_i - \hat e_i)^2}, $$ {#eq-outcome-weights-6}
 
 with $\hat e = \hat E[D \mid X]$ and $\hat m = \hat E[Y \mid X]$ the fitted nuisances.
 
 The outcome nuisance is a *smoother*: its fitted values are a linear map of the training outcomes, $\hat{\boldsymbol m} = \boldsymbol S \boldsymbol Y$ — true for OLS, ridge, kernels, and honest forests alike. So the outcome residual is $\boldsymbol Y - \hat{\boldsymbol m} = (\mathbf I - \boldsymbol S)\boldsymbol Y$. Writing $\tilde{\boldsymbol D} = \boldsymbol D - \hat{\boldsymbol e}$ for the treatment residual and substituting,
 
-$$ \hat\tau = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,\boldsymbol Y}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$
+$$ \hat\tau = \frac{\tilde{\boldsymbol D}'(\mathbf I - \boldsymbol S)\,\boldsymbol Y}{\tilde{\boldsymbol D}'\tilde{\boldsymbol D}}. $$ {#eq-outcome-weights-7}
 
 Now $\boldsymbol Y$ appears once, linearly, in the numerator. Read off its coefficient and the weights are done:
 
@@ -260,7 +260,7 @@ the treatment residual of unit $i$, minus how much other units' treatment residu
 
 The outcome weights tell which rows drive the estimate; the *effect* weights tell whose effect it estimates. Substitute $Y_i = \tau_i D_i + m(X_i) + \varepsilon_i$ into the PLR numerator. With consistent nuisances $\hat m \approx m$, the noise vanishes in expectation and the numerator reduces to $\sum_i \tilde D_i D_i \tau_i$, so the effect weight on $\tau_i$ is $\tilde D_i D_i = (D_i - e_i) D_i$. Since $D$ is binary ($D_i^2 = D_i$),
 
-$$ E[\tilde D_i D_i \mid X_i] = E[D_i \mid X_i] - e_i\, E[D_i \mid X_i] = e_i - e_i^2 = e_i(1 - e_i). $$
+$$ E[\tilde D_i D_i \mid X_i] = E[D_i \mid X_i] - e_i\, E[D_i \mid X_i] = e_i - e_i^2 = e_i(1 - e_i). $$ {#eq-outcome-weights-8}
 
 The denominator $\tilde{\boldsymbol D}'\tilde{\boldsymbol D} = \sum_i \tilde D_i^2$ has the same expectation, $\sum_i e_i(1 - e_i)$, since $\text{Var}(D_i \mid X_i) = e_i(1 - e_i)$. Both numerator and denominator weight by propensity variance, and the ratio is the variance-weighted average treatment effect,
 
@@ -272,11 +272,11 @@ Three moves did it: write the estimator, substitute the smoother $\hat{\boldsymb
 
 *AIPW.* With outcome smoothers $\hat{\boldsymbol\mu}_1 = \boldsymbol S_1 \boldsymbol Y$, $\hat{\boldsymbol\mu}_0 = \boldsymbol S_0 \boldsymbol Y$ and propensity $\hat{\boldsymbol e}$, the score of unit $i$ is
 
-$$ \psi_i = \hat\mu_{1i} - \hat\mu_{0i} + \frac{D_i}{\hat e_i}\,(Y_i - \hat\mu_{1i}) - \frac{1 - D_i}{1 - \hat e_i}\,(Y_i - \hat\mu_{0i}), \qquad \hat\tau = \frac1n \sum_i \psi_i. $$
+$$ \psi_i = \hat\mu_{1i} - \hat\mu_{0i} + \frac{D_i}{\hat e_i}\,(Y_i - \hat\mu_{1i}) - \frac{1 - D_i}{1 - \hat e_i}\,(Y_i - \hat\mu_{0i}), \qquad \hat\tau = \frac1n \sum_i \psi_i. $$ {#eq-outcome-weights-9}
 
 Each $\hat\mu_{ji}$ is $(\boldsymbol S_j \boldsymbol Y)_i$, so $\boldsymbol Y$ again enters only linearly; collecting its coefficient gives $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ with
 
-$$ \boldsymbol T = \boldsymbol S_1 - \boldsymbol S_0 + \operatorname{diag}\!\Big(\tfrac{\boldsymbol D}{\hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_1) - \operatorname{diag}\!\Big(\tfrac{1 - \boldsymbol D}{1 - \hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_0), \qquad \boldsymbol\omega' = \frac{\mathbf 1' \boldsymbol T}{n}. $$
+$$ \boldsymbol T = \boldsymbol S_1 - \boldsymbol S_0 + \operatorname{diag}\!\Big(\tfrac{\boldsymbol D}{\hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_1) - \operatorname{diag}\!\Big(\tfrac{1 - \boldsymbol D}{1 - \hat{\boldsymbol e}}\Big)(\mathbf I - \boldsymbol S_0), \qquad \boldsymbol\omega' = \frac{\mathbf 1' \boldsymbol T}{n}. $$ {#eq-outcome-weights-10}
 
 That is, $\omega_j$ is the $j$-th column-sum of $\boldsymbol T$ divided by $n$: observation $j$'s outcome enters the ATE through its direct IPW term and through its indirect contribution via the two outcome smoothers $\boldsymbol S_1$, $\boldsymbol S_0$ to every other unit's augmentation correction.
 
@@ -399,7 +399,7 @@ The estimate equals $\bar y_1 - \bar y_0$, and no weight carries the wrong sign 
 
 **Simulation — 2×2 difference-in-differences.** Add a period and interact it with the group, and the design has four cells. Each collapses to its mean, and the interaction coefficient is their double contrast,
 
-$$ \widehat{\text{DiD}} = (\bar y_{T,\text{post}} - \bar y_{T,\text{pre}}) - (\bar y_{C,\text{post}} - \bar y_{C,\text{pre}}). $$
+$$ \widehat{\text{DiD}} = (\bar y_{T,\text{post}} - \bar y_{T,\text{pre}}) - (\bar y_{C,\text{post}} - \bar y_{C,\text{pre}}). $$ {#eq-outcome-weights-11}
 
 Now there are four cell means, and with them four slopes — the two group trends over time and the two cross-sectional gaps. The DiD is the difference between either parallel pair, trend minus trend or gap minus gap. We simulate 200 units in each group×period cell from $y = 3 + 2g + p + 2\,(g \cdot p) + \varepsilon$, so the true DiD (the interaction) is $2$:
 

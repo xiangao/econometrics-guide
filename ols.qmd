@@ -2,37 +2,37 @@
 
 A linear model with $n$ observations and $k$ regressors can be
 written as (in vector forms)
-$$ \bf y=X\beta+u $$
+$$ {\symbf{y=X\beta+u }}$$ {#eq-ols-1}
 
 The idea of  least-squares is to choose $\beta$ to minimize the
 residual sum of squares ($SSR$),
 
-$$ SSR(\beta)  =  \bf (y-X\beta)'(y-X\beta) =  \bf y'y-2\beta'X'y+\beta'X'X\beta $$
+$$ SSR(\beta)  =  {\symbf{(y-X\beta)'(y-X\beta) =  y'y-2\beta'X'y+\beta'X'X\beta }}$$ {#eq-ols-2}
 
 The first-order condition to minimize $SSR$ are:
-$$ \frac{\partial (SSR)}{\partial \beta} = \bf -2X'y+2X'X\beta=0$$
+$$ \frac{\partial (SSR)}{\partial \beta} = {\symbf{-2X'y+2X'X\beta=0}}$$ {#eq-ols-3}
 
 This generates the so-called normal equations
-$$\bf (X'X)\beta=X'y$$
+$${\symbf{(X'X)\beta=X'y}}$$ {#eq-ols-4}
 
 Therefore, Ordinary Least Squares (OLS) estimator of $\beta$ is
-$$\bf \hat \beta=(X'X)^{-1}X'y$$
+$${\symbf{\hat \beta=(X'X)^{-1}X'y}}$$ {#eq-ols-5}
 
 ## Fitness of OLS
 
 We can see $y$ vector as the part explained by the regression
 and the unexplained (residual) part,
-$$ \bf y=\hat y+\hat u=X\hat\beta+\hat u$$
+$$ {\symbf{y=\hat y+\hat u=X\hat\beta+\hat u}}$$ {#eq-ols-6}
 where $\hat u$ is the OLS residual. Because the residual is orthogonal to the
-fitted values, $\bf \hat y' \hat u=0$, so the cross term drops:
-$$\bf y'y=(\hat y+\hat u)'(\hat y +\hat u)=\hat y' \hat y +\hat u'\hat u=\hat\beta'X'X\hat\beta +\hat u'\hat u $$
+fitted values, ${\symbf{\hat y' \hat u=0}}$, so the cross term drops:
+$${\symbf{y'y=(\hat y+\hat u)'(\hat y +\hat u)=\hat y' \hat y +\hat u'\hat u=\hat\beta'X'X\hat\beta +\hat u'\hat u }}$$ {#eq-ols-7}
 
 Subtracting $n\bar y^2$ ($\bar y$ is the sample mean) from both
 sides, **and assuming the regression includes an intercept** (so that
 $\bar{\hat y}=\bar y$ and the residuals sum to zero, which is what
 makes this centered decomposition and the $R^2$ interpretation below
 hold),
-$$ \bf y'y-n\bar y^2=(\hat\beta'X'X\hat\beta-n\bar y^2) +\hat u'\hat u $$
+$$ {\symbf{y'y-n\bar y^2=(\hat\beta'X'X\hat\beta-n\bar y^2) +\hat u'\hat u }}$$ {#eq-ols-8}
 
 
 We decompose the total sum of squares into two parts:  sum of
@@ -40,9 +40,9 @@ squares due to error (noise), and sum of squares explained by the
 linear regression.
 
 The $R^2$ is defined by
-$$R^2=1-\frac{SSR}{SST}$$
+$$R^2=1-\frac{SSR}{SST}$$ {#eq-ols-9}
 
-$SST$ is the total (centered) sum of squares of $y$, $\bf y'y-n\bar y^2 = \sum_t (y_t-\bar y)^2$.
+$SST$ is the total (centered) sum of squares of $y$, ${\symbf{y'y-n\bar y^2 = \sum_t (y_t-\bar y)^2}}$.
 
 $R^2$ is simply the proportion of the variation of $Y$ that can be
 attributed to the variation of $X$.  $R^2$, however, will never
@@ -53,7 +53,7 @@ practice it always rises a little, even for an irrelevant variable.
 The adjusted $R^2$, however, takes
 account of the addition of any new regressors:
 
-$$\bar R^2=1-\frac{SSR/(n-k)}{SST/(n-1)}$$
+$$\bar R^2=1-\frac{SSR/(n-k)}{SST/(n-1)}$$ {#eq-ols-10}
 
 ## Example
 Let's look at an example of OLS of car's mpg on disp, hp and wt.
@@ -71,22 +71,21 @@ variables $x_1$ and $x_2$. $x_1$ and $x_2$ form a plane.  What OLS
 does is to project $y$ onto this plane.
 
 In mathematical terms, all linear combinations of these two
-vectors define a two-dimensional subspace of Euclidean space ${\rm \bf
-E}^n$.  This is called the column space of $\bf X$.  The least-square
+vectors define a two-dimensional subspace of Euclidean space ${{\symbf{E}}}^n$.  This is called the column space of ${\symbf{X}}$.  The least-square
 principle is to choose $\beta$ to make $\hat y$, which belongs to the
-subspace of $\bf X$, as close as possible to $y$.
+subspace of ${\symbf{X}}$, as close as possible to $y$.
 
-When we estimate a linear regression model, we map the $y$ into a vector of fitted values $\bf X \hat \beta$ and a vector of residuals $\bf \hat u =y-X \hat \beta$.  Geometrically, these are examples of orthogonal projections.  A projection is a mapping that takes each point of ${\rm \bf E}^n$ into a point in a subspace of ${\rm \bf E}^n$.  An orthogonal projection maps any point into the point of the subspace that is closest to it.
+When we estimate a linear regression model, we map the $y$ into a vector of fitted values ${\symbf{X \hat \beta}}$ and a vector of residuals ${\symbf{\hat u =y-X \hat \beta}}$.  Geometrically, these are examples of orthogonal projections.  A projection is a mapping that takes each point of ${{\symbf{E}}}^n$ into a point in a subspace of ${{\symbf{E}}}^n$.  An orthogonal projection maps any point into the point of the subspace that is closest to it.
 
-An orthogonal projection  can be performed by premultiplying the vector to be projected by a projection matrix.  In the case of OLS, the two projection matrices that yield the vector of fitted values and the vector of residuals, are $$\bf P_X = \bf X(X'X)^{-1}X' $$ $$\bf M_X = \bf I-P_X = I- \bf X(X'X)^{-1}X'$$
+An orthogonal projection  can be performed by premultiplying the vector to be projected by a projection matrix.  In the case of OLS, the two projection matrices that yield the vector of fitted values and the vector of residuals, are $${\symbf{P_X = X(X'X)^{-1}X' }}$$ {#eq-ols-11} $${\symbf{M_X = I-P_X = I- X(X'X)^{-1}X'}}$$ {#eq-ols-12}
 
 From this, we see that the effects of two projection matrices.
-$$\bf P_X y  =  \bf X \hat \beta =\bf \hat y  $$
-$$\bf M_X y  =  \bf (I-P_X)y = y- \bf P_X y = y-X \hat \beta =\hat u $$
+$${\symbf{P_X y  =  X \hat \beta =\hat y  }}$$ {#eq-ols-13}
+$${\symbf{M_X y  =  (I-P_X)y = y- P_X y = y-X \hat \beta =\hat u }}$$ {#eq-ols-14}
 
-That is, $\bf P_X y$ projects $\bf y$ onto $\bf X$ and makes it $\bf \hat y$; $\bf M_X y$ makes it $\bf \hat u$.
+That is, ${\symbf{P_X y}}$ projects ${\symbf{y}}$ onto ${\symbf{X}}$ and makes it ${\symbf{\hat y}}$; ${\symbf{M_X y}}$ makes it ${\symbf{\hat u}}$.
 
-In the picture, that corresponds to the fact that the projection of $\bf y$ onto the plane of $\bf X$ creates two parts:  $\bf \hat y$ and $\bf \hat u$.
+In the picture, that corresponds to the fact that the projection of ${\symbf{y}}$ onto the plane of ${\symbf{X}}$ creates two parts:  ${\symbf{\hat y}}$ and ${\symbf{\hat u}}$.
 
 
 ## Properties of OLS estimator
@@ -94,50 +93,48 @@ In the picture, that corresponds to the fact that the projection of $\bf y$ onto
 ### Unbiasedness
 In a linear model
 $$
-\bf y=X\beta+u,
-$$
+{\symbf{y=X\beta+u,
+}}$$ {#eq-ols-15}
  the OLS estimator is
 $$
-\bf \hat \beta=(X'X)^{-1}X'y
-$$
+{\symbf{\hat \beta=(X'X)^{-1}X'y
+}}$$ {#eq-ols-16}
 
-Since $\bf y=X \beta+u$,
+Since ${\symbf{y=X \beta+u}}$,
 
 $$
-\bf \hat \beta=\beta + (X'X)^{-1}X'u.
-$$
+{\symbf{\hat \beta=\beta + (X'X)^{-1}X'u.
+}}$$ {#eq-ols-17}
 
 This makes
 $$
-{\rm E} \bf (\hat \beta | X)=\beta + (X'X)^{-1}X'{\rm E} (u|X).
-$$
+{{\mathrm{E}}} {\symbf{(\hat \beta | X)=\beta + (X'X)^{-1}X'{E} (u|X).
+}}$$ {#eq-ols-18}
 
 The condition that makes the OLS estimator unbiased is:
 $$
-{\rm E} \bf (u|X)=0,
-$$
+{{\mathrm{E}}} {\symbf{(u|X)=0,
+}}$$ {#eq-ols-19}
 
-that is, all explanatory variables which form the columns of $\bf X$
+that is, all explanatory variables which form the columns of ${\symbf{X}}$
 are exogenous.  This condition is weaker than the independence
-condition that $u$ and $X$ are independent. This says that given $\bf
-X$, the expected value of $\bf u$ is zero; it implies that the model
-is correctly specified.  That is, $\bf y$ is a linear function of $\bf
-X$.
+condition that $u$ and $X$ are independent. This says that given ${\symbf{X}}$, the expected value of ${\symbf{u}}$ is zero; it implies that the model
+is correctly specified.  That is, ${\symbf{y}}$ is a linear function of ${\symbf{X}}$.
 
 In the context of cross-sectional data, this assumption is plausible.
 However, when we have time series data, the assumption becomes strong,
-because it assumes that the entire series of $\bf X$ has no
+because it assumes that the entire series of ${\symbf{X}}$ has no
 relationship with the error term.  In a time series context, this is
 hard to satisfy.  The OLS estimator is biased if this condition
 is not satisfied.
 
 For example, suppose we have a model
 
-$$ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {\rm IID} (0, \sigma^2). $$
+$$ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2). $$ {#eq-ols-20}
 
 In this simple model, even if we assume that $y_{t-1}$ and $u_t$ are
 uncorrelated, OLS estimator is still biased.  That is because
-${\rm E} \bf (u|X)=0$
+${{\mathrm{E}}} {\symbf{(u|X)=0}}$
 is not satisfied: $y_{t-1}$ depends on $u_{t-1}$,
 $u_{t-2}$ and so on.
 
@@ -145,8 +142,8 @@ $u_{t-2}$ and so on.
 There is a weaker condition -- weaker than the strict exogeneity above, and in fact
 the weakest of the conditions in this chapter:
 $$
-{\rm E} \bf (X u)=0,
-$$
+{{\mathrm{E}}} {\symbf{(X u)=0,
+}}$$ {#eq-ols-21}
 
 Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.
 
@@ -154,8 +151,8 @@ Once we know that the model is correctly specified, then this equation can be us
 
 For OLS estimator to be consistent, a much weaker condition is needed:
 $$
-{\rm E} (u_t|X_t)=0,
-$$
+{{\mathrm{E}}} (u_t|X_t)=0,
+$$ {#eq-ols-22}
 
 This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of
 three exogeneity conditions worth keeping apart, which is precisely why it is the
@@ -174,10 +171,10 @@ one to invoke for consistency:
 - **Contemporaneous orthogonality**, $E[X_t u_t]=0$ -- mere zero correlation. This
   is weakest of all, and it is what consistency actually needs: together with a
   rank condition and a law of large numbers it gives
-  $\mathrm{plim}\, n^{-1}\bf X'u = 0$ and hence
+  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence
   $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a
   strictly stronger, sufficient condition -- it constrains the whole conditional
-  mean rather than a single covariance -- so the $E[\bf Xu]=0$ introduced under
+  mean rather than a single covariance -- so the $E[{\symbf{Xu]=0}}$ introduced under
   unbiasedness above sits at the *bottom* of this ladder, not between the others.
 
 Each condition implies the next, because conditioning on a larger information set
@@ -185,7 +182,7 @@ is a more restrictive requirement, not a less restrictive one.  In particular, b
 the law of iterated expectations,
 $$
 E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
-$$
+$$ {#eq-ols-23}
 so predeterminedness delivers contemporaneous exogeneity but not conversely.  In
 the time series example, then, the OLS estimator is biased, but can still be
 consistent, if we are willing to assume no contemporaneous correlation.

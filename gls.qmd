@@ -7,15 +7,15 @@ and nonlinear regression models in the same way, there is no harm
 in limiting our attention to the simpler linear case.
 
 $$
-\bf y=X\beta+u, \quad {\rm E} (u)=0, \quad {\rm E} (u u')=\Omega,
-$$
-where $\bf \Omega$, the variance-covariance matrix of the error
-term, is a positive definite $n \times n$ matrix.  If $\bf \Omega$
-is equal to $\sigma^2 \bf I$, then it is just the linear
+{\symbf{y=X\beta+u, \quad {E} (u)=0, \quad {E} (u u')=\Omega,
+}}$$ {#eq-gls-1}
+where ${\symbf{\Omega}}$, the variance-covariance matrix of the error
+term, is a positive definite $n \times n$ matrix.  If ${\symbf{\Omega}}$
+is equal to $\sigma^2 {\symbf{I}}$, then it is just the linear
 regression model without heteroscedasticity and serial
-correlation. If $\bf \Omega$ is diagonal with nonconstant diagonal
+correlation. If ${\symbf{\Omega}}$ is diagonal with nonconstant diagonal
 elements, then the error terms are still uncorrelated, but there
-is heteroscedasticity.  If $\bf \Omega$ is not diagonal, then
+is heteroscedasticity.  If ${\symbf{\Omega}}$ is not diagonal, then
 $u_i$ and $u_j$ are correlated.  In next section, we obtain an
 efficient estimator for the vector $\beta$ by transforming the
 regression so that it satisfies the conditions of Gauss-Markov
@@ -24,55 +24,54 @@ Squares, or GLS, estimator.
 
 ## The GLS Estimator
 
-Since $\bf \Omega$, the variance-covariance matrix of the error
+Since ${\symbf{\Omega}}$, the variance-covariance matrix of the error
 term, is a positive definite $n \times n$ matrix, there always
-exist full-rank $n \times n$ matrices (usually triangular) $\bf
-\Psi$ such that
+exist full-rank $n \times n$ matrices (usually triangular) ${\symbf{\Psi}}$ such that
 $$
-\bf \Omega^{-1} =\Psi \Psi'.
-$$
+{\symbf{\Omega^{-1} =\Psi \Psi'.
+}}$$ {#eq-gls-2}
 
-Premultiplying (the equation above) by $\bf \Psi'$ gives
+Premultiplying (the equation above) by ${\symbf{\Psi'}}$ gives
 $$
-\bf \Psi'y=\Psi'X\beta+\Psi'u. 
-$$
+{\symbf{\Psi'y=\Psi'X\beta+\Psi'u. 
+}}$$ {#eq-gls-3}
 
 The OLS estimator from regression (the equation above) is
 $$
-\bf \hat \beta_{GLS}=(X'\Psi \Psi' X)^{-1}X'\Psi \Psi'
+{\symbf{\hat \beta_{GLS}=(X'\Psi \Psi' X)^{-1}X'\Psi \Psi'
 y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
-$$
+}}$$ {#eq-gls-4}
 
 The transformed error term has an identity variance-covariance
 matrix:
 $$
-\rm E \bf (\Psi' u u' \Psi)=\Psi' {\rm E} (u u') \Psi= \Psi'
+{\symbf{E (\Psi' u u' \Psi)=\Psi' {E} (u u') \Psi= \Psi'
 \Omega \Psi=I
-$$
+}}$$ {#eq-gls-5}
 
 Since the transformed model satisfies OLS assumptions, we have
 
 $$
 \begin{aligned}
-{\rm Var} \bf (\hat \beta_{GLS}) &= \bf  (X' \Psi \Psi'X)^{-1}\\
-&= \bf  (X' \Omega^{-1} X)^{-1}
-\end{aligned}
-$$
+{{\mathrm{Var}}} {\symbf{(\hat \beta_{GLS}) }}&{\symbf{=  (X' \Psi \Psi'X)^{-1}}}\\{\symbf{
+}}&{\symbf{=  (X' \Omega^{-1} X)^{-1}
+}}\end{aligned}
+$$ {#eq-gls-6}
 
 ## Weighted Least Squares
 
 It is easy to obtain GLS estimates when the error terms are
-heteroscedastic but uncorrelated, which means $\bf \Omega$ is
+heteroscedastic but uncorrelated, which means ${\symbf{\Omega}}$ is
 diagonal.  Let $\omega_t^2$ denote the $t$th diagonal element of
-$\bf \Omega$.  Then $\bf \Psi$ can be chosen as the diagonal
+${\symbf{\Omega}}$.  Then ${\symbf{\Psi}}$ can be chosen as the diagonal
 matrix with $t$th diagonal element $\omega_t^{-1}$.  For a typical
 observation, regression can be written as
 $$
-\omega_t^{-1}y_t=\omega_t^{-1} {\bf x}_t' \boldsymbol{\beta}+ \omega_t^{-1} u_t.
-$$
+\omega_t^{-1}y_t=\omega_t^{-1} {{\symbf{x}}}_t' \boldsymbol{\beta}+ \omega_t^{-1} u_t.
+$$ {#eq-gls-7}
 This is called weighted least squares, or WLS.  It is worth keeping
 two notions of "weight" distinct.  The transformed variables $y_t$ and
-$\bf x_t'$ are *scaled* by $\omega_t^{-1}$; equivalently, the WLS
+${\symbf{x_t'}}$ are *scaled* by $\omega_t^{-1}$; equivalently, the WLS
 objective weights each squared residual by the inverse variance
 $\omega_t^{-2}$ (the square of the scaling factor).  Either way,
 observations whose error variance is large are given low weight, and
@@ -80,19 +79,19 @@ observations for which it is small are given high weight.
 
 ### Feasible Generalized Least Squares
 
-In many cases it is reasonable to suppose that $\bf \Omega$ depends in a known way on a vector of unknown parameters $\bf \gamma$.  If so, it may be possible to estimate $\mathbf{\gamma}$ consistently, so as to obtain $\bf \Omega (\hat \gamma)$.  This type of procedure is called feasible generalized least squares, or feasible GLS.  But we'll
+In many cases it is reasonable to suppose that ${\symbf{\Omega}}$ depends in a known way on a vector of unknown parameters ${\symbf{\gamma}}$.  If so, it may be possible to estimate $\mathbf{\gamma}$ consistently, so as to obtain ${\symbf{\Omega (\hat \gamma)}}$.  This type of procedure is called feasible generalized least squares, or feasible GLS.  But we'll
 have to specify the error term as some function of some known
 variables.
 
 A typical FGLS procedure has three steps. First, run OLS and obtain the residuals $\hat u_t$. Second, use those residuals to estimate the parameters $\gamma$ of the assumed error structure -- for example:
 
-- **Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({\bf z}_t' \gamma)$: regress $\log(\hat u_t^2)$ on $\bf z_t$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({\bf z}_t' \hat\gamma)$ and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because $E[\log(u_t^2/\omega_t^2)] \neq 0$ -- it is about $-1.27$ for normal errors. This does not matter for WLS: a constant added to every $\log \hat\omega_t^2$ scales all weights by a common factor, which leaves $\hat\beta$ unchanged. It does matter if the fitted $\hat\omega_t^2$ are wanted as variance estimates in their own right.)
+- **Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({{\symbf{z}}}_t' \gamma)$: regress $\log(\hat u_t^2)$ on ${\symbf{z_t}}$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({{\symbf{z}}}_t' \hat\gamma)$ and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because $E[\log(u_t^2/\omega_t^2)] \neq 0$ -- it is about $-1.27$ for normal errors. This does not matter for WLS: a constant added to every $\log \hat\omega_t^2$ scales all weights by a common factor, which leaves $\hat\beta$ unchanged. It does matter if the fitted $\hat\omega_t^2$ are wanted as variance estimates in their own right.)
 - **AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then quasi-difference each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ for $t = 2, \dots, n$ (and similarly for $X$), so that the transformed error is approximately i.i.d.
 
   The first observation is where **Cochrane-Orcutt** and **Prais-Winsten** part
-  company, and the $\bf \Psi$ framework above says which is right. For AR(1)
-  errors $\bf \Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]$,
-  and its Cholesky factor makes the first row of $\bf \Psi'$ equal to
+  company, and the ${\symbf{\Psi}}$ framework above says which is right. For AR(1)
+  errors ${\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]}}$,
+  and its Cholesky factor makes the first row of ${\symbf{\Psi'}}$ equal to
   $\sqrt{1-\rho^2}$ times the first unit vector. Full GLS therefore keeps
   observation 1, rescaled as $\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1$; that is
   Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent

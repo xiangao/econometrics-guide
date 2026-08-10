@@ -328,15 +328,15 @@ window.Quarto = {
 
 <section id="when-is-it-a-problem" class="level2" data-number="11.1">
 <h2 data-number="11.1" class="anchored" data-anchor-id="when-is-it-a-problem"><span class="header-section-number">11.1</span> When Is It a Problem</h2>
-<p>Model setup: <span class="math display">\[y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}\]</span></p>
+<p>Model setup: <span id="eq-dynamic-panel-1"><span class="math display">\[y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t} \tag{11.1}\]</span></span></p>
 <p>Pooled regression is biased and inconsistent. The problem is:</p>
-<p><span class="math display">\[Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}\]</span></p>
+<p><span id="eq-dynamic-panel-2"><span class="math display">\[Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)} \tag{11.2}\]</span></span></p>
 <p>Random effects model is biased and inconsistent, for the same reason that <span class="math inline">\(y_{i,t-1}\)</span> is necessarily correlated with <span class="math inline">\(C_i\)</span>, which is part of the composite error term in the random effect model.</p>
 <p>Fixed effect model setup:</p>
-<p><span class="math display">\[ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)\]</span></p>
+<p><span id="eq-dynamic-panel-3"><span class="math display">\[ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i) \tag{11.3}\]</span></span></p>
 <p>where <span class="math inline">\(\overline{y_{i,-1}}\)</span> is the unit mean of the <em>lagged</em> dependent variable. This is not exactly <span class="math inline">\(\bar y_i\)</span> (the mean of current <span class="math inline">\(y_{i,t}\)</span>): the two differ at the first and last usable periods, though they coincide asymptotically and under the usual balanced-sample convention.</p>
 <p>Nickell (1981) shows that (see also Anderson and Hsiao 1981)</p>
-<p><span class="math display">\[Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}]\]</span></p>
+<p><span id="eq-dynamic-panel-4"><span class="math display">\[Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} [\frac{(T-1)-T \gamma + \gamma^T}{T}] \tag{11.4}\]</span></span></p>
 <p>which indicates that the demeaned lagged <span class="math inline">\(y\)</span> is correlated with the demeaned error term. The correlation may be large if <span class="math inline">\(T\)</span> is small, but when <span class="math inline">\(T\)</span> is big, then the correlation goes down to near zero. When <span class="math inline">\(T\)</span> is big, we don’t have a problem with fixed effect model.</p>
 </section>
 <section id="how-big-is-the-bias" class="level2" data-number="11.2">
@@ -348,22 +348,22 @@ window.Quarto = {
 <section id="anderson-and-hsiao-estimator" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="anderson-and-hsiao-estimator"><span class="header-section-number">11.3</span> Anderson and Hsiao estimator</h2>
 <p>Anderson and Hsiao (1981) suggested looking at the first difference estimator:</p>
-<p><span class="math display">\[ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) \]</span></p>
+<p><span id="eq-dynamic-panel-5"><span class="math display">\[ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1})  \tag{11.5}\]</span></span></p>
 <p>or</p>
-<p><span class="math display">\[ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} \]</span></p>
+<p><span id="eq-dynamic-panel-6"><span class="math display">\[ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t}  \tag{11.6}\]</span></span></p>
 <p>This does not solve the endogeneity problem, since <span class="math inline">\(\Delta y_{i,t-1}\)</span> is still correlated with the error term. AH’s idea is to instrument <span class="math inline">\(\Delta y_{i,t-1}\)</span> with the past level <span class="math inline">\(y_{i,t-2}\)</span>, or past difference <span class="math inline">\(y_{i,t-2}-y_{i,t-3}\)</span>. This estimator is consistent, since neither of these instruments is correlated with <span class="math inline">\(\Delta \epsilon_{i,t}\)</span>, assuming error is not auto-correlated.</p>
 </section>
 <section id="arellano-bond-estimator" class="level2" data-number="11.4">
 <h2 data-number="11.4" class="anchored" data-anchor-id="arellano-bond-estimator"><span class="header-section-number">11.4</span> Arellano-Bond estimator</h2>
 <p>Arellano and Bond (1991) expanded the idea by using additional lags of the dependent variable as instruments. For example, both <span class="math inline">\(y_{i,t-2}\)</span> and <span class="math inline">\(y_{i,t-3}\)</span> can be used as instruments. In fact, as <span class="math inline">\(t\)</span> increases, the number of instruments available also increases. In period 3 only <span class="math inline">\(y_{i,1}\)</span> is available. In period 4 <span class="math inline">\(y_{i,1}\)</span> and <span class="math inline">\(y_{i,2}\)</span> are available. In period 5 <span class="math inline">\(y_{i,1}\)</span> and <span class="math inline">\(y_{i,2}\)</span> and <span class="math inline">\(y_{i,3}\)</span> are available, and so on. In other words, we’ll have an instrument matrix with one row for each time period that we are instrumenting:</p>
-<p><span class="math display">\[Z_i =
+<p><span id="eq-dynamic-panel-7"><span class="math display">\[Z_i =
 \begin{bmatrix}
 y_{i,1} &amp; \  0 &amp; \ 0 &amp; \ 0
 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 \\  0 &amp; \  y_{i,1} &amp; \ y_{i,2} &amp;
 \ 0 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 \\  0 &amp; \ 0 &amp; \  0 &amp; \
 y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0  \\   \vdots  &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \ddots  &amp; \ \cdots &amp; \ \vdots &amp; \  \vdots &amp; \ \vdots \\ 0 &amp; \  0 &amp; \  0 &amp; \ 0 &amp; \ 0 &amp; \ \cdots  &amp; \ 0 &amp; \ y_{i,1} &amp; \  \cdots &amp; \ y_{i,T-2}
 \end{bmatrix}
-\]</span></p>
+\tag{11.7}\]</span></span></p>
 <p>This is the so called difference GMM estimator.</p>
 </section>
 <section id="blundell-and-bond-estimator" class="level2" data-number="11.5">
@@ -851,11 +851,11 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## When Is It a Problem</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Model setup:</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>$$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>$$y_{i,t} = \gamma y_{i, t-1} + X_{i,t}' \beta + C_i + \epsilon_{i,t}$$ {#eq-dynamic-panel-1}</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Pooled regression is biased and inconsistent.  The problem is:</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>$$Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}$$</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>$$Cov( y_{i,t-1},  (C_i + \epsilon_{i,t})) \approx \frac{\sigma_c^2}{(1-\gamma)}$$ {#eq-dynamic-panel-2}</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Random effects model is biased and inconsistent, for the same reason</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>that $y_{i,t-1}$ is necessarily correlated with $C_i$, which is part</span>
@@ -863,7 +863,7 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>Fixed effect model setup:</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>$$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$ {#eq-dynamic-panel-3}</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>where $\overline{y_{i,-1}}$ is the unit mean of the *lagged* dependent</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>variable.  This is not exactly $\bar y_i$ (the mean of current</span>
@@ -873,7 +873,7 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>Nickell (1981) shows that (see also Anderson and Hsiao 1981)</span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>$$Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} <span class="co">[</span><span class="ot">\frac{(T-1)-T \gamma + \gamma^T}{T}</span><span class="co">]</span>$$</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>$$Cov( (y_{i,t-1}- \overline{y_{i,-1}}),  (\epsilon_{i,t} - \bar \epsilon_i )) \approx -\frac{\sigma_\epsilon^2}{T (1-\gamma)^2} <span class="co">[</span><span class="ot">\frac{(T-1)-T \gamma + \gamma^T}{T}</span><span class="co">]</span>$$ {#eq-dynamic-panel-4}</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>which indicates that the demeaned lagged $y$</span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>is correlated with the demeaned error term.  The correlation may be</span>
@@ -893,11 +893,11 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>Anderson and Hsiao (1981) suggested looking at the first difference estimator:</span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>$$ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) $$</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>$$ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1}) $$ {#eq-dynamic-panel-5}</span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>or</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$ {#eq-dynamic-panel-6}</span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$, assuming error is not auto-correlated.</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
@@ -914,7 +914,7 @@ y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &am
 <span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>\ 0 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 <span class="sc">\\</span>  0 &amp; \ 0 &amp; \  0 &amp; \</span>
 <span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0  <span class="sc">\\</span>   \vdots  &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \ddots  &amp; \ \cdots &amp; \ \vdots &amp; \  \vdots &amp; \ \vdots <span class="sc">\\</span> 0 &amp; \  0 &amp; \  0 &amp; \ 0 &amp; \ 0 &amp; \ \cdots  &amp; \ 0 &amp; \ y_{i,1} &amp; \  \cdots &amp; \ y_{i,T-2}</span>
 <span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dynamic-panel-7}</span>
 <span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>This is the so called difference GMM estimator.</span>

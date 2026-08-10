@@ -13,91 +13,89 @@ A population moment $\gamma$ can be defined as the expectation of
 some continuous function $g$ of a random variable $x$:
 $$
 \gamma={\mathrm{E}} [g(x)]
-$$
+$$ {#eq-gmm-1}
 
 On the other hand, a sample moment is the sample version of the
 population moment in a particular sample:
 $$
 \hat \gamma=\frac{1}{n} \sum [g(x)]
-$$
+$$ {#eq-gmm-2}
 
 ## OLS as a moment problem
 
 Consider the simple linear regression
 $$
-\bf y=X\beta+u, \quad u \sim IID(0, \sigma^2).
-$$
+{\symbf{y=X\beta+u, \quad u \sim IID(0, \sigma^2).
+}}$$ {#eq-gmm-3}
 
 If the model is correctly specified, then
 $$
-\rm E (\bf X'u)=0.
-$$
+{\symbf{E (X'u)=0.
+}}$$ {#eq-gmm-4}
 
 The MOM principle suggests that we replace the left-hand side with
-its sample analog $\frac{1}{n} \bf X'(y-X\beta)$.
+its sample analog $\frac{1}{n} {\symbf{X'(y-X\beta)}}$.
 
-Since we know that the true $\bf \beta$ sets the population moment
+Since we know that the true ${\symbf{\beta}}$ sets the population moment
 equal to zero in expectation, it seems reasonable to assume that a
-good choice of $\bf \hat \beta$ would be one that sets the sample
-moment to zero.  The MOM procedure suggests an estimate of $\bf
-\beta$ that solves
+good choice of ${\symbf{\hat \beta}}$ would be one that sets the sample
+moment to zero.  The MOM procedure suggests an estimate of ${\symbf{\beta}}$ that solves
 $$
-\frac{1}{n} \bf X'(y-X \hat \beta)=0.
-$$
+\frac{1}{n} {\symbf{X'(y-X \hat \beta)=0.
+}}$$ {#eq-gmm-5}
 
 The MOM estimator is
 $$
-\bf \hat \beta=(X'X)^{-1}X'y,
-$$
+{\symbf{\hat \beta=(X'X)^{-1}X'y,
+}}$$ {#eq-gmm-6}
 which is the same as the OLS estimator.
 
 ## IV as a moment problem
 Consider the simple linear regression
 $$
-\bf y=X\beta+u, \quad u \sim IID(0, \sigma^2).
-$$
+{\symbf{y=X\beta+u, \quad u \sim IID(0, \sigma^2).
+}}$$ {#eq-gmm-7}
 
 If one or more of the regressors is endogenous, then
 $$
-\rm E (\bf X'u)\neq 0.
-$$
+{\symbf{E (X'u)\neq 0.
+}}$$ {#eq-gmm-8}
 
-We have to find an instrumental variable $\bf Z$ which is
+We have to find an instrumental variable ${\symbf{Z}}$ which is
 $$
-\rm E (\bf Z'u)= 0.
-$$
+{\symbf{E (Z'u)= 0.
+}}$$ {#eq-gmm-9}
 Or,
 $$
-\rm E (\bf Z'(y-X\beta))= 0.
-$$
+{\symbf{E (Z'(y-X\beta))= 0.
+}}$$ {#eq-gmm-10}
 
 The sample analogy of this is
 $$
-\frac{1}{n} \bf Z'(y-X \hat \beta)=0.
-$$
+\frac{1}{n} {\symbf{Z'(y-X \hat \beta)=0.
+}}$$ {#eq-gmm-11}
 
 When the model is *exactly identified* -- the number of instruments
-equals the number of regressors, so $\bf Z'X$ is square and
+equals the number of regressors, so ${\symbf{Z'X}}$ is square and
 nonsingular -- the sample moment condition has a unique solution, the
 simple IV estimator
 $$
-\bf \hat \beta=(Z'X)^{-1}Z'y.
-$$
+{\symbf{\hat \beta=(Z'X)^{-1}Z'y.
+}}$$ {#eq-gmm-12}
 When the model is *overidentified* -- more instruments than regressors
--- $\bf Z'X$ is no longer square and we cannot set all sample moments
+-- ${\symbf{Z'X}}$ is no longer square and we cannot set all sample moments
 to zero simultaneously.  We instead minimize a quadratic form in the
 moments, which gives the two-stage least squares (2SLS) estimator
 $$
-\bf \hat \beta=(X'P_Z X)^{-1}X'P_Z y, \qquad P_Z = Z(Z'Z)^{-1}Z',
-$$
+{\symbf{\hat \beta=(X'P_Z X)^{-1}X'P_Z y, \qquad P_Z = Z(Z'Z)^{-1}Z',
+}}$$ {#eq-gmm-13}
 the special case of the GMM estimator below with weighting matrix
-$(\bf Z'Z)^{-1}$.
+$({\symbf{Z'Z)^{-1}}}$.
 
 ## The Generalized Method of Moments
 
-The expectation ${\rm E}(Y^r)$ for any $r=1,2, \dots$ is called the
-$r^{th}$ (raw) moment of $Y$.  The expectation ${\rm E} [(Y-{\rm
-  E}(Y))^r]$ is called the $r^{th}$ centered moment of $Y$.
+The expectation ${{\mathrm{E}}}(Y^r)$ for any $r=1,2, \dots$ is called the
+$r^{th}$ (raw) moment of $Y$.  The expectation ${{\mathrm{E}}} [(Y-{{\mathrm{  E}}}(Y))^r]$ is called the $r^{th}$ centered moment of $Y$.
 
 The mean is the first raw moment.
 
@@ -110,7 +108,7 @@ The fourth centered moment measures the kurtosis of the
 distribution.  Interpreted as a measure of "fatness of tails".
 
 The standardized kurtosis is
-$$k=\frac{E[(Y-E(Y))^4]}{E[(Y-E(Y))^2]^2}.$$
+$$k=\frac{E[(Y-E(Y))^4]}{E[(Y-E(Y))^2]^2}.$$ {#eq-gmm-14}
 
 For a normal distribution, $k=3.$
 
@@ -146,7 +144,7 @@ of ML and GMM.
 The statistical model takes the general form
 $$
 E[m(Y_i; \theta_0)]=0
-$$
+$$ {#eq-gmm-15}
 where
 - $Y_1, \cdots, Y_n$ are random variables from which the sample $y_1, \cdots, y_n$ is drawn,
 - $m(Y, \theta)$ is a function specifying the model,
@@ -169,7 +167,7 @@ Define the notation
 
 $$
 \bar m(\theta)=\frac{1}{n} \sum_{i=1}^n m(y_i; \theta).
-$$
+$$ {#eq-gmm-16}
 
 $\hat \theta_{GMM}$ is chosen to make $\bar m(\theta)'\bar
 m(\theta)$ as close to
@@ -187,13 +185,13 @@ $S = \lim_{n \to \infty} \mbox{Var} \bigl( \sqrt n \, \bar m (\theta_0) \bigr)$.
 With that weighting,
 $$
 \sqrt n (\hat \theta_{GMM} - \theta_0) \xrightarrow{d} N \bigl( 0, (G'S^{-1}G)^{-1} \bigr),
-\qquad G = {\rm E} \left[ \frac{\partial m (Y_i ; \theta_0)}{\partial \theta'} \right],
-$$
+\qquad G = {{\mathrm{E}}} \left[ \frac{\partial m (Y_i ; \theta_0)}{\partial \theta'} \right],
+$$ {#eq-gmm-17}
 which is the GMM counterpart of the information-matrix bound of the previous
 chapter.  Since $S$ depends on $\theta_0$, in practice one starts from any
-consistent weighting (often the identity, or $(\bf Z'Z)^{-1}$), estimates $\hat
+consistent weighting (often the identity, or $({\symbf{Z'Z)^{-1}}}$), estimates $\hat
 S$ from the resulting residuals, and re-minimizes: two-step GMM.  Stopping at
-$W = (\bf Z'Z)^{-1}$ is exactly 2SLS, which is therefore efficient GMM only
+$W = ({\symbf{Z'Z)^{-1}}}$ is exactly 2SLS, which is therefore efficient GMM only
 under homoskedasticity.
 
 ### An example
@@ -205,11 +203,11 @@ are doing GMM version of 2sls.
 Here I use R's "gmm" library, which makes things easy.  Its first two arguments
 are `g` and `x`: with the formula interface, `g` is the model formula whose
 residual forms the moment function, and `x` is a formula giving the instruments.
-The moment condition in this example is $E(\bf z' u) = 0$, where $\bf z$ is the
+The moment condition in this example is $E({\symbf{z' u) = 0}}$, where ${\symbf{z}}$ is the
 instrument -- the variable `w` in the simulated data -- and $u$ is the residual
-from the structural equation.  Note that $\bf W$ above denotes the *weighting
+from the structural equation.  Note that ${\symbf{W}}$ above denotes the *weighting
 matrix* in $\bar m' W \bar m$, which is a different object entirely, so the
-instrument is written $\bf z$ here.
+instrument is written ${\symbf{z}}$ here.
 
 
 ```{r}
@@ -248,14 +246,14 @@ summary(tsls.model)
 Two things about that agreement are worth being explicit about, because it is easy
 to over-generalise from it. First, GMM and 2SLS coincide *numerically* here because
 the model is just-identified: one instrument (`w`) for one endogenous regressor
-(`x`), so $\bf Z'X$ is square and the sample moments can be set to zero exactly,
+(`x`), so ${\symbf{Z'X}}$ is square and the sample moments can be set to zero exactly,
 whatever the weighting matrix. The output says so -- the $J$-test reports
 "degrees of freedom is 0", and its value ($\sim 10^{-26}$) is numerical noise
 rather than evidence. Second, `gmm()` is using an optimal two-step weighting with a
 heteroskedasticity-and-autocorrelation-consistent kernel (note `Method: twoStep` and
 `Kernel: Quadratic Spectral` in the output). Under *over*-identification that
 choice would generally **not** reproduce 2SLS, for exactly the reason given above:
-$W = (\bf Z'Z)^{-1}$ is the efficient weighting only under homoskedasticity.
+$W = ({\symbf{Z'Z)^{-1}}}$ is the efficient weighting only under homoskedasticity.
 
 In OLS case, it would be $E(X u) = 0$.
 
@@ -278,45 +276,45 @@ summary(ols)
 If $X$ and $Y$ are independent then
 $$
 f(x,y)=f(x)f(y)
-$$
+$$ {#eq-gmm-18}
 and hence
 $$
 f(y|x)=f(y).
-$$
+$$ {#eq-gmm-19}
 
 If $X$ and $Y$ are independent then
 $$
 E[g(X)h(Y)]=E[g(X)]\cdot E[h(Y)]
-$$
+$$ {#eq-gmm-20}
 and hence
 $$
 Cov[g(X),h(Y)]=0.
-$$
+$$ {#eq-gmm-21}
 i.e. all functions of $X$ and $Y$ are uncorrelated.
 
 ###  Law of Iterated Expectations
 $$
 E[Y]=E[E(Y|X)].
-$$
+$$ {#eq-gmm-22}
 
 ### Dependence Concepts
 
  $X$, $Y$ independent:
 $$
 Cov[g(X),h(Y)]=0
-$$
+$$ {#eq-gmm-23}
 
 $X$, $Y$ uncorrelated:
 $$
 Cov[X,Y]=0
-$$
+$$ {#eq-gmm-24}
 
 
 $E[Y|X]=0$:
 
 $$
 Cov[g(X),Y]=0
-$$
+$$ {#eq-gmm-25}
 
 These are listed in decreasing strength, and the implications run one way only:
 independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The
@@ -334,7 +332,7 @@ the middle one.
 A regression model is a model of $E[Y_i|X_i]$.  For example,
 $$
 Y_i=\beta_0+\beta_1X_i+u_i
-$$
+$$ {#eq-gmm-26}
 where $E[u_i|X_i]=0$.
 
 ### GMM regression
@@ -342,27 +340,27 @@ where $E[u_i|X_i]=0$.
 The regression model
 $$
 Y_i=\beta_0+\beta_1X_i+u_i, \quad E[u_i|X_i]=0
-$$
+$$ {#eq-gmm-27}
 implies the moment condition
 $$
 E[u_i]=0 \quad  \mbox{and} \quad  E[X_i u_i]=0
-$$
+$$ {#eq-gmm-28}
 
 That is,
 $$
 E[Y_i-\beta_0-\beta_1X_i]=0
-$$
+$$ {#eq-gmm-29}
 $$
 E[X_i(Y_i-\beta_0-\beta_1X_i)]=0
-$$
+$$ {#eq-gmm-30}
 
 The sample moment conditions are
 $$
 \frac{1}{n}\sum_{i=1}^{n}(y_i-\hat \beta_0-\hat \beta_1x_i)=0
-$$
+$$ {#eq-gmm-31}
 $$
 \frac{1}{n}\sum_{i=1}^{n}x_i(y_i-\hat \beta_0-\hat \beta_1x_i)=0
-$$
+$$ {#eq-gmm-32}
 
 These are just normal equations for OLS.
 

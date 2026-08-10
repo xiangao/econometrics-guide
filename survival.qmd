@@ -23,7 +23,7 @@ realization of $T$.  The survival function is defined by
 
 $$
 S(t) = Pr(T>t) = 1-F(t)
-$$
+$$ {#eq-survival-1}
 
 The graph of $S(t)$ against $t$ is known as the survival curve.  If
 there is no censoring, then the survival function is easy to estimate
@@ -37,14 +37,14 @@ First sort the event times from the smallest to the largest:
 
 $$
 t_{(1)} \le t_{(2)} \le ... \le t_{(r)}
-$$
+$$ {#eq-survival-2}
 
 
 Then the survival curve is estimated by:
 
 $$
 \hat S(t) = \prod_{j | t_{(j)} \le t} (1-\frac{d_j}{r_j}),
-$$
+$$ {#eq-survival-3}
 
 where $r_j$ is the number of units at risk at $t_{(j)}$ and $d_j$ is
 the number of "failure" or events at $t_{(j)}$.  Note that units
@@ -54,7 +54,7 @@ The variance of this estimator can be estimated by:
 
 $$
 \hat {var} (S(t)) = (\hat S(t))^2 \sum_{j | t_{(j)} \le t} \frac{d_j}{r_j(r_j-d_j)}.
-$$
+$$ {#eq-survival-4}
 
 
 
@@ -69,34 +69,34 @@ The probability is
 $$
 \mbox{Pr} (t<T \leq t+\Delta t | T \geq t)=\frac{F(t+\Delta
 t)-F(t)}{S(t)}
-$$
+$$ {#eq-survival-5}
 
 The hazard function is defined by
 $$
 h(t)=\lim_{\Delta t \rightarrow 0}\frac{\mbox{Pr} (t<T \leq t+\Delta t |
 T \geq t)}{\Delta t}=\frac{f(t)}{S(t)}=\frac{f(t)}{1-F(t)}
-$$
+$$ {#eq-survival-6}
 
 One of the simplest functional forms is the exponential
 distribution
 $$
 f(t,\theta)=\theta e^{-\theta t}
-$$
+$$ {#eq-survival-7}
 
 Therefore, the hazard function is
 $$
 h(t)=\theta
-$$
+$$ {#eq-survival-8}
 
 A much more flexible functional form is Weibull, with CDF, survival, and density
 $$
 F(t,\theta, \alpha)=1-\exp(-(\theta t)^{\alpha}), \quad S(t)=\exp(-(\theta t)^{\alpha}), \quad f(t)=\alpha \theta^{\alpha} t^{\alpha-1}\exp(-(\theta t)^{\alpha}).
-$$
+$$ {#eq-survival-9}
 
 Hazard function can be shown to be
 $$
 h(t)=\alpha \theta^{\alpha} t^{\alpha-1}
-$$
+$$ {#eq-survival-10}
 
 However, Weibull distribution does not allow for the possibility
 that the hazard may first increase then decrease over time.
@@ -111,22 +111,22 @@ If for unit $i$, the event happens at $t_i$, it's contribution to the likelihood
 
 $$
 L_i=f(t_i)=S(t_i)h(t_i)
-$$
+$$ {#eq-survival-11}
 
 
 If no event at $t_i$, all we know is that the lifetime exceeds $t_i$.  The probability is
 $$
 L_i=S(t_i),
-$$
+$$ {#eq-survival-12}
 which is the contribution to the likelihood function from a censored
 observation.
 
 Therefore, if $U$ denotes the set of uncensored observations, the
 log-likelihood function for the entire sample can be written as
 $$
-\ell (t, \theta)=\sum_{i \in U} \log h(t_i | {\bf X}_i,
-\theta)+\sum_{i=1}^n \log S(t_i | {\bf X}_i, \theta)
-$$
+\ell (t, \theta)=\sum_{i \in U} \log h(t_i | {{\symbf{X}}}_i,
+\theta)+\sum_{i=1}^n \log S(t_i | {{\symbf{X}}}_i, \theta)
+$$ {#eq-survival-13}
 
 ## Proportional Hazard Models
 
@@ -135,13 +135,13 @@ $$
 One class of models that is quite widely used is the proportional
 hazard models (based on Cox (1972)).
 $$
-h(t | {\bf x}_i)=h_0(t)\exp ({\bf x}'_i \beta),
-$$
+h(t | {{\symbf{x}}}_i)=h_0(t)\exp ({{\symbf{x}}}'_i \beta),
+$$ {#eq-survival-14}
 
 In this model $h_0(t)$ is called baseline hazard rate; it describes
-the risk for units with $\bf x_i = 0$. $\exp ({\bf x}'_i \beta)$
+the risk for units with ${\symbf{x_i = 0}}$. $\exp ({{\symbf{x}}}'_i \beta)$
 represents the relative risk, a proportionate increase or decrease in
-risk, due to $\bf x_i$.  The interpretation of $\beta$ is that
+risk, due to ${\symbf{x_i}}$.  The interpretation of $\beta$ is that
 $\exp(\beta_i)$ gives the relative risk change associated with an
 increase of one unit in $x_i$, all other explanatory variables remaining
 constant.
@@ -155,7 +155,7 @@ to case $i$, not other cases in the risk set) is
 
 $$
 L_i=\frac{h_0(t_j) \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j) h_0(t_j) \exp(x_l' \beta)}=\frac{ \exp(x_i' \beta)} {\sum_l I(T_l \ge t_j)  \exp(x_l' \beta)}
-$$
+$$ {#eq-survival-15}
 
 We can see here that Cox's model is for continuous time survival data.
 It is assumed there is no ties at time $t_j$ (in continuous time is
@@ -169,7 +169,7 @@ approximation (Breslow and Peto) is to let
 
 $$
 L_{m \in D(t_j)} \simeq \frac{ \prod_{m \in D(t_j)} \exp(x_m' \beta)} {[\sum_{l \in R(t_j)} \exp(x_l' \beta)]^{d_j}}
-$$
+$$ {#eq-survival-16}
 
 where $D(t_j)$ is the set of cases that die at time $t_j$ and $d_j$
 denotes the number of cases that die at time $t_j$.  This
@@ -182,8 +182,8 @@ model is that for all units, the effect is the same at all time $t$.
 To see this:
 
 $$
-\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({\bf x}_1' \beta)}{h_0(t)\exp ({\bf x}_2' \beta)}= \frac{\exp ({\bf x}_1' \beta)}{\exp ({\bf x}_2' \beta)},
-$$
+\frac{h_1(t)}{h_2(t)} = \frac{h_0(t)\exp ({{\symbf{x}}}_1' \beta)}{h_0(t)\exp ({{\symbf{x}}}_2' \beta)}= \frac{\exp ({{\symbf{x}}}_1' \beta)}{\exp ({{\symbf{x}}}_2' \beta)},
+$$ {#eq-survival-17}
 which does not depend on $t$.
 
 One advantage of Cox's model is that it is considered as a
@@ -197,14 +197,14 @@ Parameter estimates are derived assuming continuous survival times.
 In the equation above, if we would like to calculate the partial effect of $x_j$ on $h$, we have:
 
 $$
-\partial h(t | {\bf x}_i) / \partial x_j=h_0(t)\exp ({\bf x}'_i \beta) \beta_j = \beta_j h(t | {\bf x}_i),
-$$
+\partial h(t | {{\symbf{x}}}_i) / \partial x_j=h_0(t)\exp ({{\symbf{x}}}'_i \beta) \beta_j = \beta_j h(t | {{\symbf{x}}}_i),
+$$ {#eq-survival-18}
 
 If we do it the other way, plug in $x_j + 1$ will generate
 
 $$
-h_0(t)\exp ({\bf x}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{\bf x}_i)
-$$
+h_0(t)\exp ({{\symbf{x}}}'_i \beta + \beta_j) = \exp (\beta_j) h(t|{{\symbf{x}}}_i)
+$$ {#eq-survival-19}
 
 
 Therefore, a one unit change in $x_j$ multiplies the hazard by $\exp(\beta_j)$ (a proportionate change of $\exp(\beta_j)-1$).
@@ -261,8 +261,8 @@ survival up to that point.  This proportional-odds specification for
 the discrete hazard,
 
 $$
-\frac{h(t_j | {\bf x}_i)}{1- h(t_j | {\bf x}_i)} = \frac{h_0(t_j)}{1- h_0(t_j)} \exp({\bf x}'_i \beta),
-$$
+\frac{h(t_j | {{\symbf{x}}}_i)}{1- h(t_j | {{\symbf{x}}}_i)} = \frac{h_0(t_j)}{1- h_0(t_j)} \exp({{\symbf{x}}}'_i \beta),
+$$ {#eq-survival-20}
 is a discrete-time *proportional-odds* hazard model rather than a
 direct discretization of Cox's continuous-time proportional hazards
 model.  (The complementary log-log link is the discrete-time form that
@@ -270,8 +270,8 @@ corresponds more directly to a grouped continuous-time proportional
 hazards model.)  If we take logs on both sides, we have
 
 $$
-{\rm logit} (h(t_j | {\bf x}_i)) = \alpha_j +  {\bf x}'_i \beta,
-$$
+{{\mathrm{logit}}} (h(t_j | {{\symbf{x}}}_i)) = \alpha_j +  {{\symbf{x}}}'_i \beta,
+$$ {#eq-survival-21}
 This looks very similar to a logit model.  In fact, we can fit a
 discrete-time proportional hazard model by running a logistic
 regression on a set of pseudo observations generated by "filling in"

@@ -35,14 +35,14 @@ cross-sectional units.
 
 The basic unobserved effects model can be written as:
 $$
-y_{it}={\bf {x_{it} \beta}} + c_i + u_{it}
-$$
+y_{it}={{\symbf{{x_{it} \beta}}}} + c_i + u_{it}
+$$ {#eq-panel-data-1}
 
 where $i$ indexes "units" (can be people, firms, or households,
 etc.), and $t$ indexes time periods.
 
 Three kinds of regressor appear in this chapter, and it pays to name
-them once.  ${\bf x}_{it}$ varies across units *and* time --- price,
+them once.  ${{\symbf{x}}}_{it}$ varies across units *and* time --- price,
 income, and in most applications the treatment itself.  $z_i$ varies
 across units only, so within a unit it is fixed over time; religion and
 completed education above are the examples.  $w_t$ varies across time
@@ -52,7 +52,7 @@ almost everything that follows, including which coefficients fixed
 effects can estimate and how OLS weights the data.
 
 Instruments do not appear until the panel turns dynamic.  When they do,
-they are written ${\bf Z}$, which is a different object from the
+they are written ${{\symbf{Z}}}$, which is a different object from the
 time-invariant $z_i$ here --- see the
 [Endogeneity](endogeneity.qmd), [GMM](gmm.qmd) and
 [Dynamic Panel Data](dynamic-panel.qmd) chapters.
@@ -61,12 +61,12 @@ Comparing to regular cross-sectional models, there is an extra term
 $c_i$.  $c_i$ can be treated as a random effect or fixed effect.
 Traditionally it is distinguished by whether it is estimated as a
 random variable or a parameter.  Modern econometrics tends to
-distinguish by the correlation between $c_i$ and ${\bf {x_{it}}}$.
-If there is no correlation between $c_i$ and ${\bf {x_{it}}}$,
+distinguish by the correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$.
+If there is no correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$,
 then it's a random effect; otherwise, it's a fixed effect.
 
 It is true that in some cases it is hard to justify that there is
-no correlation between $c_i$ and ${\bf {x_{it}}}$, which is one reason
+no correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$, which is one reason
 that people in economics tend to use fixed-effect models.  However,
 fixed-effect models have its own limitations.  One of them is: It is
 hard to justify that ALL the cross-sectional units' characteristics
@@ -86,29 +86,28 @@ error term becomes:
 
 
 $$
-\bf \Omega=
-\begin{bmatrix} \sigma_{c}^2 + \sigma_u^2 & \sigma_{c}^2 & \cdots & \sigma_{c}^2
+{\symbf{\Omega=
+}}\begin{bmatrix} \sigma_{c}^2 + \sigma_u^2 & \sigma_{c}^2 & \cdots & \sigma_{c}^2
   \\ \sigma_{c}^2 & \sigma_{c}^2 + \sigma_u^2 & \cdots & \sigma_{c}^2 \\ \vdots &
   \vdots & \ddots & \vdots \\ \sigma_{c}^2  & \sigma_{c}^2  & \cdots & \sigma_{c}^2 + \sigma_u^2
 \end{bmatrix}
-$$
+$$ {#eq-panel-data-2}
 
 
 The random effect estimator is:
 
-$$ \bf \hat \beta_{RE} = (\sum_{i=1}^N X_i' \hat \Omega^{-1} X_i)^{-1} (\sum_{i=1}^N X_i' \hat \Omega^{-1} y_i)$$
+$$ {\symbf{\hat \beta_{RE} = (\sum_{i=1}^N X_i' \hat \Omega^{-1} X_i)^{-1} (\sum_{i=1}^N X_i' \hat \Omega^{-1} y_i)}}$$ {#eq-panel-data-3}
 
-It is a special case of GLS.  Before calculating $\hat \beta_{RE}$, $
-\sigma_{c}^2$ and $ \sigma_{u}^2$ need to be estimated.  This is
+It is a special case of GLS.  Before calculating $\hat \beta_{RE}$, $\sigma_{c}^2$ and $\sigma_{u}^2$ need to be estimated.  This is
 generally done by using residuals from within and between regressions
 (the Swamy-Arora method, the default in most software), or from pooled
 OLS.
 
 ## Fixed Effect Methods
 
-Random effect methods assume that $c_i$ be orthogonal to $\bf x_{it}$.
+Random effect methods assume that $c_i$ be orthogonal to ${\symbf{x_{it}}}$.
 In many applications, the whole point of using panel data is to allow
-$c_i$ be correlated with $\bf x_{it}$.  We need fixed-effect models in
+$c_i$ be correlated with ${\symbf{x_{it}}}$.  We need fixed-effect models in
 those cases.
 
 For the same model as in the equation above, the fixed-effect
@@ -118,10 +117,10 @@ each observation by subtracting the group mean.  Basically subtracting
 the group-mean equation below from the unit-level equation above:
 
 $$
-\bar y_i={\bf \bar x_i \beta} + c_i + \bar u_i
-$$
+\bar y_i={{\symbf{\bar x_i \beta}}} + c_i + \bar u_i
+$$ {#eq-panel-data-4}
 
-where $\bar y_i $, etc., means group means.  For example, if we have 50 states
+where $\bar y_i$, etc., means group means.  For example, if we have 50 states
 with state level data of cigarette consumption across years, then
 groups means states, and we have 50 group means which are state level
 average cigarette consumption across years.
@@ -131,26 +130,26 @@ The "demeaned" regression equation is the final regression used in
 estimation:
 
 $$
-(y_{it}-\bar y_i) = ({\bf x}_{it}-{\bf \bar x}_i)\beta + (u_{it}-\bar u_i).
-$$
+(y_{it}-\bar y_i) = ({{\symbf{x}}}_{it}-{{\symbf{\bar x}}}_i)\beta + (u_{it}-\bar u_i).
+$$ {#eq-panel-data-5}
 
 The unit-specific effect $c_i$ cancels because it is constant over $t$
 ($c_i - \bar c_i = 0$). Writing the within-transformed variables as
-$\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{\bf x}_{it}={\bf x}_{it}-{\bf \bar x}_i$,
+$\ddot y_{it}=y_{it}-\bar y_i$ and $\ddot{{\symbf{x}}}_{it}={{\symbf{x}}}_{it}-{{\symbf{\bar x}}}_i$,
 OLS on the demeaned data gives the **fixed-effects (within) estimator**
-(here ${\bf x}_{it}$ is a $1\times k$ *row* vector, so
-$\ddot{\bf x}_{it}'\ddot{\bf x}_{it}$ is the $k\times k$ outer product)
+(here ${{\symbf{x}}}_{it}$ is a $1\times k$ *row* vector, so
+$\ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it}$ is the $k\times k$ outer product)
 
 $$
-\hat\beta_{FE} = \left(\sum_i \sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it}\right)^{-1}
-\sum_i \sum_t \ddot{\bf x}_{it}'\ddot y_{it}.
-$$
+\hat\beta_{FE} = \left(\sum_i \sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it}\right)^{-1}
+\sum_i \sum_t \ddot{{\symbf{x}}}_{it}'\ddot y_{it}.
+$$ {#eq-panel-data-6}
 
 This is consistent for $\beta$ even when $c_i$ is correlated with
-${\bf x}_{it}$, which is the key advantage of FE over random effects.
+${{\symbf{x}}}_{it}$, which is the key advantage of FE over random effects.
 The price is that any time-invariant regressor (the $z_i$ above) is also
 swept out by the demeaning and cannot be estimated. The usual variance
-estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{\bf x}_{it}'\ddot{\bf x}_{it})^{-1}$
+estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}$
 with $\hat\sigma_u^2$ using degrees of freedom $NT-N-k$; in practice one
 clusters by unit to allow serial correlation within $i$.
 
@@ -158,12 +157,12 @@ clusters by unit to allow serial correlation within $i$.
 
 Random effects is more efficient (it uses both within and between
 variation) but is consistent only if $c_i$ is uncorrelated with
-${\bf x}_{it}$; fixed effects is consistent either way. The Hausman test
+${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The Hausman test
 compares the two estimators:
 
 $$
 H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})]^{-1}\,(\hat\beta_{FE}-\hat\beta_{RE}) \;\sim\; \chi^2_k
-$$
+$$ {#eq-panel-data-7}
 
 under the null that random effects is consistent. A large $H$ (small
 $p$-value) favors fixed effects. In R this is `phtest(fe, re)` from the
@@ -181,14 +180,14 @@ carry more information.  It usually does not.  The answer turns entirely
 on where the regressors live.
 
 Take the case where every regressor is time-invariant, so the model is
-$y_{it}={\bf z}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled
+$y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled
 OLS on the $NT$ rows and OLS on the $N$ unit means give the same
 $\hat\gamma$.  Not close --- identical.  Random effects returns the same
 number as well.  Wooldridge (2010) states the reason plainly: because
 $c_i$ is there, new observations within a unit carry no information
 about $\gamma$ beyond how they move the unit average $\bar y_i$.  In
 effect we only have $N$ useful pieces of information.  Averaging
-discards nothing, because ${\bf z}_i$ was already constant over $t$ and
+discards nothing, because ${{\symbf{z}}}_i$ was already constant over $t$ and
 the within variation was never available to $\gamma$ in the first place.
 
 What does differ is the degrees of freedom.  The unit-mean regression
@@ -198,9 +197,9 @@ $t_{N-k}$ is the reference distribution that keeps the size right.
 Clustering by unit repairs the standard error when $N$ is large, but it
 does not repair the degrees of freedom when $N$ is small.
 
-Now put a time-varying ${\bf x}_{it}$ into the model.  The two options
-stop agreeing, and not only for the coefficient on ${\bf x}_{it}$ ---
-every coefficient moves, the one on ${\bf z}_i$ included.  Averaging to
+Now put a time-varying ${{\symbf{x}}}_{it}$ into the model.  The two options
+stop agreeing, and not only for the coefficient on ${{\symbf{x}}}_{it}$ ---
+every coefficient moves, the one on ${{\symbf{z}}}_i$ included.  Averaging to
 unit means throws away all within variation, so what survives is the
 between estimator.  Pooled OLS keeps both sources and forces a single
 coefficient on them, so it returns a variance-weighted average of the
@@ -212,14 +211,14 @@ FE-versus-RE question in different clothes.
 | Situation | Collapsed vs long |
 |---|---|
 | All regressors time-invariant, balanced panel | Same coefficients; only the degrees of freedom differ |
-| Any time-varying regressor | All coefficients differ, including those on ${\bf z}_i$ |
+| Any time-varying regressor | All coefficients differ, including those on ${{\symbf{z}}}_i$ |
 | Unbalanced panel | Differ regardless, since pooled OLS weights each unit by $T_i$ |
 
 The reconciliation is Mundlak's device, the same one used above for the
-regression-based Hausman test.  Add the unit means ${\bf \bar x}_i$ to
-the long regression alongside ${\bf x}_{it}$, and the within and between
-variation carry separate coefficients: ${\bf x}_{it}$ picks up the
-within estimate, ${\bf \bar x}_i$ picks up the *difference* between the
+regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to
+the long regression alongside ${{\symbf{x}}}_{it}$, and the within and between
+variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the
+within estimate, ${{\symbf{\bar x}}}_i$ picks up the *difference* between the
 between and within estimates, so the two coefficients sum to what the
 collapsed regression reports.  That second coefficient is the Hausman
 contrast, and its $t$-statistic is the Hausman test.  We keep the within

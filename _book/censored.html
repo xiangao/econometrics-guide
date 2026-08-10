@@ -334,9 +334,9 @@ window.Quarto = {
 </section>
 <section id="an-illustration-for-truncated-or-censored-data" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="an-illustration-for-truncated-or-censored-data"><span class="header-section-number">6.2</span> An illustration for truncated or censored data</h2>
-<p>Consider the model <span class="math display">\[
+<p>Consider the model <span id="eq-censored-1"><span class="math display">\[
 y_t^0=\beta_1 +\beta_2 x_t +u_t, \ u_t \sim NID(0, \sigma^2),
-\]</span> where <span class="math inline">\(y_t^0\)</span> is a latent variable. We actually observe <span class="math inline">\(y_t\)</span>, which differs from <span class="math inline">\(y_t^0\)</span> , because it’s either truncated or censored.</p>
+\tag{6.1}\]</span></span> where <span class="math inline">\(y_t^0\)</span> is a latent variable. We actually observe <span class="math inline">\(y_t\)</span>, which differs from <span class="math inline">\(y_t^0\)</span> , because it’s either truncated or censored.</p>
 <p>Suppose that censorship or truncation occurs whenever <span class="math inline">\(y_t^0\)</span> is less than 0. Clearly, the larger the error term <span class="math inline">\(u_t\)</span>, the larger is <span class="math inline">\(y_t^0\)</span> and thus the greater must be the probability that <span class="math inline">\(y_t^0 \geq
 0\)</span>. This probability also depends on <span class="math inline">\(x_t\)</span>. So for the sample we observe, <span class="math inline">\(u_t\)</span> does not have conditional mean 0 and is not uncorrelated with <span class="math inline">\(x_t\)</span>. OLS using truncated or censored samples (OLS of <span class="math inline">\(y_t\)</span> on <span class="math inline">\(x_t\)</span>) yields biased and inconsistent estimators. Normally we would like to draw inference on the population which is represented by the full sample. Shown in the figure below, ideally we would have the OLS regression line (if we had the full sample), which is very close to the “true” regression line (which is the mechanism generates the data). We would have the “OLS censored sample” line if we run OLS on the censored sample; we would have “OLS truncated sample” if we run OLS on the truncated sample. It shows that both of them are severely biased from the “true” regression line.</p>
 <p>Here is a graph to illustrate from Davidson and MacKinnon.</p>
@@ -349,137 +349,137 @@ y_t^0=\beta_1 +\beta_2 x_t +u_t, \ u_t \sim NID(0, \sigma^2),
 </section>
 <section id="truncated-models" class="level2" data-number="6.3">
 <h2 data-number="6.3" class="anchored" data-anchor-id="truncated-models"><span class="header-section-number">6.3</span> Truncated Models</h2>
-<p>For truncated data, a consistent estimator comes from maximum likelihood estimator (MLE). If we assume the error terms in the latent variable model has a known distribution, then MLE estimator can be applied. The most popular choice is Gaussian. <span class="math display">\[
+<p>For truncated data, a consistent estimator comes from maximum likelihood estimator (MLE). If we assume the error terms in the latent variable model has a known distribution, then MLE estimator can be applied. The most popular choice is Gaussian. <span id="eq-censored-2"><span class="math display">\[
 \begin{aligned}
-\mbox{Pr}(y_t^0 \geq 0) &amp; = \mbox{Pr} ({\bf X}_t \beta +u_t \geq 0) \\
-&amp; = 1- \mbox{Pr} (u_t/\sigma &lt; - {{\bf X}_t \beta} / \sigma) \\
-&amp; = 1- \Phi (-{{\bf X}_t \beta} / \sigma)=\Phi ({{\bf X}_t \beta} / \sigma)
+\mbox{Pr}(y_t^0 \geq 0) &amp; = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \geq 0) \\
+&amp; = 1- \mbox{Pr} (u_t/\sigma &lt; - {{{\symbf{X}}}_t \beta} / \sigma) \\
+&amp; = 1- \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)=\Phi ({{{\symbf{X}}}_t \beta} / \sigma)
 \end{aligned}
-\]</span></p>
-<p>The density of <span class="math inline">\(y_t\)</span> is proportional to the density of <span class="math inline">\(y_t^0\)</span> when <span class="math inline">\(y_t^0 \geq 0\)</span> and <span class="math inline">\(y_t\)</span> is observed. It is 0 elsewhere. The factor of proportionality, which is needed to ensure that the density integrates to unity, is the inverse of the probability that <span class="math inline">\(y_t^0 \geq 0\)</span>. The density of <span class="math inline">\(y_t\)</span> can be written as <span class="math display">\[
-\frac{\sigma^{-1} \phi ((y_t - {\bf X}_t \beta)/\sigma)}{\Phi
-({\bf X}_t \beta / \sigma)}
-\]</span></p>
-<p>This implies the log-likelihood function, <span class="math display">\[
-\ell ({\bf y, \beta}, \sigma)=- \frac{n}{2} \log(2 \pi) -n
-\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{\bf X}_t
-\beta)^2 - \sum_{t=1}^n \log \Phi ({\bf X}_t \beta / \sigma).
-\]</span></p>
+\tag{6.2}\]</span></span></p>
+<p>The density of <span class="math inline">\(y_t\)</span> is proportional to the density of <span class="math inline">\(y_t^0\)</span> when <span class="math inline">\(y_t^0 \geq 0\)</span> and <span class="math inline">\(y_t\)</span> is observed. It is 0 elsewhere. The factor of proportionality, which is needed to ensure that the density integrates to unity, is the inverse of the probability that <span class="math inline">\(y_t^0 \geq 0\)</span>. The density of <span class="math inline">\(y_t\)</span> can be written as <span id="eq-censored-3"><span class="math display">\[
+\frac{\sigma^{-1} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)}{\Phi
+({{\symbf{X}}}_t \beta / \sigma)}
+\tag{6.3}\]</span></span></p>
+<p>This implies the log-likelihood function, <span id="eq-censored-4"><span class="math display">\[
+\ell ({{\symbf{y, \beta}}}, \sigma)=- \frac{n}{2} \log(2 \pi) -n
+\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{{\symbf{X}}}_t
+\beta)^2 - \sum_{t=1}^n \log \Phi ({{\symbf{X}}}_t \beta / \sigma).
+\tag{6.4}\]</span></span></p>
 <p>This can be estimated by MLE. In Stata, truncreg is the command to do truncated regression model.</p>
 </section>
 <section id="censored-models" class="level2" data-number="6.4">
 <h2 data-number="6.4" class="anchored" data-anchor-id="censored-models"><span class="header-section-number">6.4</span> Censored Models</h2>
-<p>The most popular censored model is Tobit model. <span class="math display">\[
+<p>The most popular censored model is Tobit model. <span id="eq-censored-5"><span class="math display">\[
 \begin{aligned}
-y_t^0 &amp; = {\bf X}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) \\
+y_t^0 &amp; = {{\symbf{X}}}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) \\
 y_t &amp; = y_t^0 \ \mbox{if} \ y_t^0 &gt; 0; \ y_t=0 \ \mbox{otherwise}.
 \end{aligned}
-\]</span></p>
-<p>We see that <span class="math display">\[
+\tag{6.5}\]</span></span></p>
+<p>We see that <span id="eq-censored-6"><span class="math display">\[
 \begin{aligned}
-\mbox{Pr}(y_t= 0) &amp; = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({\bf X}_t \beta +u_t \leq 0) \\
-&amp; = \mbox{Pr} (u_t/\sigma &lt; - {{\bf X}_t \beta} / \sigma) \\
-&amp; = \Phi (-{{\bf X}_t \beta} / \sigma)
+\mbox{Pr}(y_t= 0) &amp; = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \leq 0) \\
+&amp; = \mbox{Pr} (u_t/\sigma &lt; - {{{\symbf{X}}}_t \beta} / \sigma) \\
+&amp; = \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)
 \end{aligned}
-\]</span></p>
-<p>The contribution to the log-likelihood function made by observations with <span class="math inline">\(y_t=0\)</span> is <span class="math display">\[
-\ell_t(y_t, \beta, \sigma) = \log \Phi (-{\bf X}_t \beta/\sigma).
-\]</span></p>
-<p>If <span class="math inline">\(y_t\)</span> is positive, the contribution to the log-likelihood is the logarithm of the density, <span class="math display">\[
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta) / \sigma )).
-\]</span></p>
-<p>The log-likelihood function of the tobit model is <span class="math display">\[
-\sum_{y_t=0} \log \Phi (-{\bf X}_t \beta/\sigma) + \sum_{y_t&gt;0}
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma ))
-\]</span></p>
+\tag{6.6}\]</span></span></p>
+<p>The contribution to the log-likelihood function made by observations with <span class="math inline">\(y_t=0\)</span> is <span id="eq-censored-7"><span class="math display">\[
+\ell_t(y_t, \beta, \sigma) = \log \Phi (-{{\symbf{X}}}_t \beta/\sigma).
+\tag{6.7}\]</span></span></p>
+<p>If <span class="math inline">\(y_t\)</span> is positive, the contribution to the log-likelihood is the logarithm of the density, <span id="eq-censored-8"><span class="math display">\[
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta) / \sigma )).
+\tag{6.8}\]</span></span></p>
+<p>The log-likelihood function of the tobit model is <span id="eq-censored-9"><span class="math display">\[
+\sum_{y_t=0} \log \Phi (-{{\symbf{X}}}_t \beta/\sigma) + \sum_{y_t&gt;0}
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma ))
+\tag{6.9}\]</span></span></p>
 <p>This can be estimated by MLE. In Stata, tobit or intreg can be used for censoring models.</p>
 </section>
 <section id="sample-selection" class="level2" data-number="6.5">
 <h2 data-number="6.5" class="anchored" data-anchor-id="sample-selection"><span class="header-section-number">6.5</span> Sample Selection</h2>
 <p>The sample selection models differ from censored model in that it involves a different variable (from <span class="math inline">\(y\)</span> itself) to determine the censorship (selection).</p>
 <p>Suppose that <span class="math inline">\(y_t^0\)</span> and <span class="math inline">\(z_t^0\)</span> are two latent variables, generated by the bivariate process</p>
-<p><span class="math display">\[
+<p><span id="eq-censored-10"><span class="math display">\[
 \begin{bmatrix}
 y_t^0 \\ z_t^0
 \end{bmatrix}
-=\begin{bmatrix} {\bf X}_t \beta \\ {\bf W}_t \gamma
+=\begin{bmatrix} {{\symbf{X}}}_t \beta \\ {{\symbf{W}}}_t \gamma
 \end{bmatrix}+
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
-\end{bmatrix} \sim NID({\bf 0},
+\end{bmatrix} \sim NID({{\symbf{0}}},
 \begin{bmatrix} \sigma^2 &amp; \rho\sigma  \\ \rho\sigma  &amp; 1
 \end{bmatrix})
-\]</span></p>
+\tag{6.10}\]</span></span></p>
 <p>Here <span class="math inline">\(\rho\)</span> is the correlation between <span class="math inline">\(u_t\)</span> and <span class="math inline">\(v_t\)</span>; since <span class="math inline">\(\mbox{Var}(u_t)=\sigma^2\)</span> and <span class="math inline">\(\mbox{Var}(v_t)=1\)</span>, their covariance is <span class="math inline">\(\rho\sigma\)</span>.</p>
-<p>We observe <span class="math inline">\(y_t\)</span> and <span class="math inline">\(z_t\)</span>: <span class="math display">\[
+<p>We observe <span class="math inline">\(y_t\)</span> and <span class="math inline">\(z_t\)</span>: <span id="eq-censored-11"><span class="math display">\[
 y_t  =  y_t^0 \ \mbox{if} \ z_t^0 &gt; 0;  \ y_t \ \mbox{unobservable otherwise}; \\
 z_t  =  1  \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.
-\]</span></p>
-<p>There are two types of observations, ones we observe <span class="math inline">\(y_t=y_t^0\)</span> and <span class="math inline">\(z_t=1\)</span>, along with both <span class="math inline">\(\bf X_t\)</span> and <span class="math inline">\(\bf W_t\)</span>, and ones we observe only <span class="math inline">\(z_t=0\)</span> and <span class="math inline">\(\bf W_t\)</span>.</p>
-<p>Each observation contributes to the likelihood function by <span class="math display">\[
+\tag{6.11}\]</span></span></p>
+<p>There are two types of observations, ones we observe <span class="math inline">\(y_t=y_t^0\)</span> and <span class="math inline">\(z_t=1\)</span>, along with both <span class="math inline">\({\symbf{X_t}}\)</span> and <span class="math inline">\({\symbf{W_t}}\)</span>, and ones we observe only <span class="math inline">\(z_t=0\)</span> and <span class="math inline">\({\symbf{W_t}}\)</span>.</p>
+<p>Each observation contributes to the likelihood function by <span id="eq-censored-12"><span class="math display">\[
 I(z_t=0)\mbox{Pr}(z_t=0)+I(z_t=1)\mbox{Pr}(z_t=1)f(y_t^0 | z_t=1),
-\]</span></p>
-<p>Under the normality assumption, <span class="math display">\[
+\tag{6.12}\]</span></span></p>
+<p>Under the normality assumption, <span id="eq-censored-13"><span class="math display">\[
 u_t=\rho\sigma v_t+e_t
-\]</span> where <span class="math inline">\(e_t\)</span> is independent of <span class="math inline">\(v_t \sim N(0,1)\)</span>, with <span class="math inline">\(\mbox{Var}(e_t)=\sigma^2(1-\rho^2)\)</span>. A useful fact about the standard normal distribution is that <span class="math display">\[
-{\rm E} (v_t | v_t&gt;-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}
-\]</span> and the function <span class="math inline">\(\lambda(x)\)</span> is called the inverse Mills ratio.</p>
-<p>The log-likelihood function can be shown to be <span class="math display">\[
-\sum_{z_t=0} \log \Phi(-{\bf W}_t \gamma)+\sum_{z_t=1}
-\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma)) +
-\sum_{z_t=1} \log \Phi (\frac{{\bf W}_t \gamma+\rho (y_t-{\bf X}_t
+\tag{6.13}\]</span></span> where <span class="math inline">\(e_t\)</span> is independent of <span class="math inline">\(v_t \sim N(0,1)\)</span>, with <span class="math inline">\(\mbox{Var}(e_t)=\sigma^2(1-\rho^2)\)</span>. A useful fact about the standard normal distribution is that <span id="eq-censored-14"><span class="math display">\[
+{{\mathrm{E}}} (v_t | v_t&gt;-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}
+\tag{6.14}\]</span></span> and the function <span class="math inline">\(\lambda(x)\)</span> is called the inverse Mills ratio.</p>
+<p>The log-likelihood function can be shown to be <span id="eq-censored-15"><span class="math display">\[
+\sum_{z_t=0} \log \Phi(-{{\symbf{W}}}_t \gamma)+\sum_{z_t=1}
+\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)) +
+\sum_{z_t=1} \log \Phi (\frac{{{\symbf{W}}}_t \gamma+\rho (y_t-{{\symbf{X}}}_t
 \beta)/\sigma}{(1-\rho^2)^{1/2}})
-\]</span></p>
+\tag{6.15}\]</span></span></p>
 <p>So this model can be estimated by MLE.</p>
 <p>It is also popular to use Heckman’s two-step method.</p>
-<p>Heckman’s method is based on the fact that the original latent model can be rewritten as <span class="math display">\[
-y_t={\bf X}_t \beta + \rho\sigma v_t +e_t
-\]</span></p>
+<p>Heckman’s method is based on the fact that the original latent model can be rewritten as <span id="eq-censored-16"><span class="math display">\[
+y_t={{\symbf{X}}}_t \beta + \rho\sigma v_t +e_t
+\tag{6.16}\]</span></span></p>
 <p>Here the error term <span class="math inline">\(u_t\)</span> is divided into two parts, one perfectly correlated with <span class="math inline">\(v_t\)</span>, and one independent of <span class="math inline">\(v_t\)</span>.</p>
 <p>In the first step, an ordinary probit model is used to obtain consistent estimates <span class="math inline">\(\hat \gamma\)</span> of the parameters of the selection equation.</p>
-<p>In the second step, the unobserved <span class="math inline">\(v_t\)</span> is replaced by the selectivity regressor <span class="math inline">\(\frac{\phi({\bf W}_t \hat
-\gamma)}{\Phi({\bf W}_t \hat \gamma)}\)</span>.</p>
-<p>Therefore, the regression becomes <span class="math display">\[
-y_t={\bf X}_t \beta + \rho\sigma \frac{\phi({\bf W}_t \hat
-\gamma)}{\Phi({\bf W}_t \hat \gamma)} + e_t
-\]</span></p>
-<p>Or, <span class="math display">\[
-y_t={\bf X}_t \beta + \rho\sigma \hat \lambda_t + e_t
-\]</span></p>
+<p>In the second step, the unobserved <span class="math inline">\(v_t\)</span> is replaced by the selectivity regressor <span class="math inline">\(\frac{\phi({{\symbf{W}}}_t \hat
+\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)}\)</span>.</p>
+<p>Therefore, the regression becomes <span id="eq-censored-17"><span class="math display">\[
+y_t={{\symbf{X}}}_t \beta + \rho\sigma \frac{\phi({{\symbf{W}}}_t \hat
+\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)} + e_t
+\tag{6.17}\]</span></span></p>
+<p>Or, <span id="eq-censored-18"><span class="math display">\[
+y_t={{\symbf{X}}}_t \beta + \rho\sigma \hat \lambda_t + e_t
+\tag{6.18}\]</span></span></p>
 <p>(Strictly, conditional on selection the error also contains <span class="math inline">\(\rho\sigma(v_t-\lambda_t)\)</span>, which is why the second-step OLS standard errors require correction; the coefficient <span class="math inline">\(\rho\sigma\)</span> on <span class="math inline">\(\hat
 \lambda_t\)</span> is unaffected.)</p>
-<p>One thing to note in Heckman model is that in many situations, <span class="math inline">\(\hat \lambda\)</span> is believed to be highly collinear with <span class="math inline">\(\bf X_t\)</span>, if <span class="math inline">\(\bf W_t\)</span> is the same as <span class="math inline">\(\bf X_t\)</span>. However, the model can still be estimated due to the nonlinearity of the model. Nevertheless, it becomes a regular practice to require <span class="math inline">\(\bf W_t\)</span> contains at least one extra variable than <span class="math inline">\(\bf X_t\)</span>, which is sometimes called exclusion restriction. In many situations, <span class="math inline">\(\bf W_t\)</span> contains all <span class="math inline">\(\bf X_t\)</span> variables, and at least one more variable. The reason to contain all <span class="math inline">\(\bf X_t\)</span> variables is because the selection is “endogenous” in the sense that <span class="math inline">\(y_t\)</span> is a factor in determining selection; this is modeled by including all the <span class="math inline">\(\bf X_t\)</span>’s.</p>
+<p>One thing to note in Heckman model is that in many situations, <span class="math inline">\(\hat \lambda\)</span> is believed to be highly collinear with <span class="math inline">\({\symbf{X_t}}\)</span>, if <span class="math inline">\({\symbf{W_t}}\)</span> is the same as <span class="math inline">\({\symbf{X_t}}\)</span>. However, the model can still be estimated due to the nonlinearity of the model. Nevertheless, it becomes a regular practice to require <span class="math inline">\({\symbf{W_t}}\)</span> contains at least one extra variable than <span class="math inline">\({\symbf{X_t}}\)</span>, which is sometimes called exclusion restriction. In many situations, <span class="math inline">\({\symbf{W_t}}\)</span> contains all <span class="math inline">\({\symbf{X_t}}\)</span> variables, and at least one more variable. The reason to contain all <span class="math inline">\({\symbf{X_t}}\)</span> variables is because the selection is “endogenous” in the sense that <span class="math inline">\(y_t\)</span> is a factor in determining selection; this is modeled by including all the <span class="math inline">\({\symbf{X_t}}\)</span>’s.</p>
 <p>In Stata, heckman is the command to do sample selection models. It has options to do a Heckman two-step estimation or MLE estimation. Usually MLE is preferred.</p>
 </section>
 <section id="switching-regression-treatment-effects-model" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="switching-regression-treatment-effects-model"><span class="header-section-number">6.6</span> Switching Regression (Treatment-Effects Model)</h2>
 <p>There is another situation that is similar to sample selection model: we observe <span class="math inline">\(y\)</span> for <span class="math inline">\(z=1\)</span> and <span class="math inline">\(z=0\)</span>. In the example of effect of education on income, we observe both union member’s income and non-member’s income. In this case, we have switching regression model or treatment-effect model. The treatment effect model estimates the effect of an endogenous binary treatment <span class="math inline">\(z_t\)</span> (treatment, program participation, etc.) on a continuous, fully-observed variable, <span class="math inline">\(y_t\)</span>, conditional on the independent variables <span class="math inline">\(x_t\)</span> and <span class="math inline">\(w_t\)</span>.</p>
 <p>Suppose <span class="math inline">\(z_t^0\)</span> is a latent variable.</p>
-<p><span class="math display">\[
+<p><span id="eq-censored-19"><span class="math display">\[
 \begin{bmatrix}
 y_t \\ z_t^0
 \end{bmatrix}
-=\begin{bmatrix} {\bf X}_t \beta \\ {\bf W}_t \gamma
+=\begin{bmatrix} {{\symbf{X}}}_t \beta \\ {{\symbf{W}}}_t \gamma
 \end{bmatrix}+ \delta \begin{bmatrix} {z_t} \\ 0
 \end{bmatrix} +
 \begin{bmatrix} u_t \\ v_t
 \end{bmatrix}, \
 \begin{bmatrix} u_t \\ v_t
-\end{bmatrix} \sim NID({\bf 0},
+\end{bmatrix} \sim NID({{\symbf{0}}},
 \begin{bmatrix} \sigma^2 &amp; \rho\sigma  \\ \rho\sigma  &amp; 1
 \end{bmatrix})
-\]</span></p>
-<p>We observe <span class="math inline">\(y_t\)</span> and <span class="math inline">\(z_t\)</span>: <span class="math display">\[
+\tag{6.19}\]</span></span></p>
+<p>We observe <span class="math inline">\(y_t\)</span> and <span class="math inline">\(z_t\)</span>: <span id="eq-censored-20"><span class="math display">\[
 z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.
-\]</span></p>
+\tag{6.20}\]</span></span></p>
 <p>Notice that the only difference between this model and the selection model is that we observe <span class="math inline">\(y_t\)</span> when <span class="math inline">\(z_t=0\)</span> and <span class="math inline">\(z_t=1\)</span>. It’s not a selection, but a regime switching.</p>
 <p>One caveat about the name. The specification above lets treatment shift only the <em>intercept</em>: there is a single <span class="math inline">\(\beta\)</span> and a single <span class="math inline">\(\delta\)</span>, so the treatment effect is <span class="math inline">\(\delta\)</span> for everyone. That is the treatment-effects model. A <strong>switching regression</strong> in the fuller sense lets the whole coefficient vector differ by regime,</p>
-<p><span class="math display">\[
-y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
-\qquad z_t^0 = {\bf W}_t \gamma + v_t,
-\]</span></p>
-<p>with <span class="math inline">\(u_{1t}\)</span> and <span class="math inline">\(u_{0t}\)</span> each allowed to correlate with <span class="math inline">\(v_t\)</span> (two selection parameters, <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_0\)</span>, rather than one). This is the Roy model, and the treatment effect <span class="math inline">\({\bf X}_t(\beta_1-\beta_0)\)</span> then varies with <span class="math inline">\(\bf X_t\)</span> instead of being a constant. The distinction matters in practice: if the returns to education genuinely differ between union and non-union jobs, the common-slope model above will report a single <span class="math inline">\(\delta\)</span> that is some average of them and will not reveal the heterogeneity. Fitting it requires two outcome equations rather than one intercept shift.</p>
+<p><span id="eq-censored-21"><span class="math display">\[
+y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 + u_{0t}),
+\qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,
+\tag{6.21}\]</span></span></p>
+<p>with <span class="math inline">\(u_{1t}\)</span> and <span class="math inline">\(u_{0t}\)</span> each allowed to correlate with <span class="math inline">\(v_t\)</span> (two selection parameters, <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_0\)</span>, rather than one). This is the Roy model, and the treatment effect <span class="math inline">\({{\symbf{X}}}_t(\beta_1-\beta_0)\)</span> then varies with <span class="math inline">\({\symbf{X_t}}\)</span> instead of being a constant. The distinction matters in practice: if the returns to education genuinely differ between union and non-union jobs, the common-slope model above will report a single <span class="math inline">\(\delta\)</span> that is some average of them and will not reveal the heterogeneity. Fitting it requires two outcome equations rather than one intercept shift.</p>
 <p>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching regression. The default is by MLE.</p>
 
 
@@ -1003,7 +1003,7 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>Consider the model</span>
 <span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>y_t^0=\beta_1 +\beta_2 x_t +u_t, \ u_t \sim NID(0, \sigma^2),</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-1}</span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>where $y_t^0$ is a latent variable.  We actually observe $y_t$, which</span>
 <span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>differs from $y_t^0$ , because it's either truncated or censored.</span>
 <span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
@@ -1035,11 +1035,11 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>be applied.  The most popular choice is Gaussian.</span>
 <span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t^0 \geq 0) &amp; = \mbox{Pr} ({\bf X}_t \beta +u_t \geq 0) <span class="sc">\\</span></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>&amp; = 1- \mbox{Pr} (u_t/\sigma &lt; - {{\bf X}_t \beta} / \sigma) <span class="sc">\\</span></span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>&amp; = 1- \Phi (-{{\bf X}_t \beta} / \sigma)=\Phi ({{\bf X}_t \beta} / \sigma)</span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t^0 \geq 0) &amp; = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \geq 0) <span class="sc">\\</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>&amp; = 1- \mbox{Pr} (u_t/\sigma &lt; - {{{\symbf{X}}}_t \beta} / \sigma) <span class="sc">\\</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>&amp; = 1- \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)=\Phi ({{{\symbf{X}}}_t \beta} / \sigma)</span>
 <span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-2}</span>
 <span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>The density of $y_t$ is proportional to the density of $y_t^0$</span>
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>when $y_t^0 \geq 0$ and $y_t$ is observed.  It is 0 elsewhere. The</span>
@@ -1047,16 +1047,16 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>density integrates to unity, is the inverse of the probability</span>
 <span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>that $y_t^0 \geq 0$.  The density of $y_t$ can be written as</span>
 <span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>\frac{\sigma^{-1} \phi ((y_t - {\bf X}_t \beta)/\sigma)}{\Phi</span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>({\bf X}_t \beta / \sigma)}</span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>\frac{\sigma^{-1} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)}{\Phi</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>({{\symbf{X}}}_t \beta / \sigma)}</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-3}</span>
 <span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>This implies the log-likelihood function,</span>
 <span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>\ell ({\bf y, \beta}, \sigma)=- \frac{n}{2} \log(2 \pi) -n</span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{\bf X}_t</span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>\beta)^2 - \sum_{t=1}^n \log \Phi ({\bf X}_t \beta / \sigma).</span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>\ell ({{\symbf{y, \beta}}}, \sigma)=- \frac{n}{2} \log(2 \pi) -n</span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>\log(\sigma) - \frac{1}{2 \sigma^2} \sum_{t=1}^n(y_t-{{\symbf{X}}}_t</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>\beta)^2 - \sum_{t=1}^n \log \Phi ({{\symbf{X}}}_t \beta / \sigma).</span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-4}</span>
 <span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>This can be estimated by MLE.  In Stata, truncreg is the command to do</span>
 <span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>truncated regression model.</span>
@@ -1066,37 +1066,37 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>The most popular censored model is Tobit model.</span>
 <span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>y_t^0 &amp; = {\bf X}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) <span class="sc">\\</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>y_t^0 &amp; = {{\symbf{X}}}_t \beta +u_t, \quad u_t \sim NID(0, \sigma^2) <span class="sc">\\</span></span>
 <span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>y_t &amp; = y_t^0 \ \mbox{if} \ y_t^0 &gt; 0; \ y_t=0 \ \mbox{otherwise}.</span>
 <span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-5}</span>
 <span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>We see that</span>
 <span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t= 0) &amp; = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({\bf X}_t \beta +u_t \leq 0) <span class="sc">\\</span></span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>&amp; = \mbox{Pr} (u_t/\sigma &lt; - {{\bf X}_t \beta} / \sigma) <span class="sc">\\</span></span>
-<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>&amp; = \Phi (-{{\bf X}_t \beta} / \sigma)</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t= 0) &amp; = \mbox{Pr} (y_t^0 \leq 0) = \mbox{Pr} ({{\symbf{X}}}_t \beta +u_t \leq 0) <span class="sc">\\</span></span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>&amp; = \mbox{Pr} (u_t/\sigma &lt; - {{{\symbf{X}}}_t \beta} / \sigma) <span class="sc">\\</span></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>&amp; = \Phi (-{{{\symbf{X}}}_t \beta} / \sigma)</span>
 <span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-6}</span>
 <span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>The contribution to the log-likelihood function made by</span>
 <span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>observations with $y_t=0$ is</span>
 <span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>\ell_t(y_t, \beta, \sigma) = \log \Phi (-{\bf X}_t \beta/\sigma).</span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>\ell_t(y_t, \beta, \sigma) = \log \Phi (-{{\symbf{X}}}_t \beta/\sigma).</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-7}</span>
 <span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>If $y_t$ is positive, the contribution to the log-likelihood is the</span>
 <span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>logarithm of the density,</span>
 <span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta) / \sigma )).</span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta) / \sigma )).</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-8}</span>
 <span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>The log-likelihood function of the tobit model is</span>
 <span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>\sum_{y_t=0} \log \Phi (-{\bf X}_t \beta/\sigma) + \sum_{y_t&gt;0}</span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma ))</span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>\sum_{y_t=0} \log \Phi (-{{\symbf{X}}}_t \beta/\sigma) + \sum_{y_t&gt;0}</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma ))</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-9}</span>
 <span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>This can be estimated by MLE. In Stata, tobit or intreg can be used</span>
 <span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>for censoring models.</span>
@@ -1114,15 +1114,15 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
 <span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>y_t^0 <span class="sc">\\</span> z_t^0</span>
 <span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {\bf X}_t \beta <span class="sc">\\</span> {\bf W}_t \gamma</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {{\symbf{X}}}_t \beta <span class="sc">\\</span> {{\symbf{W}}}_t \gamma</span>
 <span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}+</span>
 <span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
 <span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}, \</span>
 <span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({\bf 0},</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({{\symbf{0}}},</span>
 <span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} \sigma^2 &amp; \rho\sigma  <span class="sc">\\</span> \rho\sigma  &amp; 1</span>
 <span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>\end{bmatrix})</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-10}</span>
 <span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>Here $\rho$ is the correlation between $u_t$ and $v_t$; since</span>
 <span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>$\mbox{Var}(u_t)=\sigma^2$ and $\mbox{Var}(v_t)=1$, their covariance</span>
@@ -1132,36 +1132,36 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a> y_t  =  y_t^0 \ \mbox{if} \ z_t^0 &gt; 0;  \ y_t \ \mbox{unobservable otherwise}; <span class="sc">\\</span></span>
 <span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a> z_t  =  1  \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-11}</span>
 <span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>There are two types of observations, ones we observe $y_t=y_t^0$</span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>and $z_t=1$, along with both $\bf X_t$ and $\bf W_t$, and ones we</span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>observe only $z_t=0$ and $\bf W_t$.</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>and $z_t=1$, along with both ${\symbf{X_t}}$ and ${\symbf{W_t}}$, and ones we</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>observe only $z_t=0$ and ${\symbf{W_t}}$.</span>
 <span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>Each observation contributes to the likelihood function by</span>
 <span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>I(z_t=0)\mbox{Pr}(z_t=0)+I(z_t=1)\mbox{Pr}(z_t=1)f(y_t^0 | z_t=1),</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-12}</span>
 <span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>Under the normality assumption,</span>
 <span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>u_t=\rho\sigma v_t+e_t</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-13}</span>
 <span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>where $e_t$ is independent of $v_t \sim N(0,1)$, with</span>
 <span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>$\mbox{Var}(e_t)=\sigma^2(1-\rho^2)$.  A useful fact</span>
 <span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>about the standard normal distribution is that</span>
 <span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>{\rm E} (v_t | v_t&gt;-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}</span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (v_t | v_t&gt;-x)=\lambda (x) =\frac{\phi(x)}{\Phi(x)}</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-14}</span>
 <span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>and the function $\lambda(x)$ is called the inverse Mills ratio.</span>
 <span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>The log-likelihood function can be shown to be</span>
 <span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>\sum_{z_t=0} \log \Phi(-{\bf W}_t \gamma)+\sum_{z_t=1}</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {\bf X}_t \beta)/\sigma)) +</span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>\sum_{z_t=1} \log \Phi (\frac{{\bf W}_t \gamma+\rho (y_t-{\bf X}_t</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>\sum_{z_t=0} \log \Phi(-{{\symbf{W}}}_t \gamma)+\sum_{z_t=1}</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>\log(\frac{1}{\sigma} \phi ((y_t - {{\symbf{X}}}_t \beta)/\sigma)) +</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>\sum_{z_t=1} \log \Phi (\frac{{{\symbf{W}}}_t \gamma+\rho (y_t-{{\symbf{X}}}_t</span>
 <span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>\beta)/\sigma}{(1-\rho^2)^{1/2}})</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-15}</span>
 <span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>So this model can be estimated by MLE.</span>
 <span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a></span>
@@ -1170,8 +1170,8 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>Heckman's method is based on the fact that the original latent</span>
 <span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a>model can be rewritten as</span>
 <span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>y_t={\bf X}_t \beta + \rho\sigma v_t +e_t</span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>y_t={{\symbf{X}}}_t \beta + \rho\sigma v_t +e_t</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-16}</span>
 <span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>Here the error term $u_t$ is divided into two parts, one</span>
 <span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a>perfectly correlated with $v_t$, and one independent of $v_t$.</span>
@@ -1181,26 +1181,26 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>selection equation.</span>
 <span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>In the second step, the unobserved $v_t$ is replaced by the</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>selectivity regressor $\frac{\phi({\bf W}_t \hat</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>\gamma)}{\Phi({\bf W}_t \hat \gamma)}$.</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>selectivity regressor $\frac{\phi({{\symbf{W}}}_t \hat</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)}$.</span>
 <span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>Therefore, the regression becomes</span>
 <span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>y_t={\bf X}_t \beta + \rho\sigma \frac{\phi({\bf W}_t \hat</span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>\gamma)}{\Phi({\bf W}_t \hat \gamma)} + e_t</span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>y_t={{\symbf{X}}}_t \beta + \rho\sigma \frac{\phi({{\symbf{W}}}_t \hat</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>\gamma)}{\Phi({{\symbf{W}}}_t \hat \gamma)} + e_t</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-17}</span>
 <span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>Or,</span>
 <span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>y_t={\bf X}_t \beta + \rho\sigma \hat \lambda_t + e_t</span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>y_t={{\symbf{X}}}_t \beta + \rho\sigma \hat \lambda_t + e_t</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-18}</span>
 <span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a>(Strictly, conditional on selection the error also contains</span>
 <span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>$\rho\sigma(v_t-\lambda_t)$, which is why the second-step OLS standard</span>
 <span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>errors require correction; the coefficient $\rho\sigma$ on $\hat</span>
 <span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>\lambda_t$ is unaffected.)</span>
 <span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with $\bf X_t$, if $\bf W_t$ is the same as $\bf X_t$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require $\bf W_t$ contains at least one extra variable than $\bf X_t$, which is sometimes called exclusion restriction.  In many situations, $\bf W_t$ contains all $\bf X_t$ variables, and at least one more variable.  The reason to contain all $\bf X_t$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the $\bf X_t$'s.</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to contain all ${\symbf{X_t}}$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the ${\symbf{X_t}}$'s.</span>
 <span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>In Stata, heckman is the command to do sample selection models.  It</span>
@@ -1225,21 +1225,21 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
 <span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>y_t <span class="sc">\\</span> z_t^0</span>
 <span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {\bf X}_t \beta <span class="sc">\\</span> {\bf W}_t \gamma</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {{\symbf{X}}}_t \beta <span class="sc">\\</span> {{\symbf{W}}}_t \gamma</span>
 <span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}+ \delta \begin{bmatrix} {z_t} <span class="sc">\\</span> 0</span>
 <span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} +</span>
 <span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
 <span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}, \</span>
 <span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({\bf 0},</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({{\symbf{0}}},</span>
 <span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} \sigma^2 &amp; \rho\sigma  <span class="sc">\\</span> \rho\sigma  &amp; 1</span>
 <span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>\end{bmatrix})</span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-19}</span>
 <span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>We observe $y_t$ and $z_t$:</span>
 <span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.</span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-20}</span>
 <span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>Notice that the only difference between this model and the</span>
 <span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.</span>
@@ -1252,13 +1252,13 @@ y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),
 <span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>differ by regime,</span>
 <span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>y_t = z_t ({\bf X}_t \beta_1 + u_{1t}) + (1-z_t)({\bf X}_t \beta_0 + u_{0t}),</span>
-<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>\qquad z_t^0 = {\bf W}_t \gamma + v_t,</span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 + u_{0t}),</span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>\qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,</span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-21}</span>
 <span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection</span>
 <span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the</span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>treatment effect ${\bf X}_t(\beta_1-\beta_0)$ then varies with $\bf X_t$ instead</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>treatment effect ${{\symbf{X}}}_t(\beta_1-\beta_0)$ then varies with ${\symbf{X_t}}$ instead</span>
 <span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>of being a constant. The distinction matters in practice: if the returns to</span>
 <span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>education genuinely differ between union and non-union jobs, the common-slope model</span>
 <span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>above will report a single $\delta$ that is some average of them and will not reveal</span>

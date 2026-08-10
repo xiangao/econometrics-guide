@@ -324,39 +324,39 @@ window.Quarto = {
 <section id="instrumental-variables-iv" class="level2" data-number="4.1"><h2 data-number="4.1" class="anchored" data-anchor-id="instrumental-variables-iv">
 <span class="header-section-number">4.1</span> Instrumental Variables (IV)</h2>
 <p>The basic idea of IV is to use an exogenous variable (or exogenous variables) which is correlated with the endogenous independent variable as an “instrument” for the endogenous variable.</p>
-<p>Suppose the linear regression model <span class="math display">\[
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma^2 I,
-\]</span> at least one of the explanatory variables in the <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\(\bf X\)</span> is assumed not to be predetermined with respect to the error terms, or say, endogenous.</p>
-<p>Suppose we have a set of variables <span class="math inline">\(\bf Z\)</span>, an <span class="math inline">\(n \times l\)</span> matrix of instruments , which satisfies the moment condition <span class="math display">\[
-{\rm E} [\bf Z'(y-X\beta)]=0.
-\]</span> That is, <span class="math inline">\(\bf Z\)</span> is uncorrelated with the error term.</p>
+<p>Suppose the linear regression model <span id="eq-endogeneity-1"><span class="math display">\[
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma^2 I,
+}} \tag{4.1}\]</span></span> at least one of the explanatory variables in the <span class="math inline">\(n \times k\)</span> matrix <span class="math inline">\({\symbf{X}}\)</span> is assumed not to be predetermined with respect to the error terms, or say, endogenous.</p>
+<p>Suppose we have a set of variables <span class="math inline">\({\symbf{Z}}\)</span>, an <span class="math inline">\(n \times l\)</span> matrix of instruments , which satisfies the moment condition <span id="eq-endogeneity-2"><span class="math display">\[
+{{\mathrm{E}}} [{\symbf{Z'(y-X\beta)]=0.
+}} \tag{4.2}\]</span></span> That is, <span class="math inline">\({\symbf{Z}}\)</span> is uncorrelated with the error term.</p>
 <p>Here is what we do for two-stage least squares (2sls):</p>
-<p>Stage 1: Regress each of the variables in the <span class="math inline">\(\bf X\)</span> matrix on <span class="math inline">\(\bf Z\)</span> to obtain a matrix of fitted values <span class="math inline">\(\bf \hat X\)</span>,</p>
-<p><span class="math display">\[
-\bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX
-\]</span></p>
-<p>This is essentially to get the part of <span class="math inline">\(\bf X\)</span> that is correlated with <span class="math inline">\(\bf Z\)</span>. Or to say, to project <span class="math inline">\(\bf X\)</span> on to <span class="math inline">\(\bf Z\)</span>.</p>
-<p>Stage 2: Regress <span class="math inline">\(\bf y\)</span> on <span class="math inline">\(\bf \hat X\)</span> to obtain the estimated <span class="math inline">\(\bf \beta\)</span></p>
-<p><span class="math display">\[
-\bf  \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'
+<p>Stage 1: Regress each of the variables in the <span class="math inline">\({\symbf{X}}\)</span> matrix on <span class="math inline">\({\symbf{Z}}\)</span> to obtain a matrix of fitted values <span class="math inline">\({\symbf{\hat X}}\)</span>,</p>
+<p><span id="eq-endogeneity-3"><span class="math display">\[
+{\symbf{\hat X=Z(Z'Z)^{-1}Z'X=P_ZX
+}} \tag{4.3}\]</span></span></p>
+<p>This is essentially to get the part of <span class="math inline">\({\symbf{X}}\)</span> that is correlated with <span class="math inline">\({\symbf{Z}}\)</span>. Or to say, to project <span class="math inline">\({\symbf{X}}\)</span> on to <span class="math inline">\({\symbf{Z}}\)</span>.</p>
+<p>Stage 2: Regress <span class="math inline">\({\symbf{y}}\)</span> on <span class="math inline">\({\symbf{\hat X}}\)</span> to obtain the estimated <span class="math inline">\({\symbf{\beta}}\)</span></p>
+<p><span id="eq-endogeneity-4"><span class="math display">\[
+{\symbf{ \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'
 y)=(X'P_ZX)^{-1}(X'P_Zy)=\hat \beta_{IV}
-\]</span></p>
+}} \tag{4.4}\]</span></span></p>
 <p>Standard errors:</p>
-<p><span class="math display">\[
-Var \bf [ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
+<p><span id="eq-endogeneity-5"><span class="math display">\[
+Var {\symbf{[ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
 \sigma^2 (X'P_ZX)^{-1}
-\]</span> where <span class="math inline">\(\hat \sigma^2 ={\bf \hat u' \hat u} / N\)</span>. This is the homoskedastic large-sample variance; finite-sample formulas typically apply a degrees-of-freedom correction (<span class="math inline">\(N-k\)</span> in place of <span class="math inline">\(N\)</span>), and when errors are heteroskedastic or clustered the robust/clustered IV covariance matrix replaces <span class="math inline">\(\hat\sigma^2 (X'P_ZX)^{-1}\)</span> with a sandwich form.</p>
-<p>Note that <span class="math inline">\(\bf \hat u = y- X \hat \beta_{2sls}\)</span>.</p>
-<p>If we do it manually by two steps, the second step will report a wrong standard error. That is because the second stage regression will report standard errors based on <span class="math inline">\(\bf \hat u = y- \hat X \hat
-\beta_{2sls}\)</span>. Therefore, it’s always recommended to ask the statistical program to do a 2sls for you, since presumably that will give you correct standard errors.</p>
+}} \tag{4.5}\]</span></span> where <span class="math inline">\(\hat \sigma^2 ={{\symbf{\hat u' \hat u}}} / N\)</span>. This is the homoskedastic large-sample variance; finite-sample formulas typically apply a degrees-of-freedom correction (<span class="math inline">\(N-k\)</span> in place of <span class="math inline">\(N\)</span>), and when errors are heteroskedastic or clustered the robust/clustered IV covariance matrix replaces <span class="math inline">\(\hat\sigma^2 (X'P_ZX)^{-1}\)</span> with a sandwich form.</p>
+<p>Note that <span class="math inline">\({\symbf{\hat u = y- X \hat \beta_{2sls}}}\)</span>.</p>
+<p>If we do it manually by two steps, the second step will report a wrong standard error. That is because the second stage regression will report standard errors based on <span class="math inline">\({\symbf{\hat u = y- \hat X \hat
+\beta_{2sls}}}\)</span>. Therefore, it’s always recommended to ask the statistical program to do a 2sls for you, since presumably that will give you correct standard errors.</p>
 <p>Geometry Illustration:</p>
 <p>Suppose the simplest case: <span class="math inline">\(y=\beta_0 + \beta_1 x + u\)</span>. Take all variables in deviations from their means, so the intercept drops out and <span class="math inline">\(z'\iota = 0\)</span>; this keeps the algebra below about the slope alone. Split <span class="math inline">\(x\)</span> into the part that lies along the error and the part that does not,</p>
-<p><span class="math display">\[ x = x^{\perp} + x^{\parallel}, \]</span></p>
+<p><span id="eq-endogeneity-6"><span class="math display">\[ x = x^{\perp} + x^{\parallel},  \tag{4.6}\]</span></span></p>
 <p>where <span class="math inline">\(x^{\parallel}\)</span> is the orthogonal projection of <span class="math inline">\(x\)</span> onto <span class="math inline">\(u\)</span> and <span class="math inline">\(x^{\perp}\)</span> is what is left over. Two facts hold <em>by construction</em> and are what make the picture work: <span class="math inline">\(x^{\perp}\)</span> is perpendicular to <span class="math inline">\(u\)</span>, and <span class="math inline">\(x^{\perp}\)</span> is perpendicular to <span class="math inline">\(x^{\parallel}\)</span>. Endogeneity is simply the statement that <span class="math inline">\(x^{\parallel} \neq 0\)</span>. (This is a decomposition of <span class="math inline">\(x\)</span>, not an extra assumption about it – every <span class="math inline">\(x\)</span> admits it.)</p>
 <p>Now let <span class="math inline">\(z\)</span> be a vector perpendicular to <span class="math inline">\(u\)</span> (exogeneity: <span class="math inline">\(z\)</span> is uncorrelated with the error) with a non-zero projection onto <span class="math inline">\(x\)</span> (relevance: <span class="math inline">\(z\)</span> actually predicts the regressor). Project both <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span> onto <span class="math inline">\(z\)</span>, and write <span class="math inline">\(\hat
 y_z\)</span> and <span class="math inline">\(\hat x_z\)</span> for those two projections. The instrumental variables estimator is the ratio of their lengths,</p>
-<p><span class="math display">\[ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, \]</span></p>
-<p>since <span class="math inline">\(z'y = \beta_1 z'x + z'u = \beta_1 z'x\)</span>. Because the two right triangles involved are similar, this is the same number you would get from the <em>infeasible</em> regression of <span class="math inline">\(y\)</span> on the exogenous part alone: that regression returns <span class="math display">\[ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, \]</span> where the second term vanishes because <span class="math inline">\(x^{\perp} \perp u\)</span> and the first collapses to <span class="math inline">\(\beta_1\)</span> because <span class="math inline">\(x^{\perp} \perp x^{\parallel}\)</span>, so <span class="math inline">\(x^{\perp\prime}x = x^{\perp\prime}x^{\perp}\)</span>. That infeasible regression is the one we would run if we could observe the decomposition. We cannot – which is exactly why we need the instrument.</p>
+<p><span id="eq-endogeneity-7"><span class="math display">\[ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x},  \tag{4.7}\]</span></span></p>
+<p>since <span class="math inline">\(z'y = \beta_1 z'x + z'u = \beta_1 z'x\)</span>. Because the two right triangles involved are similar, this is the same number you would get from the <em>infeasible</em> regression of <span class="math inline">\(y\)</span> on the exogenous part alone: that regression returns <span id="eq-endogeneity-8"><span class="math display">\[ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1,  \tag{4.8}\]</span></span> where the second term vanishes because <span class="math inline">\(x^{\perp} \perp u\)</span> and the first collapses to <span class="math inline">\(\beta_1\)</span> because <span class="math inline">\(x^{\perp} \perp x^{\parallel}\)</span>, so <span class="math inline">\(x^{\perp\prime}x = x^{\perp\prime}x^{\perp}\)</span>. That infeasible regression is the one we would run if we could observe the decomposition. We cannot – which is exactly why we need the instrument.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
@@ -466,9 +466,9 @@ Wald test:  1001 on 1 and 9998 DF,  p-value: &lt; 2.2e-16 </code></pre>
 </div>
 </section><section id="control-function-approach" class="level2" data-number="4.2"><h2 data-number="4.2" class="anchored" data-anchor-id="control-function-approach">
 <span class="header-section-number">4.2</span> Control Function Approach</h2>
-<p>A second way to do an IV regression is also two-step approach: Regress <span class="math inline">\(\bf X\)</span> (endogenous) on <span class="math inline">\(\bf Z\)</span>, get the residual: <span class="math inline">\(\bf \hat
-v=X-Z(Z'Z)^{-1}Z'X\)</span>, then regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf X\)</span> and <span class="math inline">\(\hat v\)</span> to get <span class="math inline">\(\hat \beta_{IV}\)</span>.</p>
-<p>The difference between this approach and the 2sls approach is that in 2sls we regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf \hat X\)</span>; in the control function approach, we regress <span class="math inline">\(y\)</span> on <span class="math inline">\(\bf  X\)</span> and <span class="math inline">\(\hat v\)</span>. They should both give you the same coefficient estimates. There are advantages of using the control function approach.</p>
+<p>A second way to do an IV regression is also two-step approach: Regress <span class="math inline">\({\symbf{X}}\)</span> (endogenous) on <span class="math inline">\({\symbf{Z}}\)</span>, get the residual: <span class="math inline">\({\symbf{\hat
+v=X-Z(Z'Z)^{-1}Z'X}}\)</span>, then regress <span class="math inline">\(y\)</span> on <span class="math inline">\({\symbf{X}}\)</span> and <span class="math inline">\(\hat v\)</span> to get <span class="math inline">\(\hat \beta_{IV}\)</span>.</p>
+<p>The difference between this approach and the 2sls approach is that in 2sls we regress <span class="math inline">\(y\)</span> on <span class="math inline">\({\symbf{\hat X}}\)</span>; in the control function approach, we regress <span class="math inline">\(y\)</span> on <span class="math inline">\({\symbf{ X}}\)</span> and <span class="math inline">\(\hat v\)</span>. They should both give you the same coefficient estimates. There are advantages of using the control function approach.</p>
 <p>An example to show how to do 2sls manually, or using control function approach.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
@@ -522,12 +522,12 @@ Multiple R-squared:  0.6284,    Adjusted R-squared:  0.6283
 F-statistic:  8451 on 2 and 9997 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<p>This approach can be used to do a simple endogeneity test. First, you can do a simple test of endogeneity of <span class="math inline">\(\bf X\)</span>. For example:</p>
+<p>This approach can be used to do a simple endogeneity test. First, you can do a simple test of endogeneity of <span class="math inline">\({\symbf{X}}\)</span>. For example:</p>
 <pre><code>reg x_endog x* z*
 predict v_x, resid
 reg y x_endog x* v_x
 test v_x</code></pre>
-<p>Obviously, this test is based on <span class="math inline">\(\bf Z\)</span> being exogenous.</p>
+<p>Obviously, this test is based on <span class="math inline">\({\symbf{Z}}\)</span> being exogenous.</p>
 <p>Residual inclusion extends to <em>some</em> non-linear models – logit, probit, Poisson – under additional control-function assumptions, but it is not automatically valid for “any glm”. The construction is model-specific: the appropriate first-stage residual (a plain linear residual or a generalized residual), the identification conditions, and the standard errors all differ for continuous, binary, and nonlinear endogenous regressors, and inserting a linear first-stage residual into an arbitrary GLM is generally not correct. The generated-regressor step also inflates uncertainty, so standard errors need to account for the estimated first stage (e.g.&nbsp;by bootstrap). For example, the “eteffects” procedure in Stata (version 14) uses a control-function approach to get endogenous treatment effects for several outcome types.</p>
 </section><section id="durbin-wu-hausman-test" class="level2" data-number="4.3"><h2 data-number="4.3" class="anchored" data-anchor-id="durbin-wu-hausman-test">
 <span class="header-section-number">4.3</span> Durbin-Wu-Hausman Test</h2>
@@ -537,9 +537,9 @@ test v_x</code></pre>
 <p>With endogenous variables on the right-hand side of the equation, we need to use instrumental variable (IV) regression for consistent estimation. However, with IV regression, we lose efficiency: the asymptotic variance of the IV estimator is larger, and can be much larger than the OLS estimator. Therefore, we gain consistency, but lose efficiency, by using IV estimator when there is an endogeneity problem.</p>
 <p>Now we have a familiar scenario (if you are familiar with Hausman test for fixed effect and random effect estimator for panel data): Suppose we have the null hypothesis as the regressor being exogenous. We have an efficient estimator under null hypothesis yet inconsistent under alternative hypothesis (OLS estimator). We also have a consistent estimator under both null and alternative (IV estimator).</p>
 <p>Similar to panel data setting, we have the Hausman test statistic as:</p>
-<p><span class="math display">\[ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat
-\beta_e) \]</span></p>
-<p>where <span class="math inline">\(D={\rm Var} [\hat \beta_c] - {\rm Var} [\hat \beta_e]\)</span>, <span class="math inline">\(^-\)</span> is the generalized inverse, <span class="math inline">\(\hat \beta_c\)</span> is the consistent estimator (in this case the IV estimator) and <span class="math inline">\(\hat \beta_e\)</span> is the efficient estimator (in this case OLS estimator).</p>
+<p><span id="eq-endogeneity-9"><span class="math display">\[ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat
+\beta_e)  \tag{4.9}\]</span></span></p>
+<p>where <span class="math inline">\(D={{\mathrm{Var}}} [\hat \beta_c] - {{\mathrm{Var}}} [\hat \beta_e]\)</span>, <span class="math inline">\(^-\)</span> is the generalized inverse, <span class="math inline">\(\hat \beta_c\)</span> is the consistent estimator (in this case the IV estimator) and <span class="math inline">\(\hat \beta_e\)</span> is the efficient estimator (in this case OLS estimator).</p>
 <p><span class="math inline">\(H\)</span> conforms to <span class="math inline">\(\chi^2_k\)</span> asymptotically, where <span class="math inline">\(k\)</span> is the number of endogenous variables.</p>
 <p>This test is to compare the IV estimator and the OLS estimator: if it’s close, then OLS estimator is fine (fail to reject null that OLS is consistent, or say the variable is exogenous). If it’s large, then IV estimator is needed, although we lose some efficiency. This test is based on the assumption that the instruments are exogenous. If that is in question, then it’s pointless to do the test, since the IV estimator cannot guarantee consistency either.</p>
 </section><section id="implementation-in-stata" class="level3" data-number="4.3.2"><h3 data-number="4.3.2" class="anchored" data-anchor-id="implementation-in-stata">
@@ -584,37 +584,37 @@ hausman iv ., constant sigmamore</code></pre>
 <p>An instrument needs to satisfy two criteria: orthogonality and relevance. We need instruments to be orthogonal to the error term. We can verify the orthogonality condition by Sargan’s test if there are extra instruments.</p>
 <p>It turns out instrument relevance is important too: if instruments are weak, the usual large-sample approximations are poor. It helps to keep three cases apart. With fixed, nonzero first-stage relevance, IV remains <em>consistent</em> but can be badly <em>biased</em> in finite samples (and biased toward OLS), with the normal approximation working poorly. Under weak-instrument (local-to-zero) asymptotics, the limiting distribution is <em>nonstandard</em> and not centered in the usual way, so conventional standard errors and <span class="math inline">\(t\)</span>-statistics mislead. Only in the limiting case of complete irrelevance (<span class="math inline">\(\Pi=0\)</span>) is the parameter unidentified.</p>
 <p>To see the problem, suppose</p>
-<p><span class="math display">\[
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
-\]</span></p>
-<p><span class="math display">\[
-\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
-\]</span></p>
-<p>and <span class="math display">\[
-{\rm E}(\bf Z u )=0.
-\]</span></p>
-<p>We can see here <span class="math inline">\(\bf Z\)</span> is exogenous. However, the model does not say anything about relevance. To illustrate the problem caused by weak instrument, suppose we have only one endogenous variable and one instrument.</p>
-<p><span class="math display">\[
-\hat \beta_{2sls}=\frac{\bf Z' y}{\bf Z' X} = \frac{\bf Z'(X \beta +
-  u)}{\bf Z'
-  X}= \beta + \frac{\bf Z' u}{\bf Z' X} .
-\]</span></p>
-<p>If <span class="math inline">\(\bf Z\)</span> is irrelevant, or, <span class="math inline">\(\Pi=0\)</span>, then</p>
-<p><span class="math display">\[
-\hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}
+<p><span id="eq-endogeneity-10"><span class="math display">\[
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,
+}} \tag{4.10}\]</span></span></p>
+<p><span id="eq-endogeneity-11"><span class="math display">\[
+{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,
+}} \tag{4.11}\]</span></span></p>
+<p>and <span id="eq-endogeneity-12"><span class="math display">\[
+{{\mathrm{E}}}({\symbf{Z u )=0.
+}} \tag{4.12}\]</span></span></p>
+<p>We can see here <span class="math inline">\({\symbf{Z}}\)</span> is exogenous. However, the model does not say anything about relevance. To illustrate the problem caused by weak instrument, suppose we have only one endogenous variable and one instrument.</p>
+<p><span id="eq-endogeneity-13"><span class="math display">\[
+\hat \beta_{2sls}=\frac{{\symbf{Z' y}}}{{\symbf{Z' X}}} = \frac{{\symbf{Z'(X \beta +
+  u)}}}{{\symbf{Z'
+  X}}}= \beta + \frac{{\symbf{Z' u}}}{{\symbf{Z' X}}} .
+\tag{4.13}\]</span></span></p>
+<p>If <span class="math inline">\({\symbf{Z}}\)</span> is irrelevant, or, <span class="math inline">\(\Pi=0\)</span>, then</p>
+<p><span id="eq-endogeneity-14"><span class="math display">\[
+\hat \beta_{2sls}- \beta=\frac{{\symbf{Z' u}}}{{\symbf{Z' v}}} =\frac{ \frac{1}{\sqrt n}
 \sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}
 \xrightarrow{d} \frac{z_u}{z_v} ,
-\]</span></p>
-<p>where (normalizing <span class="math inline">\({\rm Var}(Z_i)=1\)</span>, which is harmless since any common scale factor cancels in the ratio)</p>
-<p><span class="math display">\[
+\tag{4.14}\]</span></span></p>
+<p>where (normalizing <span class="math inline">\({{\mathrm{Var}}}(Z_i)=1\)</span>, which is harmless since any common scale factor cancels in the ratio)</p>
+<p><span id="eq-endogeneity-15"><span class="math display">\[
 \begin{bmatrix}
 z_u \\z_v
 \end{bmatrix}
 \sim N(0, \begin{bmatrix}
 \sigma_u^2 \quad \sigma_{uv} \\  \sigma_{uv} \quad \sigma_v^2
 \end{bmatrix}).
-\]</span></p>
-<p>Therefore, if <span class="math inline">\(\bf Z\)</span> is irrelevant, <span class="math inline">\(\beta_{2sls}\)</span> is inconsistent. Also, the distribution of the bias is Cauchy-like (the ratio of correlated normals).</p>
+\tag{4.15}\]</span></span></p>
+<p>Therefore, if <span class="math inline">\({\symbf{Z}}\)</span> is irrelevant, <span class="math inline">\(\beta_{2sls}\)</span> is inconsistent. Also, the distribution of the bias is Cauchy-like (the ratio of correlated normals).</p>
 <p>This is a case where the cure might be worse than the disease itself: the bias can be big comparing to the bias an OLS estimate suffers.</p>
 </section><section id="weak-instrument-tests" class="level3" data-number="4.5.2"><h3 data-number="4.5.2" class="anchored" data-anchor-id="weak-instrument-tests">
 <span class="header-section-number">4.5.2</span> Weak Instrument Tests</h3>
@@ -638,17 +638,17 @@ z_u \\z_v
 <li>Anderson-Rubin confidence intervals.</li>
 </ol>
 <p>In the model of</p>
-<p><span class="math display">\[
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
-\]</span></p>
-<p><span class="math display">\[
-\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
-\]</span></p>
+<p><span id="eq-endogeneity-16"><span class="math display">\[
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,
+}} \tag{4.16}\]</span></span></p>
+<p><span id="eq-endogeneity-17"><span class="math display">\[
+{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,
+}} \tag{4.17}\]</span></span></p>
 <p>The null hypothesis <span class="math inline">\(H_0: \beta=\beta_0\)</span>. Anderson-Rubin statistic is the F statistic in the regression of <span class="math inline">\(y-X \beta_0\)</span> on <span class="math inline">\(Z\)</span>, the F test that the coefficient vector on <span class="math inline">\(Z\)</span> is zero (under the model that coefficient equals <span class="math inline">\(\Pi (\beta - \beta_0)\)</span>, so it is zero exactly when <span class="math inline">\(\beta=\beta_0\)</span>):</p>
-<p><span class="math display">\[
+<p><span id="eq-endogeneity-18"><span class="math display">\[
 AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
   (y-X\beta_0)/(N-l)}
-\]</span></p>
+\tag{4.18}\]</span></span></p>
 <p>where <span class="math inline">\(l\)</span> is the number of instruments. The idea of AR confidence interval is to collect all values of <span class="math inline">\(\beta_0\)</span> at which we fail to reject <span class="math inline">\(H_0: \beta=\beta_0\)</span>.</p>
 <ol start="4" type="1">
 <li>First-stage F test.</li>
@@ -663,11 +663,11 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 </ol></section></section><section id="when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression" class="level2" data-number="4.6"><h2 data-number="4.6" class="anchored" data-anchor-id="when-is-endogeneity-a-problem-and-what-can-we-say-from-an-iv-regression">
 <span class="header-section-number">4.6</span> When is endogeneity a problem and what can we say from an IV regression</h2>
 <p>Let’s consider a model of housing price on no. of rooms and square footage.</p>
-<p><span class="math display">\[ P = \alpha R + \beta F + \epsilon \]</span></p>
+<p><span id="eq-endogeneity-19"><span class="math display">\[ P = \alpha R + \beta F + \epsilon  \tag{4.19}\]</span></span></p>
 <p>Should square footage really be there? We are not interested in, given square footage, how much money we need to pay for an additional room. We are generally interested in how much money we need to pay for an additional footage. However, if we do not include footage, then we “sort of” have endogeneity problem due to omitted variable.</p>
 <p>Another example would be education’s impact on wage. Say IQ is an omitted variable. Do we want to say something about education’s impact on wage controlling on IQ, or not?</p>
 <p>So it depends on what questions to ask. If I am a builder and ask what an extra bedroom on the already built house would bring to me, I need to control for footage. If I am generally asking what an extra bedroom would cost, then I am implying what that bedroom and associated footage would cost me. In that case, without controlling for footage is not a problem, since the question is: what an additional bedroom (AND the associated average square footage) would cost me.</p>
-<p>In the wage and education example, if I am asking: what’s the effect of education on wage? I implicitly ask what would be my pay raise if I go to college (given IQ, of course), for example. Then we are concerned that this model of <span class="math display">\[ wage= \alpha edu + \epsilon \]</span> will generate biased estimate of <span class="math inline">\(\alpha\)</span>, because we are not controlling for IQ. But if I am an employer and interested in hiring a person, what would I have to pay extra to hire a college graduate vs.&nbsp;a high school graduate? Then I don’t have to include that IQ variable, because implicitly I am asking: what extra I need to pay for that college graduate who comes with a higher IQ, and everything else that is associated with higher education.</p>
+<p>In the wage and education example, if I am asking: what’s the effect of education on wage? I implicitly ask what would be my pay raise if I go to college (given IQ, of course), for example. Then we are concerned that this model of <span id="eq-endogeneity-20"><span class="math display">\[ wage= \alpha edu + \epsilon  \tag{4.20}\]</span></span> will generate biased estimate of <span class="math inline">\(\alpha\)</span>, because we are not controlling for IQ. But if I am an employer and interested in hiring a person, what would I have to pay extra to hire a college graduate vs.&nbsp;a high school graduate? Then I don’t have to include that IQ variable, because implicitly I am asking: what extra I need to pay for that college graduate who comes with a higher IQ, and everything else that is associated with higher education.</p>
 <p>In addition, what an IV regression really gives us is part of the causal inference of <span class="math inline">\(X\)</span> (suspected to be endogenous) on <span class="math inline">\(y\)</span>, namely the part induced by <span class="math inline">\(Z\)</span>. For example, we are interested in the relationship between college education and wage. If we use distance to college as an instrument, then our inference is the effect of college education from those who decide to go because of proximity of the college.</p>
 
 
@@ -1166,58 +1166,58 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>Suppose the linear regression model</span>
 <span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma^2 I,</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma^2 I,</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-1}</span>
 <span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a> at least one of the explanatory variables in the $n \times k$</span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>matrix $\bf X$ is assumed not to be predetermined with respect to the</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>matrix ${\symbf{X}}$ is assumed not to be predetermined with respect to the</span>
 <span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>error terms, or say, endogenous.</span>
 <span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>Suppose we have a set of  variables $\bf Z$, an $n \times l$</span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>Suppose we have a set of  variables ${\symbf{Z}}$, an $n \times l$</span>
 <span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>matrix of instruments , which satisfies the moment</span>
 <span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>condition</span>
 <span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>{\rm E} <span class="co">[</span><span class="ot">\bf Z'(y-X\beta)</span><span class="co">]</span>=0.</span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>That is, $\bf Z$ is uncorrelated with the error term.</span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} <span class="co">[</span><span class="ot">{\symbf{Z'(y-X\beta)</span><span class="co">]</span>=0.</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-2}</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>That is, ${\symbf{Z}}$ is uncorrelated with the error term.</span>
 <span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>Here is what we do for two-stage least squares (2sls):</span>
 <span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>Stage 1:  Regress each of the variables in the $\bf X$ matrix on</span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>$\bf Z$ to obtain a matrix of fitted values $\bf \hat X$,</span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>Stage 1:  Regress each of the variables in the ${\symbf{X}}$ matrix on</span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>${\symbf{Z}}$ to obtain a matrix of fitted values ${\symbf{\hat X}}$,</span>
 <span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>\bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX</span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>{\symbf{\hat X=Z(Z'Z)^{-1}Z'X=P_ZX</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-3}</span>
 <span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>This is essentially to get the part of $\bf X$ that is correlated with $\bf Z$.  Or to say, to project $\bf X$ on to $\bf Z$.</span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>This is essentially to get the part of ${\symbf{X}}$ that is correlated with ${\symbf{Z}}$.  Or to say, to project ${\symbf{X}}$ on to ${\symbf{Z}}$.</span>
 <span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>Stage 2:  Regress $\bf y$ on $\bf \hat X$ to obtain the estimated</span>
-<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>$\bf \beta$</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>Stage 2:  Regress ${\symbf{y}}$ on ${\symbf{\hat X}}$ to obtain the estimated</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>${\symbf{\beta}}$</span>
 <span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>\bf  \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a>{\symbf{ \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'</span>
 <span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>y)=(X'P_ZX)^{-1}(X'P_Zy)=\hat \beta_{IV}</span>
-<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-4}</span>
 <span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-68"><a href="#cb16-68" aria-hidden="true" tabindex="-1"></a>Standard errors:</span>
 <span id="cb16-69"><a href="#cb16-69" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-70"><a href="#cb16-70" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>Var \bf <span class="co">[</span><span class="ot"> \hat \beta_{2sls}</span><span class="co">]</span>= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat</span>
+<span id="cb16-71"><a href="#cb16-71" aria-hidden="true" tabindex="-1"></a>Var {\symbf{<span class="co">[</span><span class="ot"> \hat \beta_{2sls}</span><span class="co">]</span>= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat</span>
 <span id="cb16-72"><a href="#cb16-72" aria-hidden="true" tabindex="-1"></a>\sigma^2 (X'P_ZX)^{-1}</span>
-<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>where $\hat \sigma^2 ={\bf \hat u' \hat u} / N$.  This is the</span>
+<span id="cb16-73"><a href="#cb16-73" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-5}</span>
+<span id="cb16-74"><a href="#cb16-74" aria-hidden="true" tabindex="-1"></a>where $\hat \sigma^2 ={{\symbf{\hat u' \hat u}}} / N$.  This is the</span>
 <span id="cb16-75"><a href="#cb16-75" aria-hidden="true" tabindex="-1"></a>homoskedastic large-sample variance; finite-sample formulas typically</span>
 <span id="cb16-76"><a href="#cb16-76" aria-hidden="true" tabindex="-1"></a>apply a degrees-of-freedom correction ($N-k$ in place of $N$), and</span>
 <span id="cb16-77"><a href="#cb16-77" aria-hidden="true" tabindex="-1"></a>when errors are heteroskedastic or clustered the robust/clustered IV</span>
 <span id="cb16-78"><a href="#cb16-78" aria-hidden="true" tabindex="-1"></a>covariance matrix replaces $\hat\sigma^2 (X'P_ZX)^{-1}$ with a</span>
 <span id="cb16-79"><a href="#cb16-79" aria-hidden="true" tabindex="-1"></a>sandwich form.</span>
 <span id="cb16-80"><a href="#cb16-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>Note that $\bf \hat u = y- X \hat \beta_{2sls}$.</span>
+<span id="cb16-81"><a href="#cb16-81" aria-hidden="true" tabindex="-1"></a>Note that ${\symbf{\hat u = y- X \hat \beta_{2sls}}}$.</span>
 <span id="cb16-82"><a href="#cb16-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-83"><a href="#cb16-83" aria-hidden="true" tabindex="-1"></a>If we do it manually by two steps, the second step will report a wrong</span>
 <span id="cb16-84"><a href="#cb16-84" aria-hidden="true" tabindex="-1"></a>standard error.  That is because the second stage regression will</span>
-<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>report standard errors based on $\bf \hat u = y- \hat X \hat</span>
-<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>\beta_{2sls}$.  Therefore, it's always recommended to ask the</span>
+<span id="cb16-85"><a href="#cb16-85" aria-hidden="true" tabindex="-1"></a>report standard errors based on ${\symbf{\hat u = y- \hat X \hat</span>
+<span id="cb16-86"><a href="#cb16-86" aria-hidden="true" tabindex="-1"></a>\beta_{2sls}}}$.  Therefore, it's always recommended to ask the</span>
 <span id="cb16-87"><a href="#cb16-87" aria-hidden="true" tabindex="-1"></a>statistical program to do a 2sls for you, since presumably that will</span>
 <span id="cb16-88"><a href="#cb16-88" aria-hidden="true" tabindex="-1"></a>give you correct standard errors.</span>
 <span id="cb16-89"><a href="#cb16-89" aria-hidden="true" tabindex="-1"></a></span>
@@ -1228,7 +1228,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-94"><a href="#cb16-94" aria-hidden="true" tabindex="-1"></a>keeps the algebra below about the slope alone.  Split $x$ into the part</span>
 <span id="cb16-95"><a href="#cb16-95" aria-hidden="true" tabindex="-1"></a>that lies along the error and the part that does not,</span>
 <span id="cb16-96"><a href="#cb16-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>$$ x = x^{\perp} + x^{\parallel}, $$</span>
+<span id="cb16-97"><a href="#cb16-97" aria-hidden="true" tabindex="-1"></a>$$ x = x^{\perp} + x^{\parallel}, $$ {#eq-endogeneity-6}</span>
 <span id="cb16-98"><a href="#cb16-98" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-99"><a href="#cb16-99" aria-hidden="true" tabindex="-1"></a>where $x^{\parallel}$ is the orthogonal projection of $x$ onto $u$ and</span>
 <span id="cb16-100"><a href="#cb16-100" aria-hidden="true" tabindex="-1"></a>$x^{\perp}$ is what is left over.  Two facts hold *by construction* and are what</span>
@@ -1243,12 +1243,12 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>y_z$ and $\hat x_z$ for those two projections.  The instrumental variables</span>
 <span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>estimator is the ratio of their lengths,</span>
 <span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>$$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$</span>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>$$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$ {#eq-endogeneity-7}</span>
 <span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>since $z'y = \beta_1 z'x + z'u = \beta_1 z'x$.  Because the two right triangles</span>
 <span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>involved are similar, this is the same number you would get from the *infeasible*</span>
 <span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>regression of $y$ on the exogenous part alone: that regression returns</span>
-<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>$$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$</span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>$$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$ {#eq-endogeneity-8}</span>
 <span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>where the second term vanishes because $x^{\perp} \perp u$ and the first</span>
 <span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>collapses to $\beta_1$ because $x^{\perp} \perp x^{\parallel}$, so</span>
 <span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>$x^{\perp\prime}x = x^{\perp\prime}x^{\perp}$.  That infeasible regression is the</span>
@@ -1295,13 +1295,13 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-163"><a href="#cb16-163" aria-hidden="true" tabindex="-1"></a><span class="fu">## Control Function Approach</span></span>
 <span id="cb16-164"><a href="#cb16-164" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-165"><a href="#cb16-165" aria-hidden="true" tabindex="-1"></a>A second way to do an IV regression is also two-step approach: Regress</span>
-<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>$\bf X$ (endogenous) on $\bf Z$, get the residual: $\bf \hat</span>
-<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>v=X-Z(Z'Z)^{-1}Z'X$, then regress $y$ on $\bf X$ and $\hat v$ to get</span>
+<span id="cb16-166"><a href="#cb16-166" aria-hidden="true" tabindex="-1"></a>${\symbf{X}}$ (endogenous) on ${\symbf{Z}}$, get the residual: ${\symbf{\hat</span>
+<span id="cb16-167"><a href="#cb16-167" aria-hidden="true" tabindex="-1"></a>v=X-Z(Z'Z)^{-1}Z'X}}$, then regress $y$ on ${\symbf{X}}$ and $\hat v$ to get</span>
 <span id="cb16-168"><a href="#cb16-168" aria-hidden="true" tabindex="-1"></a>$\hat \beta_{IV}$.</span>
 <span id="cb16-169"><a href="#cb16-169" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-170"><a href="#cb16-170" aria-hidden="true" tabindex="-1"></a>The difference between this approach and the 2sls approach is that in</span>
-<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>2sls we regress $y$ on $\bf \hat X$; in the control function approach,</span>
-<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a>we regress $y$ on $\bf  X$ and $\hat v$.  They should both give you</span>
+<span id="cb16-171"><a href="#cb16-171" aria-hidden="true" tabindex="-1"></a>2sls we regress $y$ on ${\symbf{\hat X}}$; in the control function approach,</span>
+<span id="cb16-172"><a href="#cb16-172" aria-hidden="true" tabindex="-1"></a>we regress $y$ on ${\symbf{ X}}$ and $\hat v$.  They should both give you</span>
 <span id="cb16-173"><a href="#cb16-173" aria-hidden="true" tabindex="-1"></a>the same coefficient estimates.  There are advantages of using the</span>
 <span id="cb16-174"><a href="#cb16-174" aria-hidden="true" tabindex="-1"></a>control function approach.</span>
 <span id="cb16-175"><a href="#cb16-175" aria-hidden="true" tabindex="-1"></a></span>
@@ -1321,7 +1321,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-191"><a href="#cb16-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-192"><a href="#cb16-192" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-193"><a href="#cb16-193" aria-hidden="true" tabindex="-1"></a>This approach can be used to do a simple endogeneity test.  First, you</span>
-<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>can do a simple test of endogeneity of $\bf X$.  For example:</span>
+<span id="cb16-194"><a href="#cb16-194" aria-hidden="true" tabindex="-1"></a>can do a simple test of endogeneity of ${\symbf{X}}$.  For example:</span>
 <span id="cb16-195"><a href="#cb16-195" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-196"><a href="#cb16-196" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-197"><a href="#cb16-197" aria-hidden="true" tabindex="-1"></a><span class="in">    reg x_endog x* z*</span></span>
@@ -1330,7 +1330,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-200"><a href="#cb16-200" aria-hidden="true" tabindex="-1"></a><span class="in">    test v_x</span></span>
 <span id="cb16-201"><a href="#cb16-201" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-202"><a href="#cb16-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a>Obviously, this test is based on $\bf Z$ being exogenous.</span>
+<span id="cb16-203"><a href="#cb16-203" aria-hidden="true" tabindex="-1"></a>Obviously, this test is based on ${\symbf{Z}}$ being exogenous.</span>
 <span id="cb16-204"><a href="#cb16-204" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-205"><a href="#cb16-205" aria-hidden="true" tabindex="-1"></a>Residual inclusion extends to *some* non-linear models -- logit,</span>
 <span id="cb16-206"><a href="#cb16-206" aria-hidden="true" tabindex="-1"></a>probit, Poisson -- under additional control-function assumptions, but</span>
@@ -1377,9 +1377,9 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-247"><a href="#cb16-247" aria-hidden="true" tabindex="-1"></a>Similar to panel data setting, we have the Hausman test statistic as:</span>
 <span id="cb16-248"><a href="#cb16-248" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-249"><a href="#cb16-249" aria-hidden="true" tabindex="-1"></a>$$ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat</span>
-<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a>\beta_e) $$</span>
+<span id="cb16-250"><a href="#cb16-250" aria-hidden="true" tabindex="-1"></a>\beta_e) $$ {#eq-endogeneity-9}</span>
 <span id="cb16-251"><a href="#cb16-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a>where $D={\rm Var} <span class="co">[</span><span class="ot">\hat \beta_c</span><span class="co">]</span> - {\rm Var} <span class="co">[</span><span class="ot">\hat \beta_e</span><span class="co">]</span>$, $^-$ is</span>
+<span id="cb16-252"><a href="#cb16-252" aria-hidden="true" tabindex="-1"></a>where $D={{\mathrm{Var}}} <span class="co">[</span><span class="ot">\hat \beta_c</span><span class="co">]</span> - {{\mathrm{Var}}} <span class="co">[</span><span class="ot">\hat \beta_e</span><span class="co">]</span>$, $^-$ is</span>
 <span id="cb16-253"><a href="#cb16-253" aria-hidden="true" tabindex="-1"></a>the generalized inverse, $\hat \beta_c$ is the consistent estimator (in</span>
 <span id="cb16-254"><a href="#cb16-254" aria-hidden="true" tabindex="-1"></a>this case the IV estimator) and $\hat \beta_e$ is the efficient</span>
 <span id="cb16-255"><a href="#cb16-255" aria-hidden="true" tabindex="-1"></a>estimator (in this case OLS estimator).</span>
@@ -1511,38 +1511,38 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a>To see the problem, suppose</span>
 <span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,</span>
-<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-10}</span>
 <span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,</span>
-<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
+<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-11}</span>
 <span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a>and</span>
 <span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a>{\rm E}(\bf Z u )=0.</span>
-<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}}({\symbf{Z u )=0.</span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-12}</span>
 <span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>We can see here $\bf Z$ is exogenous.  However, the model does not say</span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>We can see here ${\symbf{Z}}$ is exogenous.  However, the model does not say</span>
 <span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a>anything about relevance.  To illustrate the problem caused by weak</span>
 <span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>instrument, suppose we have only one endogenous variable and one</span>
 <span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a>instrument.</span>
 <span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}=\frac{\bf Z' y}{\bf Z' X} = \frac{\bf Z'(X \beta +</span>
-<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>  u)}{\bf Z'</span>
-<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a>  X}= \beta + \frac{\bf Z' u}{\bf Z' X} .</span>
-<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}=\frac{{\symbf{Z' y}}}{{\symbf{Z' X}}} = \frac{{\symbf{Z'(X \beta +</span>
+<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>  u)}}}{{\symbf{Z'</span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a>  X}}}= \beta + \frac{{\symbf{Z' u}}}{{\symbf{Z' X}}} .</span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-13}</span>
 <span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>If $\bf Z$ is irrelevant, or, $\Pi=0$, then</span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>If ${\symbf{Z}}$ is irrelevant, or, $\Pi=0$, then</span>
 <span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}</span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}- \beta=\frac{{\symbf{Z' u}}}{{\symbf{Z' v}}} =\frac{ \frac{1}{\sqrt n}</span>
 <span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}</span>
 <span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a>\xrightarrow{d} \frac{z_u}{z_v} ,</span>
-<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-14}</span>
 <span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>where (normalizing ${\rm Var}(Z_i)=1$, which is harmless since any</span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>where (normalizing ${{\mathrm{Var}}}(Z_i)=1$, which is harmless since any</span>
 <span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>common scale factor cancels in the ratio)</span>
 <span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>$$</span>
@@ -1552,9 +1552,9 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>\sim N(0, \begin{bmatrix}</span>
 <span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>\sigma_u^2 \quad \sigma_{uv} <span class="sc">\\</span>  \sigma_{uv} \quad \sigma_v^2</span>
 <span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}).</span>
-<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-15}</span>
 <span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>Therefore, if $\bf Z$ is irrelevant, $\beta_{2sls}$ is inconsistent.</span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>Therefore, if ${\symbf{Z}}$ is irrelevant, $\beta_{2sls}$ is inconsistent.</span>
 <span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>Also, the distribution of the bias is Cauchy-like (the ratio of</span>
 <span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a>correlated normals).</span>
 <span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a></span>
@@ -1606,12 +1606,12 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a>In the model of</span>
 <span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,</span>
-<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
+<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-16}</span>
 <span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,</span>
-<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
+<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-17}</span>
 <span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a>The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic</span>
 <span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a>is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F</span>
@@ -1623,7 +1623,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z</span>
 <span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a>  (y-X\beta_0)/(N-l)}</span>
-<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-18}</span>
 <span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a>where $l$ is the number of instruments.  The idea of AR confidence</span>
 <span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>interval is to collect all values of $\beta_0$ at which we fail to</span>
@@ -1647,7 +1647,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a>Let's consider a model of housing price on no. of rooms</span>
 <span id="cb16-518"><a href="#cb16-518" aria-hidden="true" tabindex="-1"></a>and square footage.</span>
 <span id="cb16-519"><a href="#cb16-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a>$$ P = \alpha R + \beta F + \epsilon $$</span>
+<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a>$$ P = \alpha R + \beta F + \epsilon $$ {#eq-endogeneity-19}</span>
 <span id="cb16-521"><a href="#cb16-521" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-522"><a href="#cb16-522" aria-hidden="true" tabindex="-1"></a>Should square footage really be there?  We are not interested in,</span>
 <span id="cb16-523"><a href="#cb16-523" aria-hidden="true" tabindex="-1"></a>given square footage, how much money we need to pay for an additional</span>
@@ -1672,7 +1672,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-542"><a href="#cb16-542" aria-hidden="true" tabindex="-1"></a>of education on wage?  I implicitly ask what would be my pay raise if</span>
 <span id="cb16-543"><a href="#cb16-543" aria-hidden="true" tabindex="-1"></a>I go to college (given IQ, of course), for example.  Then we are</span>
 <span id="cb16-544"><a href="#cb16-544" aria-hidden="true" tabindex="-1"></a>concerned that this model of</span>
-<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>$$ wage= \alpha edu + \epsilon $$</span>
+<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>$$ wage= \alpha edu + \epsilon $$ {#eq-endogeneity-20}</span>
 <span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a>will generate biased estimate of $\alpha$, because we are not</span>
 <span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a>controlling for IQ.  But if I am an employer and interested in hiring</span>
 <span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a>a person, what would I have to pay extra to hire a college graduate</span>

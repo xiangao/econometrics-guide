@@ -30,58 +30,58 @@ The basic idea of IV is to use an exogenous variable (or exogenous variables) wh
 
 Suppose the linear regression model
 $$
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma^2 I,
-$$
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma^2 I,
+}}$$ {#eq-endogeneity-1}
  at least one of the explanatory variables in the $n \times k$
-matrix $\bf X$ is assumed not to be predetermined with respect to the
+matrix ${\symbf{X}}$ is assumed not to be predetermined with respect to the
 error terms, or say, endogenous.
 
-Suppose we have a set of  variables $\bf Z$, an $n \times l$
+Suppose we have a set of  variables ${\symbf{Z}}$, an $n \times l$
 matrix of instruments , which satisfies the moment
 condition
 $$
-{\rm E} [\bf Z'(y-X\beta)]=0.
-$$
-That is, $\bf Z$ is uncorrelated with the error term.
+{{\mathrm{E}}} [{\symbf{Z'(y-X\beta)]=0.
+}}$$ {#eq-endogeneity-2}
+That is, ${\symbf{Z}}$ is uncorrelated with the error term.
 
 Here is what we do for two-stage least squares (2sls):
 
-Stage 1:  Regress each of the variables in the $\bf X$ matrix on
-$\bf Z$ to obtain a matrix of fitted values $\bf \hat X$,
+Stage 1:  Regress each of the variables in the ${\symbf{X}}$ matrix on
+${\symbf{Z}}$ to obtain a matrix of fitted values ${\symbf{\hat X}}$,
 
 $$
-\bf \hat X=Z(Z'Z)^{-1}Z'X=P_ZX
+{\symbf{\hat X=Z(Z'Z)^{-1}Z'X=P_ZX
+}}$$ {#eq-endogeneity-3}
+
+This is essentially to get the part of ${\symbf{X}}$ that is correlated with ${\symbf{Z}}$.  Or to say, to project ${\symbf{X}}$ on to ${\symbf{Z}}$.
+
+Stage 2:  Regress ${\symbf{y}}$ on ${\symbf{\hat X}}$ to obtain the estimated
+${\symbf{\beta}}$
+
 $$
-
-This is essentially to get the part of $\bf X$ that is correlated with $\bf Z$.  Or to say, to project $\bf X$ on to $\bf Z$.
-
-Stage 2:  Regress $\bf y$ on $\bf \hat X$ to obtain the estimated
-$\bf \beta$
-
-$$
-\bf  \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'
+{\symbf{ \hat \beta_{2sls}=(\hat X' \hat X)^{-1}(\hat X'
 y)=(X'P_ZX)^{-1}(X'P_Zy)=\hat \beta_{IV}
-$$
+}}$$ {#eq-endogeneity-4}
 
 Standard errors:
 
 $$
-Var \bf [ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
+Var {\symbf{[ \hat \beta_{2sls}]= \hat \sigma^2 (\hat X' \hat X)^{-1}= \hat
 \sigma^2 (X'P_ZX)^{-1}
-$$
-where $\hat \sigma^2 ={\bf \hat u' \hat u} / N$.  This is the
+}}$$ {#eq-endogeneity-5}
+where $\hat \sigma^2 ={{\symbf{\hat u' \hat u}}} / N$.  This is the
 homoskedastic large-sample variance; finite-sample formulas typically
 apply a degrees-of-freedom correction ($N-k$ in place of $N$), and
 when errors are heteroskedastic or clustered the robust/clustered IV
 covariance matrix replaces $\hat\sigma^2 (X'P_ZX)^{-1}$ with a
 sandwich form.
 
-Note that $\bf \hat u = y- X \hat \beta_{2sls}$.
+Note that ${\symbf{\hat u = y- X \hat \beta_{2sls}}}$.
 
 If we do it manually by two steps, the second step will report a wrong
 standard error.  That is because the second stage regression will
-report standard errors based on $\bf \hat u = y- \hat X \hat
-\beta_{2sls}$.  Therefore, it's always recommended to ask the
+report standard errors based on ${\symbf{\hat u = y- \hat X \hat
+\beta_{2sls}}}$.  Therefore, it's always recommended to ask the
 statistical program to do a 2sls for you, since presumably that will
 give you correct standard errors.
 
@@ -92,7 +92,7 @@ deviations from their means, so the intercept drops out and $z'\iota = 0$; this
 keeps the algebra below about the slope alone.  Split $x$ into the part
 that lies along the error and the part that does not,
 
-$$ x = x^{\perp} + x^{\parallel}, $$
+$$ x = x^{\perp} + x^{\parallel}, $$ {#eq-endogeneity-6}
 
 where $x^{\parallel}$ is the orthogonal projection of $x$ onto $u$ and
 $x^{\perp}$ is what is left over.  Two facts hold *by construction* and are what
@@ -107,12 +107,12 @@ predicts the regressor).  Project both $y$ and $x$ onto $z$, and write $\hat
 y_z$ and $\hat x_z$ for those two projections.  The instrumental variables
 estimator is the ratio of their lengths,
 
-$$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$
+$$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$ {#eq-endogeneity-7}
 
 since $z'y = \beta_1 z'x + z'u = \beta_1 z'x$.  Because the two right triangles
 involved are similar, this is the same number you would get from the *infeasible*
 regression of $y$ on the exogenous part alone: that regression returns
-$$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$
+$$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$ {#eq-endogeneity-8}
 where the second term vanishes because $x^{\perp} \perp u$ and the first
 collapses to $\beta_1$ because $x^{\perp} \perp x^{\parallel}$, so
 $x^{\perp\prime}x = x^{\perp\prime}x^{\perp}$.  That infeasible regression is the
@@ -159,13 +159,13 @@ summary(tsls.model)
 ## Control Function Approach
 
 A second way to do an IV regression is also two-step approach: Regress
-$\bf X$ (endogenous) on $\bf Z$, get the residual: $\bf \hat
-v=X-Z(Z'Z)^{-1}Z'X$, then regress $y$ on $\bf X$ and $\hat v$ to get
+${\symbf{X}}$ (endogenous) on ${\symbf{Z}}$, get the residual: ${\symbf{\hat
+v=X-Z(Z'Z)^{-1}Z'X}}$, then regress $y$ on ${\symbf{X}}$ and $\hat v$ to get
 $\hat \beta_{IV}$.
 
 The difference between this approach and the 2sls approach is that in
-2sls we regress $y$ on $\bf \hat X$; in the control function approach,
-we regress $y$ on $\bf  X$ and $\hat v$.  They should both give you
+2sls we regress $y$ on ${\symbf{\hat X}}$; in the control function approach,
+we regress $y$ on ${\symbf{ X}}$ and $\hat v$.  They should both give you
 the same coefficient estimates.  There are advantages of using the
 control function approach.
 
@@ -185,7 +185,7 @@ summary(tsls.control)
 ```
 
 This approach can be used to do a simple endogeneity test.  First, you
-can do a simple test of endogeneity of $\bf X$.  For example:
+can do a simple test of endogeneity of ${\symbf{X}}$.  For example:
 
 
 	reg x_endog x* z*
@@ -194,7 +194,7 @@ can do a simple test of endogeneity of $\bf X$.  For example:
 	test v_x
 
 
-Obviously, this test is based on $\bf Z$ being exogenous.
+Obviously, this test is based on ${\symbf{Z}}$ being exogenous.
 
 Residual inclusion extends to *some* non-linear models -- logit,
 probit, Poisson -- under additional control-function assumptions, but
@@ -241,9 +241,9 @@ consistent estimator under both null and alternative (IV estimator).
 Similar to panel data setting, we have the Hausman test statistic as:
 
 $$ H = (\hat \beta_c - \hat \beta_e)' D^{-} (\hat \beta_c - \hat
-\beta_e) $$
+\beta_e) $$ {#eq-endogeneity-9}
 
-where $D={\rm Var} [\hat \beta_c] - {\rm Var} [\hat \beta_e]$, $^-$ is
+where $D={{\mathrm{Var}}} [\hat \beta_c] - {{\mathrm{Var}}} [\hat \beta_e]$, $^-$ is
 the generalized inverse, $\hat \beta_c$ is the consistent estimator (in
 this case the IV estimator) and $\hat \beta_e$ is the efficient
 estimator (in this case OLS estimator).
@@ -375,38 +375,38 @@ unidentified.
 To see the problem, suppose
 
 $$
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
-$$
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,
+}}$$ {#eq-endogeneity-10}
 
 $$
-\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
-$$
+{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,
+}}$$ {#eq-endogeneity-11}
 
 and
 $$
-{\rm E}(\bf Z u )=0.
-$$
+{{\mathrm{E}}}({\symbf{Z u )=0.
+}}$$ {#eq-endogeneity-12}
 
-We can see here $\bf Z$ is exogenous.  However, the model does not say
+We can see here ${\symbf{Z}}$ is exogenous.  However, the model does not say
 anything about relevance.  To illustrate the problem caused by weak
 instrument, suppose we have only one endogenous variable and one
 instrument.
 
 $$
-\hat \beta_{2sls}=\frac{\bf Z' y}{\bf Z' X} = \frac{\bf Z'(X \beta +
-  u)}{\bf Z'
-  X}= \beta + \frac{\bf Z' u}{\bf Z' X} .
-$$
+\hat \beta_{2sls}=\frac{{\symbf{Z' y}}}{{\symbf{Z' X}}} = \frac{{\symbf{Z'(X \beta +
+  u)}}}{{\symbf{Z'
+  X}}}= \beta + \frac{{\symbf{Z' u}}}{{\symbf{Z' X}}} .
+$$ {#eq-endogeneity-13}
 
-If $\bf Z$ is irrelevant, or, $\Pi=0$, then
+If ${\symbf{Z}}$ is irrelevant, or, $\Pi=0$, then
 
 $$
-\hat \beta_{2sls}- \beta=\frac{\bf Z' u}{\bf Z' v} =\frac{ \frac{1}{\sqrt n}
+\hat \beta_{2sls}- \beta=\frac{{\symbf{Z' u}}}{{\symbf{Z' v}}} =\frac{ \frac{1}{\sqrt n}
 \sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}
 \xrightarrow{d} \frac{z_u}{z_v} ,
-$$
+$$ {#eq-endogeneity-14}
 
-where (normalizing ${\rm Var}(Z_i)=1$, which is harmless since any
+where (normalizing ${{\mathrm{Var}}}(Z_i)=1$, which is harmless since any
 common scale factor cancels in the ratio)
 
 $$
@@ -416,9 +416,9 @@ z_u \\z_v
 \sim N(0, \begin{bmatrix}
 \sigma_u^2 \quad \sigma_{uv} \\  \sigma_{uv} \quad \sigma_v^2
 \end{bmatrix}).
-$$
+$$ {#eq-endogeneity-15}
 
-Therefore, if $\bf Z$ is irrelevant, $\beta_{2sls}$ is inconsistent.
+Therefore, if ${\symbf{Z}}$ is irrelevant, $\beta_{2sls}$ is inconsistent.
 Also, the distribution of the bias is Cauchy-like (the ratio of
 correlated normals).
 
@@ -470,12 +470,12 @@ endogenous variables).
 In the model of
 
 $$
-\bf y=X\beta+u, \quad {\rm E} (u u')=\sigma_u^2 I,
-$$
+{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,
+}}$$ {#eq-endogeneity-16}
 
 $$
-\bf X=Z\Pi+v, \quad {\rm E} (v v')=\sigma_v^2 I,
-$$
+{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,
+}}$$ {#eq-endogeneity-17}
 
 The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic
 is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F
@@ -487,7 +487,7 @@ $\beta=\beta_0$):
 $$
 AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
   (y-X\beta_0)/(N-l)}
-$$
+$$ {#eq-endogeneity-18}
 
 where $l$ is the number of instruments.  The idea of AR confidence
 interval is to collect all values of $\beta_0$ at which we fail to
@@ -511,7 +511,7 @@ test to use.
 Let's consider a model of housing price on no. of rooms
 and square footage.
 
-$$ P = \alpha R + \beta F + \epsilon $$
+$$ P = \alpha R + \beta F + \epsilon $$ {#eq-endogeneity-19}
 
 Should square footage really be there?  We are not interested in,
 given square footage, how much money we need to pay for an additional
@@ -536,7 +536,7 @@ In the wage and education example, if I am asking: what's the effect
 of education on wage?  I implicitly ask what would be my pay raise if
 I go to college (given IQ, of course), for example.  Then we are
 concerned that this model of
-$$ wage= \alpha edu + \epsilon $$
+$$ wage= \alpha edu + \epsilon $$ {#eq-endogeneity-20}
 will generate biased estimate of $\alpha$, because we are not
 controlling for IQ.  But if I am an employer and interested in hiring
 a person, what would I have to pay extra to hire a college graduate

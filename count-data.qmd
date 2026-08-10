@@ -4,32 +4,32 @@
 If the interested variable is a count data variable, it is natural to model it as a Poisson process.  The number of occurrence follows a Poisson process:
 
 $$
-{\rm Pr} [Y=y]=\frac{e^{-\mu} \mu^y}{y! }
-$$
+{{\mathrm{Pr}}} [Y=y]=\frac{e^{-\mu} \mu^y}{y! }
+$$ {#eq-count-data-1}
 
 One of Poisson's properties is that it has equal variance as its mean:
 
 $$
-{\rm E} [Y]={\rm Var} [Y]=\mu
-$$
+{{\mathrm{E}}} [Y]={{\mathrm{Var}}} [Y]=\mu
+$$ {#eq-count-data-2}
 
 
 In a count data model such as Poisson regression model, we are modeling log of the expected counts:
 
 $$
-\log ({\rm E}( Y) )=\bf X_i' \beta
-$$
+\log ({{\mathrm{E}}}( Y) )={\symbf{X_i' \beta
+}}$$ {#eq-count-data-3}
 
 The log-likelihood function is
 $$
 \log L(\beta)= \sum_{i=1}^N {- \exp (X_i' \beta) + y_i X_i' \beta - \ln y_i!}
-$$
+$$ {#eq-count-data-4}
 
 To maximize it, the first order condition is
 
 $$
 \sum_{i=1}^N (y_i - \exp (X_i' \beta) )X_i'=0 
-$$
+$$ {#eq-count-data-5}
 
 We can use Newton-Raphson or other optimization algorithms to find the solution for the first order condition.
 
@@ -38,7 +38,7 @@ We can use Newton-Raphson or other optimization algorithms to find the solution 
 
 #### Model
 
-Note that in the first-order condition above, if $X_i'$ includes a constant, then $(y_i - \exp (X_i' \beta) )$ sums to zero.  If ${\rm E} [y_i|X_i] = \exp (X_i' \beta)$, then the summation on the left-hand side has expectation of zero.  Hence the only specification needed to apply it is the conditional expectation of $Y$ given $X$.  Even if the data is not Poisson-distributed, the estimator is still consistent.  Therefore, this estimator is called the quasi-ML (QML) Poisson estimator.
+Note that in the first-order condition above, if $X_i'$ includes a constant, then $(y_i - \exp (X_i' \beta) )$ sums to zero.  If ${{\mathrm{E}}} [y_i|X_i] = \exp (X_i' \beta)$, then the summation on the left-hand side has expectation of zero.  Hence the only specification needed to apply it is the conditional expectation of $Y$ given $X$.  Even if the data is not Poisson-distributed, the estimator is still consistent.  Therefore, this estimator is called the quasi-ML (QML) Poisson estimator.
 
 
 Although the QML Poisson estimator is consistent under relatively weak condition, the regular variance estimator for the coefficients are not valid anymore.
@@ -48,16 +48,16 @@ If a stronger assumption is made that the data follows a Poisson distribution, t
 
 
 $$
- {\rm Var}_{ML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
-$$
+ {{\mathrm{Var}}}_{ML} [\hat \beta_P] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
+$$ {#eq-count-data-6}
 
 
 On the other hand, the variance matrix for the  QML Poisson estimator $\hat \beta_{QML}$ is
 
 $$
- {\rm Var}_{QML} [\hat \beta_{QML}] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i') (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
-$$
-where $\omega_i={\rm Var} [y_i|X_i] $ is the conditional variance of $y_i$.
+ {{\mathrm{Var}}}_{QML} [\hat \beta_{QML}] = (\sum_{i=1}^N \mu_i X_i X_i')^{-1} (\sum_{i=1}^N \omega_i X_i X_i') (\sum_{i=1}^N \mu_i X_i X_i')^{-1}
+$$ {#eq-count-data-7}
+where $\omega_i={{\mathrm{Var}}} [y_i|X_i]$ is the conditional variance of $y_i$.
 
 
 
@@ -90,7 +90,7 @@ We specify a panel data count model as:
 $$
 E[y_{it} | \alpha_i, X_{it}]= \alpha_i \exp(X'_{it} \beta) =
 \exp(\gamma_i + X'_{it} \beta).
-$$
+$$ {#eq-count-data-8}
 
 
 It turns out that for fixed-effect Poisson model, just like in linear
@@ -121,22 +121,22 @@ model which allows for overdispersion by introducing an unobserved
 heterogeneity term.  In a negative binomial model,
 
 $$
-{\rm E} [Y | X, \tau]=\mu \tau = e^{X' \beta} \cdot \tau
-$$
+{{\mathrm{E}}} [Y | X, \tau]=\mu \tau = e^{X' \beta} \cdot \tau
+$$ {#eq-count-data-9}
 
 This extra $\tau$ term follows a $Gamma(\theta, \theta)$
 distribution, with $E(\tau)=1$ and $Var (\tau)=1/\theta$.
 
 Conditional on $X$ and $\tau$, the distribution of $Y$ is still poisson:
 $$
-{\rm Pr} [Y=y | X, \tau]=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }
-$$
+{{\mathrm{Pr}}} [Y=y | X, \tau]=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }
+$$ {#eq-count-data-10}
 
 Conditional on $X$ only, the distribution of $Y$ is negative binomial:
 $$
-{\rm Pr} [Y=y | X]=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{
+{{\mathrm{Pr}}} [Y=y | X]=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{
   \Gamma(y+1) \Gamma(\theta) (\mu + \theta)^{\theta+y}}
-$$
+$$ {#eq-count-data-11}
 
 This distribution still has conditional mean of $\mu$, but variance is
 $\mu (1+(1/\theta) \mu)$.
@@ -153,12 +153,12 @@ based on this kind of data set, we need to use zero-truncated count
 models.
 
 $$
-{\rm Pr} [Y=y | y>0, X]=\frac{{\rm Pr} (y | X) }{{\rm Pr} (y>0 | X)}=
-\frac{{\rm Pr} (y | X)}{1- \exp (- \mu)}
-$$
+{{\mathrm{Pr}}} [Y=y | y>0, X]=\frac{{{\mathrm{Pr}}} (y | X) }{{{\mathrm{Pr}}} (y>0 | X)}=
+\frac{{{\mathrm{Pr}}} (y | X)}{1- \exp (- \mu)}
+$$ {#eq-count-data-12}
 
-where the last equality holds for the Poisson case, since ${\rm Pr}
-(y=0|X)=e^{-\mu}$; for the negative binomial, ${\rm Pr} (y=0|X)=
+where the last equality holds for the Poisson case, since ${{\mathrm{Pr}}}
+(y=0|X)=e^{-\mu}$; for the negative binomial, ${{\mathrm{Pr}}} (y=0|X)=
 (\theta/(\theta+\mu))^{\theta}$, so the truncation factor is $1-
 (\theta/(\theta+\mu))^{\theta}$ instead.  Thus we are modeling the
 counts given that we have a positive outcome.  Both zero-truncated poisson ("ztp" in Stata) and
@@ -183,8 +183,8 @@ values.  Suppose zero counts are generated by a binary process:
 
 
 $$
-{\rm Pr} [y=0 |  X]=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi
-$$
+{{\mathrm{Pr}}} [y=0 |  X]=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi
+$$ {#eq-count-data-13}
 
 Positive counts are generated by a truncated count process.
 
@@ -195,9 +195,9 @@ tricky to calculate, since an independent variable, if appearing in
 both equations, will have effect through both equations.
 
 $$
-{\rm E} (y | X) = [\pi \times 0 ] + {(1-\pi) \times {\rm E} (y | y>0,
-  X) } = (1- \pi) \times {\rm E} (y | y>0 , X)
-$$
+{{\mathrm{E}}} (y | X) = [\pi \times 0 ] + {(1-\pi) \times {{\mathrm{E}}} (y | y>0,
+  X) } = (1- \pi) \times {{\mathrm{E}}} (y | y>0 , X)
+$$ {#eq-count-data-14}
 
 
 In stata, there are commands such as "hplogit", which is a hurdle
@@ -235,7 +235,7 @@ y_i \sim \left\{
 0 \  \mbox{with probability} \ \psi \\    g(y_i | X_i)   \mbox{with
   probability} \ 1- \psi
  \end{array} \right.
-$$
+$$ {#eq-count-data-15}
 
 Then
 
@@ -244,7 +244,7 @@ P(Y_i=y_i | X_i, Z_i) = \left\{
  \begin{array}{c}
 \psi(\gamma' Z_i) + (1- \psi(\gamma' Z_i) ) g(0 | X_i)  \  \mbox{if} \ y_i=0 \\  (1- \psi(\gamma' Z_i) ) g(y_i | X_i)  \  \mbox{if} \ y_i>0
  \end{array} \right.
-$$
+$$ {#eq-count-data-16}
 
 This says that every non-zero observation follows a count process
 $g(y_i|X_i)$. Every zero observation has two possible sources: from a
@@ -271,25 +271,25 @@ well as the count models above.
 
 
 In a linear model
-$$ y_i= X_i' \beta + \epsilon, $$
-$$E(y_i) = X_i' \beta $$
+$$ y_i= X_i' \beta + \epsilon, $$ {#eq-count-data-17}
+$$E(y_i) = X_i' \beta $$ {#eq-count-data-18}
 
 
  When $y_i$ is binary (meaning it takes two values, 1 or 0), We can also do an OLS regression on it, but a more popular way is to use a non-linear model.  The most popular choices for modeling binary response are logit model and probit model.  Both of them use the same idea: use a link function to map the binary variable into a continuous variable which is a linear function of the predictors.
 
 Suppose $p_i$ is the probability that $y_i=1$.  Then
-$$p_i=E(y_i) = g^{-1}(X_i' \beta), $$
+$$p_i=E(y_i) = g^{-1}(X_i' \beta), $$ {#eq-count-data-19}
 where $g^{-1}()$ is a function that maps from the linear predictor to $y_i$, which is often called index function or inverse link function.
 
 This says that the expectation of $y_i$ (equivalently, $p_i$) is not a linear function of $x_i$'s, but by using the link function, we are still able to model a transformed $p_i$ as a linear function of $x_i$'s:
-$$g(p_i) = X_i' \beta. $$
+$$g(p_i) = X_i' \beta. $$ {#eq-count-data-20}
 
 $g^{-1}()$ can be a normal CDF then we have a probit model:
-$$ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {\rm exp} [-(t^2/2)] dt, $$
+$$ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {{\mathrm{exp}}} [-(t^2/2)] dt, $$ {#eq-count-data-21}
 
 or it can be a logit:
 
-$$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$
+$$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$ {#eq-count-data-22}
 
 
 
@@ -298,26 +298,26 @@ $$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$
 Often times we are interested in the marginal effects of the predictors.  In a linear model, it's easy: the coefficient on $x_1$ means when $x_1$ increase by one unit, how much will $y$ increase.
 
 In a binary response model,
-$$\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}$$
+$$\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}$$ {#eq-count-data-23}
 
 In the case of probit:
 
 $$\frac{\partial p}{\partial x} = \frac{\partial \Phi (X_i'
-  \beta)}{\partial x} = \phi(X_i' \beta) \beta, $$
+  \beta)}{\partial x} = \phi(X_i' \beta) \beta, $$ {#eq-count-data-24}
 
 where $\phi()$ is the density function of normal distribution.
 
 In the case of logit:
 
-$$\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, $$
+$$\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, $$ {#eq-count-data-25}
 where $\gamma()$ is the density function for logistic distribution:
-$$\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).$$
+$$\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).$$ {#eq-count-data-26}
 
 Therefore for logit, a quick approximation of the marginal effect is
 to plug in the sample proportion $\bar p$ and coefficient estimate
 $\hat \beta$:
 
-$$ \hat{ \frac{\partial p}{\partial x}} \approx \bar p (1- \bar p) \hat \beta $$
+$$ \hat{ \frac{\partial p}{\partial x}} \approx \bar p (1- \bar p) \hat \beta $$ {#eq-count-data-27}
 
 This evaluates the effect at the mean probability; it is a rough rule
 of thumb, not the average marginal effect $\frac{1}{n}\sum_i \hat
@@ -325,20 +325,20 @@ p_i(1-\hat p_i)\hat\beta$, which is what software reports.
 
 The logit model can also be formulated as
 $$
-\log (\frac{p}{1-p})=\bf X_i' \beta
-$$
+\log (\frac{p}{1-p})={\symbf{X_i' \beta
+}}$$ {#eq-count-data-28}
 which says the logarithm of the odds (the ratio of the two
-probabilities) is equal to $\bf X_i' \beta$.  Therefore,
+probabilities) is equal to ${\symbf{X_i' \beta}}$.  Therefore,
 $$
 p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'
 \beta)}=\Lambda( X_i' \beta)
-$$
+$$ {#eq-count-data-29}
 
 
 
 Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  What this question is can be formulated as:
 
-$$ E(p | x_1=1) - E(p | x_1=0). $$
+$$ E(p | x_1=1) - E(p | x_1=0). $$ {#eq-count-data-30}
 
 In empirical analysis, it's often calculated by calculating the predicted probability by setting $x_1$ to 1 and by setting $x_1$ to 0.  Then calculate the difference.
 
@@ -348,39 +348,39 @@ In empirical analysis, it's often calculated by calculating the predicted probab
 In a count data model such as Poisson regression model or Negative Binomial model, we are modeling log of the expected counts:
 
 $$
-\log ({\rm E}( y) )=\bf X_i' \beta
-$$
-Therefore the marginal effect of $x_1$, for example, on ${\rm E} (y)$ is
+\log ({{\mathrm{E}}}( y) )={\symbf{X_i' \beta
+}}$$ {#eq-count-data-31}
+Therefore the marginal effect of $x_1$, for example, on ${{\mathrm{E}}} (y)$ is
 
-$$ { \frac{\partial \log {\rm E} (y) }{\partial x}} = \hat \beta , $$
+$$ { \frac{\partial \log {{\mathrm{E}}} (y) }{\partial x}} = \hat \beta , $$ {#eq-count-data-32}
 
 which means $\beta$ is the marginal effect of $x$ on $\log$ of the expected counts. Suppose the expected counts at $x$ is $\mu_{x}$, then
 
-$$ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , $$
+$$ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , $$ {#eq-count-data-33}
 
 which says that $\beta$ represents the marginal effect of percentage change in $\mu_x$ with respect to $x$.
 
 Another way to formulate this is to use the Incidence Rate Ratio Interpretation.  Suppose the expected counts at $x$ is $\mu_{x}$, and expected counts at $x+1$ is $\mu_{x+1}$.
 
-$$  \log (\mu_x) = x' \beta. $$
+$$  \log (\mu_x) = x' \beta. $$ {#eq-count-data-34}
 
 Therefore,
 
 $$
 \mu_{x} = \exp (x' \beta),
-$$
+$$ {#eq-count-data-35}
 
 and
 
 $$
 \frac{\mu_{x+1}}{\mu_{x}} = \exp ( \beta).
-$$
+$$ {#eq-count-data-36}
 
 This says that the exponentiated $\beta$ is the incidence rate ratio of the expected counts, if $x$ increases by $1$.
 
-To calculate the marginal effect of $x$ on $y$ (or ${\rm E} (y)$), we need to calculate
+To calculate the marginal effect of $x$ on $y$ (or ${{\mathrm{E}}} (y)$), we need to calculate
 
-$$\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , $$
+$$\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , $$ {#eq-count-data-37}
 if we evaluate $\mu_x$ at predicted value.
 
 ### How to calculate marginal effects in Stata
