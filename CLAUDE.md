@@ -785,3 +785,41 @@ Chaisemartin–D'Haultfœuille (2020), Goodman-Bacon (2021). Four figures in Ch.
 negative-weight two-panel, treatment, DiD). Full book rendered clean; all cited numbers verified
 against live output. A standalone companion note `interpreting-ols-knaus-connection.html` sits in
 the book dir but is **not** in `_quarto.yml` (not part of the rendered book, left untracked).
+
+## Modern treatments (2026-08-12) — population-level sections added to OLS, MLE, GLS
+
+Three new sections adding modern/population-level perspectives to the classical chapters:
+
+**OLS — "OLS as Conditional Expectation"** (after "Geometry of Least Squares", before
+"Properties"). CEF definition and MMSE optimality proof (via iterated expectations on the
+cross term), BLP as the population minimiser of E[(Y − X'b)²], population orthogonality
+E[X(Y − X'β)] = 0 as the analog of X'û = 0, the BLP-approximates-CEF result (BLP depends
+on Y only through the CEF), linear-vs-nonlinear CEF cases, and the population-to-sample
+bridge showing that replacing expectations with sample averages recovers (X'X)⁻¹X'y with
+the 1/n factors cancelling.
+
+**MLE — "When the Model Is Wrong: Quasi-MLE and M-Estimation"** (after "Asymptotic
+Properties", before "Example"). KL divergence motivation (MLE minimises KL from the true
+density to the model), the pseudo-true value, the information matrix inequality
+(J ≠ H under misspecification), sandwich variance H⁻¹JH⁻¹, QMLE for Poisson (score
+depends only on E[Y|X] = exp(X'β), so consistency needs only correct conditional mean),
+the same logic for logit/probit, and the M-estimator framework unifying OLS/MLE/QMLE/GMM
+as special cases of Σψ(yₜ, xₜ, θ) = 0 with sandwich A⁻¹BA⁻¹'.
+
+**GLS — "Efficiency of GLS"** (after "Feasible GLS"). Gauss-Markov proof for GLS: any
+linear unbiased Cy has Var(C̃y) − Var(β̂_GLS) = DΩD' ≥ 0 because DX = 0 kills the cross
+terms. GLS-vs-OLS+robust-SE tradeoff: both consistent, GLS more efficient when Ω is well
+modelled, OLS+sandwich safer when it is not; modern default is OLS+robust, with RE as
+an important FGLS exception where the structure is model-implied.
+
+**Cross-references to other books** (link only, material already exists):
+
+- `endogeneity.qmd` → LATE treatment in `causal_econometrics_guide/iv-rdd.qmd`
+- `panel-data.qmd` → CRE treatment in `blog_book/correlated-random-effect.qmd`
+- `discrete.qmd` → AME treatment in `blog_book/marginal-effects-fe.qmd`
+
+**Preface rewritten.** Replaced the personal-background first paragraph with a brief
+content overview of the book's chapters.
+
+**Layout.** Right-side table of contents removed (`toc: false`); left chapter sidebar
+retained. Content panel width set to 960px.

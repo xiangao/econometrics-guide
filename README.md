@@ -6,7 +6,7 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
 
 | Part | Chapters |
 |------|----------|
-| **Foundations** | OLS, Maximum Likelihood, GLS |
+| **Foundations** | OLS (matrix form, conditional expectation, best linear predictor), Maximum Likelihood (QMLE, M-estimation), GLS (Gauss-Markov, efficiency tradeoffs) |
 | **Causal Inference & IV** | Endogeneity & Instrumental Variables, GMM |
 | **Limited Dependent Variables** | Censored/Truncated/Selection Models, Discrete Choice, Count Data |
 | **Advanced Topics** | Panel Data, Survival Models, Dynamic Panels, Missing Data, Interpreting OLS (Effect Weights & Outcome Weights) |
@@ -109,3 +109,12 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > D'Haultfœuille 2020; Goodman-Bacon 2021) and a note that the weights diagnose estimation/overlap,
 > not the parallel-trends assumption. New render deps: `lmw`, `WeightIt`. Rendered clean; every cited
 > number verified against live output.
+
+> **2026-08-12:** Added modern/population-level sections to the three foundations chapters.
+> OLS: "OLS as Conditional Expectation" — the CEF, best linear predictor, BLP-approximates-CEF
+> result, and population-to-sample bridge. MLE: "When the Model Is Wrong" — KL divergence
+> motivation, information matrix inequality, sandwich variance, QMLE, and the M-estimator
+> framework unifying OLS/MLE/GMM. GLS: "Efficiency of GLS" — Gauss-Markov proof and the
+> GLS-vs-OLS+robust-SE tradeoff. Cross-references added to the causal book (LATE), blog book
+> (CRE, AME) for topics already covered there. Preface rewritten as content overview. Right-side
+> TOC removed for a cleaner layout.
