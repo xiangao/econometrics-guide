@@ -87,6 +87,8 @@ give you correct standard errors.
 
 Geometry Illustration:
 
+![IV geometry: the instrument $z$ is perpendicular to the error $u$, so projecting $x$ and $y$ onto $z$ isolates the exogenous variation.  The IV estimator $\hat\beta_{IV} = \hat y_z / \hat x_z$ recovers $\beta$ without using the endogenous component $x^{\parallel}$.](iv.png){width=70%}
+
 Suppose the simplest case: $y=\beta_0 + \beta_1 x + u$.  Take all variables in
 deviations from their means, so the intercept drops out and $z'\iota = 0$; this
 keeps the algebra below about the slope alone.  Split $x$ into the part
