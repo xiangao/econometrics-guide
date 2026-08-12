@@ -502,27 +502,7 @@ vtab(c(`true ATT`              = mean(tau[panel$D == 1]),
 
 The TWFE coefficient sits well below the true ATT, and $\sum \omega_{it} y_{it}$ reproduces it exactly. Hundreds of treated cells carry a negative weight: these are the early cohort's cells in periods $6$–$8$, the ones where the unit-and-time prediction of $D$ exceeds $1$ and the residual $\tilde D_{it}$ flips sign. Their outcomes are subtracted from $\hat\beta$ — the observation-level signature of the Bacon forbidden comparison.
 
-```{r}
-#| fig-width: 5.5
-#| fig-height: 4.2
-#| fig-cap: "Cell-level outcome weights in the staggered panel, summed within each cohort-period cell. The early cohort's treated cells (teal triangles) turn negative in periods $6$--$8$ — those outcomes are subtracted from $\\hat\\beta$, the observation-level signature of the forbidden comparison."
-cols <- c("grey50", teal, rust)
-pchs <- c(16, 17, 15)
-cell_tw  <- tapply(omega_tw,  list(panel$g, panel$t), sum)
-
-plot(NA, xlim = c(0.5, 8.5), ylim = range(cell_tw), xlab = "period",
-     ylab = "total cell weight", xaxt = "n")
-axis(1, at = 1:8)
-abline(h = 0, lty = 3, col = "grey55")
-for (k in 1:3) {
-  lines(1:8, cell_tw[k, ], col = cols[k], lwd = 2)
-  points(1:8, cell_tw[k, ], pch = pchs[k], col = cols[k], cex = 1.4)
-}
-legend("bottomleft", legend = c("never (g=0)", "early (g=3)", "late (g=6)"),
-       pch = pchs, col = cols, lty = 1, lwd = 2, bty = "n", cex = 0.85)
-```
-
-The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. A single unit can have $\omega_{it} > 0$ in some periods and $\omega_{it} < 0$ in others — in the simulation above, every early-cohort unit is positive in periods $3$–$5$ and negative in periods $6$–$8$. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming specific $(i, t)$ cells removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is to switch estimators — imputation (Borusyak, Jaravel, and Spiess 2024), Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction. The imputation estimator, for example, fits unit and time fixed effects on untreated observations alone and imputes each treated cell's counterfactual; because its smoother draws only on untreated outcomes, the weight on every treated cell reduces to $1/n_1$ and no treated observation can count as a control.
+The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming specific $(i, t)$ cells removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is to switch estimators — imputation (Borusyak, Jaravel, and Spiess 2024), Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction. The imputation estimator, for example, fits unit and time fixed effects on untreated observations alone and imputes each treated cell's counterfactual; because its smoother draws only on untreated outcomes, the weight on every treated cell reduces to $1/n_1$ and no treated observation can count as a control.
 
 ### Implied versus chosen
 
