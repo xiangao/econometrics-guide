@@ -100,3 +100,82 @@ A typical FGLS procedure has three steps. First, run OLS and obtain the residual
   precisely the case where the correction matters most. Prefer Prais-Winsten.
 
 Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).
+
+## Efficiency of GLS
+
+### The Gauss-Markov Theorem for GLS
+
+The GLS estimator is the best linear unbiased estimator (BLUE) when
+${\symbf{\Omega}}$ is known.  To see this, consider any other linear
+unbiased estimator ${\symbf{\tilde\beta = Cy}}$ for some matrix
+${\symbf{C}}$ satisfying ${\symbf{CX = I}}$.  Write
+${\symbf{C = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1} + D}}$, where
+${\symbf{D}}$ is the difference from the GLS weighting.  Unbiasedness
+requires ${\symbf{CX = I}}$, which means ${\symbf{DX = 0}}$.  The
+variance of ${\symbf{\tilde\beta}}$ is
+$$
+\begin{aligned}
+{\symbf{\mathrm{Var}(\tilde\beta)}}
+&= {\symbf{C\,\Omega\, C'}} \\
+&= {\symbf{(X'\Omega^{-1}X)^{-1} + D\,\Omega\, D'}}.
+\end{aligned}
+$$ {#eq-gls-gm}
+
+The cross terms vanish because ${\symbf{DX = 0}}$ implies
+${\symbf{D\,\Omega\,\Omega^{-1}X = DX = 0}}$, so
+${\symbf{D\,\Omega\,\Omega^{-1}X(X'\Omega^{-1}X)^{-1} = 0}}$.  Since
+${\symbf{D\,\Omega\, D'}}$ is positive semidefinite,
+$$
+{\symbf{\mathrm{Var}(\tilde\beta) - \mathrm{Var}(\hat\beta_{GLS})
+= D\,\Omega\, D' \ge 0}}.
+$$ {#eq-gls-gm2}
+
+No linear unbiased estimator can have a smaller variance than GLS.
+
+When ${\symbf{\Omega = \sigma^2 I}}$, GLS reduces to OLS, and this is
+the ordinary Gauss-Markov theorem: OLS is BLUE under
+homoscedasticity and no serial correlation.
+
+### GLS versus OLS with Robust Standard Errors
+
+The Gauss-Markov result says GLS is more efficient than OLS when
+${\symbf{\Omega}}$ is known.  In practice ${\symbf{\Omega}}$ is never
+known, and we face a choice: estimate ${\symbf{\Omega}}$ and use FGLS,
+or use OLS with a sandwich variance estimator (White or Newey-West,
+as in the [MLE chapter](mle.qmd)) that is valid regardless of the
+form of ${\symbf{\Omega}}$.
+
+Both approaches give consistent estimates of $\beta$, since OLS is
+consistent under the same conditions whether or not errors are
+heteroscedastic or serially correlated.  The difference is
+efficiency.  GLS exploits the structure of ${\symbf{\Omega}}$ to weight
+observations optimally; OLS ignores that structure and compensates
+afterward with a robust variance estimate.
+
+The tradeoff turns on how well ${\symbf{\Omega}}$ can be modeled:
+
+When the error structure is well understood --- for example,
+heteroscedasticity that follows a known function of observables, or
+AR(1) serial correlation whose form is dictated by the data
+generating process --- FGLS can deliver substantial efficiency gains.
+The efficiency improvement is largest when the heterogeneity in
+error variances is large, since GLS downweights noisy observations
+that OLS treats equally.
+
+When the error structure is unknown or hard to model correctly,
+FGLS carries a specification risk.  If ${\symbf{\hat\Omega}}$ is
+badly estimated, the FGLS estimator can be less efficient than OLS,
+and the FGLS standard errors can be misleading because they assume
+the estimated error structure is correct.  OLS with robust standard
+errors avoids this risk: the point estimates are the same regardless
+of ${\symbf{\Omega}}$, and the sandwich variance is consistent under
+arbitrary heteroscedasticity or serial correlation.
+
+The modern default in applied work is to report OLS with robust
+standard errors, reserving GLS for settings where there is strong
+prior information about the error structure or where the efficiency
+gain is large enough to justify the specification risk.  Panel data
+models are an important exception: the random effects estimator is
+a form of FGLS, and there the structure of ${\symbf{\Omega}}$ (an
+equicorrelated block for each unit) is implied by the model rather
+than estimated freely.

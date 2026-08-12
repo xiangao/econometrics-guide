@@ -111,6 +111,126 @@ continuous function of $\theta$, then $g(\hat \theta)$ is the MLE of
 $g(\theta)$.
 
 
+## When the Model Is Wrong: Quasi-MLE and M-Estimation
+
+### What MLE Actually Minimizes
+
+The asymptotic properties above assume that the true density belongs
+to the parametric family $f(y \mid \theta)$.  In practice this is
+rarely literally true.  What does MLE estimate when the model is
+wrong?
+
+Write $g(y)$ for the true density and $f(y \mid \theta)$ for the
+parametric model.  Maximizing the log-likelihood is equivalent to
+minimizing the Kullback-Leibler divergence from the true density to
+the model:
+$$
+\mathrm{KL}\bigl(g \,\|\, f(\cdot \mid \theta)\bigr)
+= \int g(y) \log \frac{g(y)}{f(y \mid \theta)}\, dy
+= E_g\!\left[\log g(Y)\right]
+  - E_g\!\left[\log f(Y \mid \theta)\right].
+$$ {#eq-kl-div}
+
+The first term does not depend on $\theta$, so minimizing KL over
+$\theta$ is the same as maximizing $E_g[\log f(Y \mid \theta)]$,
+which is the population version of the sample log-likelihood.  The
+MLE converges to the value $\theta^*$ that makes $f(\cdot \mid
+\theta)$ closest to $g$ in the KL sense, whether or not $g$ belongs
+to the family.  This $\theta^*$ is called the pseudo-true value.
+
+### The Information Matrix Inequality
+
+Under correct specification, the two forms of the information matrix
+are equal:
+$$
+J(\theta) = E\!\left[
+  \frac{\partial l_t}{\partial \theta}
+  \frac{\partial l_t}{\partial \theta}'
+\right]
+= -E\!\left[
+  \frac{\partial^2 l_t}{\partial \theta \,\partial \theta'}
+\right]
+= H(\theta).
+$$ {#eq-info-equality}
+
+This is the information matrix equality.  Under misspecification it
+fails: $J(\theta^*) \neq H(\theta^*)$ in general.  The asymptotic
+variance of the MLE is no longer $I^{-1}(\theta)$ but the sandwich
+$$
+V = H(\theta^*)^{-1}\, J(\theta^*)\, H(\theta^*)^{-1}.
+$$ {#eq-sandwich-mle}
+
+When the model is correctly specified, $J = H$ and the sandwich
+collapses to $H^{-1} = I^{-1}$, recovering the standard result.
+When it is not, using $H^{-1}$ alone understates the variance.
+
+### Quasi-Maximum Likelihood Estimation
+
+The sandwich variance makes MLE usable even under misspecification,
+provided we are clear about what parameter is being estimated.  A
+quasi-maximum likelihood estimator (QMLE) is an MLE computed from a
+likelihood that may be wrong, together with a sandwich variance that
+accounts for the misspecification.
+
+The leading case in econometrics is Poisson QMLE for count or
+nonnegative data.  The Poisson log-likelihood for observation $t$ is
+$$
+l_t = y_t \log \mu_t - \mu_t - \log(y_t!), \quad
+\mu_t = \exp({\symbf{x}}_t'\beta).
+$$ {#eq-poisson-qmle}
+
+The score equation $\sum_t (y_t - \mu_t)\, {\symbf{x}}_t = 0$ depends
+only on the conditional mean $E[Y_t \mid {\symbf{x}}_t] = \mu_t$,
+not on whether $Y_t$ is actually Poisson.  If the conditional mean
+is correctly specified, the QMLE $\hat\beta$ is consistent for
+$\beta$ regardless of the true distribution of $Y_t$ --- the data
+need not even be counts.  The variance, however, must be estimated
+with the sandwich, since the Poisson variance assumption
+$\mathrm{Var}(Y_t \mid {\symbf{x}}_t) = \mu_t$ will generally be wrong.
+A fuller treatment is in the [Count Data chapter](count-data.qmd).
+
+The same logic applies to logit and probit for binary data: as long
+as the conditional mean $P(Y=1 \mid X) = F(X'\beta)$ is correctly
+specified, the MLE is consistent for $\beta$ even if the error
+distribution is not exactly logistic or normal.  In this sense,
+binary response MLE is already quasi-MLE.
+
+### M-Estimators
+
+The QMLE perspective generalizes further.  An M-estimator is any
+estimator defined as the solution to
+$$
+\sum_{t=1}^n \psi(y_t, {\symbf{x}}_t, \theta) = 0,
+$$ {#eq-m-est}
+
+where $\psi$ is a known vector-valued function.  MLE is the special
+case where $\psi = \partial l_t / \partial \theta$, the score.  OLS
+is the case $\psi(y_t, {\symbf{x}}_t, \beta) = {\symbf{x}}_t(y_t -
+{\symbf{x}}_t'\beta)$, the population orthogonality condition from the
+[OLS chapter](ols.qmd).  GMM generalizes further by allowing more
+equations than parameters; the [GMM chapter](gmm.qmd) develops this.
+
+All M-estimators share the same asymptotic structure under
+regularity conditions:
+$$
+\sqrt{n}\,(\hat\theta - \theta^*)
+\xrightarrow{d}
+N\!\left(0,\;
+  A^{-1}\, B\, A^{-1\prime}
+\right),
+$$ {#eq-m-est-avar}
+
+where $A = E[\partial \psi / \partial \theta']$ and
+$B = E[\psi \psi']$.  This is the sandwich again.  When $\psi$ is a
+score from a correctly specified likelihood, $A = -H$, $B = J = H$,
+and the sandwich reduces to $H^{-1}$.
+
+The M-estimator framework unifies OLS, MLE, QMLE, and GMM as
+special cases of the same asymptotic theory.  The sandwich variance
+is the general formula; the simpler $I^{-1}$ or $\sigma^2(X'X)^{-1}$
+are special cases that hold under correct specification.
+
+
 ## Example
 Let's look at the example of regression of car's mpg on disp, hp and wt. This time we use MLE. (R has a mle() function which I cannot make it work on this example.  So I am using optim().)
 

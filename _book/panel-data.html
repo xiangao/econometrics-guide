@@ -464,6 +464,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 </div>
 </div>
 <p>Read the table down. The collapsed regression returns about 1.85, badly biased, because it is the between estimator and <span class="math inline">\(\bar x_i\)</span> carries <span class="math inline">\(c_i\)</span> with it. Pooled OLS returns about 1.48 — closer, since some within variation is mixed in, but still inconsistent. The within estimator returns about 0.99, and only the long format can compute it: once we collapse there is nothing left to demean. Mundlak delivers both at once, exactly as described above — 0.99 on <span class="math inline">\(x_{it}\)</span>, 0.85 on <span class="math inline">\(\bar x_i\)</span>, and <span class="math inline">\(0.99+0.85\)</span> recovers the between estimate.</p>
+<p>Mundlak’s device is more than a test: it is an estimator in its own right. Wooldridge’s correlated random effects (CRE) framework generalizes the idea, allowing unit-level heterogeneity to depend on the time-averages of the regressors while retaining the RE structure. The full CRE treatment, including extensions to nonlinear models, is in the <a href="https://xiangao.github.io/blog_book/correlated-random-effect.html">Blog Book</a>.</p>
 <p>So the argument for the long format is not precision. It is that demeaning, the Hausman comparison, unit-specific slopes, lagged dependent variables and anything else built on within variation stop existing once the panel is collapsed. Dynamic models are the extreme case, and they get their own chapter, <a href="./dynamic-panel.html">Dynamic Panel Data</a>.</p>
 <p>The rule behind that <span class="math inline">\(T_i\)</span>, and behind the variance weighting in the between-versus-within comparison, is not specific to panels. It is set out in <a href="./interpreting-ols.html">Interpreting OLS: Effect Weights</a> and its companion, <a href="./outcome-weights.html">Outcome Weights</a>.</p>
 
@@ -1242,16 +1243,24 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a>once, exactly as described above --- 0.99 on $x_{it}$, 0.85 on</span>
 <span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a>$\bar x_i$, and $0.99+0.85$ recovers the between estimate.</span>
 <span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>So the argument for the long format is not precision.  It is that</span>
-<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>demeaning, the Hausman comparison, unit-specific slopes, lagged</span>
-<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a>dependent variables and anything else built on within variation stop</span>
-<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a>existing once the panel is collapsed.  Dynamic models are the extreme</span>
-<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a>case, and they get their own chapter,</span>
-<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Dynamic Panel Data</span><span class="co">](dynamic-panel.qmd)</span>.</span>
-<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
-<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
-<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
+<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>Mundlak's device is more than a test: it is an estimator in its own</span>
+<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>right.  Wooldridge's correlated random effects (CRE) framework</span>
+<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a>generalizes the idea, allowing unit-level heterogeneity to depend on</span>
+<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a>the time-averages of the regressors while retaining the RE</span>
+<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a>structure.  The full CRE treatment, including extensions to nonlinear</span>
+<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a>models, is in the</span>
+<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Blog Book</span><span class="co">](https://xiangao.github.io/blog_book/correlated-random-effect.html)</span>.</span>
+<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>So the argument for the long format is not precision.  It is that</span>
+<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>demeaning, the Hausman comparison, unit-specific slopes, lagged</span>
+<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>dependent variables and anything else built on within variation stop</span>
+<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a>existing once the panel is collapsed.  Dynamic models are the extreme</span>
+<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a>case, and they get their own chapter,</span>
+<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Dynamic Panel Data</span><span class="co">](dynamic-panel.qmd)</span>.</span>
+<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
+<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
+<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

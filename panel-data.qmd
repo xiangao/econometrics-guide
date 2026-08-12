@@ -309,6 +309,14 @@ collapse there is nothing left to demean.  Mundlak delivers both at
 once, exactly as described above --- 0.99 on $x_{it}$, 0.85 on
 $\bar x_i$, and $0.99+0.85$ recovers the between estimate.
 
+Mundlak's device is more than a test: it is an estimator in its own
+right.  Wooldridge's correlated random effects (CRE) framework
+generalizes the idea, allowing unit-level heterogeneity to depend on
+the time-averages of the regressors while retaining the RE
+structure.  The full CRE treatment, including extensions to nonlinear
+models, is in the
+[Blog Book](https://xiangao.github.io/blog_book/correlated-random-effect.html).
+
 So the argument for the long format is not precision.  It is that
 demeaning, the Hausman comparison, unit-specific slopes, lagged
 dependent variables and anything else built on within variation stop

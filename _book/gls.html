@@ -302,6 +302,11 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#feasible-generalized-least-squares" id="toc-feasible-generalized-least-squares" class="nav-link" data-scroll-target="#feasible-generalized-least-squares"><span class="header-section-number">3.3.1</span> Feasible Generalized Least Squares</a></li>
   </ul></li>
+  <li><a href="#efficiency-of-gls" id="toc-efficiency-of-gls" class="nav-link" data-scroll-target="#efficiency-of-gls"><span class="header-section-number">3.4</span> Efficiency of GLS</a>
+  <ul class="collapse">
+  <li><a href="#the-gauss-markov-theorem-for-gls" id="toc-the-gauss-markov-theorem-for-gls" class="nav-link" data-scroll-target="#the-gauss-markov-theorem-for-gls"><span class="header-section-number">3.4.1</span> The Gauss-Markov Theorem for GLS</a></li>
+  <li><a href="#gls-versus-ols-with-robust-standard-errors" id="toc-gls-versus-ols-with-robust-standard-errors" class="nav-link" data-scroll-target="#gls-versus-ols-with-robust-standard-errors"><span class="header-section-number">3.4.2</span> GLS versus OLS with Robust Standard Errors</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/gls.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -373,6 +378,34 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <p>The first observation is where <strong>Cochrane-Orcutt</strong> and <strong>Prais-Winsten</strong> part company, and the <span class="math inline">\({\symbf{\Psi}}\)</span> framework above says which is right. For AR(1) errors <span class="math inline">\({\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]}}\)</span>, and its Cholesky factor makes the first row of <span class="math inline">\({\symbf{\Psi'}}\)</span> equal to <span class="math inline">\(\sqrt{1-\rho^2}\)</span> times the first unit vector. Full GLS therefore keeps observation 1, rescaled as <span class="math inline">\(\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1\)</span>; that is Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent and asymptotically equivalent, but Cochrane-Orcutt throws away a data point, and the loss is not negligible in short time series or when <span class="math inline">\(|\rho|\)</span> is close to 1 – precisely the case where the correction matters most. Prefer Prais-Winsten.</p></li>
 </ul>
 <p>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator <span class="math inline">\(\hat\beta_{FGLS}\)</span>. FGLS is consistent and asymptotically efficient as long as <span class="math inline">\(\hat\gamma\)</span> is a consistent estimator of <span class="math inline">\(\gamma\)</span>, even though it is generally biased in finite samples (since <span class="math inline">\(\hat\Omega\)</span> depends on the first-stage OLS residuals).</p>
+</section>
+</section>
+<section id="efficiency-of-gls" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="efficiency-of-gls"><span class="header-section-number">3.4</span> Efficiency of GLS</h2>
+<section id="the-gauss-markov-theorem-for-gls" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="the-gauss-markov-theorem-for-gls"><span class="header-section-number">3.4.1</span> The Gauss-Markov Theorem for GLS</h3>
+<p>The GLS estimator is the best linear unbiased estimator (BLUE) when <span class="math inline">\({\symbf{\Omega}}\)</span> is known. To see this, consider any other linear unbiased estimator <span class="math inline">\({\symbf{\tilde\beta = Cy}}\)</span> for some matrix <span class="math inline">\({\symbf{C}}\)</span> satisfying <span class="math inline">\({\symbf{CX = I}}\)</span>. Write <span class="math inline">\({\symbf{C = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1} + D}}\)</span>, where <span class="math inline">\({\symbf{D}}\)</span> is the difference from the GLS weighting. Unbiasedness requires <span class="math inline">\({\symbf{CX = I}}\)</span>, which means <span class="math inline">\({\symbf{DX = 0}}\)</span>. The variance of <span class="math inline">\({\symbf{\tilde\beta}}\)</span> is <span id="eq-gls-gm"><span class="math display">\[
+\begin{aligned}
+{\symbf{\mathrm{Var}(\tilde\beta)}}
+&amp;= {\symbf{C\,\Omega\, C'}} \\
+&amp;= {\symbf{(X'\Omega^{-1}X)^{-1} + D\,\Omega\, D'}}.
+\end{aligned}
+\tag{3.8}\]</span></span></p>
+<p>The cross terms vanish because <span class="math inline">\({\symbf{DX = 0}}\)</span> implies <span class="math inline">\({\symbf{D\,\Omega\,\Omega^{-1}X = DX = 0}}\)</span>, so <span class="math inline">\({\symbf{D\,\Omega\,\Omega^{-1}X(X'\Omega^{-1}X)^{-1} = 0}}\)</span>. Since <span class="math inline">\({\symbf{D\,\Omega\, D'}}\)</span> is positive semidefinite, <span id="eq-gls-gm2"><span class="math display">\[
+{\symbf{\mathrm{Var}(\tilde\beta) - \mathrm{Var}(\hat\beta_{GLS})
+= D\,\Omega\, D' \ge 0}}.
+\tag{3.9}\]</span></span></p>
+<p>No linear unbiased estimator can have a smaller variance than GLS.</p>
+<p>When <span class="math inline">\({\symbf{\Omega = \sigma^2 I}}\)</span>, GLS reduces to OLS, and this is the ordinary Gauss-Markov theorem: OLS is BLUE under homoscedasticity and no serial correlation.</p>
+</section>
+<section id="gls-versus-ols-with-robust-standard-errors" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="gls-versus-ols-with-robust-standard-errors"><span class="header-section-number">3.4.2</span> GLS versus OLS with Robust Standard Errors</h3>
+<p>The Gauss-Markov result says GLS is more efficient than OLS when <span class="math inline">\({\symbf{\Omega}}\)</span> is known. In practice <span class="math inline">\({\symbf{\Omega}}\)</span> is never known, and we face a choice: estimate <span class="math inline">\({\symbf{\Omega}}\)</span> and use FGLS, or use OLS with a sandwich variance estimator (White or Newey-West, as in the <a href="./mle.html">MLE chapter</a>) that is valid regardless of the form of <span class="math inline">\({\symbf{\Omega}}\)</span>.</p>
+<p>Both approaches give consistent estimates of <span class="math inline">\(\beta\)</span>, since OLS is consistent under the same conditions whether or not errors are heteroscedastic or serially correlated. The difference is efficiency. GLS exploits the structure of <span class="math inline">\({\symbf{\Omega}}\)</span> to weight observations optimally; OLS ignores that structure and compensates afterward with a robust variance estimate.</p>
+<p>The tradeoff turns on how well <span class="math inline">\({\symbf{\Omega}}\)</span> can be modeled:</p>
+<p>When the error structure is well understood — for example, heteroscedasticity that follows a known function of observables, or AR(1) serial correlation whose form is dictated by the data generating process — FGLS can deliver substantial efficiency gains. The efficiency improvement is largest when the heterogeneity in error variances is large, since GLS downweights noisy observations that OLS treats equally.</p>
+<p>When the error structure is unknown or hard to model correctly, FGLS carries a specification risk. If <span class="math inline">\({\symbf{\hat\Omega}}\)</span> is badly estimated, the FGLS estimator can be less efficient than OLS, and the FGLS standard errors can be misleading because they assume the estimated error structure is correct. OLS with robust standard errors avoids this risk: the point estimates are the same regardless of <span class="math inline">\({\symbf{\Omega}}\)</span>, and the sandwich variance is consistent under arbitrary heteroscedasticity or serial correlation.</p>
+<p>The modern default in applied work is to report OLS with robust standard errors, reserving GLS for settings where there is strong prior information about the error structure or where the efficiency gain is large enough to justify the specification risk. Panel data models are an important exception: the random effects estimator is a form of FGLS, and there the structure of <span class="math inline">\({\symbf{\Omega}}\)</span> (an equicorrelated block for each unit) is implied by the model rather than estimated freely.</p>
 
 
 <!-- -->
@@ -945,7 +978,86 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>  the loss is not negligible in short time series or when $|\rho|$ is close to 1 --</span>
 <span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  precisely the case where the correction matters most. Prefer Prais-Winsten.</span>
 <span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).</span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="fu">## Efficiency of GLS</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Gauss-Markov Theorem for GLS</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>The GLS estimator is the best linear unbiased estimator (BLUE) when</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>${\symbf{\Omega}}$ is known.  To see this, consider any other linear</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>unbiased estimator ${\symbf{\tilde\beta = Cy}}$ for some matrix</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>${\symbf{C}}$ satisfying ${\symbf{CX = I}}$.  Write</span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a>${\symbf{C = (X'\Omega^{-1}X)^{-1}X'\Omega^{-1} + D}}$, where</span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>${\symbf{D}}$ is the difference from the GLS weighting.  Unbiasedness</span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a>requires ${\symbf{CX = I}}$, which means ${\symbf{DX = 0}}$.  The</span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>variance of ${\symbf{\tilde\beta}}$ is</span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>{\symbf{\mathrm{Var}(\tilde\beta)}}</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>&amp;= {\symbf{C\,\Omega\, C'}} <span class="sc">\\</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>&amp;= {\symbf{(X'\Omega^{-1}X)^{-1} + D\,\Omega\, D'}}.</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gls-gm}</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>The cross terms vanish because ${\symbf{DX = 0}}$ implies</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>${\symbf{D\,\Omega\,\Omega^{-1}X = DX = 0}}$, so</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>${\symbf{D\,\Omega\,\Omega^{-1}X(X'\Omega^{-1}X)^{-1} = 0}}$.  Since</span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>${\symbf{D\,\Omega\, D'}}$ is positive semidefinite,</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>{\symbf{\mathrm{Var}(\tilde\beta) - \mathrm{Var}(\hat\beta_{GLS})</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>= D\,\Omega\, D' \ge 0}}.</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gls-gm2}</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>No linear unbiased estimator can have a smaller variance than GLS.</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>When ${\symbf{\Omega = \sigma^2 I}}$, GLS reduces to OLS, and this is</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>the ordinary Gauss-Markov theorem: OLS is BLUE under</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>homoscedasticity and no serial correlation.</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a><span class="fu">### GLS versus OLS with Robust Standard Errors</span></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>The Gauss-Markov result says GLS is more efficient than OLS when</span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>${\symbf{\Omega}}$ is known.  In practice ${\symbf{\Omega}}$ is never</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>known, and we face a choice: estimate ${\symbf{\Omega}}$ and use FGLS,</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>or use OLS with a sandwich variance estimator (White or Newey-West,</span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>as in the <span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span>) that is valid regardless of the</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>form of ${\symbf{\Omega}}$.</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>Both approaches give consistent estimates of $\beta$, since OLS is</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>consistent under the same conditions whether or not errors are</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>heteroscedastic or serially correlated.  The difference is</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>efficiency.  GLS exploits the structure of ${\symbf{\Omega}}$ to weight</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>observations optimally; OLS ignores that structure and compensates</span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>afterward with a robust variance estimate.</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>The tradeoff turns on how well ${\symbf{\Omega}}$ can be modeled:</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>When the error structure is well understood --- for example,</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>heteroscedasticity that follows a known function of observables, or</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>AR(1) serial correlation whose form is dictated by the data</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>generating process --- FGLS can deliver substantial efficiency gains.</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>The efficiency improvement is largest when the heterogeneity in</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>error variances is large, since GLS downweights noisy observations</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>that OLS treats equally.</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>When the error structure is unknown or hard to model correctly,</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>FGLS carries a specification risk.  If ${\symbf{\hat\Omega}}$ is</span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>badly estimated, the FGLS estimator can be less efficient than OLS,</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>and the FGLS standard errors can be misleading because they assume</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>the estimated error structure is correct.  OLS with robust standard</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>errors avoids this risk: the point estimates are the same regardless</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>of ${\symbf{\Omega}}$, and the sandwich variance is consistent under</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>arbitrary heteroscedasticity or serial correlation.</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>The modern default in applied work is to report OLS with robust</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>standard errors, reserving GLS for settings where there is strong</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>prior information about the error structure or where the efficiency</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>gain is large enough to justify the specification risk.  Panel data</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>models are an important exception: the random effects estimator is</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>a form of FGLS, and there the structure of ${\symbf{\Omega}}$ (an</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>equicorrelated block for each unit) is implied by the model rather</span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>than estimated freely.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

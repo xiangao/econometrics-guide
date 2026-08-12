@@ -551,3 +551,11 @@ induced by $Z$.  For example, we are interested in the relationship
 between college education and wage.  If we use distance to college as
 an instrument, then our inference is the effect of college education
 from those who decide to go because of proximity of the college.
+
+This is the Local Average Treatment Effect (LATE) of Imbens and Angrist
+(1994): with a binary instrument and heterogeneous treatment effects,
+IV identifies the causal effect for *compliers* --- those whose
+treatment status is shifted by the instrument --- rather than for the
+full population.  The formal derivation, including the monotonicity
+assumption and the complier/always-taker/never-taker decomposition, is
+in the [Causal Econometrics Guide](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html).

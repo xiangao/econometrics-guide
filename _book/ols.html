@@ -278,10 +278,19 @@ window.Quarto = {
   <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">1.2</span> Example</a></li>
   <li><a href="#the-geometry-of-least-squares" id="toc-the-geometry-of-least-squares" class="nav-link" data-scroll-target="#the-geometry-of-least-squares"><span class="header-section-number">1.3</span> The Geometry of Least Squares</a></li>
   <li>
-<a href="#properties-of-ols-estimator" id="toc-properties-of-ols-estimator" class="nav-link" data-scroll-target="#properties-of-ols-estimator"><span class="header-section-number">1.4</span> Properties of OLS estimator</a>
+<a href="#ols-as-conditional-expectation" id="toc-ols-as-conditional-expectation" class="nav-link" data-scroll-target="#ols-as-conditional-expectation"><span class="header-section-number">1.4</span> OLS as Conditional Expectation</a>
   <ul class="collapse">
-<li><a href="#unbiasedness" id="toc-unbiasedness" class="nav-link" data-scroll-target="#unbiasedness"><span class="header-section-number">1.4.1</span> Unbiasedness</a></li>
-  <li><a href="#consistency" id="toc-consistency" class="nav-link" data-scroll-target="#consistency"><span class="header-section-number">1.4.2</span> Consistency</a></li>
+<li><a href="#the-conditional-expectation-function" id="toc-the-conditional-expectation-function" class="nav-link" data-scroll-target="#the-conditional-expectation-function"><span class="header-section-number">1.4.1</span> The Conditional Expectation Function</a></li>
+  <li><a href="#the-best-linear-predictor" id="toc-the-best-linear-predictor" class="nav-link" data-scroll-target="#the-best-linear-predictor"><span class="header-section-number">1.4.2</span> The Best Linear Predictor</a></li>
+  <li><a href="#the-blp-approximates-the-cef" id="toc-the-blp-approximates-the-cef" class="nav-link" data-scroll-target="#the-blp-approximates-the-cef"><span class="header-section-number">1.4.3</span> The BLP Approximates the CEF</a></li>
+  <li><a href="#from-population-to-sample" id="toc-from-population-to-sample" class="nav-link" data-scroll-target="#from-population-to-sample"><span class="header-section-number">1.4.4</span> From Population to Sample</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#properties-of-ols-estimator" id="toc-properties-of-ols-estimator" class="nav-link" data-scroll-target="#properties-of-ols-estimator"><span class="header-section-number">1.5</span> Properties of OLS estimator</a>
+  <ul class="collapse">
+<li><a href="#unbiasedness" id="toc-unbiasedness" class="nav-link" data-scroll-target="#unbiasedness"><span class="header-section-number">1.5.1</span> Unbiasedness</a></li>
+  <li><a href="#consistency" id="toc-consistency" class="nav-link" data-scroll-target="#consistency"><span class="header-section-number">1.5.2</span> Consistency</a></li>
   </ul>
 </li>
   </ul><div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
@@ -358,39 +367,81 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <p>From this, we see that the effects of two projection matrices. <span id="eq-ols-13"><span class="math display">\[{\symbf{P_X y  =  X \hat \beta =\hat y  }} \tag{1.13}\]</span></span> <span id="eq-ols-14"><span class="math display">\[{\symbf{M_X y  =  (I-P_X)y = y- P_X y = y-X \hat \beta =\hat u }} \tag{1.14}\]</span></span></p>
 <p>That is, <span class="math inline">\({\symbf{P_X y}}\)</span> projects <span class="math inline">\({\symbf{y}}\)</span> onto <span class="math inline">\({\symbf{X}}\)</span> and makes it <span class="math inline">\({\symbf{\hat y}}\)</span>; <span class="math inline">\({\symbf{M_X y}}\)</span> makes it <span class="math inline">\({\symbf{\hat u}}\)</span>.</p>
 <p>In the picture, that corresponds to the fact that the projection of <span class="math inline">\({\symbf{y}}\)</span> onto the plane of <span class="math inline">\({\symbf{X}}\)</span> creates two parts: <span class="math inline">\({\symbf{\hat y}}\)</span> and <span class="math inline">\({\symbf{\hat u}}\)</span>.</p>
-</section><section id="properties-of-ols-estimator" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="properties-of-ols-estimator">
-<span class="header-section-number">1.4</span> Properties of OLS estimator</h2>
-<section id="unbiasedness" class="level3" data-number="1.4.1"><h3 data-number="1.4.1" class="anchored" data-anchor-id="unbiasedness">
-<span class="header-section-number">1.4.1</span> Unbiasedness</h3>
+</section><section id="ols-as-conditional-expectation" class="level2" data-number="1.4"><h2 data-number="1.4" class="anchored" data-anchor-id="ols-as-conditional-expectation">
+<span class="header-section-number">1.4</span> OLS as Conditional Expectation</h2>
+<p>The derivation above shows how to compute <span class="math inline">\({\symbf{\hat\beta}}\)</span> from a sample. We now ask a different question: what does OLS estimate at the population level?</p>
+<section id="the-conditional-expectation-function" class="level3" data-number="1.4.1"><h3 data-number="1.4.1" class="anchored" data-anchor-id="the-conditional-expectation-function">
+<span class="header-section-number">1.4.1</span> The Conditional Expectation Function</h3>
+<p>For a random pair <span class="math inline">\((Y, X)\)</span>, the conditional expectation function (CEF) is <span class="math inline">\(E[Y \mid X]\)</span>, a function of <span class="math inline">\(X\)</span> alone. Any random variable <span class="math inline">\(Y\)</span> can be decomposed as <span id="eq-cef-decomp"><span class="math display">\[Y = E[Y \mid X] + \varepsilon, \qquad E[\varepsilon \mid X] = 0. \tag{1.15}\]</span></span></p>
+<p>This is not an assumption; it is a definition. The residual <span class="math inline">\(\varepsilon = Y - E[Y \mid X]\)</span> is mean-independent of <span class="math inline">\(X\)</span> by the construction of conditional expectation.</p>
+<p>The CEF has an optimality property: among all functions <span class="math inline">\(g(X)\)</span>, <span class="math inline">\(E[Y \mid X]\)</span> minimizes the mean squared prediction error, <span id="eq-cef-mmse"><span class="math display">\[E[Y \mid X] = \arg\min_{g}\; E\bigl[(Y - g(X))^2\bigr]. \tag{1.16}\]</span></span></p>
+<p>That is, if we could use any function of <span class="math inline">\(X\)</span> to predict <span class="math inline">\(Y\)</span>, the CEF would be the best predictor in the mean squared error sense. The proof follows from the decomposition above: for any <span class="math inline">\(g\)</span>, <span id="eq-cef-proof-expand"><span class="math display">\[E\bigl[(Y-g(X))^2\bigr]
+= E\bigl[(Y - E[Y\mid X])^2\bigr]
++ E\bigl[(E[Y\mid X] - g(X))^2\bigr]
++ 2\,E\bigl[\varepsilon\,(E[Y\mid X]-g(X))\bigr]. \tag{1.17}\]</span></span></p>
+<p>The cross term vanishes by iterated expectations: <span class="math inline">\(E[Y\mid X]-g(X)\)</span> is a function of <span class="math inline">\(X\)</span>, so <span class="math inline">\(E\bigl[\varepsilon\,(E[Y\mid X]-g(X))\bigr]
+= E\bigl[E[\varepsilon\mid X]\,(E[Y\mid X]-g(X))\bigr] = 0\)</span>. The first term does not depend on <span class="math inline">\(g\)</span>, and the second is nonnegative and equals zero when <span class="math inline">\(g = E[Y\mid X]\)</span>.</p>
+</section><section id="the-best-linear-predictor" class="level3" data-number="1.4.2"><h3 data-number="1.4.2" class="anchored" data-anchor-id="the-best-linear-predictor">
+<span class="header-section-number">1.4.2</span> The Best Linear Predictor</h3>
+<p>In practice we rarely know the CEF, and we often restrict attention to linear predictors. The best linear predictor (BLP) of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> is the coefficient vector <span class="math inline">\(\beta\)</span> that solves <span id="eq-blp-def"><span class="math display">\[\beta = \arg\min_{b}\; E\bigl[(Y - X'b)^2\bigr]. \tag{1.18}\]</span></span></p>
+<p>Taking the first-order condition, <span id="eq-blp-foc"><span class="math display">\[\frac{\partial}{\partial b}\, E\bigl[(Y - X'b)^2\bigr]
+= -2\, E\bigl[X(Y - X'b)\bigr] = 0, \tag{1.19}\]</span></span></p>
+<p>which gives the population normal equation <span id="eq-blp-normal"><span class="math display">\[E[XX']\,\beta = E[XY]. \tag{1.20}\]</span></span></p>
+<p>If <span class="math inline">\(E[XX']\)</span> is nonsingular, the BLP coefficient is <span id="eq-blp-coef"><span class="math display">\[\beta = \bigl(E[XX']\bigr)^{-1}\, E[XY]. \tag{1.21}\]</span></span></p>
+<p>This is the population analog of the sample formula <span class="math inline">\({\symbf{\hat\beta = (X'X)^{-1}X'y}}\)</span>. The population version replaces sample cross-products with their expectations.</p>
+<p>The first-order condition can equivalently be written as the population orthogonality condition: <span id="eq-blp-orth"><span class="math display">\[E\bigl[X(Y - X'\beta)\bigr] = 0. \tag{1.22}\]</span></span></p>
+<p>This says that the linear prediction error <span class="math inline">\(Y - X'\beta\)</span> is uncorrelated with every component of <span class="math inline">\(X\)</span>. It is the population version of the sample condition <span class="math inline">\({\symbf{X'\hat u = 0}}\)</span> that we derived from the matrix normal equations.</p>
+</section><section id="the-blp-approximates-the-cef" class="level3" data-number="1.4.3"><h3 data-number="1.4.3" class="anchored" data-anchor-id="the-blp-approximates-the-cef">
+<span class="header-section-number">1.4.3</span> The BLP Approximates the CEF</h3>
+<p>The BLP and the CEF are connected by a key result: the BLP is the best linear approximation to the CEF. To see this, write <span id="eq-blp-cef"><span class="math display">\[\beta = \bigl(E[XX']\bigr)^{-1}\, E[XY]
+= \bigl(E[XX']\bigr)^{-1}\, E\bigl[X\, E[Y \mid X]\bigr], \tag{1.23}\]</span></span></p>
+<p>where the second equality uses the law of iterated expectations. The BLP coefficient depends on <span class="math inline">\(Y\)</span> only through the CEF. OLS is fitting a linear function to the CEF, not directly to <span class="math inline">\(Y\)</span>.</p>
+<p>When the CEF is linear in <span class="math inline">\(X\)</span> — that is, <span class="math inline">\(E[Y \mid X] = X'\beta\)</span> for some <span class="math inline">\(\beta\)</span> — the BLP recovers the CEF exactly. The linear model is correctly specified and OLS estimates the true conditional expectation.</p>
+<p>When the CEF is nonlinear, the BLP still provides the minimum mean squared error linear approximation to it. The OLS coefficient retains a well-defined interpretation: it is the slope of the best linear predictor, even if the world is nonlinear. This is why OLS remains useful in settings where the true CEF is unknown and possibly complicated.</p>
+</section><section id="from-population-to-sample" class="level3" data-number="1.4.4"><h3 data-number="1.4.4" class="anchored" data-anchor-id="from-population-to-sample">
+<span class="header-section-number">1.4.4</span> From Population to Sample</h3>
+<p>The population formulas become sample formulas when we replace expectations with sample averages. For a sample of <span class="math inline">\(n\)</span> observations, <span id="eq-pop-sample-xx"><span class="math display">\[E[XX'] \approx \frac{1}{n} \sum_{i=1}^n X_i X_i'
+= \frac{1}{n}\, {\symbf{X'X}} \tag{1.24}\]</span></span></p>
+<p><span id="eq-pop-sample-xy"><span class="math display">\[E[XY] \approx \frac{1}{n} \sum_{i=1}^n X_i Y_i
+= \frac{1}{n}\, {\symbf{X'y}} \tag{1.25}\]</span></span></p>
+<p>Substituting into the population BLP formula gives <span id="eq-sample-ols-from-pop"><span class="math display">\[{\symbf{\hat\beta}}
+= \left(\frac{1}{n}\,{\symbf{X'X}}\right)^{-1}
+  \frac{1}{n}\,{\symbf{X'y}}
+= {\symbf{(X'X)^{-1}X'y}}, \tag{1.26}\]</span></span></p>
+<p>which is the OLS estimator derived from the matrix normal equations. The <span class="math inline">\(1/n\)</span> factors cancel. This shows what OLS does: it uses sample analogs to estimate the population BLP, which is the best linear approximation to the conditional expectation function <span class="math inline">\(E[Y \mid X]\)</span>.</p>
+</section></section><section id="properties-of-ols-estimator" class="level2" data-number="1.5"><h2 data-number="1.5" class="anchored" data-anchor-id="properties-of-ols-estimator">
+<span class="header-section-number">1.5</span> Properties of OLS estimator</h2>
+<section id="unbiasedness" class="level3" data-number="1.5.1"><h3 data-number="1.5.1" class="anchored" data-anchor-id="unbiasedness">
+<span class="header-section-number">1.5.1</span> Unbiasedness</h3>
 <p>In a linear model <span id="eq-ols-15"><span class="math display">\[
 {\symbf{y=X\beta+u,
-}} \tag{1.15}\]</span></span> the OLS estimator is <span id="eq-ols-16"><span class="math display">\[
+}} \tag{1.27}\]</span></span> the OLS estimator is <span id="eq-ols-16"><span class="math display">\[
 {\symbf{\hat \beta=(X'X)^{-1}X'y
-}} \tag{1.16}\]</span></span></p>
+}} \tag{1.28}\]</span></span></p>
 <p>Since <span class="math inline">\({\symbf{y=X \beta+u}}\)</span>,</p>
 <p><span id="eq-ols-17"><span class="math display">\[
 {\symbf{\hat \beta=\beta + (X'X)^{-1}X'u.
-}} \tag{1.17}\]</span></span></p>
+}} \tag{1.29}\]</span></span></p>
 <p>This makes <span id="eq-ols-18"><span class="math display">\[
 {{\mathrm{E}}} {\symbf{(\hat \beta | X)=\beta + (X'X)^{-1}X'{E} (u|X).
-}} \tag{1.18}\]</span></span></p>
+}} \tag{1.30}\]</span></span></p>
 <p>The condition that makes the OLS estimator unbiased is: <span id="eq-ols-19"><span class="math display">\[
 {{\mathrm{E}}} {\symbf{(u|X)=0,
-}} \tag{1.19}\]</span></span></p>
+}} \tag{1.31}\]</span></span></p>
 <p>that is, all explanatory variables which form the columns of <span class="math inline">\({\symbf{X}}\)</span> are exogenous. This condition is weaker than the independence condition that <span class="math inline">\(u\)</span> and <span class="math inline">\(X\)</span> are independent. This says that given <span class="math inline">\({\symbf{X}}\)</span>, the expected value of <span class="math inline">\({\symbf{u}}\)</span> is zero; it implies that the model is correctly specified. That is, <span class="math inline">\({\symbf{y}}\)</span> is a linear function of <span class="math inline">\({\symbf{X}}\)</span>.</p>
 <p>In the context of cross-sectional data, this assumption is plausible. However, when we have time series data, the assumption becomes strong, because it assumes that the entire series of <span class="math inline">\({\symbf{X}}\)</span> has no relationship with the error term. In a time series context, this is hard to satisfy. The OLS estimator is biased if this condition is not satisfied.</p>
 <p>For example, suppose we have a model</p>
-<p><span id="eq-ols-20"><span class="math display">\[ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2).  \tag{1.20}\]</span></span></p>
+<p><span id="eq-ols-20"><span class="math display">\[ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2).  \tag{1.32}\]</span></span></p>
 <p>In this simple model, even if we assume that <span class="math inline">\(y_{t-1}\)</span> and <span class="math inline">\(u_t\)</span> are uncorrelated, OLS estimator is still biased. That is because <span class="math inline">\({{\mathrm{E}}} {\symbf{(u|X)=0}}\)</span> is not satisfied: <span class="math inline">\(y_{t-1}\)</span> depends on <span class="math inline">\(u_{t-1}\)</span>, <span class="math inline">\(u_{t-2}\)</span> and so on.</p>
 <p>There is a weaker condition – weaker than the strict exogeneity above, and in fact the weakest of the conditions in this chapter: <span id="eq-ols-21"><span class="math display">\[
 {{\mathrm{E}}} {\symbf{(X u)=0,
-}} \tag{1.21}\]</span></span></p>
+}} \tag{1.33}\]</span></span></p>
 <p>Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.</p>
-</section><section id="consistency" class="level3" data-number="1.4.2"><h3 data-number="1.4.2" class="anchored" data-anchor-id="consistency">
-<span class="header-section-number">1.4.2</span> Consistency</h3>
+</section><section id="consistency" class="level3" data-number="1.5.2"><h3 data-number="1.5.2" class="anchored" data-anchor-id="consistency">
+<span class="header-section-number">1.5.2</span> Consistency</h3>
 <p>For OLS estimator to be consistent, a much weaker condition is needed: <span id="eq-ols-22"><span class="math display">\[
 {{\mathrm{E}}} (u_t|X_t)=0,
-\tag{1.22}\]</span></span></p>
+\tag{1.34}\]</span></span></p>
 <p>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors. Even a model with lagged dependent variable can easily satisfy this condition. This condition is called <strong>contemporaneous exogeneity</strong>. It is the weakest of three exogeneity conditions worth keeping apart, which is precisely why it is the one to invoke for consistency:</p>
 <ul>
 <li>
@@ -404,7 +455,7 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 </ul>
 <p>Each condition implies the next, because conditioning on a larger information set is a more restrictive requirement, not a less restrictive one. In particular, by the law of iterated expectations, <span id="eq-ols-23"><span class="math display">\[
 E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
-\tag{1.23}\]</span></span> so predeterminedness delivers contemporaneous exogeneity but not conversely. In the time series example, then, the OLS estimator is biased, but can still be consistent, if we are willing to assume no contemporaneous correlation.</p>
+\tag{1.35}\]</span></span> so predeterminedness delivers contemporaneous exogeneity but not conversely. In the time series example, then, the OLS estimator is biased, but can still be consistent, if we are willing to assume no contemporaneous correlation.</p>
 <p>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <a href="./mle.html">Maximum Likelihood chapter</a> alongside this guide’s other estimation-inference material rather than repeated here.</p>
 
 
@@ -961,106 +1012,218 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0
 <span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>In the picture, that corresponds to the fact that the projection of ${\symbf{y}}$ onto the plane of ${\symbf{X}}$ creates two parts:  ${\symbf{\hat y}}$ and ${\symbf{\hat u}}$.</span>
 <span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## Properties of OLS estimator</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## OLS as Conditional Expectation</span></span>
 <span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="fu">### Unbiasedness</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>In a linear model</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u,</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-15}</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a> the OLS estimator is</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>{\symbf{\hat \beta=(X'X)^{-1}X'y</span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-16}</span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>Since ${\symbf{y=X \beta+u}}$,</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>{\symbf{\hat \beta=\beta + (X'X)^{-1}X'u.</span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-17}</span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>This makes</span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(\hat \beta | X)=\beta + (X'X)^{-1}X'{E} (u|X).</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-18}</span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>The condition that makes the OLS estimator unbiased is:</span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(u|X)=0,</span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-19}</span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>that is, all explanatory variables which form the columns of ${\symbf{X}}$</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>are exogenous.  This condition is weaker than the independence</span>
-<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>condition that $u$ and $X$ are independent. This says that given ${\symbf{X}}$, the expected value of ${\symbf{u}}$ is zero; it implies that the model</span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>is correctly specified.  That is, ${\symbf{y}}$ is a linear function of ${\symbf{X}}$.</span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>In the context of cross-sectional data, this assumption is plausible.</span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>However, when we have time series data, the assumption becomes strong,</span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>because it assumes that the entire series of ${\symbf{X}}$ has no</span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>relationship with the error term.  In a time series context, this is</span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>hard to satisfy.  The OLS estimator is biased if this condition</span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>is not satisfied.</span>
-<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>For example, suppose we have a model</span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>$$ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2). $$ {#eq-ols-20}</span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>In this simple model, even if we assume that $y_{t-1}$ and $u_t$ are</span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>uncorrelated, OLS estimator is still biased.  That is because</span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>${{\mathrm{E}}} {\symbf{(u|X)=0}}$</span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>is not satisfied: $y_{t-1}$ depends on $u_{t-1}$,</span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>$u_{t-2}$ and so on.</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>The derivation above shows how to compute ${\symbf{\hat\beta}}$ from a</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>sample.  We now ask a different question: what does OLS estimate at</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>the population level?</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Conditional Expectation Function</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>For a random pair $(Y, X)$, the conditional expectation function</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>(CEF) is $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span>$, a function of $X$ alone.  Any random</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>variable $Y$ can be decomposed as</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>$$Y = E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> + \varepsilon, \qquad E<span class="co">[</span><span class="ot">\varepsilon \mid X</span><span class="co">]</span> = 0.$$ {#eq-cef-decomp}</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>This is not an assumption; it is a definition.  The residual</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>$\varepsilon = Y - E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span>$ is mean-independent of $X$ by the</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>construction of conditional expectation.</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>The CEF has an optimality property: among all functions $g(X)$,</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span>$ minimizes the mean squared prediction error,</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>$$E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> = \arg\min_{g}\; E\bigl<span class="co">[</span><span class="ot">(Y - g(X))^2\bigr</span><span class="co">]</span>.$$ {#eq-cef-mmse}</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>That is, if we could use any function of $X$ to predict $Y$, the</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>CEF would be the best predictor in the mean squared error sense.</span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>The proof follows from the decomposition above: for any $g$,</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>$$E\bigl<span class="co">[</span><span class="ot">(Y-g(X))^2\bigr</span><span class="co">]</span></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>= E\bigl<span class="co">[</span><span class="ot">(Y - E[Y\mid X])^2\bigr</span><span class="co">]</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>E\bigl<span class="co">[</span><span class="ot">(E[Y\mid X] - g(X))^2\bigr</span><span class="co">]</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="ss">+ </span>2\,E\bigl<span class="co">[</span><span class="ot">\varepsilon\,(E[Y\mid X]-g(X))\bigr</span><span class="co">]</span>.$$ {#eq-cef-proof-expand}</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>The cross term vanishes by iterated expectations: $E<span class="co">[</span><span class="ot">Y\mid X</span><span class="co">]</span>-g(X)$</span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a>is a function of $X$, so</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>$E\bigl<span class="co">[</span><span class="ot">\varepsilon\,(E[Y\mid X]-g(X))\bigr</span><span class="co">]</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>= E\bigl<span class="co">[</span><span class="ot">E[\varepsilon\mid X]\,(E[Y\mid X]-g(X))\bigr</span><span class="co">]</span> = 0$.</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>The first term does not depend on $g$, and the second is</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>nonnegative and equals zero when $g = E<span class="co">[</span><span class="ot">Y\mid X</span><span class="co">]</span>$.</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Best Linear Predictor</span></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>In practice we rarely know the CEF, and we often restrict attention</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>to linear predictors.  The best linear predictor (BLP) of $Y$ given</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>$X$ is the coefficient vector $\beta$ that solves</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>$$\beta = \arg\min_{b}\; E\bigl<span class="co">[</span><span class="ot">(Y - X'b)^2\bigr</span><span class="co">]</span>.$$ {#eq-blp-def}</span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>Taking the first-order condition,</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial}{\partial b}\, E\bigl<span class="co">[</span><span class="ot">(Y - X'b)^2\bigr</span><span class="co">]</span></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a>= -2\, E\bigl<span class="co">[</span><span class="ot">X(Y - X'b)\bigr</span><span class="co">]</span> = 0,$$ {#eq-blp-foc}</span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>which gives the population normal equation</span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>$$E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span>\,\beta = E<span class="co">[</span><span class="ot">XY</span><span class="co">]</span>.$$ {#eq-blp-normal}</span>
 <span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>There is a weaker condition -- weaker than the strict exogeneity above, and in fact</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a>the weakest of the conditions in this chapter:</span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(X u)=0,</span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-21}</span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>If $E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span>$ is nonsingular, the BLP coefficient is</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>$$\beta = \bigl(E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span>\bigr)^{-1}\, E<span class="co">[</span><span class="ot">XY</span><span class="co">]</span>.$$ {#eq-blp-coef}</span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>This is the population analog of the sample formula</span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>${\symbf{\hat\beta = (X'X)^{-1}X'y}}$.  The population version</span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>replaces sample cross-products with their expectations.</span>
 <span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.</span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="fu">### Consistency</span></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>The first-order condition can equivalently be written as the</span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>population orthogonality condition:</span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>$$E\bigl<span class="co">[</span><span class="ot">X(Y - X'\beta)\bigr</span><span class="co">]</span> = 0.$$ {#eq-blp-orth}</span>
 <span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>For OLS estimator to be consistent, a much weaker condition is needed:</span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (u_t|X_t)=0,</span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-22}</span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>This says that the linear prediction error $Y - X'\beta$ is</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>uncorrelated with every component of $X$.  It is the population</span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a>version of the sample condition ${\symbf{X'\hat u = 0}}$ that we</span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>derived from the matrix normal equations.</span>
 <span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of</span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>three exogeneity conditions worth keeping apart, which is precisely why it is the</span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>one to invoke for consistency:</span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strict exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_1, \dots, X_n</span><span class="co">]</span>=0$: the error in every</span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>  violates.</span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_{t-1}</span><span class="co">]</span>=0$ with $X_t$ measurable</span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the</span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  variable.</span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers it gives</span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a><span class="fu">### The BLP Approximates the CEF</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>The BLP and the CEF are connected by a key result: the BLP is the</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>best linear approximation to the CEF.  To see this, write</span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>$$\beta = \bigl(E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span>\bigr)^{-1}\, E<span class="co">[</span><span class="ot">XY</span><span class="co">]</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>= \bigl(E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span>\bigr)^{-1}\, E\bigl<span class="co">[</span><span class="ot">X\, E[Y \mid X]\bigr</span><span class="co">]</span>,$$ {#eq-blp-cef}</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>where the second equality uses the law of iterated expectations.</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>The BLP coefficient depends on $Y$ only through the CEF.  OLS is</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>fitting a linear function to the CEF, not directly to $Y$.</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>When the CEF is linear in $X$ — that is, $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> = X'\beta$</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>for some $\beta$ — the BLP recovers the CEF exactly.  The linear</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>model is correctly specified and OLS estimates the true conditional</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>expectation.</span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>When the CEF is nonlinear, the BLP still provides the minimum mean</span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>squared error linear approximation to it.  The OLS coefficient</span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>retains a well-defined interpretation: it is the slope of the best</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>linear predictor, even if the world is nonlinear.  This is why OLS</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>remains useful in settings where the true CEF is unknown and</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>possibly complicated.</span>
 <span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  In particular, by</span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>the law of iterated expectations,</span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a><span class="fu">### From Population to Sample</span></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>The population formulas become sample formulas when we replace</span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>expectations with sample averages.  For a sample of $n$</span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>observations,</span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>$$E<span class="co">[</span><span class="ot">XX'</span><span class="co">]</span> \approx \frac{1}{n} \sum_{i=1}^n X_i X_i'</span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>= \frac{1}{n}\, {\symbf{X'X}}$$ {#eq-pop-sample-xx}</span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>$$E<span class="co">[</span><span class="ot">XY</span><span class="co">]</span> \approx \frac{1}{n} \sum_{i=1}^n X_i Y_i</span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>= \frac{1}{n}\, {\symbf{X'y}}$$ {#eq-pop-sample-xy}</span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>Substituting into the population BLP formula gives</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>$${\symbf{\hat\beta}}</span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>= \left(\frac{1}{n}\,{\symbf{X'X}}\right)^{-1}</span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a>  \frac{1}{n}\,{\symbf{X'y}}</span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>= {\symbf{(X'X)^{-1}X'y}},$$ {#eq-sample-ols-from-pop}</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>which is the OLS estimator derived from the matrix normal equations.</span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>The $1/n$ factors cancel.  This shows what OLS does: it uses sample</span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>analogs to estimate the population BLP, which is the best linear</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>approximation to the conditional expectation function $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span>$.</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a><span class="fu">## Properties of OLS estimator</span></span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a><span class="fu">### Unbiasedness</span></span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>In a linear model</span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u,</span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-15}</span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a> the OLS estimator is</span>
+<span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>{\symbf{\hat \beta=(X'X)^{-1}X'y</span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-16}</span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>Since ${\symbf{y=X \beta+u}}$,</span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a>{\symbf{\hat \beta=\beta + (X'X)^{-1}X'u.</span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-17}</span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a>This makes</span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-225"><a href="#cb3-225" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(\hat \beta | X)=\beta + (X'X)^{-1}X'{E} (u|X).</span>
+<span id="cb3-226"><a href="#cb3-226" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-18}</span>
+<span id="cb3-227"><a href="#cb3-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-228"><a href="#cb3-228" aria-hidden="true" tabindex="-1"></a>The condition that makes the OLS estimator unbiased is:</span>
+<span id="cb3-229"><a href="#cb3-229" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-230"><a href="#cb3-230" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(u|X)=0,</span>
+<span id="cb3-231"><a href="#cb3-231" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-19}</span>
+<span id="cb3-232"><a href="#cb3-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-233"><a href="#cb3-233" aria-hidden="true" tabindex="-1"></a>that is, all explanatory variables which form the columns of ${\symbf{X}}$</span>
+<span id="cb3-234"><a href="#cb3-234" aria-hidden="true" tabindex="-1"></a>are exogenous.  This condition is weaker than the independence</span>
+<span id="cb3-235"><a href="#cb3-235" aria-hidden="true" tabindex="-1"></a>condition that $u$ and $X$ are independent. This says that given ${\symbf{X}}$, the expected value of ${\symbf{u}}$ is zero; it implies that the model</span>
+<span id="cb3-236"><a href="#cb3-236" aria-hidden="true" tabindex="-1"></a>is correctly specified.  That is, ${\symbf{y}}$ is a linear function of ${\symbf{X}}$.</span>
+<span id="cb3-237"><a href="#cb3-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-238"><a href="#cb3-238" aria-hidden="true" tabindex="-1"></a>In the context of cross-sectional data, this assumption is plausible.</span>
+<span id="cb3-239"><a href="#cb3-239" aria-hidden="true" tabindex="-1"></a>However, when we have time series data, the assumption becomes strong,</span>
+<span id="cb3-240"><a href="#cb3-240" aria-hidden="true" tabindex="-1"></a>because it assumes that the entire series of ${\symbf{X}}$ has no</span>
+<span id="cb3-241"><a href="#cb3-241" aria-hidden="true" tabindex="-1"></a>relationship with the error term.  In a time series context, this is</span>
+<span id="cb3-242"><a href="#cb3-242" aria-hidden="true" tabindex="-1"></a>hard to satisfy.  The OLS estimator is biased if this condition</span>
+<span id="cb3-243"><a href="#cb3-243" aria-hidden="true" tabindex="-1"></a>is not satisfied.</span>
+<span id="cb3-244"><a href="#cb3-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-245"><a href="#cb3-245" aria-hidden="true" tabindex="-1"></a>For example, suppose we have a model</span>
+<span id="cb3-246"><a href="#cb3-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-247"><a href="#cb3-247" aria-hidden="true" tabindex="-1"></a>$$ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2). $$ {#eq-ols-20}</span>
+<span id="cb3-248"><a href="#cb3-248" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-249"><a href="#cb3-249" aria-hidden="true" tabindex="-1"></a>In this simple model, even if we assume that $y_{t-1}$ and $u_t$ are</span>
+<span id="cb3-250"><a href="#cb3-250" aria-hidden="true" tabindex="-1"></a>uncorrelated, OLS estimator is still biased.  That is because</span>
+<span id="cb3-251"><a href="#cb3-251" aria-hidden="true" tabindex="-1"></a>${{\mathrm{E}}} {\symbf{(u|X)=0}}$</span>
+<span id="cb3-252"><a href="#cb3-252" aria-hidden="true" tabindex="-1"></a>is not satisfied: $y_{t-1}$ depends on $u_{t-1}$,</span>
+<span id="cb3-253"><a href="#cb3-253" aria-hidden="true" tabindex="-1"></a>$u_{t-2}$ and so on.</span>
+<span id="cb3-254"><a href="#cb3-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-255"><a href="#cb3-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-256"><a href="#cb3-256" aria-hidden="true" tabindex="-1"></a>There is a weaker condition -- weaker than the strict exogeneity above, and in fact</span>
+<span id="cb3-257"><a href="#cb3-257" aria-hidden="true" tabindex="-1"></a>the weakest of the conditions in this chapter:</span>
+<span id="cb3-258"><a href="#cb3-258" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(X u)=0,</span>
+<span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-21}</span>
+<span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.</span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a><span class="fu">### Consistency</span></span>
+<span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>For OLS estimator to be consistent, a much weaker condition is needed:</span>
+<span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (u_t|X_t)=0,</span>
+<span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-22}</span>
+<span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of</span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>three exogeneity conditions worth keeping apart, which is precisely why it is the</span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>one to invoke for consistency:</span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strict exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_1, \dots, X_n</span><span class="co">]</span>=0$: the error in every</span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  violates.</span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_{t-1}</span><span class="co">]</span>=0$ with $X_t$ measurable</span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the</span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  variable.</span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers it gives</span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  In particular, by</span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>the law of iterated expectations,</span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

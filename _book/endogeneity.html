@@ -669,6 +669,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <p>So it depends on what questions to ask. If I am a builder and ask what an extra bedroom on the already built house would bring to me, I need to control for footage. If I am generally asking what an extra bedroom would cost, then I am implying what that bedroom and associated footage would cost me. In that case, without controlling for footage is not a problem, since the question is: what an additional bedroom (AND the associated average square footage) would cost me.</p>
 <p>In the wage and education example, if I am asking: what’s the effect of education on wage? I implicitly ask what would be my pay raise if I go to college (given IQ, of course), for example. Then we are concerned that this model of <span id="eq-endogeneity-20"><span class="math display">\[ wage= \alpha edu + \epsilon  \tag{4.20}\]</span></span> will generate biased estimate of <span class="math inline">\(\alpha\)</span>, because we are not controlling for IQ. But if I am an employer and interested in hiring a person, what would I have to pay extra to hire a college graduate vs.&nbsp;a high school graduate? Then I don’t have to include that IQ variable, because implicitly I am asking: what extra I need to pay for that college graduate who comes with a higher IQ, and everything else that is associated with higher education.</p>
 <p>In addition, what an IV regression really gives us is part of the causal inference of <span class="math inline">\(X\)</span> (suspected to be endogenous) on <span class="math inline">\(y\)</span>, namely the part induced by <span class="math inline">\(Z\)</span>. For example, we are interested in the relationship between college education and wage. If we use distance to college as an instrument, then our inference is the effect of college education from those who decide to go because of proximity of the college.</p>
+<p>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist (1994): with a binary instrument and heterogeneous treatment effects, IV identifies the causal effect for <em>compliers</em> — those whose treatment status is shifted by the instrument — rather than for the full population. The formal derivation, including the monotonicity assumption and the complier/always-taker/never-taker decomposition, is in the <a href="https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html">Causal Econometrics Guide</a>.</p>
 
 
 <!-- -->
@@ -1687,6 +1688,14 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-557"><a href="#cb16-557" aria-hidden="true" tabindex="-1"></a>between college education and wage.  If we use distance to college as</span>
 <span id="cb16-558"><a href="#cb16-558" aria-hidden="true" tabindex="-1"></a>an instrument, then our inference is the effect of college education</span>
 <span id="cb16-559"><a href="#cb16-559" aria-hidden="true" tabindex="-1"></a>from those who decide to go because of proximity of the college.</span>
+<span id="cb16-560"><a href="#cb16-560" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-561"><a href="#cb16-561" aria-hidden="true" tabindex="-1"></a>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist</span>
+<span id="cb16-562"><a href="#cb16-562" aria-hidden="true" tabindex="-1"></a>(1994): with a binary instrument and heterogeneous treatment effects,</span>
+<span id="cb16-563"><a href="#cb16-563" aria-hidden="true" tabindex="-1"></a>IV identifies the causal effect for *compliers* --- those whose</span>
+<span id="cb16-564"><a href="#cb16-564" aria-hidden="true" tabindex="-1"></a>treatment status is shifted by the instrument --- rather than for the</span>
+<span id="cb16-565"><a href="#cb16-565" aria-hidden="true" tabindex="-1"></a>full population.  The formal derivation, including the monotonicity</span>
+<span id="cb16-566"><a href="#cb16-566" aria-hidden="true" tabindex="-1"></a>assumption and the complier/always-taker/never-taker decomposition, is</span>
+<span id="cb16-567"><a href="#cb16-567" aria-hidden="true" tabindex="-1"></a>in the <span class="co">[</span><span class="ot">Causal Econometrics Guide</span><span class="co">](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -88,6 +88,118 @@ That is, ${\symbf{P_X y}}$ projects ${\symbf{y}}$ onto ${\symbf{X}}$ and makes i
 In the picture, that corresponds to the fact that the projection of ${\symbf{y}}$ onto the plane of ${\symbf{X}}$ creates two parts:  ${\symbf{\hat y}}$ and ${\symbf{\hat u}}$.
 
 
+## OLS as Conditional Expectation
+
+The derivation above shows how to compute ${\symbf{\hat\beta}}$ from a
+sample.  We now ask a different question: what does OLS estimate at
+the population level?
+
+### The Conditional Expectation Function
+
+For a random pair $(Y, X)$, the conditional expectation function
+(CEF) is $E[Y \mid X]$, a function of $X$ alone.  Any random
+variable $Y$ can be decomposed as
+$$Y = E[Y \mid X] + \varepsilon, \qquad E[\varepsilon \mid X] = 0.$$ {#eq-cef-decomp}
+
+This is not an assumption; it is a definition.  The residual
+$\varepsilon = Y - E[Y \mid X]$ is mean-independent of $X$ by the
+construction of conditional expectation.
+
+The CEF has an optimality property: among all functions $g(X)$,
+$E[Y \mid X]$ minimizes the mean squared prediction error,
+$$E[Y \mid X] = \arg\min_{g}\; E\bigl[(Y - g(X))^2\bigr].$$ {#eq-cef-mmse}
+
+That is, if we could use any function of $X$ to predict $Y$, the
+CEF would be the best predictor in the mean squared error sense.
+The proof follows from the decomposition above: for any $g$,
+$$E\bigl[(Y-g(X))^2\bigr]
+= E\bigl[(Y - E[Y\mid X])^2\bigr]
++ E\bigl[(E[Y\mid X] - g(X))^2\bigr]
++ 2\,E\bigl[\varepsilon\,(E[Y\mid X]-g(X))\bigr].$$ {#eq-cef-proof-expand}
+
+The cross term vanishes by iterated expectations: $E[Y\mid X]-g(X)$
+is a function of $X$, so
+$E\bigl[\varepsilon\,(E[Y\mid X]-g(X))\bigr]
+= E\bigl[E[\varepsilon\mid X]\,(E[Y\mid X]-g(X))\bigr] = 0$.
+The first term does not depend on $g$, and the second is
+nonnegative and equals zero when $g = E[Y\mid X]$.
+
+### The Best Linear Predictor
+
+In practice we rarely know the CEF, and we often restrict attention
+to linear predictors.  The best linear predictor (BLP) of $Y$ given
+$X$ is the coefficient vector $\beta$ that solves
+$$\beta = \arg\min_{b}\; E\bigl[(Y - X'b)^2\bigr].$$ {#eq-blp-def}
+
+Taking the first-order condition,
+$$\frac{\partial}{\partial b}\, E\bigl[(Y - X'b)^2\bigr]
+= -2\, E\bigl[X(Y - X'b)\bigr] = 0,$$ {#eq-blp-foc}
+
+which gives the population normal equation
+$$E[XX']\,\beta = E[XY].$$ {#eq-blp-normal}
+
+If $E[XX']$ is nonsingular, the BLP coefficient is
+$$\beta = \bigl(E[XX']\bigr)^{-1}\, E[XY].$$ {#eq-blp-coef}
+
+This is the population analog of the sample formula
+${\symbf{\hat\beta = (X'X)^{-1}X'y}}$.  The population version
+replaces sample cross-products with their expectations.
+
+The first-order condition can equivalently be written as the
+population orthogonality condition:
+$$E\bigl[X(Y - X'\beta)\bigr] = 0.$$ {#eq-blp-orth}
+
+This says that the linear prediction error $Y - X'\beta$ is
+uncorrelated with every component of $X$.  It is the population
+version of the sample condition ${\symbf{X'\hat u = 0}}$ that we
+derived from the matrix normal equations.
+
+### The BLP Approximates the CEF
+
+The BLP and the CEF are connected by a key result: the BLP is the
+best linear approximation to the CEF.  To see this, write
+$$\beta = \bigl(E[XX']\bigr)^{-1}\, E[XY]
+= \bigl(E[XX']\bigr)^{-1}\, E\bigl[X\, E[Y \mid X]\bigr],$$ {#eq-blp-cef}
+
+where the second equality uses the law of iterated expectations.
+The BLP coefficient depends on $Y$ only through the CEF.  OLS is
+fitting a linear function to the CEF, not directly to $Y$.
+
+When the CEF is linear in $X$ — that is, $E[Y \mid X] = X'\beta$
+for some $\beta$ — the BLP recovers the CEF exactly.  The linear
+model is correctly specified and OLS estimates the true conditional
+expectation.
+
+When the CEF is nonlinear, the BLP still provides the minimum mean
+squared error linear approximation to it.  The OLS coefficient
+retains a well-defined interpretation: it is the slope of the best
+linear predictor, even if the world is nonlinear.  This is why OLS
+remains useful in settings where the true CEF is unknown and
+possibly complicated.
+
+### From Population to Sample
+
+The population formulas become sample formulas when we replace
+expectations with sample averages.  For a sample of $n$
+observations,
+$$E[XX'] \approx \frac{1}{n} \sum_{i=1}^n X_i X_i'
+= \frac{1}{n}\, {\symbf{X'X}}$$ {#eq-pop-sample-xx}
+
+$$E[XY] \approx \frac{1}{n} \sum_{i=1}^n X_i Y_i
+= \frac{1}{n}\, {\symbf{X'y}}$$ {#eq-pop-sample-xy}
+
+Substituting into the population BLP formula gives
+$${\symbf{\hat\beta}}
+= \left(\frac{1}{n}\,{\symbf{X'X}}\right)^{-1}
+  \frac{1}{n}\,{\symbf{X'y}}
+= {\symbf{(X'X)^{-1}X'y}},$$ {#eq-sample-ols-from-pop}
+
+which is the OLS estimator derived from the matrix normal equations.
+The $1/n$ factors cancel.  This shows what OLS does: it uses sample
+analogs to estimate the population BLP, which is the best linear
+approximation to the conditional expectation function $E[Y \mid X]$.
+
+
 ## Properties of OLS estimator
 
 ### Unbiasedness

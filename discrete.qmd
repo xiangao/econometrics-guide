@@ -154,6 +154,15 @@ Here ${{\symbf{W}}}_{tj}$ is a row vector of length $k$ of alternative-$j$-speci
 variables, and $\beta$ is a single $k$-vector of parameters shared across
 all alternatives $j=0,\dots,J$.
 
+For binary and multinomial models alike, the coefficients $\beta$ do
+not directly measure the effect of a unit change in $X$ on the
+probability.  That effect depends on where in the distribution the
+change occurs.  The average marginal effect (AME) --- averaging the
+partial effect over the observed distribution of covariates --- is the
+standard summary.  The full treatment of AME vs.\ marginal effects at
+the mean, including fixed-effects models, is in the
+[Blog Book](https://xiangao.github.io/blog_book/marginal-effects-fe.html).
+
 Writing *both* choice-varying regressors ${{\symbf{W}}}_{tl}$ *and* choice-specific coefficients $\beta^l$ into the same formula, as some treatments do, conflates the two models.  It is worth being precise about what that costs, because the usual complaint -- that such a specification is not identified -- is not true.  Choice probabilities depend only on utility *differences*, so $\Pr(y_t=l)$ is governed by ${{\symbf{W}}}_{tj}\beta^j - {{\symbf{W}}}_{tl}\beta^l$; when the ${{\symbf{W}}}_{tj}$ vary independently across alternatives, those differences pin down each $\beta^j$ separately, with no normalization required.  It is a perfectly estimable model -- it is what Stata's `asclogit` fits when alternative-specific coefficients are requested.
 
 What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.
