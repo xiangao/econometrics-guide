@@ -500,74 +500,29 @@ vtab(c(`true ATT`              = mean(tau[panel$D == 1]),
        `untreated, omega > 0`  = sum(panel$D == 0 & omega_tw > 0)), 3)
 ```
 
-The TWFE coefficient sits well below the true ATT, and $\sum \omega_{it} y_{it}$ reproduces it exactly. Hundreds of treated cells carry a negative weight: these are the early cohort's cells in periods $6$–$8$, the ones where the unit-and-time prediction of $D$ exceeds $1$ and the residual $\tilde D_{it}$ flips sign. Their outcomes are subtracted from $\hat\beta$ — the observation-level signature of the Bacon forbidden comparison. (Untreated cells with $\omega > 0$ also appear, a consequence of the same overshooting in the opposite direction; these are less interpretable as a diagnostic, since they arise from the fixed-effect structure on imbalanced data rather than from any comparison being used backwards.)
-
-### Imputation as a smoother
-
-The imputation estimator of Borusyak, Jaravel, and Spiess (2024) fits the outcome model on untreated observations alone and imputes each treated cell's counterfactual. With unit and time fixed effects the imputed value is $\hat Y_{it}(0) = \hat\alpha_i + \hat\gamma_t$, the coefficients from $Y_{jt} = \alpha_j + \gamma_t + \varepsilon_{jt}$ run on $\{(j,t) : D_{jt} = 0\}$.
-
-That regression is a smoother: $\hat{\boldsymbol Y}(0) = \boldsymbol S \boldsymbol Y$ with $\boldsymbol S = \boldsymbol X (\boldsymbol X_0'\boldsymbol X_0)^{-1} \boldsymbol X_0' \boldsymbol P_0$, where $\boldsymbol X_0$ and $\boldsymbol P_0$ restrict to untreated rows. The ATT averages the treated residuals,
-
-$$
-\widehat{\text{ATT}} = \frac{1}{n_1} \sum_{D_{it}=1} (Y_{it} - \hat Y_{it}(0)) = \boldsymbol a'(\mathbf I - \boldsymbol S)\boldsymbol Y = \boldsymbol\omega'\boldsymbol Y
-$$ {#eq-bjs}
-
-with $a_{it} = 1/n_1$ for treated cells and zero otherwise — the recipe of §4. Because the smoother draws only on untreated outcomes — column $j$ of $\boldsymbol S$ is zero when $D_j = 1$ — the weight on every treated cell reduces to $\omega_{it} = 1/n_1$: **each treated observation carries the same positive weight.** Untreated cells carry varying weights that sum to $-1$; individual cells can be positive or negative, since the OLS fit on unbalanced untreated data couples the fixed effects.
+The TWFE coefficient sits well below the true ATT, and $\sum \omega_{it} y_{it}$ reproduces it exactly. Hundreds of treated cells carry a negative weight: these are the early cohort's cells in periods $6$–$8$, the ones where the unit-and-time prediction of $D$ exceeds $1$ and the residual $\tilde D_{it}$ flips sign. Their outcomes are subtracted from $\hat\beta$ — the observation-level signature of the Bacon forbidden comparison.
 
 ```{r}
-unt <- panel$D == 0
-X <- model.matrix(~ factor(id) + factor(t), data = panel)
-X0 <- X[unt, ]
-coefs <- solve(crossprod(X0), crossprod(X0, panel$y[unt]))
-panel$y0hat <- as.vector(X %*% coefs)
-att_imp <- mean(panel$y[panel$D == 1] - panel$y0hat[panel$D == 1])
-
-a <- ifelse(panel$D == 1, 1 / n1, 0)
-v <- solve(crossprod(X0), crossprod(X, a))
-Sta <- numeric(nrow(panel)); Sta[unt] <- as.vector(X0 %*% v)
-omega_imp <- a - Sta
-
-vtab(c(`imputation ATT`          = att_imp,
-       `omega' y`                = sum(omega_imp * panel$y),
-       `treated, omega < 0`      = sum(panel$D == 1 & omega_imp < 0),
-       `untreated, omega > 0`    = sum(!panel$D & omega_imp > 0),
-       `max |treated wt - 1/n1|` = max(abs(omega_imp[panel$D == 1] - 1/n1))), 3)
-```
-
-The imputation ATT recovers the true value, $\boldsymbol\omega'\boldsymbol Y$ reproduces it, and no treated cell carries a negative weight — the key diagnostic. The maximum deviation of a treated weight from $1/n_1$ is at machine precision, confirming the structural guarantee. Untreated cells with $\omega > 0$ still appear (as in TWFE), but these reflect the coupling in the fixed-effect estimation, not a comparison running backwards.
-
-```{r}
-#| fig-width: 9
+#| fig-width: 5.5
 #| fig-height: 4.2
-#| fig-cap: "Cell-level outcome weights in the staggered panel, summed within each cohort-period cell. TWFE (left): the early cohort's treated cells (teal triangles) turn negative in periods $6$--$8$ — those outcomes are subtracted from $\\hat\\beta$, the observation-level signature of the forbidden comparison. Imputation (right): every treated cell stays positive; no treated observation can count as a control."
+#| fig-cap: "Cell-level outcome weights in the staggered panel, summed within each cohort-period cell. The early cohort's treated cells (teal triangles) turn negative in periods $6$--$8$ — those outcomes are subtracted from $\\hat\\beta$, the observation-level signature of the forbidden comparison."
 cols <- c("grey50", teal, rust)
 pchs <- c(16, 17, 15)
 cell_tw  <- tapply(omega_tw,  list(panel$g, panel$t), sum)
-cell_imp <- tapply(omega_imp, list(panel$g, panel$t), sum)
-ylim <- range(cell_tw, cell_imp)
 
-plot_cells <- function(cells, main) {
-  plot(NA, xlim = c(0.5, 8.5), ylim = ylim, xlab = "period",
-       ylab = "total cell weight", main = main, xaxt = "n")
-  axis(1, at = 1:8)
-  abline(h = 0, lty = 3, col = "grey55")
-  for (k in 1:3) {
-    lines(1:8, cells[k, ], col = cols[k], lwd = 2)
-    points(1:8, cells[k, ], pch = pchs[k], col = cols[k], cex = 1.4)
-  }
+plot(NA, xlim = c(0.5, 8.5), ylim = range(cell_tw), xlab = "period",
+     ylab = "total cell weight", xaxt = "n")
+axis(1, at = 1:8)
+abline(h = 0, lty = 3, col = "grey55")
+for (k in 1:3) {
+  lines(1:8, cell_tw[k, ], col = cols[k], lwd = 2)
+  points(1:8, cell_tw[k, ], pch = pchs[k], col = cols[k], cex = 1.4)
 }
-
-op <- par(mfrow = c(1, 2), mar = c(4, 4.5, 2.5, 1))
-plot_cells(cell_tw, "TWFE")
 legend("bottomleft", legend = c("never (g=0)", "early (g=3)", "late (g=6)"),
        pch = pchs, col = cols, lty = 1, lwd = 2, bty = "n", cex = 0.85)
-plot_cells(cell_imp, "Imputation")
-par(op)
 ```
 
-The two panels locate the structural difference. TWFE residualises the treatment indicator over the full panel, so when the early cohort's treated cells sit in a period where many units are treated, their residual turns negative and their outcomes count as controls. The imputation estimator's smoother, fitted on untreated cells alone, cannot reach treated outcomes, so no treated cell can count as a control — the forbidden-comparison problem that defines staggered TWFE bias is structurally absent.
-
-The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. A single unit can have $\omega_{it} > 0$ in some periods and $\omega_{it} < 0$ in others — in the simulation above, every early-cohort unit is positive in periods $3$–$5$ and negative in periods $6$–$8$. This changes the response. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming means dropping specific $(i, t)$ cells, which removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is not to trim but to switch estimators — imputation, Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction.
+The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. A single unit can have $\omega_{it} > 0$ in some periods and $\omega_{it} < 0$ in others — in the simulation above, every early-cohort unit is positive in periods $3$–$5$ and negative in periods $6$–$8$. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming specific $(i, t)$ cells removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is to switch estimators — imputation (Borusyak, Jaravel, and Spiess 2024), Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction. The imputation estimator, for example, fits unit and time fixed effects on untreated observations alone and imputes each treated cell's counterfactual; because its smoother draws only on untreated outcomes, the weight on every treated cell reduces to $1/n_1$ and no treated observation can count as a control.
 
 ### Implied versus chosen
 
@@ -582,4 +537,4 @@ A closing caution. These weights diagnose *estimation* — which comparisons a d
 3. **The sign shows direction.** Because $\omega_i$ is proportional to $\tilde V_i$, not to $\tilde V_i^2$, it carries a sign: it shows which rows push $\hat\beta$ up and which pull it down, and, under controls with thin overlap, which enter with the sign their raw position would not predict.
 4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024). PLR's denominator $\tilde{\boldsymbol D}'\tilde{\boldsymbol D}$ reveals its estimand as the VWATE (@eq-vwate), not the ATE; and the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
 5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks.
-6. **Staggered designs and imputation.** In staggered TWFE the outcome weights flag both treated cells used as controls and untreated cells used as treated — the observation-level version of the Bacon (2021) forbidden comparisons. The imputation estimator of Borusyak, Jaravel, and Spiess (2024) is a smoother on untreated outcomes (@eq-bjs) and cannot assign negative weight to any treated cell: every treated cell carries the same weight $1/n_1$, so the forbidden-comparison diagnostic is clean by construction.
+6. **Staggered designs.** In staggered TWFE the outcome weights flag both treated cells used as controls and untreated cells used as treated — the observation-level version of the Bacon (2021) forbidden comparisons. Estimators that fit counterfactuals on untreated observations alone (Borusyak, Jaravel, and Spiess 2024; Callaway and Sant'Anna 2021) cannot assign negative weight to any treated cell, so the forbidden-comparison diagnostic is clean by construction.
