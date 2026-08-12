@@ -12,6 +12,7 @@ book:
   repo-url: https://github.com/xiangao/econometrics-guide/
   repo-actions: [edit, issue]
   sidebar:
+    collapse-level: 1
     tools:
       - icon: house-door-fill
         text: Xiang Ao home
@@ -47,7 +48,7 @@ format:
     callout-appearance: simple
     code-tools: true
     number-sections: true
-    toc-depth: 3
+    toc: false
   pdf:
     documentclass: scrbook
     papersize: letter

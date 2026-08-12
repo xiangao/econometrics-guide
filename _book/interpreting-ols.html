@@ -132,7 +132,7 @@ window.Quarto = {
 };
 </script><link rel="stylesheet" href="style.css">
 </head>
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
@@ -270,51 +270,7 @@ window.Quarto = {
 </div>
 </nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-<li>
-<a href="#ols-as-a-weighted-average" id="toc-ols-as-a-weighted-average" class="nav-link active" data-scroll-target="#ols-as-a-weighted-average"><span class="header-section-number">13.1</span> OLS as a weighted average</a>
-  <ul class="collapse">
-<li><a href="#what-the-weights-look-like" id="toc-what-the-weights-look-like" class="nav-link" data-scroll-target="#what-the-weights-look-like"><span class="header-section-number">13.1.1</span> What the weights look like</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#deviation-slopes-s_i-versus-true-effects-b_i" id="toc-deviation-slopes-s_i-versus-true-effects-b_i" class="nav-link" data-scroll-target="#deviation-slopes-s_i-versus-true-effects-b_i"><span class="header-section-number">13.2</span> Deviation slopes <span class="math inline">\(s_i\)</span> versus true effects <span class="math inline">\(b_i\)</span></a>
-  <ul class="collapse">
-<li><a href="#decomposing-s_i" id="toc-decomposing-s_i" class="nav-link" data-scroll-target="#decomposing-s_i"><span class="header-section-number">13.2.1</span> Decomposing <span class="math inline">\(s_i\)</span></a></li>
-  <li><a href="#aggregating-up-to-hatbeta_ols" id="toc-aggregating-up-to-hatbeta_ols" class="nav-link" data-scroll-target="#aggregating-up-to-hatbeta_ols"><span class="header-section-number">13.2.2</span> Aggregating up to <span class="math inline">\(\hat\beta_{OLS}\)</span></a></li>
-  <li><a href="#so-what" id="toc-so-what" class="nav-link" data-scroll-target="#so-what"><span class="header-section-number">13.2.3</span> So what?</a></li>
-  <li><a href="#under-homogeneity-the-weights-buy-precision" id="toc-under-homogeneity-the-weights-buy-precision" class="nav-link" data-scroll-target="#under-homogeneity-the-weights-buy-precision"><span class="header-section-number">13.2.4</span> Under homogeneity, the weights buy precision</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#the-general-rule-fwl" id="toc-the-general-rule-fwl" class="nav-link" data-scroll-target="#the-general-rule-fwl"><span class="header-section-number">13.3</span> The general rule: FWL</a>
-  <ul class="collapse">
-<li><a href="#where-the-square-comes-from" id="toc-where-the-square-comes-from" class="nav-link" data-scroll-target="#where-the-square-comes-from"><span class="header-section-number">13.3.1</span> Where the square comes from</a></li>
-  <li><a href="#special-cases-of-the-effect-weights" id="toc-special-cases-of-the-effect-weights" class="nav-link" data-scroll-target="#special-cases-of-the-effect-weights"><span class="header-section-number">13.3.2</span> Special cases of the effect weights</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#two-causal-decompositions-angrist-and-s%C5%82oczy%C5%84ski" id="toc-two-causal-decompositions-angrist-and-słoczyński" class="nav-link" data-scroll-target="#two-causal-decompositions-angrist-and-s%C5%82oczy%C5%84ski"><span class="header-section-number">13.4</span> Two causal decompositions: Angrist and Słoczyński</a>
-  <ul class="collapse">
-<li><a href="#angrist-1998-weighting-by-stratum" id="toc-angrist-1998-weighting-by-stratum" class="nav-link" data-scroll-target="#angrist-1998-weighting-by-stratum"><span class="header-section-number">13.4.1</span> Angrist (1998): weighting by stratum</a></li>
-  <li><a href="#s%C5%82oczy%C5%84ski-2022-aggregating-to-two-groups" id="toc-słoczyński-2022-aggregating-to-two-groups" class="nav-link" data-scroll-target="#s%C5%82oczy%C5%84ski-2022-aggregating-to-two-groups"><span class="header-section-number">13.4.2</span> Słoczyński (2022): aggregating to two groups</a></li>
-  <li><a href="#the-three-side-by-side" id="toc-the-three-side-by-side" class="nav-link" data-scroll-target="#the-three-side-by-side"><span class="header-section-number">13.4.3</span> The three, side by side</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#within-versus-between-in-panels" id="toc-within-versus-between-in-panels" class="nav-link" data-scroll-target="#within-versus-between-in-panels"><span class="header-section-number">13.5</span> Within versus between, in panels</a>
-  <ul class="collapse">
-<li><a href="#within-unit-weighting-an-extreme-case" id="toc-within-unit-weighting-an-extreme-case" class="nav-link" data-scroll-target="#within-unit-weighting-an-extreme-case"><span class="header-section-number">13.5.1</span> Within-unit weighting: an extreme case</a></li>
-  <li><a href="#splitting-the-two-channels" id="toc-splitting-the-two-channels" class="nav-link" data-scroll-target="#splitting-the-two-channels"><span class="header-section-number">13.5.2</span> Splitting the two channels</a></li>
-  <li><a href="#when-the-weighting-changes-nothing" id="toc-when-the-weighting-changes-nothing" class="nav-link" data-scroll-target="#when-the-weighting-changes-nothing"><span class="header-section-number">13.5.3</span> When the weighting changes nothing</a></li>
-  </ul>
-</li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">13.6</span> Summary</a></li>
-  </ul><div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/interpreting-ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">
@@ -2128,4 +2084,4 @@ V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/interpreting-ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/xiangao/econometrics-guide/edit/main/interpreting-ols.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/xiangao/econometrics-guide/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
