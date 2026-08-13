@@ -72,126 +72,32 @@ The dashed fit shares that slope, shifted through the grand mean, so the two coi
 
 ### Why it collapses to two points
 
-Write $d_i = x_i - \bar x$, so the slope is $\hat\beta = \sum_i d_i y_i / \sum_i d_i^2$. Two elementary facts drive everything:
+Write $d_i = x_i - \bar x$. Because $\sum_i d_i = 0$, the positive and negative sides carry equal total weight $W = \sum_{i: d_i > 0} d_i$. An inner product with $d$ is therefore a between-group contrast: for any variable $v$,
 
-- $\sum_i d_i = 0$ — deviations from the mean sum to zero;
-- $\sum_i d_i^2 = \sum_i d_i x_i$, since $\sum_i d_i x_i = \sum_i d_i (d_i + \bar x) = \sum_i d_i^2 + \bar x \sum_i d_i$.
+$$ d \cdot v = W(\bar v_R - \bar v_L), $$ {#eq-outcome-weights-4}
 
-The second fact writes the slope as a ratio of two inner products with the *same* vector $d$:
+where $\bar v_R$ and $\bar v_L$ are the $|d_i|$-weighted means on each side of $\bar x$. The slope $\hat\beta = d \cdot y\, /\, d \cdot x$ is the ratio of two such contrasts; $W$ cancels:
 
-$$ \hat\beta = \frac{d \cdot y}{d \cdot x}. $$ {#eq-outcome-weights-3}
+$$ \hat\beta = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. $$ {#eq-outcome-weights-5}
 
-Split the observations by the sign of $d_i$: let $R = \{i : d_i > 0\}$ lie right of the mean and $L = \{i : d_i < 0\}$ left, with $d_i = 0$ points contributing nothing. Let $W = \sum_{i \in R} d_i = \sum_{i \in R} |d_i|$ be the total weight on the right. Because $\sum_i d_i = 0$, the left must carry $\sum_{i \in L} d_i = -W$, that is $\sum_{i \in L} |d_i| = W$: **both sides hold the identical total weight $W$.**
-
-Weight each side by $|d_i|$ and form its centroid, $\bar v_R = \sum_{i \in R} |d_i| v_i / W$ and $\bar v_L = \sum_{i \in L} |d_i| v_i / W$ for any variable $v$. Using $|d_i| = d_i$ on $R$ and $|d_i| = -d_i$ on $L$,
-
-$$ d \cdot v = \sum_{i \in R} d_i v_i + \sum_{i \in L} d_i v_i = W \bar v_R - W \bar v_L = W(\bar v_R - \bar v_L). $$ {#eq-outcome-weights-4}
-
-An inner product with a zero-sum vector is a *between-group contrast* — the common weight $W$ times the gap between the two weighted side-means. Apply it to the numerator ($v = y$) and the denominator ($v = x$):
-
-$$ \hat\beta = \frac{d \cdot y}{d \cdot x} = \frac{W(\bar y_R - \bar y_L)}{W(\bar x_R - \bar x_L)} = \frac{\bar y_R - \bar y_L}{\bar x_R - \bar x_L}. $$ {#eq-outcome-weights-5}
-
-The $W$ cancels, and what remains is the plain rise over run between the two $|d|$-weighted centroids — the two dots in the figure.
-
-The construction gives exactly *two* points because $d_i$ takes two signs: a centred regressor has a left and a right of the mean, and the sign is constant within each side, so each half collapses to a single weighted centre.
-
-The weight must be $|d_i|$, not a plain average, because it already sits inside the OLS sums $d \cdot y$ and $d \cdot x$: the dot is a centre of mass with mass $|d_i|$, and the same mass fixes both coordinates — weighting $y$ but not $x$ gives the wrong slope.
+That is the rise over run between the two $|d|$-weighted centroids — the two dots in the figure.
 
 ## When the sign flips
 
 In simple regression the sign of $\omega_i$ is just the side of the mean: half the weights are negative, structurally, and a low-$x$ point *should* count against a high-$x$ one. With controls $\tilde V_i$ becomes a *residual*, and a row can flip to the sign its raw position denies — a hidden extrapolation the non-negative $w_i$ can never show.
 
-Take a binary treatment $D$ with covariate $x$ and thin overlap — controls low, treated high — and fit $y \sim D + x$. Now $\omega_i \propto \tilde V_i = D_i - \hat D_i$, with $\hat D$ the *linear* projection of $D$ on $(1, x)$. Where overlap fails, that $\hat D$ leaves $[0, 1]$: a treated unit with $\hat D_i > 1$ gets $\tilde V_i < 0$, so its outcome is *subtracted* from $\hat\beta$ — a sign $\tilde V_i^2 \ge 0$ hides.
+With a binary treatment $D$ and covariate $x$, the weight $\omega_i \propto \tilde V_i = D_i - \hat D_i$, with $\hat D$ the linear projection of $D$ on $(1, x)$. Regressed on $D$ alone, every treated unit is positive and every control negative — the *structural* pattern, producing $\hat\beta = \bar y_1 - \bar y_0$. Add $x$ and the fitted $\hat D_i$ can leave $[0, 1]$ where treatment and control barely overlap: a treated unit with $\hat D_i > 1$ gets $\tilde V_i < 0$, so its outcome is subtracted from $\hat\beta$ — a *wrong-sign* weight that the non-negative $\tilde V_i^2$ hides. The test is one line: **fit the treatment on the controls; any $\hat D_i \notin [0, 1]$ is an extrapolated, wrong-sign unit** — a point where the groups fail to overlap. (With a continuous regressor there is no bounded range to leave; overlap is read from leverage, not sign.)
 
-**Simulation — thin overlap.** The DGP: $n = 80$, with 40 controls at $x \sim N(2, 0.7^2)$ and 40 treated at $x \sim N(5, 0.7^2)$ — barely overlapping — and $y_i = D_i + 0.6\,x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 0.5^2)$, so the true effect is $1$.
+A wrong-sign weight is extrapolation: the model reaches outside common support, and $\hat\beta$ can leave the convex hull of the observed outcomes. Whether it matters depends on the data — a sensitivity check is one trim away.
 
-```{r}
-#| fig-width: 9
-#| fig-height: 4.2
-#| fig-cap: "Outcome weights under thin overlap. Left: the linear projection $\\hat D$ of treatment on $x$ leaves $[0,1]$, so residuals change sign in the extrapolation zone. Right: outcome weights coloured by sign (teal $+$, rust $-$), triangles treated and circles control, size $\\propto |\\omega_i|$. Treated units at high $x$ (open rust triangles) carry *negative* weights — their outcomes are subtracted from $\\hat\\beta$ — a sign the effect weights $\\tilde V_i^2 \\ge 0$ cannot reveal."
-set.seed(11)
-n0 <- 40; n1 <- 40
-x <- c(rnorm(n0, 2.0, 0.7), rnorm(n1, 5.0, 0.7))
-d <- c(rep(0, n0), rep(1, n1))
-y <- 1.0 * d + 0.6 * x + rnorm(n0 + n1, 0, 0.5)
-X <- cbind(1, x); dh <- as.vector(X %*% solve(crossprod(X)) %*% t(X) %*% d)
-vt <- d - dh; om <- vt / sum(vt^2)
-op <- par(mfrow = c(1, 2), mar = c(4, 4, 2.5, 1))
-plot(x, d, pch = ifelse(d == 1, 17, 16), col = "grey45", ylim = c(-0.35, 1.35),
-     xlab = "x", ylab = "D  and  D-hat", main = "Linear D-hat leaves [0, 1]")
-abline(h = c(0, 1), lty = 3, col = "grey70"); ox <- order(x)
-lines(x[ox], dh[ox], lwd = 2, col = teal)
-col <- ifelse(om >= 0, teal, rust)
-plot(x, y, pch = ifelse(d == 1, 17, 16), col = paste0(col, "CC"),
-     cex = 0.7 + 3 * abs(om) / max(abs(om)), xlab = "x", ylab = "y",
-     main = "Outcome-weight sign")
-tn <- which(d == 1 & om < 0)
-points(x[tn], y[tn], pch = 2, cex = 2.3, col = rust, lwd = 2)
-par(op)
-vtab(c(`treated, omega<0`   = sum(d == 1 & om < 0),
-        `treated, D-hat>1`   = sum(d == 1 & dh > 1),
-        `control, omega>0`   = sum(d == 0 & om > 0),
-        `control, D-hat<0`   = sum(d == 0 & dh < 0),
-        `beta (lm)`          = coef(lm(y ~ d + x))[["d"]],
-        `beta (sum omega*y)` = sum(om * y)), 4)
-```
-
-Seventeen of the forty treated units carry a negative weight, and $\hat\beta$ still equals $\sum_i \omega_i y_i$ exactly. Nothing is wrong with the algebra: asked to compare treated and control where they barely coexist, the linear model extrapolates, and the extrapolation surfaces as flipped signs.
-
-Which negatives matter? Two kinds.
-
-*Structural:* regressed on the treatment alone, every treated unit is positive and every control negative, and $\hat\beta = \bar y_1 - \bar y_0$.
-
-*Wrong-sign:* the opposite pairing — a treated unit with $\omega_i < 0$, or a control with $\omega_i > 0$. This cannot happen without covariates. It appears only when the residual $\tilde V_i = D_i - \hat D_i$ carries a fitted $\hat D_i$ outside $[0, 1]$, and the counts above confirm the treated units with $\omega_i < 0$ are exactly those with $\hat D_i > 1$.
-
-So the test is one line: **fit the treatment on the controls; any $\hat D_i \notin [0, 1]$ is an extrapolated, wrong-sign unit** — a point where treated and control covariates fail to overlap. (With a continuous regressor there is no bounded range to leave: a negative $\omega_i$ just means "below the conditional mean", and overlap is read from leverage, not sign.)
-
-A wrong-sign weight is extrapolation: the model reaches outside common support, and $\hat\beta$ can leave the convex hull of the observed outcomes — outside the range of any real comparison.
-
-This is no failure of OLS; it locates the reliance on functional form. The responses are the usual ones: trim to common support (the negatives then vanish), interpolate instead (matching, or overlap weights that are non-negative by design), or report how far $\hat\beta$ moves when the extrapolated units are dropped.
-
-This is the implied-weights diagnostic of Chattopadhyay and Zubizarreta (2023); their `lmw` package computes the weights and the balance, extrapolation, and influence diagnostics built on them, and `OutcomeWeights` (Knaus 2024) carries it to machine-learning estimators. On the data above, `lmw`'s negative weights are exactly the units our $\hat D \notin [0, 1]$ rule flags:
-
-```{r}
-#| message: false
-library(lmw)
-df <- data.frame(y, d, x)
-# lmw's implied weights for the same regression (y ~ d + x, ATE)
-L <- lmw(~ d + x, data = df, treat = "d", estimand = "ATE", method = "URI")
-manual <- (d == 1 & dh > 1) | (d == 0 & dh < 0)   # our flag: linear D-hat outside [0, 1]
-knitr::kable(
-  data.frame(
-    quantity = c("lmw negative weights", "our D-hat outside [0, 1]", "same units flagged"),
-    value    = c(as.character(sum(L$weights < 0)),
-                 as.character(sum(manual)),
-                 as.character(all((L$weights < 0) == manual)))),
-  col.names = c("", "value"), align = c("l", "r"))
-```
-
-The mainstream overlap check takes the other route, through the propensity score. `WeightIt` estimates it and reports the effective sample size and weight range, `cobalt::bal.plot` draws the two groups' score densities, and the fixes are trimming (Crump et al. 2009) or overlap weights, the `"ATO"` estimand (Li, Morgan, and Zaslavsky 2018).
-
-On this data both routes agree — the logistic score *perfectly separates*:
-
-```{r}
-#| warning: false
-#| message: false
-w <- WeightIt::weightit(d ~ x, data = df, method = "glm", estimand = "ATE")
-vtab(c(`max control PS` = max(w$ps[d == 0]),
-        `min treated PS` = min(w$ps[d == 1])), 3)
-```
-
-Both routes point to the same problem — the groups barely overlap — using different tools: the regression's own implied weights (`lmw`), or a separate propensity-score model (`WeightIt`, `cobalt`). Here overlap fails completely, so neither can help; there is no shared region to weight toward.
-
-When overlap is partial, the diagnostic becomes a sensitivity check: trim the flagged units, refit, and see whether the estimate moves. Here it moves by a lot. The outcome is convex in $x$, controls sit low on the curve and treated sit high, and the straight $y \sim D + x$ reports $\hat\beta = 0.69$ — a third short of the true effect of $1$, an artifact of one line forced through a curve the groups do not share.
-
-**Simulation — fragile estimate under misspecification.** The DGP: 150 controls near $x = 2.5$ and 150 treated near $x = 4.5$ (both sd $1.1$), with $y_i = D_i + 0.8\,(x_i - 3.5)^2 + 0.3\,x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 0.5^2)$ — a constant true effect of $1$ sitting on a convex baseline.
+**Simulation — thin overlap on a curved baseline.** The DGP: 150 controls near $x = 2.5$ and 150 treated near $x = 4.5$ (both sd $1.1$), with $y_i = D_i + 0.8\,(x_i - 3.5)^2 + 0.3\,x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 0.5^2)$ — a constant true effect of $1$ sitting on a convex baseline.
 
 ```{r}
 #| fig-width: 6.2
 #| fig-height: 4.6
 #| message: false
 #| warning: false
-#| fig-cap: "A fragile OLS gap. The two curves are the true means — control (rust, solid) and treated (teal, dotted), a constant $1$ apart: that gap is the true effect (arrow). Controls sit low on the curve and treated high, so the groups share only the middle. Ringed points are the extrapolating units the one-line rule flags, where the groups do not overlap. Forcing a straight $y \\sim D + x$ across the whole range reports $\\hat\\beta = 0.69$; dropping the flagged units, or reweighting to the overlap, restores $\\approx 1$."
+#| fig-cap: "Thin overlap on a convex baseline. The two curves are the true means — control (rust, solid) and treated (teal, dotted), a constant $1$ apart (arrow). Controls sit low on the curve and treated high; the groups share only the middle. Ringed points are wrong-sign units — $\\hat D_i \\notin [0, 1]$ — where the groups fail to overlap. The straight $y \\sim D + x$ reports $\\hat\\beta = 0.69$; dropping the flagged units, or reweighting to the overlap, restores $\\approx 1$."
 set.seed(7)
 n <- 150
 x <- c(rnorm(n, 2.5, 1.1), rnorm(n, 4.5, 1.1))
@@ -222,11 +128,9 @@ vtab(c(`flagged units`      = sum(flag),
         `beta (overlap-wtd)` = coef(lm(y ~ d + x, weights = w_ato$weights))[["d"]]), 3)
 ```
 
-The outcome weights find the artifact. Thirty-seven units carry the wrong sign, all in the non-overlapping tails. Trim them and refit and $\hat\beta$ returns to $0.99$; reweight to the overlap instead — the `"ATO"` weights — and it returns $0.98$. Either way the coefficient had leaned on the extrapolation, and the diagnostic showed it, read off the regression itself with no separate model.
+Thirty-seven units carry the wrong sign, all in the non-overlapping tails. Trim them and $\hat\beta$ jumps from $0.69$ to $0.99$; the overlap weights (`"ATO"`, Li, Morgan, and Zaslavsky 2018) give $0.98$. Either fix confirms the estimate leaned on the extrapolation, read off the regression itself with no separate model. Had the outcome been linear, the same trim would barely move $\hat\beta$: the wrong-sign weights are still there, but they are harmless. The check tells you which case you are in.
 
-Whether it matters depends on the data. Here trimming moved $\hat\beta$ a lot, so the estimate leaned on the extrapolation. Had the outcome been linear — the two groups sharing one straight line — the same trim would barely move $\hat\beta$: the negative weights are still there, but dropping those units changes almost nothing. The check tells you which case you are in.
-
-And it survives where the propensity score cannot. On the perfectly-separated data above the logistic model fails to converge and inverse-probability weighting collapses, yet the implied weights still flag every extrapolating unit.
+This is the implied-weights diagnostic of Chattopadhyay and Zubizarreta (2023); their `lmw` package computes the weights and the balance, extrapolation, and influence diagnostics built on them, and `OutcomeWeights` (Knaus 2024) carries it to machine-learning estimators. The mainstream overlap check takes the other route, through the propensity score (`WeightIt` for estimation, `cobalt` for balance, and Crump et al. 2009 for trimming); both routes reach the same conclusion.
 
 ## Out of OLS: the same weights beyond the linear model
 
@@ -325,31 +229,24 @@ Second, the weights still reproduce each estimate exactly and sum to zero overal
 
 That divergence shows what the representation is for. In Knaus's (2024) framing $\boldsymbol\omega$ does three things: it puts OLS, IPW, AIPW, DML, and the causal forest on **one footing** ($\boldsymbol\omega' \boldsymbol Y$); it **characterises the target population** each reports — the PLR-versus-AIPW gap above; and it **checks covariate balance** via `cobalt`, flagging when weights break a property usually assumed — the sum-to-$\pm 1$ within treated and control groups that PLR violates here.
 
-The package does exactly this — reads $(\boldsymbol S, \boldsymbol S_0, \boldsymbol S_1, \hat{\boldsymbol e})$ from the fitted object, forms these operators, and reads off $\boldsymbol\omega$. The formulas above take a few lines to compute by hand; here we do it for both PLR and AIPW and check they match the package's weights:
+The formulas take a few lines to check against the package:
 
 ```{r}
 n  <- length(Y)
-S  <- dml$NuPa.hat$smoothers$S[1, , ]         # outcome smoother E[Y|X]
-S1 <- dml$NuPa.hat$smoothers$S.d1[1, , ]      # E[Y|X, D=1] smoother
-S0 <- dml$NuPa.hat$smoothers$S.d0[1, , ]      # E[Y|X, D=0] smoother
-e  <- dml$NuPa.hat$predictions$D.hat[, 1]     # fitted propensity
-
-# PLR:  omega = (I - S)'(W - e) / ||W - e||^2
+S  <- dml$NuPa.hat$smoothers$S[1, , ]
+S1 <- dml$NuPa.hat$smoothers$S.d1[1, , ]
+S0 <- dml$NuPa.hat$smoothers$S.d0[1, , ]
+e  <- dml$NuPa.hat$predictions$D.hat[, 1]
 Wtil   <- W - e
 om_plr <- as.numeric((Wtil - crossprod(S, Wtil)) / sum(Wtil^2))
-
-# AIPW: omega = 1'T / n,  T = S1 - S0 + diag(W/e)(I - S1) - diag((1-W)/(1-e))(I - S0)
 Imat    <- diag(n)
 Tm      <- S1 - S0 + (W / e) * (Imat - S1) - ((1 - W) / (1 - e)) * (Imat - S0)
 om_aipw <- colSums(Tm) / n
-
 vtab(c(`PLR:  max |by hand - package|` = max(abs(om_plr  - om$omega["PLR", ])),
-       `PLR:  omega' Y`                = sum(om_plr  * Y),
        `AIPW: max |by hand - package|` = max(abs(om_aipw - om$omega["AIPW-ATE", ])),
+       `PLR:  omega' Y`                = sum(om_plr  * Y),
        `AIPW: omega' Y`                = sum(om_aipw * Y)), 4)
 ```
-
-Agreement to machine precision: both by-hand $\boldsymbol\omega$ vectors match the package, and each $\boldsymbol\omega' \boldsymbol Y$ returns its point estimate — the derivation above, in code.
 
 ### Two uses: balance and extrapolation
 
