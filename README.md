@@ -118,3 +118,20 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > GLS-vs-OLS+robust-SE tradeoff. Cross-references added to the causal book (LATE), blog book
 > (CRE, AME) for topics already covered there. Preface rewritten as content overview. Right-side
 > TOC removed for a cleaner layout.
+
+> **2026-08-14:** Extended the difference-in-differences part of the *Outcome Weights* chapter.
+> The question: can we weight observations by whether parallel trends holds for them? Not as
+> stated. Parallel trends is a statement about two group means, so no single observation has it or
+> lacks it. Under a model where trends vary by unit the question does mean something, and synthetic
+> difference-in-differences already answers it. That estimator is a weighted two-way fixed effects
+> regression, so `τ̂ = Σ ω_it Y_it` with `ω_it = u_i v_t`, an outer product of rank one. We check it
+> against `synthdid` and the gap is zero to machine precision. The weights sum to zero along each
+> margin, and no cell can take a wrong sign. More generally the rank of the weight matrix is the
+> number of treated cohorts. So the plain 2×2 and synthetic DiD are the same object at two settings
+> of the margins, and only above rank one can a treated cell enter negatively. Fitting both margins
+> cuts bias sharply, but not completely: what survives is the part of the trend gap the weights leave
+> unmatched, since they are fitted on a noisy pre-period path and shrunk toward uniform. The cost is
+> a pretest (Roth 2022) and regression to the mean when we match on
+> pre-period levels (Daw & Hatfield 2018). How we build the matching variable sets how that bias
+> moves with serial correlation. New render dep: `synthdid`. Rendered clean; every cited number
+> verified against live output.

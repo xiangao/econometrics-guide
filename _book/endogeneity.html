@@ -275,7 +275,7 @@ window.Quarto = {
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">
 <span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Endogeneity</span>
-</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -334,7 +334,7 @@ y_z\)</span> and <span class="math inline">\(\hat x_z\)</span> for those two pro
 <p><span id="eq-endogeneity-7"><span class="math display">\[ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x},  \tag{4.7}\]</span></span></p>
 <p>since <span class="math inline">\(z'y = \beta_1 z'x + z'u = \beta_1 z'x\)</span>. Because the two right triangles involved are similar, this is the same number you would get from the <em>infeasible</em> regression of <span class="math inline">\(y\)</span> on the exogenous part alone: that regression returns <span id="eq-endogeneity-8"><span class="math display">\[ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1,  \tag{4.8}\]</span></span> where the second term vanishes because <span class="math inline">\(x^{\perp} \perp u\)</span> and the first collapses to <span class="math inline">\(\beta_1\)</span> because <span class="math inline">\(x^{\perp} \perp x^{\parallel}\)</span>, so <span class="math inline">\(x^{\perp\prime}x = x^{\perp\prime}x^{\perp}\)</span>. That infeasible regression is the one we would run if we could observe the decomposition. We cannot – which is exactly why we need the instrument.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stats.ox.ac.uk/pub/MASS4/">MASS</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">66</span><span class="op">)</span></span>
 <span><span class="va">nobs</span><span class="op">=</span><span class="fl">10000</span></span>
@@ -351,13 +351,13 @@ y_z\)</span> and <span class="math inline">\(\hat x_z\)</span> for those two pro
 <span></span>
 <span><span class="va">covarMat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">sdxx</span><span class="op">^</span><span class="fl">2</span>, <span class="va">crxz</span>, <span class="va">crxw</span>, <span class="va">crxz</span>, <span class="va">sdzz</span><span class="op">^</span><span class="fl">2</span>, <span class="va">crzw</span>,  <span class="va">crxw</span>, <span class="va">crzw</span>, <span class="va">sdww</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span> , nrow<span class="op">=</span><span class="va">nDim</span> , ncol<span class="op">=</span><span class="va">nDim</span> <span class="op">)</span></span>
 <span><span class="va">covarMat</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>     [,1] [,2] [,3]
 [1,]  1.0  0.6  0.5
 [2,]  0.6  1.0  0.0
 [3,]  0.5  0.0  1.0</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">nobs</span>, mu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">nDim</span><span class="op">)</span>, Sigma<span class="op">=</span><span class="va">covarMat</span> <span class="op">)</span><span class="op">)</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">data</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html">mvrnorm</a></span><span class="op">(</span>n<span class="op">=</span><span class="va">nobs</span>, mu<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>,<span class="va">nDim</span><span class="op">)</span>, Sigma<span class="op">=</span><span class="va">covarMat</span> <span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'x'</span>,<span class="st">'z'</span>,<span class="st">'w'</span><span class="op">)</span></span>
 <span><span class="va">data</span><span class="op">$</span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">nobs</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co"># dgp</span></span>
@@ -368,7 +368,7 @@ y_z\)</span> and <span class="math inline">\(\hat x_z\)</span> for those two pro
 <span><span class="va">tsls.model</span> <span class="op">&lt;-</span> <span class="fu">ivreg</span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">x</span> <span class="op">|</span> <span class="va">w</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="co"># lm is biased</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = y ~ x, data = data)
@@ -388,9 +388,9 @@ Residual standard error: 1.284 on 9998 degrees of freedom
 Multiple R-squared:  0.5983,    Adjusted R-squared:  0.5983 
 F-statistic: 1.489e+04 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># lm.full is good</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># lm.full is good</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm.full</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = y ~ x + z, data = data)
@@ -411,9 +411,9 @@ Residual standard error: 0.997 on 9997 degrees of freedom
 Multiple R-squared:  0.7578,    Adjusted R-squared:  0.7577 
 F-statistic: 1.564e+04 on 2 and 9997 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tsls is good.</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># tsls is good.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.model</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 ivreg(formula = y ~ x | w, data = data)
@@ -447,13 +447,13 @@ v=X-Z(Z'Z)^{-1}Z'X}}\)</span>, then regress <span class="math inline">\(y\)</spa
 <p>The difference between this approach and the 2sls approach is that in 2sls we regress <span class="math inline">\(y\)</span> on <span class="math inline">\({\symbf{\hat X}}\)</span>; in the control function approach, we regress <span class="math inline">\(y\)</span> on <span class="math inline">\({\symbf{ X}}\)</span> and <span class="math inline">\(\hat v\)</span>. They should both give you the same coefficient estimates. There are advantages of using the control function approach.</p>
 <p>An example to show how to do 2sls manually, or using control function approach.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
 <span></span>
 <span><span class="va">lm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">y</span><span class="op">~</span><span class="va">x</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">lm2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">x</span><span class="op">~</span><span class="va">w</span>, data<span class="op">=</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">tsls.manual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">lm2</span><span class="op">$</span><span class="va">fitted.values</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.manual</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = data$y ~ lm2$fitted.values)
@@ -473,10 +473,10 @@ Residual standard error: 1.974 on 9998 degrees of freedom
 Multiple R-squared:  0.04999,   Adjusted R-squared:  0.04989 
 F-statistic: 526.1 on 1 and 9998 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># control function approach</span></span>
+<details class="code-fold"><summary>Show code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># control function approach</span></span>
 <span><span class="va">tsls.control</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">y</span> <span class="op">~</span> <span class="va">data</span><span class="op">$</span><span class="va">x</span> <span class="op">+</span> <span class="va">lm2</span><span class="op">$</span><span class="va">residuals</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tsls.control</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
+</details><div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
 lm(formula = data$y ~ data$x + lm2$residuals)

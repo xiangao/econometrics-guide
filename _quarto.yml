@@ -47,6 +47,8 @@ format:
     code-link: true
     callout-appearance: simple
     code-tools: true
+    code-fold: true
+    code-summary: "Show code"
     number-sections: true
     toc: false
   pdf:

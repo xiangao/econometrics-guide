@@ -225,7 +225,7 @@ mtab(tab, 3)
 
 Two things stand out. First, the estimators now *disagree* — PLR reports $1.29$, AIPW $1.07$ — and neither is wrong; they target different populations. PLR targets the VWATE (@eq-vwate), not the ATE. Here treatment selection loads on $X_1$ through $e = \Lambda(-1 + 1.2\,X_1)$, and $\tau = 1 + X_1$ also rises in $X_1$, so the units PLR overweights — those with $e$ near $\tfrac12$, around $X_1 \approx 0.8$ — carry above-average effects, pushing PLR's estimate above the true ATE. AIPW instead reweights by $1/e$ and $1/(1-e)$ to undo selection, returning the plain average, the ATE ($\approx 1$). Same outcomes $\boldsymbol Y$, weighted two ways, two population-averages of $\tau$ — and the weights are what make the difference visible.
 
-Second, the weights still reproduce each estimate exactly and sum to zero overall. They part on the other constraint from §1, $\sum_i \omega_i V_i = 1$: for a binary treatment that constraint is the treated weights summing to $+1$ (and, with the zero total, controls to $-1$). AIPW keeps it exactly; the partially-linear estimator sums to $\pm 0.99$, quietly breaking the within-group budget that OLS and AIPW hold.
+Second, the weights still reproduce each estimate exactly and sum to zero overall. They part on the other constraint from @eq-omega, $\sum_i \omega_i V_i = 1$: for a binary treatment that constraint is the treated weights summing to $+1$ (and, with the zero total, controls to $-1$). AIPW keeps it exactly; the partially-linear estimator sums to $\pm 0.99$, quietly breaking the within-group budget that OLS and AIPW hold.
 
 That divergence shows what the representation is for. In Knaus's (2024) framing $\boldsymbol\omega$ does three things: it puts OLS, IPW, AIPW, DML, and the causal forest on **one footing** ($\boldsymbol\omega' \boldsymbol Y$); it **characterises the target population** each reports — the PLR-versus-AIPW gap above; and it **checks covariate balance** via `cobalt`, flagging when weights break a property usually assumed — the sum-to-$\pm 1$ within treated and control groups that PLR violates here.
 
@@ -250,7 +250,7 @@ vtab(c(`PLR:  max |by hand - package|` = max(abs(om_plr  - om$omega["PLR", ])),
 
 ### Two uses: balance and extrapolation
 
-Having $\boldsymbol\omega$, two checks run directly on it. Does the estimator's implied weighting balance the covariates? Hand $\boldsymbol\omega$ to `cobalt` and read the largest standardised mean difference. And is it extrapolating? Count the wrong-sign weights — a control with $\omega_i > 0$ or a treated unit with $\omega_i < 0$, the §3 signature of a comparison reaching off common support.
+Having $\boldsymbol\omega$, two checks run directly on it. Does the estimator's implied weighting balance the covariates? Hand $\boldsymbol\omega$ to `cobalt` and read the largest standardised mean difference. And is it extrapolating? Count the wrong-sign weights — a control with $\omega_i > 0$ or a treated unit with $\omega_i < 0$, the signature of a comparison reaching off common support.
 
 ```{r}
 #| message: false
@@ -364,13 +364,13 @@ vtab(c(`DRDID ATT`                = att,
        `covariate imbalance, wtd` = max(abs(as.vector(a %*% Xk) / sds))), 3)
 ```
 
-$\boldsymbol\omega' \Delta Y$ reproduces the `DRDID` estimate exactly — the difference-in-differences is a signed weighting of observed outcome *changes*, and the diagnostics of this chapter apply to it. The weighting balances the covariate that drove selection (its standardised imbalance falls from $1.20$ to $0.09$). And $151$ units carry a wrong-sign weight — a treated unit subtracted, or a control added — the §3 signature of a comparison reaching past common support.
+$\boldsymbol\omega' \Delta Y$ reproduces the `DRDID` estimate exactly — the difference-in-differences is a signed weighting of observed outcome *changes*, and the diagnostics of this chapter apply to it. The weighting balances the covariate that drove selection (its standardised imbalance falls from $1.20$ to $0.09$). And $151$ units carry a wrong-sign weight — a treated unit subtracted, or a control added — the signature of a comparison reaching past common support.
 
 ### Staggered designs: TWFE at the observation level
 
 Negative weights in staggered designs are usually described at the level of two-by-two comparisons: TWFE averages many such comparisons, and some enter with a negative weight — the forbidden comparisons that use already-treated units as controls (de Chaisemartin and D'Haultfœuille 2020; Goodman-Bacon 2021). That is the effect-weight reading. The outcome-weight reading goes one level down, to the individual $y_{it}$.
 
-TWFE is still FWL: residualise $D_{it}$ on unit and time fixed effects to get $\tilde D_{it}$, and $\hat\beta = \sum_{it} \omega_{it} y_{it}$ with $\omega_{it} = \tilde D_{it} / \sum_{jt} \tilde D_{jt}^2$. A treated observation with $\omega_{it} < 0$ is a cell whose outcome is subtracted from the estimated effect — used as a control even though it is treated. An untreated observation with $\omega_{it} > 0$ enters as though it were treated. Both are the §3 sign-flip, caused by the unit-and-time residualisation pushing $\tilde D_{it}$ past zero: treated cells in late periods of early cohorts, where the fixed-effect prediction of $D_{it}$ exceeds $1$, and untreated cells in early periods of never-treated units, where it falls below $0$.
+TWFE is still FWL: residualise $D_{it}$ on unit and time fixed effects to get $\tilde D_{it}$, and $\hat\beta = \sum_{it} \omega_{it} y_{it}$ with $\omega_{it} = \tilde D_{it} / \sum_{jt} \tilde D_{jt}^2$. A treated observation with $\omega_{it} < 0$ is a cell whose outcome is subtracted from the estimated effect — used as a control even though it is treated. An untreated observation with $\omega_{it} > 0$ enters as though it were treated. Both are the same sign flip seen earlier under thin overlap, caused here by the unit-and-time residualisation pushing $\tilde D_{it}$ past zero: treated cells in late periods of early cohorts, where the fixed-effect prediction of $D_{it}$ exceeds $1$, and untreated cells in early periods of never-treated units, where it falls below $0$.
 
 **Simulation — staggered panel.** Three cohorts: never-treated ($20\%$), early-treated at period $3$ with effect $\tau = 3$ ($40\%$), and late-treated at period $6$ with effect $\tau = 1$ ($40\%$), observed across $T = 8$ periods; $y_{it} = \alpha_i + \gamma_t + \tau_g D_{it} + \varepsilon_{it}$. The high treated share makes the forbidden comparison visible.
 
@@ -399,13 +399,297 @@ vtab(c(`true ATT`              = mean(tau[panel$D == 1]),
 
 The TWFE coefficient sits well below the true ATT, and $\sum \omega_{it} y_{it}$ reproduces it exactly. Hundreds of treated cells carry a negative weight: these are the early cohort's cells in periods $6$–$8$, the ones where the unit-and-time prediction of $D$ exceeds $1$ and the residual $\tilde D_{it}$ flips sign. Their outcomes are subtracted from $\hat\beta$ — the observation-level signature of the Bacon forbidden comparison.
 
-The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. In the cross-sectional case of §3, the fix was to trim wrong-sign observations and refit. In a panel, trimming specific $(i, t)$ cells removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is to switch estimators — imputation (Borusyak, Jaravel, and Spiess 2024), Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction. The imputation estimator, for example, fits unit and time fixed effects on untreated observations alone and imputes each treated cell's counterfactual; because its smoother draws only on untreated outcomes, the weight on every treated cell reduces to $1/n_1$ and no treated observation can count as a control.
+The wrong-sign diagnostic in a panel is by observation $(i, t)$, not by unit. In the cross-sectional case earlier, the fix was to trim wrong-sign observations and refit. In a panel, trimming specific $(i, t)$ cells removes observations that anchor that unit's fixed effect and distorts the estimates for its remaining cells. The response in the staggered setting is to switch estimators — imputation (Borusyak, Jaravel, and Spiess 2024), Callaway and Sant'Anna, or Sun and Abraham — that avoid the forbidden comparison by construction. The imputation estimator, for example, fits unit and time fixed effects on untreated observations alone and imputes each treated cell's counterfactual; because its smoother draws only on untreated outcomes, the weight on every treated cell reduces to $1/n_1$ and no treated observation can count as a control.
+
+### Synthetic difference-in-differences: a rank-one weighting
+
+Synthetic difference-in-differences is a weighted two-way fixed effects regression, from Arkhangelsky, Athey, Hirshberg, Imbens, and Wager (2021). The estimators so far imply their weights. This one chooses them:
+
+$$ (\hat\tau, \hat\mu, \hat\alpha, \hat\beta) = \arg\min \sum_{i}\sum_{t} \big(Y_{it} - \mu - \alpha_i - \beta_t - W_{it}\tau\big)^2\, \omega_i \lambda_t. $$ {#eq-outcome-weights-12}
+
+The recipe: fit $\omega_i$ on the control units so the reweighted control path tracks the treated path over the pre-period, and fit $\lambda_t$ on the pre-periods so the reweighted pre-period resembles the post-period. Treated units enter at $1/N_1$, post-periods at $1/T_1$. Both fitted sets lie on the simplex, non-negative and summing to one.
+
+@eq-outcome-weights-12 is weighted least squares, so the FWL reading of @eq-omega goes through with the weights carried along. Then $\hat\tau$ is again a weighting of outcomes. Let $u_i$ be $1/N_1$ for a treated unit and $-\omega_i$ for a control. Let $v_t$ be $1/T_1$ for a post-period and $-\lambda_t$ for a pre-period. Then
+
+$$ \hat\tau = \sum_i \sum_t \omega_{it}\, Y_{it}, \qquad \omega_{it} = u_i \, v_t. $$ {#eq-outcome-weights-13}
+
+In words, the weight on a cell is a unit part times a time part. Collect the weights into an $N \times T$ matrix $\boldsymbol\Omega$, one entry per cell. Then @eq-outcome-weights-13 reads $\boldsymbol\Omega = \boldsymbol u \boldsymbol v'$, an outer product, and a matrix of that form has **rank one**. Every row is a multiple of every other row. So each unit carries the same weight profile over time, scaled by its own $u_i$, and each period weights the units in the same pattern, scaled by its own $v_t$. There is no unit-by-period interaction in the weights.
+
+That product structure is what makes this a difference-in-differences. A double difference contrasts units and contrasts periods, and multiplying the two contrasts gives a rank-one weighting. We come back to the rank below, where it separates the block designs from the staggered ones.
+
+Multiply @eq-outcome-weights-13 out and we get the $2 \times 2$ of @eq-outcome-weights-11 with two of its four averages reweighted, the control average by $\omega$ and the pre-period average by $\lambda$:
+
+$$ \hat\tau = \Big(\bar Y_{T,\text{post}} - \sum_{t \in \text{pre}} \lambda_t \bar Y_{T,t}\Big) - \Big(\sum_{i \in C} \omega_i \bar Y_{i,\text{post}} - \sum_{i \in C}\sum_{t \in \text{pre}} \omega_i \lambda_t Y_{it}\Big). $$ {#eq-outcome-weights-14}
+
+The four blocks keep the signs $(+, -, -, +)$ of @eq-outcome-weights-11. Only the averages inside two of them change, and they are no longer uniform.
+
+**Simulation — the outcome weights of synthetic DiD.** A panel of $40$ control and $10$ treated units over $12$ pre- and $6$ post-periods. Untreated outcomes are
+
+$$ Y_{it}(0) = \alpha_i + \beta_t + \boldsymbol f_i' \boldsymbol g_t + \varepsilon_{it}, $$ {#eq-factor-dgp}
+
+with a unit effect $\alpha_i$, a linear time effect $\beta_t$, two factors in $\boldsymbol g_t$ (one linear in $t$, one a sine), loadings $\boldsymbol f_i \sim N(\boldsymbol 0, \mathbf I)$ shifted by $0.8$ for the treated units, and $\varepsilon_{it} \sim N(0, 0.3^2)$. The spread in $\boldsymbol f_i$ makes the control trends differ from each other, and the shift makes the treated trend differ from all of them. The true ATT is $2$. We fit with `synthdid`, then rebuild @eq-outcome-weights-13 by hand from the fitted $\omega$ and $\lambda$.
+
+```{r}
+library(synthdid)
+set.seed(11)
+N0 <- 40; N1 <- 10; N <- N0 + N1; T0 <- 12; T1 <- 6; Tt <- T0 + T1
+f <- cbind(rnorm(N), rnorm(N)); f[(N0 + 1):N, ] <- f[(N0 + 1):N, ] + 0.8
+g <- cbind(seq(0, 2, length = Tt), sin(seq(0, 3, length = Tt)))
+Y <- outer(rnorm(N, 0, .5), rep(1, Tt)) + outer(rep(1, N), seq(0, 1, length = Tt)) +
+     f %*% t(g) + matrix(rnorm(N * Tt, 0, .3), N, Tt)
+W <- matrix(0, N, Tt); W[(N0 + 1):N, (T0 + 1):Tt] <- 1
+Y <- Y + 2 * W                                          # true ATT = 2
+
+est <- synthdid_estimate(Y, N0, T0)
+wt  <- attr(est, "weights")
+u <- c(-wt$omega,  rep(1 / N1, N1))                     # unit part
+v <- c(-wt$lambda, rep(1 / T1, T1))                     # time part
+Omega <- outer(u, v)                                    # outcome weight on cell (i, t)
+
+```
+
+Three routes should give the same number: what `synthdid` reports, the weighting @eq-outcome-weights-13 applies to the observed outcomes, and the weighted regression of @eq-outcome-weights-12.
+
+```{r}
+cw <- outer(c(wt$omega, rep(1 / N1, N1)), c(wt$lambda, rep(1 / T1, T1)))
+dd <- data.frame(y = as.vector(Y), Wt = as.vector(W), i = factor(rep(1:N, Tt)),
+                 t = factor(rep(1:Tt, each = N)), cw = as.vector(cw))
+tau3 <- c(`synthdid_estimate()`              = as.numeric(est),
+          `sum of Omega * Y, Omega by hand` = sum(Omega * Y),
+          `weighted TWFE regression`        = coef(lm(y ~ Wt + i + t, dd,
+                                                      weights = dd$cw))[["Wt"]])
+vtab(c(tau3, `largest gap between them` = max(abs(tau3 - tau3[1]))), 6)
+```
+
+The gap between them is zero to machine precision. The outer-product form is what `synthdid` computes.
+
+Writing the weights this way puts three constraints on them. First, the rank is one, since a cell's weight is a unit part times a time part. Second, each margin sums to zero on its own: $\omega$ and $\lambda$ each sum to one, and the treated and post-period blocks each contribute an offsetting one. Third, no cell carries a wrong sign: no treated post-period cell is subtracted, and no control pre-period cell is added. We check all three.
+
+```{r}
+chk <- rbind(`rank of the weight matrix`     = c(sum(svd(Omega)$d > 1e-12), 1),
+             `weights summed over units`     = c(sum(u), 0),
+             `weights summed over periods`   = c(sum(v), 0),
+             `treated post-cells, omega < 0` = c(sum(Omega[(N0+1):N, (T0+1):Tt] < 0), 0),
+             `control pre-cells, omega < 0`  = c(sum(Omega[1:N0, 1:T0] < 0), 0))
+colnames(chk) <- c("found", "should be")
+mtab(chk, 4)
+```
+
+All three hold. Note that the double zero-sum is stronger than the single sum-to-zero of @eq-omega, which constrains the weights only in total. Here they vanish along each margin. The signs are fixed by construction too: a treated post-period cell gets $1/(N_1 T_1) > 0$, and a control pre-period cell gets $\omega_i \lambda_t > 0$, because the simplex rules out a negative $\omega_i$. The doubly-robust fit above produced $151$ wrong-sign units. Synthetic DiD cannot produce any.
+
+The remaining question is how much of the panel the comparison uses. Counting the non-zero weights is one answer, but it treats a weight of $0.4$ and a weight of $0.001$ alike. The standard summary that does not is the effective sample size, $1/\sum_i \omega_i^2$ for weights summing to one. It equals $N_0$ when every control is weighted equally, and $1$ when a single control carries everything. In between, a weighted average with an effective size of $m$ is about as precise as an unweighted average of $m$ observations. Both margins here are sparse, so both effective counts fall below the nominal $40$ controls and $12$ pre-periods.
+
+```{r}
+dsg <- c(sum(wt$omega > 1e-8), 1 / sum(wt$omega^2),
+         sum(wt$lambda > 1e-8), 1 / sum(wt$lambda^2), wt$lambda[T0])
+names(dsg) <- c(sprintf("controls with non-zero weight (of %d)", N0),
+                sprintf("effective controls, 1/sum(omega^2) (of %d)", N0),
+                sprintf("pre-periods with non-zero weight (of %d)", T0),
+                sprintf("effective pre-periods (of %d)", T0),
+                "weight on the last pre-period")
+vtab(dsg)
+```
+
+Only $23$ of the $40$ controls get any weight, and the effective count $1/\sum_i \omega_i^2$ is $14.6$. The time margin is sparser: an effective $1.09$ pre-periods, with $0.957$ of the mass on the last one. The counterfactual level is anchored on the single period before treatment, so the estimate inherits that period's noise. We can read all of this off the weights. None of it is visible in $\hat\tau$.
+
+We plot the two margins to see where the mass sits. The left panel sorts the fitted control weights $\omega_i$ from largest to smallest, which shows how many controls the comparison uses. The right panel keeps the pre-period weights $\lambda_t$ in time order, which shows which periods the counterfactual is built from.
+
+```{r}
+#| fig-width: 7
+#| fig-height: 3.2
+#| fig-cap: "The two margins of the synthetic DiD weight matrix. Left: fitted control-unit weights $\\omega_i$, sorted. $23$ of $40$ are non-zero, and the $17$ the simplex sets to zero lie flat against the axis. Right: fitted pre-period weights $\\lambda_t$. Almost all the mass is on the last pre-period, so the counterfactual level is anchored just before treatment."
+par(mfrow = c(1, 2), mar = c(4.2, 4.2, 2.6, 1))
+os <- sort(wt$omega, decreasing = TRUE)
+barplot(os, col = ifelse(os > 1e-8, teal, "grey85"), border = NA,
+        xlab = "control units, sorted", ylab = expression(omega[i]),
+        main = "Unit weights")
+barplot(wt$lambda, names.arg = 1:T0, border = NA,
+        col = ifelse(wt$lambda > 1e-8, rust, "grey85"),
+        xlab = "pre-period", ylab = expression(lambda[t]), main = "Time weights")
+```
+
+### The rank of the weight matrix
+
+Synthetic difference-in-differences has a rank-one $\boldsymbol\Omega$ by construction. So does the plain $2 \times 2$: set $u_i$ and $v_t$ to the uniform $\pm 1/N_g$ and $\pm 1/T_g$ and @eq-outcome-weights-11 reappears. Staggered adoption gives a higher rank, and the rank counts the cohorts.
+
+Write the staggered treatment matrix as a sum over adoption cohorts, $\boldsymbol W = \sum_{k=1}^{K} \boldsymbol c_k \boldsymbol s_k'$. Here $\boldsymbol c_k$ indicates the units of cohort $k$, and $\boldsymbol s_k$ the periods from its adoption date on. That is a sum of $K$ rank-one terms. Residualising on unit and time dummies is a double centring, $(\mathbf I - \boldsymbol P)\, \boldsymbol W \,(\mathbf I - \boldsymbol Q)$, and double centring cannot raise a rank. So $\operatorname{rank}(\boldsymbol\Omega) \le K$, with equality generically.
+
+We check the bound directly. Each panel has $60$ units over $20$ periods, with one to five adoption dates plus a never-treated group. For each we build the staggered TWFE weights, then count the non-zero singular values of $\boldsymbol\Omega$.
+
+```{r}
+set.seed(4)
+Ns <- 60; Ts <- 20
+rk <- sapply(list(10, c(8, 14), c(6, 10, 14), c(6, 9, 12, 15), c(5, 8, 11, 14, 17)),
+  function(dates) {
+    coh <- sample(c(dates, Inf), Ns, replace = TRUE)     # Inf = never treated
+    Ws  <- matrix(0, Ns, Ts)
+    for (i in 1:Ns) if (is.finite(coh[i])) Ws[i, coh[i]:Ts] <- 1
+    ds  <- data.frame(Wt = as.vector(Ws), i = factor(rep(1:Ns, Ts)),
+                      t = factor(rep(1:Ts, each = Ns)))
+    Wtil <- residuals(lm(Wt ~ i + t, ds))
+    Om   <- matrix(Wtil / sum(Wtil^2), Ns, Ts)
+    c(`treated cohorts` = length(dates),
+      `rank of Omega`   = sum(svd(Om)$d > 1e-9 * max(svd(Om)$d)))
+  })
+colnames(rk) <- c("1 date", "2 dates", "3 dates", "4 dates", "5 dates")
+mtab(rk)
+```
+
+The rank is the number of treated cohorts. This ties the chapter's difference-in-differences material together. A block design has one adoption date, so its weight matrix is rank one. The plain $2 \times 2$ and synthetic difference-in-differences are the same object at two settings of the margins, uniform in the first and fitted in the second. Staggered adoption raises the rank. Once a cell's weight no longer factors into a unit part times a time part, a treated cell can enter negatively. In the block case it cannot, since every treated post-period cell gets $u_i v_t = 1/(N_1 T_1) > 0$. The forbidden comparisons need the extra rank.
+
+### Reweighting controls toward parallel trends
+
+Synthetic difference-in-differences chooses weights so the control path tracks the treated path. A natural next step is to weight observations by whether parallel trends holds for them, up where it holds and down where it fails. Can we do that?
+
+Not as stated. Parallel trends is a statement about two group means, $E[\Delta Y(0) \mid D = 1] = E[\Delta Y(0) \mid D = 0]$. No single observation either has it or lacks it. So in the model behind @eq-outcome-weights-11 there is nothing at the unit level for a weight to act on.
+
+The question means something only under a model where trends vary across units: unit-specific slopes, or a factor structure $Y_{it}(0) = \alpha_i + \beta_t + \boldsymbol f_i' \boldsymbol g_t + \varepsilon_{it}$. Then each unit has its own trend, "parallel to the treated group" becomes a per-unit property, and we can reweight controls toward those whose $\boldsymbol f_i$ resembles the treated group's. That is what synthetic difference-in-differences already does. So the proposal asks us to change the identifying model, and estimators for the changed model exist. Hazlett and Xu (2018) balance pre-treatment trajectories by mean or kernel balancing. Imai, Kim, and Wang (2023) match on treatment and outcome history. Doudchenko and Imbens (2016) set out the family in which difference-in-differences and synthetic control are two corners of one weighting problem.
+
+We can measure what the reweighting gains. @eq-outcome-weights-13 has two margins, so we can separate them.
+
+**Simulation — which margin does the work.** Two panels of $40$ controls and $10$ treated over $12$ pre- and $6$ post-periods, with a true ATT of $2$. Both carry a unit effect $\alpha_i$, a linear time effect $\beta_t$, and an AR(1) shock $\varepsilon_{it}$ with $\rho = 0.5$. These three are common to almost any panel, and none of them breaks parallel trends: $\alpha_i$ differences away and $\beta_t$ is shared by both groups, so a difference-in-differences removes them whatever the weights are.
+
+Parallel trends fails only when the treated and control groups have *different* untreated trends, so a term that varies by unit and moves with $t$ is what we have to put in. Without one there is nothing for the weights to fix. The two panels are two forms of it. The `factor` panel uses the $\boldsymbol f_i' \boldsymbol g_t$ of @eq-factor-dgp. The `slopes` panel replaces it with a unit-specific linear trend,
+
+$$ Y_{it}(0) = \alpha_i + \beta_t + s_i \, t + \varepsilon_{it}, \qquad s_i \sim N(0,\, 0.08^2), $$ {#eq-slopes-dgp}
+
+with $s_i$ shifted up by $0.12$ for the treated units. So each unit has its own growth rate, and the treated units grow faster on average, by about one and a half standard deviations of the control slopes. Note that $s_i t$ is itself a one-factor model, with loading $s_i$ and factor $g_t = t$. It is the simplest member of the class @eq-factor-dgp describes, which is the class synthetic difference-in-differences is built for, so this is a leading case and not a special one. We run synthetic DiD four ways: both margins uniform, which is plain difference-in-differences; unit weights fitted with time weights uniform; time weights fitted with unit weights uniform; and both fitted. $400$ replications.
+
+```{r}
+library(parallel)
+panel <- function(kind, N0 = 40, N1 = 10, T0 = 12, T1 = 6, sig = .4, rho = .5) {
+  N <- N0 + N1; Tt <- T0 + T1
+  a <- rnorm(N, 0, 1); a[(N0 + 1):N] <- a[(N0 + 1):N] + 1
+  e <- matrix(0, N, Tt); e[, 1] <- rnorm(N, 0, sig / sqrt(1 - rho^2))
+  for (t in 2:Tt) e[, t] <- rho * e[, t - 1] + rnorm(N, 0, sig)
+  Y0 <- outer(a, rep(1, Tt)) + outer(rep(1, N), seq(0, 1.5, length = Tt)) + e
+  if (kind == "factor") {
+    f <- cbind(rnorm(N), rnorm(N)); f[(N0 + 1):N, ] <- f[(N0 + 1):N, ] + 0.8
+    g <- cbind(seq(0, 2, length = Tt), sin(seq(0, 3, length = Tt)))
+    Y0 <- Y0 + f %*% t(g)
+  } else {
+    s <- rnorm(N, 0, .08); s[(N0 + 1):N] <- s[(N0 + 1):N] + .12   # unit slopes
+    Y0 <- Y0 + outer(s, 1:Tt)
+  }
+  W <- matrix(0, N, Tt); W[(N0 + 1):N, (T0 + 1):Tt] <- 1
+  list(Y = Y0 + 2 * W, N0 = N0, N1 = N1, T0 = T0, T1 = T1)
+}
+margins <- function(r, kind) {
+  set.seed(5000 + r); p <- panel(kind); N0 <- p$N0; T0 <- p$T0
+  fx <- function(om, lam) as.numeric(synthdid_estimate(p$Y, N0, T0,
+          weights = list(omega = om, lambda = lam)))     # NULL = fit this margin
+  unif.o <- rep(1 / N0, N0); unif.l <- rep(1 / T0, T0)
+  c(`both uniform (DiD)` = fx(unif.o, unif.l), `unit weights only` = fx(NULL, unif.l),
+    `time weights only`  = fx(unif.o, NULL),   `both fitted (SDID)` = fx(NULL, NULL))
+}
+res <- lapply(c("factor", "slopes"), function(kind) {
+  M <- simplify2array(mclapply(1:400, margins, kind = kind, mc.cores = 6))
+  cbind(bias = rowMeans(M) - 2, sd = apply(M, 1, sd), rmse = sqrt(rowMeans((M - 2)^2)))
+})
+out <- cbind(res[[1]], res[[2]])
+colnames(out) <- paste(rep(c("factor", "slopes"), each = 3), colnames(res[[1]]))
+mtab(out)
+```
+
+Reweighting helps, and by a lot. Under the factor structure the bias falls from $0.73$ to $0.04$ with both margins fitted. Each margin helps alone: $0.17$ from the unit weights, $0.08$ from the time weights. Which margin matters is not fixed in advance. Here the time weights do slightly more, because the factor paths are smooth, so anchoring on the periods just before treatment removes most of the divergence. The fitted $\lambda$ above showed the same thing when it put $0.957$ on the last pre-period.
+
+The `slopes` panel is harder. The bias falls from $1.08$ only to $0.40$, and no setting of the margins does better. Before the algebra, it is worth being clear about what is being estimated, because the treatment effect here is a constant $2$ and nothing about it depends on $s_i$. The estimand is the ATT, $E[Y_{it}(1) - Y_{it}(0) \mid \text{treated}, \text{post}]$. We observe $Y_{it}(1)$ for those cells. We never observe $Y_{it}(0)$ for them, and building that counterfactual is the whole of the estimation problem. So the weights are not there to learn anything about the effect. They are there to impute one unobserved quantity, and any bias is an error in that imputation.
+
+That is why the trend matters even though the effect does not involve it. The treated group's own untreated path contains $s_i t$. Get the growth rate of the counterfactual wrong and it sits at the wrong level by the post-period, and the gap is charged to the treatment. Two parts of that path cost nothing: a unit level differences away inside each bracket, and a time path shared by both groups appears in both brackets and cancels. So only a leftover trend and the noise carried by the weights can bias this estimator.
+
+The weights never see $s_i$, and nothing in the estimator estimates it. What `synthdid` matches is the pre-period outcome *path*: it picks $\omega$ so the weighted control path tracks the treated path across the twelve pre-periods. If it matched the systematic part of that path, the trends would agree as a by-product and the bias would vanish. Two things stop it. The observed paths carry noise, so $\omega$ is fitted to $\alpha_i + \beta_t + s_i t + \varepsilon_{it}$ and answers to $\varepsilon$ as much as to $s$. And `synthdid` shrinks $\omega$ toward uniform, which limits how far it will concentrate on the steep controls. We vary both and read the bias: the AR(1) innovation standard deviation at its default $0.4$ and at $0.05$, and the shrinkage on and off. $300$ replications per cell.
+
+```{r}
+mismatch <- function(r, sig, off) {
+  set.seed(5000 + r); p <- panel("slopes", sig = sig)
+  est <- if (off) synthdid_estimate(p$Y, p$N0, p$T0, zeta.omega = 1e-8) else
+                  synthdid_estimate(p$Y, p$N0, p$T0)   # default: omit zeta.omega, never pass NULL
+  as.numeric(est) - 2
+}
+cells <- expand.grid(sig = c(.4, .05), off = c(FALSE, TRUE))
+bias4 <- mapply(function(sig, off)
+           mean(unlist(mclapply(1:300, mismatch, sig = sig, off = off, mc.cores = 6))),
+           cells$sig, cells$off)
+names(bias4) <- sprintf("shock sd %.2f, shrinkage %s", cells$sig,
+                        ifelse(cells$off, "off", "on"))
+vtab(bias4, 4)
+```
+
+Cut the noise by a factor of eight and the bias falls from $0.40$ to $0.05$. Switch the shrinkage off as well and it falls to $0.02$. So the residual trend is not something the design cannot reach. It is what fitting weights on a short and noisy pre-period leaves behind, with a little added by the shrinkage. Given a clean pre-period the weights match the trend on their own, still without estimating any slope.
+
+A harder limit sits behind all of this. Reweighting controls can only produce a weighted average of the control trends, so when the treated group's trend is steeper than every control's, no weighting reaches it. That is the same overlap problem, now in the design: thin overlap showed up earlier as wrong-sign weights because OLS extrapolates, whereas a simplex weight cannot extrapolate at all. In this panel the treated trend usually does sit inside the range the controls span, so that limit is not what the $0.40$ is made of.
+
+One practical note before leaving the `slopes` panel. If we are confident the trends really are unit-specific and linear, the direct response is to put unit-specific linear trends in the regression, not to reweight. Reweighting is the tool for when we do not want to commit to a functional form for the trend heterogeneity, which is the case @eq-factor-dgp stands in for. The linear panel is used here because it is the sharpest test of that tool: a single trend the weights either match or do not.
+
+### What reweighting costs
+
+Weights fitted on pre-period outcomes are functions of $\boldsymbol Y$. Two consequences follow. First, $\hat\tau$ is no longer linear in $\boldsymbol Y$. So @eq-outcome-weights-13 describes the estimate at the fitted weights, and it is no longer the decomposition @eq-omega gives for OLS. Inference has to account for the weights being estimated, and `synthdid` does that by jackknife or bootstrap. Second, selecting on a noisy pre-period statistic is a pretest. Roth (2022) shows that conditioning the analysis on passing a parallel-trends test distorts the point estimate and undercovers. A hard rule keeps or drops a control. A kernel gives it a weight between zero and one instead. Both tie the weight to a noisy pre-period statistic, so switching from the hard rule to the kernel does not avoid the problem.
+
+The specific problem is regression to the mean. Let $w$ be the fitted control weights, and $\bar\varepsilon_{\text{pre}}$, $\bar\varepsilon_{\text{post}}$ the weighted pre- and post-period shocks. Since $w$ is built from pre-period outcomes, it correlates with $\bar\varepsilon_{\text{pre}}$ and not with the fresh post-period noise. The bias is then
+
+$$ \operatorname{Cov}(w, \bar\varepsilon_{\text{pre}})\,(1 - \beta), \qquad \beta = \frac{\operatorname{Cov}(\bar\varepsilon_{\text{pre}}, \bar\varepsilon_{\text{post}})}{\operatorname{Var}(\bar\varepsilon_{\text{pre}})}. $$ {#eq-outcome-weights-15}
+
+In words, the bias is how hard we selected on pre-period noise, times the share of that noise which does not persist. Both factors move with the serial correlation $\rho$, in opposite directions. So the shape depends on how we build the matching variable.
+
+**Simulation — matching on pre-period outcomes.** Here parallel trends holds: no group differs in trend at any date. The two groups differ by a persistent level gap of $1.5$. We scale the AR(1) shock to hold its marginal standard deviation at $0.5$ for every $\rho$, so $\rho$ changes persistence alone and not the amount of noise. We keep the $10$ controls closest to the treated group on a pre-period level, measured two ways: the last pre-period alone, and the mean of all eight. We sweep $\rho$ over $2000$ replications.
+
+```{r}
+rtm.panel <- function(rho, T0 = 8, T1 = 6, N0 = 40, N1 = 10, sig = .5, delta = 1.5) {
+  N <- N0 + N1; Tt <- T0 + T1
+  a <- rnorm(N, 0, 1); a[(N0 + 1):N] <- a[(N0 + 1):N] + delta   # persistent level gap
+  e <- matrix(0, N, Tt); e[, 1] <- rnorm(N, 0, sig)             # marginal sd fixed at sig
+  for (t in 2:Tt) e[, t] <- rho * e[, t - 1] + rnorm(N, 0, sig * sqrt(1 - rho^2))
+  Y <- outer(a, rep(1, Tt)) + outer(rep(1, N), seq(0, 1.5, length = Tt)) + e
+  Y[(N0 + 1):N, (T0 + 1):Tt] <- Y[(N0 + 1):N, (T0 + 1):Tt] + 2  # true ATT = 2
+  list(Y = Y, N0 = N0, N1 = N1, T0 = T0, T1 = T1)
+}
+rtm.est <- function(p, with.sdid = FALSE) {
+  N0 <- p$N0; N1 <- p$N1; T0 <- p$T0; T1 <- p$T1; Y <- p$Y; trt <- (N0 + 1):(N0 + N1)
+  dd   <- function(w) sum(outer(c(-w, rep(1 / N1, N1)),
+                                c(rep(-1 / T0, T0), rep(1 / T1, T1))) * Y)
+  near <- function(mc, mt) { w <- rep(0, N0); w[order(abs(mc - mt))[1:10]] <- 1 / 10; w }
+  out <- c(DiD                    = dd(rep(1 / N0, N0)),
+           `match, 1 pre-period`  = dd(near(Y[1:N0, T0], mean(Y[trt, T0]))),
+           `match, 8-period mean` = dd(near(rowMeans(Y[1:N0, 1:T0]), mean(Y[trt, 1:T0]))))
+  if (with.sdid) out <- c(out, SDID = as.numeric(synthdid_estimate(Y, N0, T0)))
+  out
+}
+rhos <- c(0, .2, .4, .6, .8, .95)
+B <- sapply(rhos, function(rho) {
+  M <- simplify2array(mclapply(1:2000,
+         function(r) { set.seed(r); rtm.est(rtm.panel(rho)) }, mc.cores = 6))
+  rowMeans(M) - 2
+})
+colnames(B) <- paste0("rho=", rhos)
+mtab(B, 4)
+```
+
+Plain difference-in-differences is unbiased throughout, since parallel trends holds. Matching is not. Matched on the last pre-period alone, the bias is $0.027$ at $\rho = 0$ and falls to nothing as $\rho$ approaches one. That is the pattern Daw and Hatfield (2018) report: the bias rises as serial correlation weakens. Matched on the eight-period mean the shape changes. The bias is $0.034$ at $\rho = 0$, rises to $0.081$ at $\rho = 0.8$, then falls away.
+
+@eq-outcome-weights-15 explains both. With one pre-period, $\operatorname{Var}(\varepsilon_{\text{pre}})$ is the same for every $\rho$. The covariance factor is then flat, and the bias tracks $1 - \beta$, which falls. With an eight-period average, that variance climbs from $\sigma^2/8$ toward $\sigma^2$ as shocks persist. The two factors move against each other, and the product peaks in the middle. So averaging more pre-periods moves the worst case to higher persistence. At moderate persistence it makes the bias larger.
+
+The sign is always the same. The treated group sits above the controls in level, so matching picks controls with a high transitory shock. That shock reverts. The control group's measured change is then too small, and $\hat\tau$ too large. This is a bias, not a variance, so it does not shrink with the sample. Coverage gets worse as $n$ grows.
+
+Synthetic difference-in-differences fits its weights on the same pre-period outcomes, so it is open to the same problem. We add it to the comparison at $\rho = 0.8$, where the eight-period matcher is at its worst, over $600$ replications.
+
+```{r}
+M4 <- simplify2array(mclapply(1:600,
+        function(r) { set.seed(r); rtm.est(rtm.panel(.8), with.sdid = TRUE) }, mc.cores = 6))
+mtab(cbind(bias = rowMeans(M4) - 2, sd = apply(M4, 1, sd),
+           rmse = sqrt(rowMeans((M4 - 2)^2))), 4)
+```
+
+At $\rho = 0.8$ the eight-period matching estimator has a bias of $0.073$. Synthetic difference-in-differences has $-0.010$, and a smaller standard deviation than either alternative. The reason is that `synthdid` fits $\omega$ with an intercept. It never has to match pre-period levels, only trajectories up to a constant. Matching on levels is what produces regression to the mean, and the intercept removes the need for it. Chabé-Ferret (2015, 2017) gets the same result from theory: combining difference-in-differences with conditioning on pre-treatment outcomes does not add the strengths of both, and it can raise the bias.
+
+One asymmetry to close. Everything above reweights controls. That leaves the estimand alone and costs variance. Downweighting treated units is different. The estimand is then no longer the ATT. It becomes the average effect for the treated units that happened to look well matched. Report the change when it happens.
 
 ### Implied versus chosen
 
 One distinction cuts across everything above. OLS, AIPW, DML, TWFE, and the imputation estimator all *imply* weights — they fall out of the estimation and are diagnosed afterward. Synthetic controls and synthetic difference-in-differences *choose* weights as part of the design, selecting $\boldsymbol\omega$ to balance pre-treatment outcomes or covariates. For those estimators $\hat\tau = \boldsymbol\omega'\boldsymbol Y$ is the definition, not a decomposition; the balance and extrapolation checks of this chapter still apply, but what they diagnose is the designer's choice rather than a side effect of the estimator.
 
-A closing caution. These weights diagnose *estimation* — which comparisons a difference-in-differences rests on, and whether it leans on non-overlapping or forbidden ones — not *identification*. Parallel trends is an assumption about the treated group's unobserved untreated path, and no weighting of observed outcomes can test it: a negative weight and a failure of parallel trends are independent, either able to occur without the other. Pre-trends are probed separately, by the event-study leads.
+A closing caution, with the qualification the last two sections add. These weights diagnose estimation. They show which comparisons a difference-in-differences rests on, and whether it uses non-overlapping or forbidden ones. They do not test identification. Parallel trends is an assumption about the treated group's unobserved untreated path, and a negative weight and a failure of parallel trends stay independent: either can occur without the other.
+
+Chosen weights do give robustness to one class of violations, those the design's trend model can express. The simulations above price it. The gain is real when the control pool contains trends like the treated group's. It is partial, because the weights are fitted on a noisy pre-period path and shrunk toward uniform. And it costs the pretest and regression-to-the-mean terms of the last section. No weighting of observed outcomes tests the assumption. To do that we bound the violation instead of reweighting, using the observed pre-period differences to limit how large the post-period departure can be (Rambachan and Roth 2023).
 
 ## Summary
 
@@ -415,3 +699,6 @@ A closing caution. These weights diagnose *estimation* — which comparisons a d
 4. **The same weights beyond OLS.** Any estimator that can be written $\hat\tau = \boldsymbol\omega' \boldsymbol Y$ has outcome weights, so the same object and its checks reach AIPW, double machine learning, and causal forests (Knaus 2024). PLR's denominator $\tilde{\boldsymbol D}'\tilde{\boldsymbol D}$ reveals its estimand as the VWATE (@eq-vwate), not the ATE; and the sum-to-zero of OLS need not become a sum to $\pm 1$ within the treated and control groups.
 5. **From difference in means to difference-in-differences.** Regressed on the treatment alone, $\hat\beta$ is the difference in group means; a $2 \times 2$ difference-in-differences is a signed contrast of four cell means. With covariates, a doubly-robust DiD weights the outcome changes, $\widehat{\text{ATT}} = \boldsymbol\omega' \Delta Y$ (Sant'Anna and Zhao 2020), open to the same checks.
 6. **Staggered designs.** In staggered TWFE the outcome weights flag both treated cells used as controls and untreated cells used as treated — the observation-level version of the Bacon (2021) forbidden comparisons. Estimators that fit counterfactuals on untreated observations alone (Borusyak, Jaravel, and Spiess 2024; Callaway and Sant'Anna 2021) cannot assign negative weight to any treated cell, so the forbidden-comparison diagnostic is clean by construction.
+7. **Rank counts the cohorts.** As an $N \times T$ matrix, the outcome weights of a block design have rank one and factor into a unit part times a time part (@eq-outcome-weights-13). The plain $2 \times 2$ and synthetic difference-in-differences differ only in whether those margins are uniform or fitted. Staggered adoption raises the rank to the number of treated cohorts, and only above rank one can a treated cell enter negatively.
+8. **Reweighting controls toward parallel trends works, but not completely.** The question needs a model in which trends vary by unit before it means anything. Under such a model, fitting both margins cuts bias sharply. What survives is the part of the trend gap the weights leave unmatched, because they are fitted on a noisy pre-period path and shrunk toward uniform. A simplex weight also cannot reach a treated trend outside the range the control trends span, though that limit is usually not the binding one.
+9. **Fitted weights carry a cost.** Weights fitted on pre-period outcomes make $\hat\tau$ non-linear in $\boldsymbol Y$, so inference must account for their estimation. Selecting on a noisy pre-period statistic is a pretest (Roth 2022). Matching on pre-period levels produces regression to the mean (Daw and Hatfield 2018), with the size given by @eq-outcome-weights-15. Fitting the weights with an intercept, so only trajectories need to match and never levels, avoids it.

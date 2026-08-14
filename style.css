@@ -45,3 +45,15 @@ h2, h3 {
 .cell-output-stderr {
     display: none;
 }
+
+/* Result tables size to their content instead of stretching across the page, so a
+   two-column label/value pair stays readable. Prose tables are untouched. */
+.cell-output-display table.table {
+    width: auto;
+    max-width: 100%;
+}
+
+.cell-output-display table.table th,
+.cell-output-display table.table td {
+    padding-right: 1.5rem;
+}
