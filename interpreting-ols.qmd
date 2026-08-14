@@ -156,12 +156,12 @@ xb <- mean(x); d <- x - xb; w <- d^2
 s  <- (y - mean(y)) / d
 
 mtab(cbind(value = c(
-  `cor(s_i, b_i), Pearson`    = cor(s, b),
-  `cor(s_i, b_i), Spearman`   = cor(s, b, method = "spearman"),
-  `sd(s_i)`                   = sd(s),
-  `Weighted Avg of s_i`       = sum(w * s) / sum(w),
+  `$\\mathrm{cor}(s_i, b_i)$, Pearson`    = cor(s, b),
+  `$\\mathrm{cor}(s_i, b_i)$, Spearman`   = cor(s, b, method = "spearman"),
+  `$\\mathrm{sd}(s_i)$`                   = sd(s),
+  `weighted average of $s_i$`       = sum(w * s) / sum(w),
   `OLS Estimate`              = unname(coef(lm(y ~ x))[2]),
-  `E[beta | x, b] (eq-exact)` = sum(d * x * b) / sum(d * x))), 3)
+  `$E[\\beta \\mid x, b]$ (eq-exact)` = sum(d * x * b) / sum(d * x))), 3)
 ```
 
 The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, though the rank correlation is $0.26$, higher once the explosive tails near $\bar x$ are set aside. Their leverage-weighted average equals $\hat\beta_{OLS}$ exactly; that is @eq-wavg, an identity. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta$ estimates *in expectation* (@eq-exact) — and this sample's $\hat\beta = 0.95$ sits about two standard errors below it. The gap between $0.95$ and $0.99$ is ordinary sampling variation, not a failure of the weighting identity. @eq-exact pins down what $\hat\beta$ converges to across repeated samples; any single draw fluctuates around that target, and $0.95$ versus $0.99$ is well within the range one would expect. The structural relationship between the weights and the true slopes is exact and permanent; it is the realisation, not the identity, that is noisy.
@@ -171,9 +171,9 @@ Noise is not what distorts $s_i$. Turn it off entirely, set $y_i = b_i x_i$, and
 ```{r}
 y0 <- b * x
 s0 <- (y0 - mean(y0)) / (x - xb)
-vtab(c(`cor(s_i, b_i), no noise` = cor(s0, b),
-        `Weighted Avg of s_i`     = sum(w * s0) / sum(w),
-        `Weighted Avg of b_i`     = sum(w * b) / sum(w),
+vtab(c(`$\\mathrm{cor}(s_i, b_i)$, no noise` = cor(s0, b),
+        `weighted average of $s_i$`     = sum(w * s0) / sum(w),
+        `weighted average of $b_i$` = sum(w * b) / sum(w),
         `OLS, noiseless`          = unname(coef(lm(y0 ~ x))[2])), 4)
 ```
 
@@ -295,20 +295,20 @@ compare <- function(px) {
   nx <- as.vector(table(X)); dh <- as.vector(tapply(d, X, mean))
   DIM <- as.vector(tapply(yy[d == 1], X[d == 1], mean) - tapply(yy[d == 0], X[d == 0], mean))
   rho <- mean(d); ATT <- weighted.mean(ta, d); ATU <- weighted.mean(ta, 1 - d)
-  c(`rho`                      = rho,
-    `Max |Weight Diff|`         = max(abs(as.vector(tapply(dt * d, X, sum)) - nx*dh*(1-dh))),
+  c(`$\\rho$`                    = rho,
+    `$\\max\\lvert\\text{weight diff}\\rvert$`         = max(abs(as.vector(tapply(dt * d, X, sum)) - nx*dh*(1-dh))),
     `OLS Saturated`            = unname(coef(lm(yy ~ d + factor(X)))[["d"]]),
     `Angrist Weighted`         = sum(nx*dh*(1-dh) * DIM) / sum(nx*dh*(1-dh)),
     `Sloczynski Approx`        = (1 - rho) * ATT + rho * ATU,
     `ATE`                      = mean(ta))
 }
-res <- cbind(`rho ~ 0.5`  = compare(c(.08, .20, .50, .75, .93)),
-             `rho ~ 0.09` = compare(c(.02, .04, .08, .12, .20)),
-             `rho ~ 0.91` = compare(c(.80, .88, .92, .96, .98)))
+res <- cbind(`$\\rho \\approx 0.5$`  = compare(c(.08, .20, .50, .75, .93)),
+             `$\\rho \\approx 0.09$` = compare(c(.02, .04, .08, .12, .20)),
+             `$\\rho \\approx 0.91$` = compare(c(.80, .88, .92, .96, .98)))
 mtab(res, 4)
 ```
 
-The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `Max |Weight Diff|` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal treated and control shares are where the weighting does least. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. Nothing about the effects changed. Only the treated share did.
+The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `$\\max\\lvert\\text{weight diff}\\rvert$` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal treated and control shares are where the weighting does least. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. Nothing about the effects changed. Only the treated share did.
 
 Why does OLS overweight the treated when they are few? The FWL residual is $\tilde D_i = D_i - \hat D(x)$. When $\rho$ is small, $\hat D(x)$ is small in most strata: a treated unit has $\tilde D_i = 1 - \hat D(x) \approx 1$, a control unit has $\tilde D_i = -\hat D(x) \approx 0$. Treated units are the unusual ones — they sit far from the stratum mean of $D$ — so they carry most of the leverage, the same way a point far from $\bar x$ dominates the simple regression. At $\rho = 0.09$ the reversed-share approximation puts weight $1 - \rho = 0.91$ on ATT and only $0.09$ on ATU, while the ATE puts $0.09$ on ATT and $0.91$ on ATU. In observational data where the treated group is small — a common setting — the OLS coefficient can be far from the population average effect even under unconfoundedness, purely because of the weighting.
 

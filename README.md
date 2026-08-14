@@ -120,18 +120,22 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > TOC removed for a cleaner layout.
 
 > **2026-08-14:** Extended the difference-in-differences part of the *Outcome Weights* chapter.
-> The question: can we weight observations by whether parallel trends holds for them? Not as
-> stated. Parallel trends is a statement about two group means, so no single observation has it or
-> lacks it. Under a model where trends vary by unit the question does mean something, and synthetic
-> difference-in-differences already answers it. That estimator is a weighted two-way fixed effects
-> regression, so `τ̂ = Σ ω_it Y_it` with `ω_it = u_i v_t`, an outer product of rank one. We check it
-> against `synthdid` and the gap is zero to machine precision. The weights sum to zero along each
-> margin, and no cell can take a wrong sign. More generally the rank of the weight matrix is the
-> number of treated cohorts. So the plain 2×2 and synthetic DiD are the same object at two settings
-> of the margins, and only above rank one can a treated cell enter negatively. Fitting both margins
-> cuts bias sharply, but not completely: what survives is the part of the trend gap the weights leave
-> unmatched, since they are fitted on a noisy pre-period path and shrunk toward uniform. The cost is
-> a pretest (Roth 2022) and regression to the mean when we match on
-> pre-period levels (Daw & Hatfield 2018). How we build the matching variable sets how that bias
-> moves with serial correlation. New render dep: `synthdid`. Rendered clean; every cited number
-> verified against live output.
+> The starting question was whether outcome weights can be pushed to favour observations that satisfy
+> parallel trends. They cannot, as posed: parallel trends is a statement about two group means, so no
+> single observation has it or lacks it. Under a model where trends vary by unit the question does
+> mean something, and synthetic difference-in-differences already answers it — which turns out to be
+> the more interesting result, because that estimator is a weighted two-way fixed effects regression,
+> so `tau = sum(omega_it Y_it)` with `omega_it = u_i v_t`, an outer product of **rank one**. Checked
+> against `synthdid` to machine precision. The weights sum to zero along each margin and no cell can
+> take a wrong sign. More generally the rank of the weight matrix is the number of treated cohorts,
+> which puts the plain 2x2, synthetic DiD and staggered TWFE on one footing: block designs are rank
+> one, and only above rank one can a treated cell enter negatively. The chapter's own diagnostics then
+> read the design — how many controls it effectively uses, which period anchors the counterfactual,
+> and the effective sample size, derived rather than asserted. Synthetic DiD's objective is
+> `fit + zeta^2/ESS`, so it prices match quality against effective size explicitly, and by
+> Cauchy–Schwarz the effective size hits its maximum only under uniform weights, meaning only when no
+> reweighting happened at all. Cautions about *chosen* weights close the chapter: fitting them is a
+> pretest (Roth 2022), matching on pre-period levels invites regression to the mean (Daw & Hatfield
+> 2018), and an intercept in the weights avoids that case. New render dep: `synthdid`. Also folded
+> code blocks by default across all four books and narrowed two-column result tables so label and
+> value stay readable. Rendered clean; every cited number verified against live output.

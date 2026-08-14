@@ -824,235 +824,98 @@ content overview of the book's chapters.
 **Layout.** Right-side table of contents removed (`toc: false`); left chapter sidebar
 retained. Content panel width set to 960px.
 
-## Ch. 14 extension (2026-08-14) — chosen weights, rank, and the cost of reweighting
+## Ch. 14 extension (2026-08-14) — synthetic DiD as rank-one outcome weighting
 
-Four new subsections at the end of Ch. 14's DiD section (§5), inserted before *Implied versus
-chosen*, answering whether outcome weighting can be pushed to favour observations satisfying
-parallel trends. Chapter grew 417 → 631 lines. New render dep: **`synthdid`**.
+Answers a reader question: can outcome weights be pushed to favour observations that satisfy
+parallel trends? Chapter grew 417 -> ~690 lines. New render dep: **`synthdid`**.
 
-**§5.2 *Synthetic difference-in-differences: a rank-one weighting.*** SDID is a weighted TWFE
-regression (@eq-outcome-weights-12), so the FWL reading carries through and `τ̂ = Σ ω_it Y_it` with
-**ω_it = u_i v_t** (@eq-outcome-weights-13) — an outer product, hence **rank one**. `synthdid`
-literally computes `t(c(-omega, 1/N1)) %*% Y %*% c(-lambda, 1/T1)`. Multiplied out
-(@eq-outcome-weights-14) it is the 2×2 of @eq-outcome-weights-11 with the control average
-reweighted by ω and the pre-period average by λ, keeping the (+,−,−,+) block signs. Verified live: `ω'Y` = synthdid ATT = 2.2054, rank 1, weights sum to zero **on each margin** (stronger than
-@eq-omega's single constraint), zero wrong-sign cells (simplex) against the DR-DiD fit's 151, 23 of
-40 controls active, effective controls 14.6, effective pre-periods 1.09 with **0.957 on the last
-pre-period**. Also re-derived as a weighted `lm` to 8 digits. New two-panel figure of the ω and λ
-margins.
+### Final structure of the DiD material (§5)
 
-**§5.3 *The rank of the weight matrix.*** rank(Ω) = number of treated cohorts, verified 1–5.
-Proof, not just simulation: staggered W = Σ_k c_k s_k' is a sum of K rank-one blocks, and
-residualising on unit and time dummies is double centring, which cannot raise rank. This ties the DiD material together — block designs (plain 2×2 *and* SDID) are rank one and differ only in
-whether the margins are uniform or fitted; staggered adoption lifts the rank, and only above rank
-one can a treated cell enter negatively (in the block case every treated-post cell gets
-1/(N₁T₁) > 0). The forbidden comparisons need the extra rank.
+1. *Staggered designs: TWFE at the observation level* (pre-existing).
+2. *Synthetic difference-in-differences: a rank-one weighting.* SDID is a weighted TWFE regression
+   (@eq-outcome-weights-12), so FWL carries through and `tau = sum(omega_it Y_it)` with
+   **omega_it = u_i v_t** (@eq-outcome-weights-13) — an outer product, hence **rank one**. `synthdid`
+   literally computes `t(c(-omega, 1/N1)) %*% Y %*% c(-lambda, 1/T1)`. Multiplied out
+   (@eq-outcome-weights-14) it is the 2x2 with the control average reweighted by omega and the
+   pre-period average by lambda, keeping the (+,-,-,+) block signs. Verified live: three routes to
+   tau agree with gap 0; rank 1; weights sum to zero **on each margin** (stronger than @eq-omega's
+   single constraint); zero wrong-sign cells (simplex) against DR-DiD's 151. Then the diagnostics:
+   23/40 controls active, **effective sample size @eq-ess derived** (variance sigma^2/m vs
+   sigma^2*sum(w^2) => m = 1/sum(w^2)) giving 14.6, effective pre-periods 1.09 with 0.957 on the last
+   one, and **@eq-sdid-penalty**: the objective is `fit + zeta^2*sum(omega^2)`, which by @eq-ess is
+   `zeta^2 / ESS` — the estimator explicitly prices match quality against effective size. Also
+   Cauchy-Schwarz: ESS = N0 only under uniform weights, i.e. only when no reweighting happened, so
+   ESS is the price of the match and not a score to maximise. Two-panel figure of the omega/lambda
+   margins.
+3. *The rank of the weight matrix.* rank(Omega) = number of treated cohorts, verified 1-5. Proof:
+   staggered W = sum_k c_k s_k' is K rank-one blocks and residualising on unit/time dummies is double
+   centring, which cannot raise rank. Block designs (plain 2x2 AND SDID) are rank one and differ only
+   in whether the margins are uniform or fitted; only above rank one can a treated cell enter
+   negatively, so **the forbidden comparisons need the extra rank**.
+4. *Which margin does the work.* The rank-one form has exactly two margins, so hold one uniform and
+   fit the other. `factor` bias 0.729 -> 0.173 (unit only) -> 0.082 (time only) -> **0.044** (both);
+   `slopes` 1.083 -> 0.603 -> 0.536 -> **0.403**. DGPs written out as @eq-factor-dgp and
+   @eq-slopes-dgp with the AR(1) shock as @eq-ar1.
+5. *Implied versus chosen.* The payoff. Chosen weights are fitted on Y, so: the representation is
+   conditional on the fitted weights and inference must account for it (`synthdid` jackknifes); a
+   clean pre-period match is what the design optimised, not a test it passed — a pretest
+   (Roth 2022), with matching on pre-period *levels* inviting regression to the mean
+   (Daw-Hatfield 2018; Chabé-Ferret 2015, 2017) and an intercept in omega avoiding that case; and the
+   effective count is where the price shows up. Closing caution: weights diagnose estimation, not
+   identification; to test the assumption you bound the violation instead (Rambachan-Roth 2023).
 
-**§5.4 *Reweighting controls toward parallel trends.*** The question is ill-posed as asked: parallel trends
-is a statement about two group means, not a property an observation has, so there is nothing at the
-unit level to weight. It gains a referent only under a model where trends vary by unit (unit slopes
-or a factor structure) — and at that point it is what SDID already does (also Hazlett–Xu 2018,
-Imai–Kim–Wang 2023, Doudchenko–Imbens 2016). Margin decomposition, 400 reps, truth 2: under
-`factor` bias 0.729 (DiD) → 0.173 (unit only) → 0.082 (time only) → **0.044** (both); under
-`slopes` 1.083 → 0.603 → 0.536 → **0.403**.
+Summary items 7-9 added. References added: Arkhangelsky et al. (2021), Chabé-Ferret (2015, 2017),
+Daw-Hatfield (2018), Doudchenko-Imbens (2016), Hazlett-Xu (2018), Imai-Kim-Wang (2023),
+Rambachan-Roth (2023), Roth (2022) — plus four the chapter had been citing with **no bibliography
+entry**: Sant'Anna-Zhao (2020), Borusyak-Jaravel-Spiess (2024), Callaway-Sant'Anna (2021),
+Sun-Abraham (2021). `synthdid`/`DRDID` added to the software list.
 
-**CORRECTED (2026-08-14, second pass): the surviving `slopes` bias is NOT a hull limit.** The first
-draft asserted the treated mean slope lies outside the convex hull of the control slopes. Checked
-and false: treated mean slope is 0.12, control slopes are N(0, 0.08²), and over n=40 the max control
-slope averages **0.173**, so the treated mean clears every control slope in only **11%** of draws.
-The hull usually permits the match. **Third pass replaced the hand-wave with an exact identity**, prompted by xao: "the true dgp is
-eq 14.19. we are using synthdid to estimate it? Y(1)−Y(0) should not be a function of s_i t. why the
-bother to estimate s_i???" Correct answer: nothing estimates `s_i`. Y(0) is unobserved for treated
-post cells, so the estimator imputes it, and only the *difference* between the treated and
-weighted-control trends has to vanish. Writing `D[·]` for the double difference of
-@eq-outcome-weights-14 and splitting `Y_it(0)`, linearity gives **@eq-slopes-decomp**
-`τ̂ − τ = D[α_i] + D[β_t] + D[s_i t] + D[ε_it]`, with the first two identically zero for ANY weights,
-and **@eq-slopes-gap** `D[s_i t] = (s̄_trt − Σ ω_i s_i)(t̄_post − Σ λ_t t)`. Verified live at 300 reps:
-bias 0.4000 = 0.0000 (levels) + 0.0000 (time path) + 0.3036 (trends) + 0.0964 (shocks), largest gap
-across reps 0. `D[s_i t]` equals @eq-slopes-gap per replication to 4e-16. Horizon is **4.39**, not
-the "~8" the second pass guessed, so the product is 0.30 not 0.55 — the earlier arithmetic was wrong
-twice over (wrong horizon, and it ignored the shock term entirely). **The two mechanisms of §5.4 and
-§5.5 are the two non-zero terms of one identity**: the unmatched trend, and regression to the mean
-from fitting ω on noisy pre-period outcomes. **Then cut the decomposition entirely.** Trimming its `s_i`-unit rows was not enough — xao: "why is
-the whole thing still there. i don't see the point of comparing s_i to an estimated s_i from weighted
-obs. again, what's the point?" Correct. **Removed** `@eq-slopes-decomp`, `@eq-slopes-gap`, the
-`decomp()` chunk and its table. Reasons: (1) it is not a diagnostic anyone can run on real data,
-since it needs the true components; (2) the only two facts it established — unit levels and a common
-time path cancel for any weights — are one line of algebra that needs no table; (3) it was redundant
-with the noise/shrinkage grid, which makes the same point (bias 0.40 → 0.05 as noise falls) entirely
-in ATT bias units and never touches `s_i`. What survives in §5.4: the margin table, the
-noise/shrinkage grid, and prose. `panel()` reverted to returning only `Y/N0/N1/T0/T1` — the `a, b, s,
-e` components and the dead `s <- NULL` went with the decomposition. Chapter is down to 19 tables and
-20 equations; render ~2m20s.
+### Cut during the session, and why
 
-**The lesson is NOT "delete when questioned twice"** (an earlier draft of this note said that; xao
-rejected it: "that's not a good lesson. you'll have to have a good argument to keep it. do not change
-just because i question. we need to convince each other"). Sizing a change to the size of the
-objection is the actual error — the first pass trimmed the `s_i`-unit rows because that was what was
-objected to, rather than settling whether the decomposition belonged at all. Decide on the merits
-once: material stays if there is an argument for it and goes if there is not, and the count of
-questions is irrelevant. When a claim is challenged, either produce the argument for keeping it or
-concede on the substance — and say which of the two is happening.
+Do not reinstate these without a reason that survives the objection that killed them.
 
-**Report against the ATT, not against true `s_i`.** xao: "comparing to true s_i has no meaning. We
-are not estimating s_i. We only need to compare to the true ATT." Cut every quantity in `s_i` units:
-the `unmatched slope` and `horizon` rows from the decomposition table, the `unmatched slope` row from
-the noise/shrinkage grid (now bias only, so `mismatch()` no longer touches `p$s` at all), and the
-whole hull-frequency chunk (the 11% is now stated qualitatively, so no stranded number). What
-remains is legitimate because **every term is in the units of the estimate and the four sum to the
-bias against the true ATT**. @eq-slopes-gap stays as algebra explaining what governs the trend
-term's size — it needs no table. General rule: diagnostic scaffolding in the units of a nuisance
-parameter is for debugging, not for the text.
+- **A four-term bias decomposition** (`D[alpha] + D[beta] + D[s_i t] + D[eps]`, verified exact to
+  1e-15) and a **noise x shrinkage grid** explaining why the `slopes` residual was 0.403. Both cut:
+  they need the *true* components, so no reader can run them; the two facts the decomposition
+  established (unit levels and a common time path cancel for any weights) are one line of algebra
+  that needs no table; and the grid duplicated a point already made in ATT units.
+- **A matching-on-pre-period-levels simulation** sweeping rho over 2000 reps, reproducing
+  Daw-Hatfield's monotone bias and finding the matching *window* governs its shape. Real result, but
+  estimator benchmarking rather than weight-reading; survives as one sentence with the citation.
+- **A "What reweighting costs" section.** Its transferable content folded into *Implied versus
+  chosen*, which is where statements about reading chosen weights belong.
+- **Section retitled** from *Reweighting controls toward parallel trends* to *Which margin does the
+  work* — the old title promised a verdict on an estimator, which this chapter has no tool to
+  deliver, and after answering it there was nowhere to go. xao: "this is what we intend to answer
+  this subsection. what are we doing after that? I have no idea."
 
-**Name the estimand before the algebra.** xao, after four questions all tracing to the same gap:
-"why would we care? we only care about Y(1)−Y(0) for the treated group." The section never said
-plainly that `Y(1)−Y(0)` is a difference of two things and only one is observed. Added at the head of
-the decomposition: the estimand is `E[Y(1)−Y(0) | treated, post]`; `Y(1)` is data for those cells,
-`Y(0)` never is, and **building that counterfactual is the whole estimation problem**, so any bias is
-an error in that one imputation. `s_i` matters because the treated group's *own* untreated path
-contains `s_i t` — it is not a fact about controls. And @eq-slopes-gap's two factors read as: a
-leftover trend means the counterfactual grows at the wrong rate, and the horizon is how long it grows
-wrongly before we read it off. **Lesson: in a weighting chapter it is easy to describe machinery for
-pages without restating what is being imputed and why. State the estimand first.**
+### Errors made and corrected (keep — these recur)
 
-**Fourth pass — "we don't know the DGP, so we use synthdid. But we are not estimating s_i. Where is
-the bias from?"** The answer the chapter had only asserted: `synthdid` matches the pre-period
-outcome *path*, not slopes. If it matched the systematic part of the path, the slopes would agree as
-a by-product and @eq-slopes-gap would be zero; the bias is the amount by which it fails. Two causes,
-now demonstrated in a 2×2 grid (300 reps/cell) over AR(1) innovation sd × shrinkage:
+- **Asserted the surviving `slopes` bias was a convex-hull violation. False.** Treated mean slope is
+  0.12, control slopes N(0, 0.08^2), so over n=40 the max control slope averages 0.173 and the
+  treated mean clears every control only ~11% of the time. The hull usually permits the match.
+  Then compounded it: the retraction was applied to the paragraph that prompted it while **the same
+  claim survived in the simulation lead-in**. After retracting a claim, grep the whole chapter for
+  every restatement.
+- **Arithmetic asserted twice without checking.** "0.069 x roughly eight steps" — the horizon is
+  4.39, not 8, and the calculation ignored a second term entirely.
+- **A formula is not a definition.** Effective sample size was "defined" as 1/sum(w^2) plus two
+  endpoints; xao: "still not defined???". Derive it.
+- **Undefined quantities throughout.** AR(1) never written down while a column header said "shock sd
+  0.40" (0.40 is the *innovation* sd; the shock's is 0.46); five simulations missing error
+  distributions, covariate distributions or sample sizes; `SMD` never expanded; "shrinkage" and
+  "effective controls" used as bare terms. All closed in one sweep after xao: "can you go over and do
+  not make this kind of mistakes again???"
+- **Equation labels are NOT the rendered numbers, and the offset moves.** Numeric suffixes skip and
+  four equations carry word labels, so label `-12` does not render as 14.12, and adding an equation
+  earlier shifts everything. A draft hardcoded "(eq. 14.13)" into a kable row label and was wrong by
+  three. **Never write an equation number as literal text**, including in table labels where `@eq-`
+  cannot go — describe the row in words. Prefer descriptive labels (`{#eq-ar1}`, `{#eq-ess}`) for new
+  equations. Read current numbers with `grep -o '\\tag{[0-9.]*}' _book/outcome-weights.html`.
+- **`synthdid_estimate(..., zeta.omega = NULL)` errors** ("non-conformable arrays"). Omit the
+  argument to get the default.
+- **The lesson is NOT "delete when questioned twice"** (an earlier draft of this note said so; xao:
+  "do not change just because i question. we need to convince each other"). Sizing a change to the
+  size of the objection is the error. Decide on the merits once, and say whether you are arguing or
+  conceding.
 
-| | sd .40 shrink on | sd .05 shrink on | sd .40 shrink off | sd .05 shrink off |
-|---|---|---|---|---|
-| bias | 0.4000 | 0.0480 | 0.3269 | 0.0183 |
-| unmatched slope | 0.0688 | 0.0123 | 0.0428 | 0.0036 |
-
-Cut the noise 8× and the gap goes 0.069 → 0.012, bias 0.40 → 0.05; turn shrinkage off too and 0.004 /
-0.02. So the residual trend is **not** a limit of the design — it is what fitting ω on a short noisy
-pre-period leaves behind. Given a clean pre-period the weights find the slope match without ever
-estimating a slope. This grid REPLACED the shrinkage-only table (which had reported effective
-controls 23.1 → 5.2); rep count set to 300 so its default cell reproduces the decomposition table's
-0.4000 / 0.0688 exactly — two tables showing the same quantity must use the same reps. Hull frequency
-moved to its own one-line chunk in the paragraph that cites it: **0.112**, about one draw in nine. **Gotcha found doing this:** `synthdid_estimate(..., zeta.omega =
-NULL)` errors ("non-conformable arrays") — omit the argument to get the default. Also `panel()` now
-returns `s` so the diagnostic reuses the same panels instead of re-deriving them from the seed.
-
-**§5.5 *What reweighting costs.*** Weights fitted on pre-period outcomes make τ̂ non-linear in
-Y (so @eq-outcome-weights-13 describes the estimate at the fitted weights, and inference needs
-`vcov`'s bootstrap/jackknife/placebo, not fixed ω) and constitute a pretest (Roth 2022). Bias
-anatomy: `Cov(w, ε̄_pre)(1 − β)`. Simulation where **parallel trends holds** and the groups differ
-only by a persistent level gap of 1.5, AR(1) scaled to hold marginal sd at 0.5 for every ρ (so ρ
-varies persistence alone): matching 10 controls on **one** pre-period gives bias 0.0271 → −0.0067
-falling monotonically in ρ (**reproduces Daw–Hatfield 2018**); matching on the **8-period mean** is
-hump-shaped, 0.0336 → 0.0810 at ρ=0.8. Both follow from the anatomy — one period holds
-Var(ε_pre) flat so bias tracks (1−β); averaging makes Var(ε̄_pre) climb, so the factors fight.
-Averaging more pre-periods relocates the worst case rather than removing it. Sign is always
-upward (treated sit above, matched controls' shock reverts, control change understated). At ρ=0.8
-SDID carries −0.010 vs the 8-period matcher's 0.073, because `omega.intercept = TRUE` means SDID
-matches *trajectories up to a constant*, never levels — matching on levels is what produces it
-(Chabé-Ferret 2015, 2017). Closing asymmetry: reweighting controls preserves the estimand and
-costs variance; downweighting **treated** units silently moves the estimand.
-
-**§5.6 revised.** The old flat caution ("no weighting of observed outcomes can test parallel
-trends") is kept but qualified: chosen weights buy robustness to a *class* of violations expressible
-in a posited trend model, the gain is partial because the weights are fitted on a noisy pre-period
-path and shrunk toward uniform, and it is paid for in pretest and regression-to-the-mean terms. The alternative to reweighting is bounding the violation
-(Rambachan–Roth 2023). Summary items 7–9 added.
-
-**References.** Added Arkhangelsky et al. (2021), Chabé-Ferret (2015, 2017), Daw–Hatfield (2018),
-Doudchenko–Imbens (2016), Hazlett–Xu (2018), Imai–Kim–Wang (2023), Rambachan–Roth (2023),
-Roth (2022) — plus four the chapter had been citing with **no bibliography entry**: Sant'Anna–Zhao
-(2020), Borusyak–Jaravel–Spiess (2024), Callaway–Sant'Anna (2021), Sun–Abraham (2021). All
-verified against the published record. `synthdid` and `DRDID` added to the software list.
-
-**Presentation fixes (same session).** The first draft dumped ten unexplained statistics into one
-`vtab`. Split into three tables, each with a sentence saying what it checks: (1) the three routes
-to τ̂ plus their largest gap, which prints as `0.000000`; (2) a `found` / `should be` table for the
-three constraints the outer-product form implies; (3) the sparsity read-out with denominators in
-the row labels. Note `vtab`'s kable shows 7 significant digits, so an 8-decimal claim in prose is
-not supported by the display — report the gap instead. The bias formula is now
-**@eq-outcome-weights-15** rather than prose only.
-
-**Gotcha: the `eq-outcome-weights-N` labels are NOT the rendered numbers, and the offset moves.**
-The numeric suffixes skip (no `-3`) and four equations carry word labels (`eq-omega`, `-ml`,
-`-plr-i`, `eq-vwate`), so label `-12` does not render as 14.12 — and every equation added earlier in
-the chapter shifts the offset again. A first draft hardcoded "(eq. 14.13)" into a kable row label
-and was wrong by three. **Never write an equation number as literal text anywhere**, including table
-row labels and column names where `@eq-` cannot go — describe the row in words instead. Prefer
-descriptive labels for new equations (`{#eq-factor-dgp}`, `{#eq-slopes-dgp}`) over the numeric
-series. To read the current numbers: `grep -o '\\\\tag{[0-9.]*}' _book/outcome-weights.html`. Added to `style.css`: computed tables get
-`width: auto` under `.cell-output-display table.table`, since Bootstrap's `.table { width: 100% }`
-pushed a two-column label/value pair to opposite edges of the 960px column. Prose tables unaffected.
-
-**Code folded, click to show.** Added to ch.14's YAML front matter (chapter-scoped, not book-wide):
-`code-fold: true` + `code-summary: "Show code"`. Collapsed by default; output, tables and figures stay
-visible. To apply book-wide, move the two keys under `format: html:` in `_quarto.yml`.
-
-*Note on the fold count:* 19 code cells produce **24** `<details>` blocks, and nothing is stale. Five
-chunks print something part-way through, so knitr emits source–output–source for them, and `code-fold`
-gives each source fragment its own "Show code" toggle. Those five chunks therefore show two toggles
-with output between. Acceptable, but if it ever looks fragmented the fix is to move the interleaved
-`vtab`/`mtab` call to the end of the chunk so there is a single source block.
-
-**Effective sample size was undefined.** xao: "What's effective controls?" The term appeared only in a
-`sprintf` row label with the formula and was never explained. Now defined in prose before the table:
-`1/Σωᵢ²` for weights summing to one, equal to N₀ under equal weighting and 1 when one control carries
-everything (the inverse Herfindahl index), and read as "a weighted average with effective size m is
-about as precise as an unweighted average of m observations". It appears nowhere else in the book, so
-this was its first use.
-
-**No `§N` cross-references.** xao: "can you not use §1 this kind of thing?" All seven removed from
-ch.14 (five predated this session). Replacements: an equation crossref where the target is an
-equation (`the other constraint from @eq-omega`, `the FWL reading of @eq-omega`), otherwise a
-descriptive phrase that carries the connection without a pointer ("the same sign flip seen earlier
-under thin overlap", "in the cross-sectional case earlier", "the same overlap problem, now in the
-design"). Several needed nothing at all — "the §3 signature of a comparison reaching off common
-support" says the same thing with `§3` deleted. No other chapter in the book used them.
-
-**Motivate the DGP terms, not just state them.** xao: "why we include a time trend term at all?"
-The lead-in listed α_i, β_t, ε_it, s_i·t without saying what each is for. Now separated: α_i and β_t
-are in any panel and a DiD removes them exactly (D[α]=D[β]=0 above), so they cost nothing; a term
-that varies by unit AND moves with t is *required*, because that is what a parallel-trends violation
-is — without one, plain DiD is unbiased and the section has nothing to study. Also added that `s_i·t`
-is itself a one-factor model (loading `s_i`, factor `g_t = t`), the simplest member of the
-@eq-factor-dgp class SDID targets, so it is a leading case not an exotic one. Plus an honest caveat:
-if you believe trends really are unit-specific and linear, the direct fix is unit-specific trends in
-the regression, not reweighting; the linear panel is used because it makes @eq-slopes-decomp
-checkable.
-
-**The false hull claim survived in a SECOND location** and was only caught on the third pass — the
-simulation lead-in still said the treated mean slope "puts it outside the range the control slopes
-span". Lesson: after retracting a claim, grep the whole chapter for every restatement of it, not just
-the paragraph that prompted the correction.
-
-*Not put in the chapter (mechanism unestablished):* at a matched treated-control loading gap of 0.8
-control-sd, `factor` bias is 0.037 but `slopes` is 0.212 (250 reps), so `slopes` is harder by form and
-not only by magnitude. Plausibly because a pure linear pre-period path makes the loading hard to pin
-down against AR(1) noise, but not verified — do not assert it.
-
-**Write the DGP as an equation, not just its distributions.** The `slopes` panel was described only
-as "each unit gets its own linear trend, sd 0.08, shifted 0.12 for the treated" — xao: "what are the
-slopes here? I don't see it in the model." Both generating models are now displayed:
-`@eq-factor-dgp` for `Y_it(0) = α_i + β_t + f_i'g_t + ε_it` and `@eq-slopes-dgp` for
-`Y_it(0) = α_i + β_t + s_i·t + ε_it`, `s_i ~ N(0, 0.08²)`. Naming a DGP variant in prose is not the
-same as writing the model. Writing it out is also what exposed the false hull claim above — once
-`s_i` was on the page its distribution could be checked against the treated shift.
-
-**Every chunk needs a lead-in.** Flagged twice: the figure chunk and two output chunks appeared with
-no sentence saying what they plot or compute. Now each of the nine chunks in the new material is
-preceded by prose stating what it does and what to look for — this applies to figures and plain
-output tables, not only to `**Simulation —**` blocks.
-
-**Define a term at first use.** "Rank one" appeared in the §5.2 heading, a table label, and prose
-before being defined 50 lines later in §5.3. Definition moved to first use, right after
-@eq-outcome-weights-13 (every row a multiple of every other, so *who* cannot interact with *when*),
-and the duplicate in §5.3 cut. Also dropped bare "in the sense of §3" / "in the sense of §1"
-back-references where the sentence then explains itself anyway — say the thing, don't send the
-reader hunting.
-
-**Prose rewritten to xao's voice** after review. Cut: "buy parallel trends", "worth pausing on",
-"one spine", "anatomy", "escapes", "runs the other way", "lucky draw", "the very constraint",
-forced antithesis throughout. Headings renamed §5.4 to *Reweighting controls toward parallel
-trends* and §5.5 to *What reweighting costs*. Also fixed a directional reference the new ordering
-broke: from §5.3 "the staggered case of the last section" pointed at §5.2, not §5.1.
-
-Every cited number verified against live rendered output. Chunks run ~70s total.
