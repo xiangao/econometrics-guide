@@ -1,3 +1,7 @@
+---
+code-fold: true
+---
+
 # Interpreting OLS: Outcome Weights
 
 ```{r}

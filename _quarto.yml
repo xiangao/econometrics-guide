@@ -47,8 +47,11 @@ format:
     code-link: true
     callout-appearance: simple
     code-tools: true
-    code-fold: true
-    code-summary: "Show code"
+    # Chapters 1-12 show their code by default: much of the output is only
+    # meaningful next to the call that produced it. Ch. 13-14 override this to
+    # `true` in their own front matter, since their prose walks through each table.
+    code-fold: show
+    code-summary: "Code"
     number-sections: true
     toc: false
   pdf:
