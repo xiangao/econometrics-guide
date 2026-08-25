@@ -333,7 +333,7 @@ y_{it}={{\symbf{{x_{it} \beta}}}} + c_i + u_{it}
 \hat\beta_{FE} = \left(\sum_i \sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it}\right)^{-1}
 \sum_i \sum_t \ddot{{\symbf{x}}}_{it}'\ddot y_{it}.
 \tag{9.6}\]</span></span></p>
-<p>This is consistent for <span class="math inline">\(\beta\)</span> even when <span class="math inline">\(c_i\)</span> is correlated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, which is the key advantage of FE over random effects. The price is that any time-invariant regressor (the <span class="math inline">\(z_i\)</span> above) is also swept out by the demeaning and cannot be estimated. The usual variance estimator is <span class="math inline">\(\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}\)</span> with <span class="math inline">\(\hat\sigma_u^2\)</span> using degrees of freedom <span class="math inline">\(NT-N-k\)</span>; in practice one clusters by unit to allow serial correlation within <span class="math inline">\(i\)</span>.</p>
+<p>This is consistent for <span class="math inline">\(\beta\)</span> even when <span class="math inline">\(c_i\)</span> is correlated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, which is the key advantage of FE over random effects. Consistency still asks for the rest of the usual package: strict exogeneity of the idiosyncratic error conditional on the unit effect, <span class="math inline">\(E[u_{it} \mid c_i, {{\symbf{x}}}_{i1}, \dots, {{\symbf{x}}}_{iT}]=0\)</span>, enough within-unit variation for the demeaned cross-product to have full rank, and an asymptotic scheme – usually <span class="math inline">\(N \to \infty\)</span> with <span class="math inline">\(T\)</span> fixed. What FE buys is freedom from correlation between <span class="math inline">\(c_i\)</span> and the regressors. It buys nothing at all against correlation between <span class="math inline">\(u_{it}\)</span> and them. The price is that any time-invariant regressor (the <span class="math inline">\(z_i\)</span> above) is also swept out by the demeaning and cannot be estimated. The usual variance estimator is <span class="math inline">\(\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}\)</span> with <span class="math inline">\(\hat\sigma_u^2\)</span> using degrees of freedom <span class="math inline">\(NT-N-k\)</span>; in practice one clusters by unit to allow serial correlation within <span class="math inline">\(i\)</span>.</p>
 </section><section id="fixed-effects-or-random-effects-the-hausman-test" class="level2" data-number="9.4"><h2 data-number="9.4" class="anchored" data-anchor-id="fixed-effects-or-random-effects-the-hausman-test">
 <span class="header-section-number">9.4</span> Fixed effects or random effects: the Hausman test</h2>
 <p>Random effects is more efficient (it uses both within and between variation) but is consistent only if <span class="math inline">\(c_i\)</span> is uncorrelated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>; fixed effects is consistent either way. The Hausman test compares the two estimators:</p>
@@ -346,8 +346,8 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 <span class="header-section-number">9.5</span> Collapse to unit means, or keep the long format?</h2>
 <p>A practical question comes up whenever we hold a panel. Should we average each unit over time and run one regression on the <span class="math inline">\(N\)</span> resulting rows, or keep all <span class="math inline">\(NT\)</span> rows and cluster the standard errors by unit? Many people treat this as a trade-off and assume the long format must carry more information. It usually does not. The answer turns entirely on where the regressors live.</p>
 <p>Take the case where every regressor is time-invariant, so the model is <span class="math inline">\(y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}\)</span>. With a balanced panel, pooled OLS on the <span class="math inline">\(NT\)</span> rows and OLS on the <span class="math inline">\(N\)</span> unit means give the same <span class="math inline">\(\hat\gamma\)</span>. Not close — identical. Random effects returns the same number as well. Wooldridge (2010) states the reason plainly: because <span class="math inline">\(c_i\)</span> is there, new observations within a unit carry no information about <span class="math inline">\(\gamma\)</span> beyond how they move the unit average <span class="math inline">\(\bar y_i\)</span>. In effect we only have <span class="math inline">\(N\)</span> useful pieces of information. Averaging discards nothing, because <span class="math inline">\({{\symbf{z}}}_i\)</span> was already constant over <span class="math inline">\(t\)</span> and the within variation was never available to <span class="math inline">\(\gamma\)</span> in the first place.</p>
-<p>What does differ is the degrees of freedom. The unit-mean regression uses <span class="math inline">\(N-k\)</span>; pooled OLS reports <span class="math inline">\(NT-k\)</span>, and that is the mistake. Moulton (1990) is the classic illustration, and Donald and Lang (2007) show that <span class="math inline">\(t_{N-k}\)</span> is the reference distribution that keeps the size right. Clustering by unit repairs the standard error when <span class="math inline">\(N\)</span> is large, but it does not repair the degrees of freedom when <span class="math inline">\(N\)</span> is small.</p>
-<p>Now put a time-varying <span class="math inline">\({{\symbf{x}}}_{it}\)</span> into the model. The two options stop agreeing, and not only for the coefficient on <span class="math inline">\({{\symbf{x}}}_{it}\)</span> — every coefficient moves, the one on <span class="math inline">\({{\symbf{z}}}_i\)</span> included. Averaging to unit means throws away all within variation, so what survives is the between estimator. Pooled OLS keeps both sources and forces a single coefficient on them, so it returns a variance-weighted average of the within and the between relationship. The two agree only when the within and between coefficients are equal, which is precisely the null the Hausman test examines. So this is not a new problem. It is the FE-versus-RE question in different clothes.</p>
+<p>What does differ is the degrees of freedom. The unit-mean regression uses <span class="math inline">\(N-k\)</span>; pooled OLS reports <span class="math inline">\(NT-k\)</span>, and that is the mistake. Moulton (1990) is the classic illustration, and Donald and Lang (2007) show that <span class="math inline">\(t_{N-k}\)</span> is the reference distribution that keeps the size right here – an exact result resting on the distributional and design assumptions of the group-level regression, not a universal small-sample repair. With few clusters and heteroskedasticity the practical routes are a cluster-robust variance with a few-cluster correction, or a cluster bootstrap. Clustering by unit repairs the standard error when <span class="math inline">\(N\)</span> is large, but it does not repair the degrees of freedom when <span class="math inline">\(N\)</span> is small.</p>
+<p>Now put a time-varying <span class="math inline">\({{\symbf{x}}}_{it}\)</span> into the model. The two options stop agreeing, and not only for the coefficient on <span class="math inline">\({{\symbf{x}}}_{it}\)</span> — every coefficient moves, the one on <span class="math inline">\({{\symbf{z}}}_i\)</span> included. Averaging to unit means throws away all within variation, so what survives is the between estimator. Pooled OLS keeps both sources and forces a single coefficient on them, so it returns a variance-weighted average of the within and the between relationship. The two agree only when the within and between coefficients are equal, which is what the Hausman test is looking for in practice. Strictly the null is consistency of random effects – orthogonality of <span class="math inline">\(c_i\)</span> and the regressor history – which <em>implies</em> equal within and between coefficients rather than being the same statement. Equality could hold under an alternative, and equality in one sample is not the null at all. So this is not a new problem. It is the FE-versus-RE question in different clothes.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -364,17 +364,18 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 </tr>
 <tr class="even">
 <td>Any time-varying regressor</td>
-<td>All coefficients differ, including those on <span class="math inline">\({{\symbf{z}}}_i\)</span>
+<td>Coefficients generally differ, including those on <span class="math inline">\({{\symbf{z}}}_i\)</span>
 </td>
 </tr>
 <tr class="odd">
 <td>Unbalanced panel</td>
-<td>Differ regardless, since pooled OLS weights each unit by <span class="math inline">\(T_i\)</span>
+<td>Generally differ, since pooled OLS weights each unit by <span class="math inline">\(T_i\)</span>
 </td>
 </tr>
 </tbody>
 </table>
-<p>The reconciliation is Mundlak’s device, the same one used above for the regression-based Hausman test. Add the unit means <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> to the long regression alongside <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, and the within and between variation carry separate coefficients: <span class="math inline">\({{\symbf{x}}}_{it}\)</span> picks up the within estimate, <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> picks up the <em>difference</em> between the between and within estimates, so the two coefficients sum to what the collapsed regression reports. That second coefficient is the Hausman contrast, and its <span class="math inline">\(t\)</span>-statistic is the Hausman test. We keep the within variation and recover the between answer in one regression.</p>
+<p>The word to hold on to in the last two rows is <em>generally</em>. The differences come from the design, not from a theorem: a regressor orthogonal to the rest, or <span class="math inline">\(T_i\)</span> variation that happens to leave the weighting unchanged, can leave particular coefficients coinciding. What you lose is the right to count on it.</p>
+<p>The reconciliation is Mundlak’s device, the same one used above for the regression-based Hausman test. Add the unit means <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> to the long regression alongside <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, and the within and between variation carry separate coefficients: <span class="math inline">\({{\symbf{x}}}_{it}\)</span> picks up the within estimate, <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> picks up the <em>difference</em> between the between and within estimates, so the two coefficients sum to what the collapsed regression reports. That second coefficient is the Hausman contrast. With a single time-varying regressor its <span class="math inline">\(t\)</span>-statistic <em>is</em> the Hausman test; with several, the test is the joint Wald or <span class="math inline">\(F\)</span> test on all the mean coefficients together, not any one <span class="math inline">\(t\)</span>. Exact numerical agreement with the collapsed regression also depends on balance and on the weighting, so read it as the same comparison rather than an identity to check to the last digit. We keep the within variation and recover the between answer in one regression.</p>
 <p>The useful way to remember it: collapse freely when every regressor is constant within the group, and never when one is not.</p>
 </section><section id="what-the-long-format-buys" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="what-the-long-format-buys">
 <span class="header-section-number">9.6</span> What the long format buys</h2>
@@ -1064,186 +1065,209 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a>This is consistent for $\beta$ even when $c_i$ is correlated with</span>
 <span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a>${{\symbf{x}}}_{it}$, which is the key advantage of FE over random effects.</span>
-<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a>The price is that any time-invariant regressor (the $z_i$ above) is also</span>
-<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>swept out by the demeaning and cannot be estimated. The usual variance</span>
-<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}$</span>
-<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>with $\hat\sigma_u^2$ using degrees of freedom $NT-N-k$; in practice one</span>
-<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>clusters by unit to allow serial correlation within $i$.</span>
-<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed effects or random effects: the Hausman test</span></span>
-<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a>Random effects is more efficient (it uses both within and between</span>
-<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>variation) but is consistent only if $c_i$ is uncorrelated with</span>
-<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a>${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The Hausman test</span>
-<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a>compares the two estimators:</span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a>Consistency still asks for the rest of the usual package: strict exogeneity of the</span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a>idiosyncratic error conditional on the unit effect,</span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">u_{it} \mid c_i, {{\symbf{x}}}_{i1}, \dots, {{\symbf{x}}}_{iT}</span><span class="co">]</span>=0$, enough</span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a>within-unit variation for the demeaned cross-product to have full rank, and an</span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a>asymptotic scheme -- usually $N \to \infty$ with $T$ fixed.  What FE buys is freedom</span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a>from correlation between $c_i$ and the regressors.  It buys nothing at all against</span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a>correlation between $u_{it}$ and them.</span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a>The price is that any time-invariant regressor (the $z_i$ above) is also</span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a>swept out by the demeaning and cannot be estimated. The usual variance</span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a>estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}$</span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a>with $\hat\sigma_u^2$ using degrees of freedom $NT-N-k$; in practice one</span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a>clusters by unit to allow serial correlation within $i$.</span>
 <span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a>H = (\hat\beta_{FE}-\hat\beta_{RE})'\,<span class="co">[</span><span class="ot">\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})</span><span class="co">]</span>^{-1}\,(\hat\beta_{FE}-\hat\beta_{RE}) \;\sim\; \chi^2_k</span>
-<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>$$ {#eq-panel-data-7}</span>
-<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a>under the null that random effects is consistent. A large $H$ (small</span>
-<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>$p$-value) favors fixed effects. In R this is <span class="in">`phtest(fe, re)`</span> from the</span>
-<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="in">`plm`</span> package; in Stata, <span class="in">`hausman fe re`</span>.</span>
-<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>**Caveat: this classic form requires RE to be efficient.** The formula above relies on $\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})$ being positive semi-definite, which in turn requires the RE estimator to actually be the *efficient* estimator under the null -- true only under the RE model's homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak's approach) or with the demeaned regressors themselves (Wooldridge's regression-based test), and test the added coefficients jointly with a standard (robust) Wald test -- this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.</span>
-<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="fu">## Collapse to unit means, or keep the long format?</span></span>
-<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>A practical question comes up whenever we hold a panel.  Should we</span>
-<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a>average each unit over time and run one regression on the $N$ resulting</span>
-<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a>rows, or keep all $NT$ rows and cluster the standard errors by unit?</span>
-<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>Many people treat this as a trade-off and assume the long format must</span>
-<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a>carry more information.  It usually does not.  The answer turns entirely</span>
-<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a>on where the regressors live.</span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed effects or random effects: the Hausman test</span></span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>Random effects is more efficient (it uses both within and between</span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a>variation) but is consistent only if $c_i$ is uncorrelated with</span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a>${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The Hausman test</span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>compares the two estimators:</span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>H = (\hat\beta_{FE}-\hat\beta_{RE})'\,<span class="co">[</span><span class="ot">\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})</span><span class="co">]</span>^{-1}\,(\hat\beta_{FE}-\hat\beta_{RE}) \;\sim\; \chi^2_k</span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a>$$ {#eq-panel-data-7}</span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a>under the null that random effects is consistent. A large $H$ (small</span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a>$p$-value) favors fixed effects. In R this is <span class="in">`phtest(fe, re)`</span> from the</span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="in">`plm`</span> package; in Stata, <span class="in">`hausman fe re`</span>.</span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a>**Caveat: this classic form requires RE to be efficient.** The formula above relies on $\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})$ being positive semi-definite, which in turn requires the RE estimator to actually be the *efficient* estimator under the null -- true only under the RE model's homoscedasticity and no-serial-correlation assumptions. If you are using robust or cluster-robust covariance matrices (the usual practice when errors are heteroscedastic or serially correlated), RE is generally no longer efficient, the covariance difference can fail to be positive definite, and the classic Hausman test statistic can be negative or otherwise ill-behaved. In that case, use a regression-based Hausman test instead: augment the RE (or pooled) regression with the within-unit means of the time-varying regressors (Mundlak's approach) or with the demeaned regressors themselves (Wooldridge's regression-based test), and test the added coefficients jointly with a standard (robust) Wald test -- this is valid under heteroscedasticity/clustering and reduces to the same idea as the classic Hausman test under its assumptions.</span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a><span class="fu">## Collapse to unit means, or keep the long format?</span></span>
 <span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a>Take the case where every regressor is time-invariant, so the model is</span>
-<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>$y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled</span>
-<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>OLS on the $NT$ rows and OLS on the $N$ unit means give the same</span>
-<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>$\hat\gamma$.  Not close --- identical.  Random effects returns the same</span>
-<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>number as well.  Wooldridge (2010) states the reason plainly: because</span>
-<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a>$c_i$ is there, new observations within a unit carry no information</span>
-<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a>about $\gamma$ beyond how they move the unit average $\bar y_i$.  In</span>
-<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>effect we only have $N$ useful pieces of information.  Averaging</span>
-<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>discards nothing, because ${{\symbf{z}}}_i$ was already constant over $t$ and</span>
-<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>the within variation was never available to $\gamma$ in the first place.</span>
-<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>What does differ is the degrees of freedom.  The unit-mean regression</span>
-<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  Moulton</span>
-<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>(1990) is the classic illustration, and Donald and Lang (2007) show that</span>
-<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>$t_{N-k}$ is the reference distribution that keeps the size right.</span>
-<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>Clustering by unit repairs the standard error when $N$ is large, but it</span>
-<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>does not repair the degrees of freedom when $N$ is small.</span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a>A practical question comes up whenever we hold a panel.  Should we</span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>average each unit over time and run one regression on the $N$ resulting</span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a>rows, or keep all $NT$ rows and cluster the standard errors by unit?</span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>Many people treat this as a trade-off and assume the long format must</span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a>carry more information.  It usually does not.  The answer turns entirely</span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a>on where the regressors live.</span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a>Take the case where every regressor is time-invariant, so the model is</span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>$y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled</span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>OLS on the $NT$ rows and OLS on the $N$ unit means give the same</span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a>$\hat\gamma$.  Not close --- identical.  Random effects returns the same</span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>number as well.  Wooldridge (2010) states the reason plainly: because</span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>$c_i$ is there, new observations within a unit carry no information</span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>about $\gamma$ beyond how they move the unit average $\bar y_i$.  In</span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>effect we only have $N$ useful pieces of information.  Averaging</span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>discards nothing, because ${{\symbf{z}}}_i$ was already constant over $t$ and</span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>the within variation was never available to $\gamma$ in the first place.</span>
 <span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>Now put a time-varying ${{\symbf{x}}}_{it}$ into the model.  The two options</span>
-<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>stop agreeing, and not only for the coefficient on ${{\symbf{x}}}_{it}$ ---</span>
-<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>every coefficient moves, the one on ${{\symbf{z}}}_i$ included.  Averaging to</span>
-<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>unit means throws away all within variation, so what survives is the</span>
-<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>between estimator.  Pooled OLS keeps both sources and forces a single</span>
-<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>coefficient on them, so it returns a variance-weighted average of the</span>
-<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>within and the between relationship.  The two agree only when the within</span>
-<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>and between coefficients are equal, which is precisely the null the</span>
-<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>Hausman test examines.  So this is not a new problem.  It is the</span>
-<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>FE-versus-RE question in different clothes.</span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>What does differ is the degrees of freedom.  The unit-mean regression</span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  Moulton</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>(1990) is the classic illustration, and Donald and Lang (2007) show that</span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>$t_{N-k}$ is the reference distribution that keeps the size right here -- an exact</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>result resting on the distributional and design assumptions of the group-level</span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>regression, not a universal small-sample repair.  With few clusters and</span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>heteroskedasticity the practical routes are a cluster-robust variance with a</span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>few-cluster correction, or a cluster bootstrap.</span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a>Clustering by unit repairs the standard error when $N$ is large, but it</span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>does not repair the degrees of freedom when $N$ is small.</span>
 <span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Situation <span class="pp">|</span> Collapsed vs long <span class="pp">|</span></span>
-<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
-<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> All regressors time-invariant, balanced panel <span class="pp">|</span> Same coefficients; only the degrees of freedom differ <span class="pp">|</span></span>
-<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Any time-varying regressor <span class="pp">|</span> All coefficients differ, including those on ${{\symbf{z}}}_i$ <span class="pp">|</span></span>
-<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Unbalanced panel <span class="pp">|</span> Differ regardless, since pooled OLS weights each unit by $T_i$ <span class="pp">|</span></span>
-<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>The reconciliation is Mundlak's device, the same one used above for the</span>
-<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a>regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to</span>
-<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>the long regression alongside ${{\symbf{x}}}_{it}$, and the within and between</span>
-<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the</span>
-<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a>within estimate, ${{\symbf{\bar x}}}_i$ picks up the *difference* between the</span>
-<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>between and within estimates, so the two coefficients sum to what the</span>
-<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>collapsed regression reports.  That second coefficient is the Hausman</span>
-<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>contrast, and its $t$-statistic is the Hausman test.  We keep the within</span>
-<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>variation and recover the between answer in one regression.</span>
-<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>The useful way to remember it: collapse freely when every regressor is</span>
-<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>constant within the group, and never when one is not.</span>
-<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the long format buys</span></span>
-<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a>The section above is mostly a warning.  The other side is worth seeing</span>
-<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a>directly, so we simulate panels where we know the truth.  We use</span>
-<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a><span class="in">`fixest`</span> here; in Stata the same regressions are <span class="in">`regress`</span>, <span class="in">`xtreg, be`</span></span>
-<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a>and <span class="in">`xtreg, fe`</span>.</span>
-<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a><span class="fu">### The equivalence, and where it fails</span></span>
-<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>Take 1000 units over 6 periods, one time-invariant regressor $z_i$, and</span>
-<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a>a true $\gamma=2$.</span>
-<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>; T <span class="ot">&lt;-</span> <span class="dv">6</span></span>
-<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a>z   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>bal <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T), <span class="at">t =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>T, N),</span>
-<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>                  <span class="at">z  =</span> <span class="fu">rep</span>(z, <span class="at">each =</span> T), <span class="at">c =</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T))</span>
-<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>bal<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> bal<span class="sc">$</span>z <span class="sc">+</span> bal<span class="sc">$</span>c <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>agg   <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, z) <span class="sc">~</span> id, <span class="at">data =</span> bal, <span class="at">FUN =</span> mean)</span>
-<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">long      =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, bal))[[<span class="st">"z"</span>]],</span>
-<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapsed =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, agg))[[<span class="st">"z"</span>]]), <span class="at">digits =</span> <span class="dv">12</span>)</span>
-<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a>The two agree to every digit printed.  Now break the balance by dropping</span>
-<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a>the later periods for units with high $z_i$, so $T_i$ varies, and varies</span>
-<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a>with the regressor.</span>
+<span id="cb7-213"><a href="#cb7-213" aria-hidden="true" tabindex="-1"></a>Now put a time-varying ${{\symbf{x}}}_{it}$ into the model.  The two options</span>
+<span id="cb7-214"><a href="#cb7-214" aria-hidden="true" tabindex="-1"></a>stop agreeing, and not only for the coefficient on ${{\symbf{x}}}_{it}$ ---</span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a>every coefficient moves, the one on ${{\symbf{z}}}_i$ included.  Averaging to</span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a>unit means throws away all within variation, so what survives is the</span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a>between estimator.  Pooled OLS keeps both sources and forces a single</span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>coefficient on them, so it returns a variance-weighted average of the</span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>within and the between relationship.  The two agree only when the within</span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a>and between coefficients are equal, which is what the Hausman test is looking for</span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>in practice.  Strictly the null is consistency of random effects -- orthogonality of</span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>$c_i$ and the regressor history -- which *implies* equal within and between</span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a>coefficients rather than being the same statement.  Equality could hold under an</span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a>alternative, and equality in one sample is not the null at all.  So this is not a new problem.  It is the</span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>FE-versus-RE question in different clothes.</span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Situation <span class="pp">|</span> Collapsed vs long <span class="pp">|</span></span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|</span></span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> All regressors time-invariant, balanced panel <span class="pp">|</span> Same coefficients; only the degrees of freedom differ <span class="pp">|</span></span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Any time-varying regressor <span class="pp">|</span> Coefficients generally differ, including those on ${{\symbf{z}}}_i$ <span class="pp">|</span></span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Unbalanced panel <span class="pp">|</span> Generally differ, since pooled OLS weights each unit by $T_i$ <span class="pp">|</span></span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a>The word to hold on to in the last two rows is *generally*.  The differences come</span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a>from the design, not from a theorem: a regressor orthogonal to the rest, or $T_i$</span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a>variation that happens to leave the weighting unchanged, can leave particular</span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a>coefficients coinciding.  What you lose is the right to count on it.</span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a>The reconciliation is Mundlak's device, the same one used above for the</span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a>regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to</span>
+<span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>the long regression alongside ${{\symbf{x}}}_{it}$, and the within and between</span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the</span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a>within estimate, ${{\symbf{\bar x}}}_i$ picks up the *difference* between the</span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a>between and within estimates, so the two coefficients sum to what the</span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a>collapsed regression reports.  That second coefficient is the Hausman</span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a>contrast.  With a single time-varying regressor its $t$-statistic *is* the Hausman</span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a>test; with several, the test is the joint Wald or $F$ test on all the mean</span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a>coefficients together, not any one $t$.  Exact numerical agreement with the</span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>collapsed regression also depends on balance and on the weighting, so read it as</span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>the same comparison rather than an identity to check to the last digit.  We keep the within</span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a>variation and recover the between answer in one regression.</span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>The useful way to remember it: collapse freely when every regressor is</span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>constant within the group, and never when one is not.</span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a><span class="fu">## What the long format buys</span></span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>The section above is mostly a warning.  The other side is worth seeing</span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a>directly, so we simulate panels where we know the truth.  We use</span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a><span class="in">`fixest`</span> here; in Stata the same regressions are <span class="in">`regress`</span>, <span class="in">`xtreg, be`</span></span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a>and <span class="in">`xtreg, fe`</span>.</span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a><span class="fu">### The equivalence, and where it fails</span></span>
 <span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a>unb  <span class="ot">&lt;-</span> bal[<span class="sc">!</span>(bal<span class="sc">$</span>z <span class="sc">&gt;</span> <span class="fl">0.5</span> <span class="sc">&amp;</span> bal<span class="sc">$</span>t <span class="sc">&gt;</span> <span class="dv">2</span>), ]</span>
-<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a>agg2 <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, z) <span class="sc">~</span> id, <span class="at">data =</span> unb, <span class="at">FUN =</span> mean)</span>
-<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">long      =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, unb))[[<span class="st">"z"</span>]],</span>
-<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapsed =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, agg2))[[<span class="st">"z"</span>]]), <span class="at">digits =</span> <span class="dv">12</span>)</span>
-<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a>They no longer agree.  Pooled OLS weights each unit by $T_i$; the</span>
-<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a>collapsed regression counts each unit once.  Neither is wrong --- they</span>
-<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a>answer different questions, and we should know which one we asked.  That</span>
-<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a>$T_i$ is a special case of a general rule, set out in the next section.</span>
+<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a>Take 1000 units over 6 periods, one time-invariant regressor $z_i$, and</span>
+<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a>a true $\gamma=2$.</span>
+<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">1000</span>; T <span class="ot">&lt;-</span> <span class="dv">6</span></span>
+<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a>z   <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a>bal <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T), <span class="at">t =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>T, N),</span>
+<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a>                  <span class="at">z  =</span> <span class="fu">rep</span>(z, <span class="at">each =</span> T), <span class="at">c =</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(N), <span class="at">each =</span> T))</span>
+<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a>bal<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> bal<span class="sc">$</span>z <span class="sc">+</span> bal<span class="sc">$</span>c <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a>agg   <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, z) <span class="sc">~</span> id, <span class="at">data =</span> bal, <span class="at">FUN =</span> mean)</span>
 <span id="cb7-278"><a href="#cb7-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a><span class="fu">### What collapsing costs</span></span>
-<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a>Now the case that matters.  Let $x_{it}$ vary over time and make $c_i$</span>
-<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a>correlated with $\bar x_i$, which is the situation fixed effects exists</span>
-<span id="cb7-283"><a href="#cb7-283" aria-hidden="true" tabindex="-1"></a>for.  The truth is $\beta=1$.</span>
-<span id="cb7-284"><a href="#cb7-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-287"><a href="#cb7-287" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-288"><a href="#cb7-288" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
-<span id="cb7-289"><a href="#cb7-289" aria-hidden="true" tabindex="-1"></a>d  <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
-<span id="cb7-290"><a href="#cb7-290" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x  =</span> <span class="fu">rep</span>(mu, <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T),</span>
-<span id="cb7-291"><a href="#cb7-291" aria-hidden="true" tabindex="-1"></a>                 <span class="at">c  =</span> <span class="fu">rep</span>(mu <span class="sc">+</span> <span class="fu">rnorm</span>(N), <span class="at">each =</span> T))</span>
-<span id="cb7-292"><a href="#cb7-292" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>y    <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> d<span class="sc">$</span>x <span class="sc">+</span> d<span class="sc">$</span>c <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
-<span id="cb7-293"><a href="#cb7-293" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>xbar <span class="ot">&lt;-</span> <span class="fu">ave</span>(d<span class="sc">$</span>x, d<span class="sc">$</span>id)</span>
-<span id="cb7-294"><a href="#cb7-294" aria-hidden="true" tabindex="-1"></a>dagg   <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, x) <span class="sc">~</span> id, <span class="at">data =</span> d, <span class="at">FUN =</span> mean)</span>
-<span id="cb7-295"><a href="#cb7-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-296"><a href="#cb7-296" aria-hidden="true" tabindex="-1"></a>between <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x,        <span class="at">data =</span> dagg)</span>
-<span id="cb7-297"><a href="#cb7-297" aria-hidden="true" tabindex="-1"></a>pooled  <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x,        <span class="at">data =</span> d, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb7-298"><a href="#cb7-298" aria-hidden="true" tabindex="-1"></a>within  <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id,   <span class="at">data =</span> d)</span>
-<span id="cb7-299"><a href="#cb7-299" aria-hidden="true" tabindex="-1"></a>mundlak <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">+</span> xbar, <span class="at">data =</span> d, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
-<span id="cb7-300"><a href="#cb7-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-301"><a href="#cb7-301" aria-hidden="true" tabindex="-1"></a>pull <span class="ot">&lt;-</span> <span class="cf">function</span>(m, v) <span class="fu">c</span>(<span class="fu">coef</span>(m)[[v]], <span class="fu">se</span>(m)[[v]])</span>
-<span id="cb7-302"><a href="#cb7-302" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="st">`</span><span class="at">between (collapsed)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">pull</span>(between, <span class="st">"x"</span>),</span>
-<span id="cb7-303"><a href="#cb7-303" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">pooled OLS</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">pull</span>(pooled,  <span class="st">"x"</span>),</span>
-<span id="cb7-304"><a href="#cb7-304" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">within / FE</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">pull</span>(within,  <span class="st">"x"</span>),</span>
-<span id="cb7-305"><a href="#cb7-305" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mundlak: x</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">pull</span>(mundlak, <span class="st">"x"</span>),</span>
-<span id="cb7-306"><a href="#cb7-306" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mundlak: xbar</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">pull</span>(mundlak, <span class="st">"xbar"</span>))</span>
-<span id="cb7-307"><a href="#cb7-307" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"estimate"</span>, <span class="st">"std. error"</span>)</span>
-<span id="cb7-308"><a href="#cb7-308" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(tab, <span class="dv">3</span>)</span>
-<span id="cb7-309"><a href="#cb7-309" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-310"><a href="#cb7-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-311"><a href="#cb7-311" aria-hidden="true" tabindex="-1"></a>Read the table down.  The collapsed regression returns about 1.85, badly</span>
-<span id="cb7-312"><a href="#cb7-312" aria-hidden="true" tabindex="-1"></a>biased, because it is the between estimator and $\bar x_i$ carries $c_i$</span>
-<span id="cb7-313"><a href="#cb7-313" aria-hidden="true" tabindex="-1"></a>with it.  Pooled OLS returns about 1.48 --- closer, since some within</span>
-<span id="cb7-314"><a href="#cb7-314" aria-hidden="true" tabindex="-1"></a>variation is mixed in, but still inconsistent.  The within estimator</span>
-<span id="cb7-315"><a href="#cb7-315" aria-hidden="true" tabindex="-1"></a>returns about 0.99, and only the long format can compute it: once we</span>
-<span id="cb7-316"><a href="#cb7-316" aria-hidden="true" tabindex="-1"></a>collapse there is nothing left to demean.  Mundlak delivers both at</span>
-<span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a>once, exactly as described above --- 0.99 on $x_{it}$, 0.85 on</span>
-<span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a>$\bar x_i$, and $0.99+0.85$ recovers the between estimate.</span>
-<span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>Mundlak's device is more than a test: it is an estimator in its own</span>
-<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>right.  Wooldridge's correlated random effects (CRE) framework</span>
-<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a>generalizes the idea, allowing unit-level heterogeneity to depend on</span>
-<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a>the time-averages of the regressors while retaining the RE</span>
-<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a>structure.  The full CRE treatment, including extensions to nonlinear</span>
-<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a>models, is in the</span>
-<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Blog Book</span><span class="co">](https://xiangao.github.io/blog_book/correlated-random-effect.html)</span>.</span>
-<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>So the argument for the long format is not precision.  It is that</span>
-<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>demeaning, the Hausman comparison, unit-specific slopes, lagged</span>
-<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>dependent variables and anything else built on within variation stop</span>
-<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a>existing once the panel is collapsed.  Dynamic models are the extreme</span>
-<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a>case, and they get their own chapter,</span>
-<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Dynamic Panel Data</span><span class="co">](dynamic-panel.qmd)</span>.</span>
-<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
-<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
-<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
+<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">long      =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, bal))[[<span class="st">"z"</span>]],</span>
+<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapsed =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, agg))[[<span class="st">"z"</span>]]), <span class="at">digits =</span> <span class="dv">12</span>)</span>
+<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-283"><a href="#cb7-283" aria-hidden="true" tabindex="-1"></a>The two agree to every digit printed.  Now break the balance by dropping</span>
+<span id="cb7-284"><a href="#cb7-284" aria-hidden="true" tabindex="-1"></a>the later periods for units with high $z_i$, so $T_i$ varies, and varies</span>
+<span id="cb7-285"><a href="#cb7-285" aria-hidden="true" tabindex="-1"></a>with the regressor.</span>
+<span id="cb7-286"><a href="#cb7-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-289"><a href="#cb7-289" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-290"><a href="#cb7-290" aria-hidden="true" tabindex="-1"></a>unb  <span class="ot">&lt;-</span> bal[<span class="sc">!</span>(bal<span class="sc">$</span>z <span class="sc">&gt;</span> <span class="fl">0.5</span> <span class="sc">&amp;</span> bal<span class="sc">$</span>t <span class="sc">&gt;</span> <span class="dv">2</span>), ]</span>
+<span id="cb7-291"><a href="#cb7-291" aria-hidden="true" tabindex="-1"></a>agg2 <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, z) <span class="sc">~</span> id, <span class="at">data =</span> unb, <span class="at">FUN =</span> mean)</span>
+<span id="cb7-292"><a href="#cb7-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-293"><a href="#cb7-293" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="at">long      =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, unb))[[<span class="st">"z"</span>]],</span>
+<span id="cb7-294"><a href="#cb7-294" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapsed =</span> <span class="fu">coef</span>(<span class="fu">feols</span>(y <span class="sc">~</span> z, agg2))[[<span class="st">"z"</span>]]), <span class="at">digits =</span> <span class="dv">12</span>)</span>
+<span id="cb7-295"><a href="#cb7-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-296"><a href="#cb7-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-297"><a href="#cb7-297" aria-hidden="true" tabindex="-1"></a>They no longer agree.  Pooled OLS weights each unit by $T_i$; the</span>
+<span id="cb7-298"><a href="#cb7-298" aria-hidden="true" tabindex="-1"></a>collapsed regression counts each unit once.  Neither is wrong --- they</span>
+<span id="cb7-299"><a href="#cb7-299" aria-hidden="true" tabindex="-1"></a>answer different questions, and we should know which one we asked.  That</span>
+<span id="cb7-300"><a href="#cb7-300" aria-hidden="true" tabindex="-1"></a>$T_i$ is a special case of a general rule, set out in the next section.</span>
+<span id="cb7-301"><a href="#cb7-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-302"><a href="#cb7-302" aria-hidden="true" tabindex="-1"></a><span class="fu">### What collapsing costs</span></span>
+<span id="cb7-303"><a href="#cb7-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-304"><a href="#cb7-304" aria-hidden="true" tabindex="-1"></a>Now the case that matters.  Let $x_{it}$ vary over time and make $c_i$</span>
+<span id="cb7-305"><a href="#cb7-305" aria-hidden="true" tabindex="-1"></a>correlated with $\bar x_i$, which is the situation fixed effects exists</span>
+<span id="cb7-306"><a href="#cb7-306" aria-hidden="true" tabindex="-1"></a>for.  The truth is $\beta=1$.</span>
+<span id="cb7-307"><a href="#cb7-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-310"><a href="#cb7-310" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-311"><a href="#cb7-311" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb7-312"><a href="#cb7-312" aria-hidden="true" tabindex="-1"></a>d  <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>N, <span class="at">each =</span> T),</span>
+<span id="cb7-313"><a href="#cb7-313" aria-hidden="true" tabindex="-1"></a>                 <span class="at">x  =</span> <span class="fu">rep</span>(mu, <span class="at">each =</span> T) <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T),</span>
+<span id="cb7-314"><a href="#cb7-314" aria-hidden="true" tabindex="-1"></a>                 <span class="at">c  =</span> <span class="fu">rep</span>(mu <span class="sc">+</span> <span class="fu">rnorm</span>(N), <span class="at">each =</span> T))</span>
+<span id="cb7-315"><a href="#cb7-315" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>y    <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">*</span> d<span class="sc">$</span>x <span class="sc">+</span> d<span class="sc">$</span>c <span class="sc">+</span> <span class="fu">rnorm</span>(N <span class="sc">*</span> T)</span>
+<span id="cb7-316"><a href="#cb7-316" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>xbar <span class="ot">&lt;-</span> <span class="fu">ave</span>(d<span class="sc">$</span>x, d<span class="sc">$</span>id)</span>
+<span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a>dagg   <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(y, x) <span class="sc">~</span> id, <span class="at">data =</span> d, <span class="at">FUN =</span> mean)</span>
+<span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a>between <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x,        <span class="at">data =</span> dagg)</span>
+<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>pooled  <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x,        <span class="at">data =</span> d, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>within  <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">|</span> id,   <span class="at">data =</span> d)</span>
+<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a>mundlak <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x <span class="sc">+</span> xbar, <span class="at">data =</span> d, <span class="at">cluster =</span> <span class="sc">~</span>id)</span>
+<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a>pull <span class="ot">&lt;-</span> <span class="cf">function</span>(m, v) <span class="fu">c</span>(<span class="fu">coef</span>(m)[[v]], <span class="fu">se</span>(m)[[v]])</span>
+<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="st">`</span><span class="at">between (collapsed)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">pull</span>(between, <span class="st">"x"</span>),</span>
+<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">pooled OLS</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">pull</span>(pooled,  <span class="st">"x"</span>),</span>
+<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">within / FE</span><span class="st">`</span>         <span class="ot">=</span> <span class="fu">pull</span>(within,  <span class="st">"x"</span>),</span>
+<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mundlak: x</span><span class="st">`</span>          <span class="ot">=</span> <span class="fu">pull</span>(mundlak, <span class="st">"x"</span>),</span>
+<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>             <span class="st">`</span><span class="at">Mundlak: xbar</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">pull</span>(mundlak, <span class="st">"xbar"</span>))</span>
+<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tab) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"estimate"</span>, <span class="st">"std. error"</span>)</span>
+<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(tab, <span class="dv">3</span>)</span>
+<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a>Read the table down.  The collapsed regression returns about 1.85, badly</span>
+<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>biased, because it is the between estimator and $\bar x_i$ carries $c_i$</span>
+<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a>with it.  Pooled OLS returns about 1.48 --- closer, since some within</span>
+<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a>variation is mixed in, but still inconsistent.  The within estimator</span>
+<span id="cb7-338"><a href="#cb7-338" aria-hidden="true" tabindex="-1"></a>returns about 0.99, and only the long format can compute it: once we</span>
+<span id="cb7-339"><a href="#cb7-339" aria-hidden="true" tabindex="-1"></a>collapse there is nothing left to demean.  Mundlak delivers both at</span>
+<span id="cb7-340"><a href="#cb7-340" aria-hidden="true" tabindex="-1"></a>once, exactly as described above --- 0.99 on $x_{it}$, 0.85 on</span>
+<span id="cb7-341"><a href="#cb7-341" aria-hidden="true" tabindex="-1"></a>$\bar x_i$, and $0.99+0.85$ recovers the between estimate.</span>
+<span id="cb7-342"><a href="#cb7-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-343"><a href="#cb7-343" aria-hidden="true" tabindex="-1"></a>Mundlak's device is more than a test: it is an estimator in its own</span>
+<span id="cb7-344"><a href="#cb7-344" aria-hidden="true" tabindex="-1"></a>right.  Wooldridge's correlated random effects (CRE) framework</span>
+<span id="cb7-345"><a href="#cb7-345" aria-hidden="true" tabindex="-1"></a>generalizes the idea, allowing unit-level heterogeneity to depend on</span>
+<span id="cb7-346"><a href="#cb7-346" aria-hidden="true" tabindex="-1"></a>the time-averages of the regressors while retaining the RE</span>
+<span id="cb7-347"><a href="#cb7-347" aria-hidden="true" tabindex="-1"></a>structure.  The full CRE treatment, including extensions to nonlinear</span>
+<span id="cb7-348"><a href="#cb7-348" aria-hidden="true" tabindex="-1"></a>models, is in the</span>
+<span id="cb7-349"><a href="#cb7-349" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Blog Book</span><span class="co">](https://xiangao.github.io/blog_book/correlated-random-effect.html)</span>.</span>
+<span id="cb7-350"><a href="#cb7-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-351"><a href="#cb7-351" aria-hidden="true" tabindex="-1"></a>So the argument for the long format is not precision.  It is that</span>
+<span id="cb7-352"><a href="#cb7-352" aria-hidden="true" tabindex="-1"></a>demeaning, the Hausman comparison, unit-specific slopes, lagged</span>
+<span id="cb7-353"><a href="#cb7-353" aria-hidden="true" tabindex="-1"></a>dependent variables and anything else built on within variation stop</span>
+<span id="cb7-354"><a href="#cb7-354" aria-hidden="true" tabindex="-1"></a>existing once the panel is collapsed.  Dynamic models are the extreme</span>
+<span id="cb7-355"><a href="#cb7-355" aria-hidden="true" tabindex="-1"></a>case, and they get their own chapter,</span>
+<span id="cb7-356"><a href="#cb7-356" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Dynamic Panel Data</span><span class="co">](dynamic-panel.qmd)</span>.</span>
+<span id="cb7-357"><a href="#cb7-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-358"><a href="#cb7-358" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
+<span id="cb7-359"><a href="#cb7-359" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
+<span id="cb7-360"><a href="#cb7-360" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

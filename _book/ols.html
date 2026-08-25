@@ -335,7 +335,7 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 </div>
 </section><section id="the-geometry-of-least-squares" class="level2" data-number="1.3"><h2 data-number="1.3" class="anchored" data-anchor-id="the-geometry-of-least-squares">
 <span class="header-section-number">1.3</span> The Geometry of Least Squares</h2>
-<p><img src="ols.png" class="img-fluid"></p>
+<p><img src="ols.png" class="img-fluid" alt="A parallelogram drawn in perspective represents the plane spanned by the two regressors. Arrows labelled x-one and x-two point outward from a common origin inside the plane. The vector y rises above the plane, the vector y-hat lies within it, and a short segment labelled u joins y-hat up to y, meeting the plane at a right angle."></p>
 <p>For simplicity, let’s assume there are two explanatory variables <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>. <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span> form a plane. What OLS does is to project <span class="math inline">\(y\)</span> onto this plane.</p>
 <p>In mathematical terms, all linear combinations of these two vectors define a two-dimensional subspace of Euclidean space <span class="math inline">\({{\symbf{E}}}^n\)</span>. This is called the column space of <span class="math inline">\({\symbf{X}}\)</span>. The least-square principle is to choose <span class="math inline">\(\beta\)</span> to make <span class="math inline">\(\hat y\)</span>, which belongs to the subspace of <span class="math inline">\({\symbf{X}}\)</span>, as close as possible to <span class="math inline">\(y\)</span>.</p>
 <p>When we estimate a linear regression model, we map the <span class="math inline">\(y\)</span> into a vector of fitted values <span class="math inline">\({\symbf{X \hat \beta}}\)</span> and a vector of residuals <span class="math inline">\({\symbf{\hat u =y-X \hat \beta}}\)</span>. Geometrically, these are examples of orthogonal projections. A projection is a mapping that takes each point of <span class="math inline">\({{\symbf{E}}}^n\)</span> into a point in a subspace of <span class="math inline">\({{\symbf{E}}}^n\)</span>. An orthogonal projection maps any point into the point of the subspace that is closest to it.</p>
@@ -412,7 +412,7 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <p>There is a weaker condition – weaker than the strict exogeneity above, and in fact the weakest of the conditions in this chapter: <span id="eq-ols-21"><span class="math display">\[
 {{\mathrm{E}}} {\symbf{(X u)=0,
 }} \tag{1.33}\]</span></span></p>
-<p>Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.</p>
+<p>This is a moment condition, and it is what GMM estimators are built on. It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have <span class="math inline">\(E({\symbf{Xu}}) \neq 0\)</span>, which is exactly the endogeneity problem of a later chapter.</p>
 </section><section id="consistency" class="level3" data-number="1.5.2"><h3 data-number="1.5.2" class="anchored" data-anchor-id="consistency">
 <span class="header-section-number">1.5.2</span> Consistency</h3>
 <p>For OLS estimator to be consistent, a much weaker condition is needed: <span id="eq-ols-22"><span class="math display">\[
@@ -423,14 +423,14 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <li>
 <strong>Strict exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_1, \dots, X_n]=0\)</span>: the error in every period is mean-independent of the regressors in <em>every</em> period. This is what unbiasedness requires, and what the lagged-dependent-variable example above violates.</li>
 <li>
-<strong>Predeterminedness</strong>, <span class="math inline">\(E[u_t \mid \mathcal F_{t-1}]=0\)</span> with <span class="math inline">\(X_t\)</span> measurable with respect to <span class="math inline">\(\mathcal F_{t-1}\)</span> – equivalently, <span class="math inline">\(X_t\)</span> is orthogonal to the current and all <em>future</em> errors, while being allowed to correlate with <em>past</em> errors. This is the relevant condition in models with a lagged dependent variable.</li>
+<strong>Predeterminedness</strong>, <span class="math inline">\(E[u_t \mid \mathcal F_t]=0\)</span>, where <span class="math inline">\(\mathcal F_t = \sigma(X_1, \dots, X_t)\)</span> is the regressor history through period <span class="math inline">\(t\)</span> – equivalently, <span class="math inline">\(X_t\)</span> is orthogonal to the current and all <em>future</em> errors, while being allowed to correlate with <em>past</em> errors. This is the relevant condition in models with a lagged dependent variable.</li>
 <li>
 <strong>Contemporaneous exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_t]=0\)</span>.</li>
 <li>
-<strong>Contemporaneous orthogonality</strong>, <span class="math inline">\(E[X_t u_t]=0\)</span> – mere zero correlation. This is weakest of all, and it is what consistency actually needs: together with a rank condition and a law of large numbers it gives <span class="math inline">\(\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}\)</span> and hence <span class="math inline">\(\mathrm{plim}\, \hat\beta = \beta\)</span>. Contemporaneous <em>exogeneity</em> is a strictly stronger, sufficient condition – it constrains the whole conditional mean rather than a single covariance – so the <span class="math inline">\(E[{\symbf{Xu]=0}}\)</span> introduced under unbiasedness above sits at the <em>bottom</em> of this ladder, not between the others.</li>
+<strong>Contemporaneous orthogonality</strong>, <span class="math inline">\(E[X_t u_t]=0\)</span> – mere zero correlation. This is weakest of all, and it is what consistency actually needs: together with a rank condition and a law of large numbers – which for dependent data needs the weak-dependence conditions of the <a href="./mle.html">MLE chapter</a> – it gives <span class="math inline">\(\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}\)</span> and hence <span class="math inline">\(\mathrm{plim}\, \hat\beta = \beta\)</span>. Contemporaneous <em>exogeneity</em> is a strictly stronger, sufficient condition – it constrains the whole conditional mean rather than a single covariance – so the <span class="math inline">\(E[{\symbf{Xu]=0}}\)</span> introduced under unbiasedness above sits at the <em>bottom</em> of this ladder, not between the others.</li>
 </ul>
-<p>Each condition implies the next, because conditioning on a larger information set is a more restrictive requirement, not a less restrictive one. In particular, by the law of iterated expectations, <span id="eq-ols-23"><span class="math display">\[
-E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
+<p>Each condition implies the next, because conditioning on a larger information set is a more restrictive requirement, not a less restrictive one. The ladder needs the information sets to be nested, which is why <span class="math inline">\(\mathcal F_t\)</span> is defined above as regressor history: <span class="math inline">\(\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)\)</span>. Widen <span class="math inline">\(\mathcal F_t\)</span> to include past errors or other series and strict exogeneity no longer implies predeterminedness, because then neither information set contains the other. By the law of iterated expectations, <span id="eq-ols-23"><span class="math display">\[
+E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
 \tag{1.35}\]</span></span> so predeterminedness delivers contemporaneous exogeneity but not conversely. In the time series example, then, the OLS estimator is biased, but can still be consistent, if we are willing to assume no contemporaneous correlation.</p>
 <p>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <a href="./mle.html">Maximum Likelihood chapter</a> alongside this guide’s other estimation-inference material rather than repeated here.</p>
 
@@ -964,7 +964,7 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0
 <span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Geometry of Least Squares</span></span>
 <span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="al">![](ols.png)</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="al">![](ols.png)</span>{fig-alt="A parallelogram drawn in perspective represents the plane spanned by the two regressors. Arrows labelled x-one and x-two point outward from a common origin inside the plane. The vector y rises above the plane, the vector y-hat lies within it, and a short segment labelled u joins y-hat up to y, meeting the plane at a right angle."}</span>
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>For simplicity, let's assume there are two explanatory</span>
 <span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>variables $x_1$ and $x_2$. $x_1$ and $x_2$ form a plane.  What OLS</span>
@@ -1157,7 +1157,7 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0
 <span id="cb3-259"><a href="#cb3-259" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(X u)=0,</span>
 <span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-21}</span>
 <span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.</span>
+<span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>This is a moment condition, and it is what GMM estimators are built on.  It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have $E({\symbf{Xu}}) \neq 0$, which is exactly the endogeneity problem of a later chapter.</span>
 <span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a><span class="fu">### Consistency</span></span>
 <span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a></span>
@@ -1174,32 +1174,39 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0
 <span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
 <span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
 <span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  violates.</span>
-<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_{t-1}</span><span class="co">]</span>=0$ with $X_t$ measurable</span>
-<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the</span>
-<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
-<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
-<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  variable.</span>
-<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
-<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
-<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
-<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers it gives</span>
-<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
-<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
-<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
-<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
-<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
-<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
-<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  In particular, by</span>
-<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>the law of iterated expectations,</span>
-<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
-<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
-<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
-<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
-<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
-<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_t</span><span class="co">]</span>=0$, where</span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>  $\mathcal F_t = \sigma(X_1, \dots, X_t)$ is the regressor history through period</span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>  $t$ -- equivalently, $X_t$ is orthogonal to the</span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>  variable.</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers -- which for dependent</span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>  data needs the weak-dependence conditions of the <span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span> -- it gives</span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  The ladder needs the</span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>information sets to be nested, which is why $\mathcal F_t$ is defined above as</span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>regressor history:</span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>$\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)$.</span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>Widen $\mathcal F_t$ to include past errors or other series and strict exogeneity no</span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>longer implies predeterminedness, because then neither information set contains the</span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a>other.  By the law of iterated expectations,</span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
+<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
+<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
+<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
+<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
+<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

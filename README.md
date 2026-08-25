@@ -14,7 +14,17 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
 ## Prerequisites
 
 - [Quarto](https://quarto.org/docs/get-started/) (>= 1.3)
-- R with packages: `car`, `stats4`, `dplyr`, `mvtnorm`, `MASS`, `AER`, `ivreg`, `gmm`, `strucchange`, `ggfortify`, `survival`, `fixest`, `lmw`, `WeightIt`
+- R, with the packages the chapters actually load:
+
+  ```r
+  install.packages(c("cobalt", "DRDID", "fixest", "ggfortify", "gmm", "ivreg",
+                     "knitr", "OutcomeWeights", "plm", "sandwich",
+                     "strucchange", "WeightIt"))
+  remotes::install_github("synth-inference/synthdid")   # GitHub only
+  ```
+
+  `MASS`, `survival` and `parallel` ship with R and need no installation.
+  No versions are pinned; an `renv.lock` would be the durable fix.
 
 ## Legacy file
 
@@ -26,9 +36,24 @@ only and is not rebuilt.
 ## Build
 
 ```bash
-quarto render     # renders to _book/
+quarto render     # renders to _book/ (html and pdf)
 quarto preview    # live preview with hot reload
 ```
+
+Render all formats in one command.  A format-specific render such as
+`quarto render --to html` clears `_book/` and takes the PDF with it.
+
+`_quarto.yml` sets `execute: freeze: auto`, so a normal render reuses stored
+results from `_freeze/` and only re-executes chapters whose source changed.  That
+is what makes routine rendering fast, and it also means a green render does not
+prove every chunk still runs.  For a genuine cold build, delete `_freeze/` and
+render with all the packages above installed:
+
+```bash
+rm -rf _freeze && quarto render
+```
+
+Worth doing after upgrading R or any of the packages, and before any release.
 
 ## Sources
 

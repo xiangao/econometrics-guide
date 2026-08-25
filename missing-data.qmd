@@ -22,7 +22,16 @@ Data set like:
 The MAR case is the one we are interested in.
 
 For MCAR:  you lose efficiency if you simply drop the data.
-For MAR:  if you don't model it, you suffer bias and efficiency.
+For MAR:  if you don't model it, you generally suffer bias as well as efficiency.
+
+"Generally" is doing work in that sentence, because the consequence depends on the
+analysis and not only on the mechanism.  Complete-case regression of $y$ on $X$
+stays consistent for $\beta$ when missingness depends only on $X$ -- which is MAR,
+not MCAR -- because dropping rows on the basis of $X$ leaves the conditional
+distribution of $y$ given $X$ untouched.  What breaks consistency is missingness
+that depends on $y$ itself, or on something unobserved, after conditioning on $X$.
+So MAR is not automatically fatal and MCAR is not the only safe case.  Which it is
+depends on what is missing and on what you are trying to estimate.
 
 If we model missingness, for MCAR, you gain efficiency.  For MAR, you correct bias and gain efficiency.
 
@@ -72,6 +81,15 @@ around the prediction.  Dropping the residual draw gives what is called
 "improper" imputation, and reintroduces precisely the understated-variability
 problem that sank mean imputation and single regression imputation above.
 
+  A fully proper procedure draws the residual variance too.  Step 1 as written
+  holds $\hat\Sigma$, and with it $\hat\sigma^2$, fixed at its estimate, so it
+  propagates uncertainty about $\alpha$ but not about $\sigma^2$.  The Bayesian
+  version draws $\sigma^{2(m)}$ from its posterior -- for the normal linear model a
+  scaled inverse-$\chi^2$ -- then draws $\alpha^{(m)}$ from
+  $N(\hat\alpha, \sigma^{2(m)}({\symbf{X'X}})^{-1})$, and finally the residual from
+  $N(0, \sigma^{2(m)})$.  In large samples the difference is slight.  In small ones,
+  fixing $\sigma^2$ understates the between-imputation variance.
+
 3. calculate $M$ new estimates and combine them by averaging, $\tilde \beta  = \frac{1}{M}\sum_{m=1}^M \tilde \beta_m$, using each of the imputed data sets.  then calculate the variance of $\tilde \beta$:
 
 $V_{\beta}=W + (1+1/M) B$
@@ -108,12 +126,20 @@ Many ways to implement MICE.
 
 * Build a missing data model into a Bayesian model, treating missing values as another parameter to estimate by drawing out of its posterior distribution.
 
-$f(\beta, y_{miss}|y_{obs}) \propto f(y_{obs} | \beta, y_{miss}) f(\beta, y_{miss})$
+$$p(\beta, y_{mis} \mid y_{obs}) \propto p(y_{obs}, y_{mis} \mid \beta) \, p(\beta)$$
+
+The complete-data model appears once, applied to the observed and missing
+components together, and the prior is over $\beta$ alone.  If the missingness
+mechanism is modelled, it enters as its own factor with its own parameters rather
+than being folded into the prior.
 
 
 * We integrate out the missing values by sampling from the total distribution, then averaging out the beta distributions over the space of missing data points.
 
-* As long as data is MAR, the likelihood of missingness is not related to $\beta$ (ignorability), this is fine.
+* Ignorability is what allows the missingness mechanism to be left out of that
+expression, and it asks for more than MAR.  It needs MAR *and* distinct parameters --
+those of the missingness mechanism separate from $\beta$ -- and, in the Bayesian
+version, priors that factor accordingly.  MAR on its own is not sufficient.
 
 
 ### FIML
@@ -122,9 +148,17 @@ $f(\beta, y_{miss}|y_{obs}) \propto f(y_{obs} | \beta, y_{miss}) f(\beta, y_{mis
 
 $L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu, \Sigma)$
 
-If there are missing value,
+If there are missing values, each unit contributes the density of the part of
+$y_i$ that was actually observed:
 
-$L(\mu, \Sigma)=\prod_{i=1} f(y_i | \mu_i, \Sigma_i)$
+$$L(\mu, \Sigma)=\prod_{i} f \bigl( y_{i,obs} \, ; \, \mu_{i,obs}, \, \Sigma_{i,obs,obs} \bigr)$$
+
+where $y_{i,obs}$ is unit $i$'s observed subvector, and $\mu_{i,obs}$ and
+$\Sigma_{i,obs,obs}$ are the matching subvector of $\mu$ and submatrix of
+$\Sigma$.  The parameters are the same $\mu$ and $\Sigma$ for everyone; what varies
+by unit is which rows and columns get selected.  Written this way the mechanism is
+visible -- each contribution is the marginal density obtained by integrating out
+that unit's missing components, and no imputation happens anywhere.
 
 
 ### mi in stata

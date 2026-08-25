@@ -147,6 +147,13 @@ $$ {#eq-panel-data-6}
 
 This is consistent for $\beta$ even when $c_i$ is correlated with
 ${{\symbf{x}}}_{it}$, which is the key advantage of FE over random effects.
+Consistency still asks for the rest of the usual package: strict exogeneity of the
+idiosyncratic error conditional on the unit effect,
+$E[u_{it} \mid c_i, {{\symbf{x}}}_{i1}, \dots, {{\symbf{x}}}_{iT}]=0$, enough
+within-unit variation for the demeaned cross-product to have full rank, and an
+asymptotic scheme -- usually $N \to \infty$ with $T$ fixed.  What FE buys is freedom
+from correlation between $c_i$ and the regressors.  It buys nothing at all against
+correlation between $u_{it}$ and them.
 The price is that any time-invariant regressor (the $z_i$ above) is also
 swept out by the demeaning and cannot be estimated. The usual variance
 estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}$
@@ -193,7 +200,11 @@ the within variation was never available to $\gamma$ in the first place.
 What does differ is the degrees of freedom.  The unit-mean regression
 uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  Moulton
 (1990) is the classic illustration, and Donald and Lang (2007) show that
-$t_{N-k}$ is the reference distribution that keeps the size right.
+$t_{N-k}$ is the reference distribution that keeps the size right here -- an exact
+result resting on the distributional and design assumptions of the group-level
+regression, not a universal small-sample repair.  With few clusters and
+heteroskedasticity the practical routes are a cluster-robust variance with a
+few-cluster correction, or a cluster bootstrap.
 Clustering by unit repairs the standard error when $N$ is large, but it
 does not repair the degrees of freedom when $N$ is small.
 
@@ -204,15 +215,23 @@ unit means throws away all within variation, so what survives is the
 between estimator.  Pooled OLS keeps both sources and forces a single
 coefficient on them, so it returns a variance-weighted average of the
 within and the between relationship.  The two agree only when the within
-and between coefficients are equal, which is precisely the null the
-Hausman test examines.  So this is not a new problem.  It is the
+and between coefficients are equal, which is what the Hausman test is looking for
+in practice.  Strictly the null is consistency of random effects -- orthogonality of
+$c_i$ and the regressor history -- which *implies* equal within and between
+coefficients rather than being the same statement.  Equality could hold under an
+alternative, and equality in one sample is not the null at all.  So this is not a new problem.  It is the
 FE-versus-RE question in different clothes.
 
 | Situation | Collapsed vs long |
 |---|---|
 | All regressors time-invariant, balanced panel | Same coefficients; only the degrees of freedom differ |
-| Any time-varying regressor | All coefficients differ, including those on ${{\symbf{z}}}_i$ |
-| Unbalanced panel | Differ regardless, since pooled OLS weights each unit by $T_i$ |
+| Any time-varying regressor | Coefficients generally differ, including those on ${{\symbf{z}}}_i$ |
+| Unbalanced panel | Generally differ, since pooled OLS weights each unit by $T_i$ |
+
+The word to hold on to in the last two rows is *generally*.  The differences come
+from the design, not from a theorem: a regressor orthogonal to the rest, or $T_i$
+variation that happens to leave the weighting unchanged, can leave particular
+coefficients coinciding.  What you lose is the right to count on it.
 
 The reconciliation is Mundlak's device, the same one used above for the
 regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to
@@ -221,7 +240,11 @@ variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the
 within estimate, ${{\symbf{\bar x}}}_i$ picks up the *difference* between the
 between and within estimates, so the two coefficients sum to what the
 collapsed regression reports.  That second coefficient is the Hausman
-contrast, and its $t$-statistic is the Hausman test.  We keep the within
+contrast.  With a single time-varying regressor its $t$-statistic *is* the Hausman
+test; with several, the test is the joint Wald or $F$ test on all the mean
+coefficients together, not any one $t$.  Exact numerical agreement with the
+collapsed regression also depends on balance and on the weighting, so read it as
+the same comparison rather than an identity to check to the last digit.  We keep the within
 variation and recover the between answer in one regression.
 
 The useful way to remember it: collapse freely when every regressor is

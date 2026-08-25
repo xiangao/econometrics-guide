@@ -96,10 +96,17 @@ A typical FGLS procedure has three steps. First, run OLS and obtain the residual
   observation 1, rescaled as $\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1$; that is
   Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent
   and asymptotically equivalent, but Cochrane-Orcutt throws away a data point, and
-  the loss is not negligible in short time series or when $|\rho|$ is close to 1 --
-  precisely the case where the correction matters most. Prefer Prais-Winsten.
+  how much that costs takes some care. The direct weight on observation 1 is
+  $\sqrt{1-\rho^2}$, which *shrinks* as $|\rho| \to 1$, so that row's mechanical
+  contribution falls rather than rises. What grows is its relative importance:
+  quasi-differencing strips variation out of the remaining rows as well, and with
+  trending or highly persistent regressors the single untransformed level
+  observation ends up carrying a disproportionate share of the information about
+  the level. So the loss is worth caring about in short samples, and with trending
+  regressors when $\rho$ is near 1 -- not because that row is weighted heavily,
+  but because the others are weighted lightly. Prefer Prais-Winsten.
 
-Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient as long as $\hat\gamma$ is a consistent estimator of $\gamma$, even though it is generally biased in finite samples (since $\hat\Omega$ depends on the first-stage OLS residuals).
+Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator $\hat\beta_{FGLS}$. FGLS is consistent and asymptotically efficient under two requirements, not one: the assumed *form* of ${\symbf{\Omega}}$ must be correct, and $\hat\gamma$ must be consistent for $\gamma$ within that form -- alongside the usual exogeneity, rank and moment conditions. A consistent $\hat\gamma$ inside a misspecified covariance model buys nothing. Either way FGLS is generally biased in finite samples, since $\hat\Omega$ depends on the first-stage OLS residuals.
 
 ## Efficiency of GLS
 
@@ -142,7 +149,7 @@ The Gauss-Markov result says GLS is more efficient than OLS when
 ${\symbf{\Omega}}$ is known.  In practice ${\symbf{\Omega}}$ is never
 known, and we face a choice: estimate ${\symbf{\Omega}}$ and use FGLS,
 or use OLS with a sandwich variance estimator (White or Newey-West,
-as in the [MLE chapter](mle.qmd)) that is valid regardless of the
+as in the [MLE chapter](mle.qmd)) that does not require specifying the
 form of ${\symbf{\Omega}}$.
 
 Both approaches give consistent estimates of $\beta$, since OLS is
@@ -169,7 +176,10 @@ and the FGLS standard errors can be misleading because they assume
 the estimated error structure is correct.  OLS with robust standard
 errors avoids this risk: the point estimates are the same regardless
 of ${\symbf{\Omega}}$, and the sandwich variance is consistent under
-arbitrary heteroscedasticity or serial correlation.
+unknown heteroscedasticity, and under serial correlation weak enough to
+satisfy the HAC conditions -- summable autocovariances and a
+bandwidth that grows slowly with the sample.  "Robust" is not the same as
+robust to dependence of any form.
 
 The modern default in applied work is to report OLS with robust
 standard errors, reserving GLS for settings where there is strong

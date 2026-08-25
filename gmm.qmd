@@ -190,7 +190,9 @@ $$
 $$ {#eq-gmm-17}
 which is the GMM counterpart of the information-matrix bound of the previous
 chapter.  Since $S$ depends on $\theta_0$, in practice one starts from any
-consistent weighting (often the identity, or $({\symbf{Z'Z)^{-1}}}$), estimates $\hat
+consistent weighting (often the identity, or $({\symbf{Z'Z)^{-1}}}$ -- scalar
+multiples of ${\symbf{W}}$ leave the minimizer unchanged, so with $\bar m$ defined as a
+sample average this can equally be written $[n^{-1}{\symbf{Z'Z}}]^{-1}$), estimates $\hat
 S$ from the resulting residuals, and re-minimizes: two-step GMM.  Stopping at
 $W = ({\symbf{Z'Z)^{-1}}}$ is exactly 2SLS, which is therefore efficient GMM only
 under homoskedasticity.
@@ -330,7 +332,8 @@ $0.042$ against $0.046$.  And the classical 2SLS standard error, $0.033$, is far
 too small -- the earlier remark about homoskedasticity, arriving as a number
 instead of a caveat.
 
-The $J$ statistic is now a test rather than a formality.  It has one degree of
+The $J$ statistic is now a test rather than a formality.  It is a joint specification
+test of the moment conditions, not a certificate of instrument validity.  It has one degree of
 freedom -- three moment conditions, from the constant and the two instruments,
 less the two parameters -- and its value of $1.65$ with a $p$-value of $0.20$
 gives no reason to doubt the moment conditions.
@@ -413,13 +416,16 @@ $$ {#eq-gmm-25}
 
 These are listed in decreasing strength, and the implications run one way only:
 independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The
-middle condition is what regression actually needs. Neither converse holds: $X$ and
+middle condition is what a *model of the conditional mean* needs. Neither converse holds: $X$ and
 $Y$ can be uncorrelated with $E[Y \mid X] \neq 0$ (take $Y = X^2 - 1$ with
 $X \sim N(0,1)$, so $Cov[X,Y] = E[X^3] = 0$ while $E[Y \mid X] = X^2 - 1$), and
 mean independence permits dependence through higher moments (any pure
 heteroskedasticity, $Y = X\epsilon$ with $\epsilon$ independent of $X$ and mean
-zero). Keeping the three apart matters because the moment conditions below need only
-the middle one.
+zero). Keeping the three apart matters because the moment conditions below need only the
+*weakest* of them.  $E[u_i]=0$ and $E[X_i u_i]=0$ are statements about means and
+covariances, nothing more.  Conditional mean zero is sufficient for them and is not
+necessary, which is exactly why GMM asks for less than a conditional-mean model
+does.
 
 
 ### Regression

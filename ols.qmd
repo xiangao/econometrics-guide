@@ -64,7 +64,7 @@ summary(lm1)
 
 ## The Geometry of Least Squares
 
-![](ols.png)
+![](ols.png){fig-alt="A parallelogram drawn in perspective represents the plane spanned by the two regressors. Arrows labelled x-one and x-two point outward from a common origin inside the plane. The vector y rises above the plane, the vector y-hat lies within it, and a short segment labelled u joins y-hat up to y, meeting the plane at a right angle."}
 
 For simplicity, let's assume there are two explanatory
 variables $x_1$ and $x_2$. $x_1$ and $x_2$ form a plane.  What OLS
@@ -257,7 +257,7 @@ $$
 {{\mathrm{E}}} {\symbf{(X u)=0,
 }}$$ {#eq-ols-21}
 
-Once we know that the model is correctly specified, then this equation can be used to derive results, such as GMM estimators.
+This is a moment condition, and it is what GMM estimators are built on.  It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have $E({\symbf{Xu}}) \neq 0$, which is exactly the endogeneity problem of a later chapter.
 
 ### Consistency
 
@@ -274,15 +274,17 @@ one to invoke for consistency:
   period is mean-independent of the regressors in *every* period.  This is what
   unbiasedness requires, and what the lagged-dependent-variable example above
   violates.
-- **Predeterminedness**, $E[u_t \mid \mathcal F_{t-1}]=0$ with $X_t$ measurable
-  with respect to $\mathcal F_{t-1}$ -- equivalently, $X_t$ is orthogonal to the
+- **Predeterminedness**, $E[u_t \mid \mathcal F_t]=0$, where
+  $\mathcal F_t = \sigma(X_1, \dots, X_t)$ is the regressor history through period
+  $t$ -- equivalently, $X_t$ is orthogonal to the
   current and all *future* errors, while being allowed to correlate with *past*
   errors.  This is the relevant condition in models with a lagged dependent
   variable.
 - **Contemporaneous exogeneity**, $E[u_t \mid X_t]=0$.
 - **Contemporaneous orthogonality**, $E[X_t u_t]=0$ -- mere zero correlation. This
   is weakest of all, and it is what consistency actually needs: together with a
-  rank condition and a law of large numbers it gives
+  rank condition and a law of large numbers -- which for dependent
+  data needs the weak-dependence conditions of the [MLE chapter](mle.qmd) -- it gives
   $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence
   $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a
   strictly stronger, sufficient condition -- it constrains the whole conditional
@@ -290,10 +292,15 @@ one to invoke for consistency:
   unbiasedness above sits at the *bottom* of this ladder, not between the others.
 
 Each condition implies the next, because conditioning on a larger information set
-is a more restrictive requirement, not a less restrictive one.  In particular, by
-the law of iterated expectations,
+is a more restrictive requirement, not a less restrictive one.  The ladder needs the
+information sets to be nested, which is why $\mathcal F_t$ is defined above as
+regressor history:
+$\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)$.
+Widen $\mathcal F_t$ to include past errors or other series and strict exogeneity no
+longer implies predeterminedness, because then neither information set contains the
+other.  By the law of iterated expectations,
 $$
-E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_{t-1}] \;\big|\; X_t \bigr] = 0,
+E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
 $$ {#eq-ols-23}
 so predeterminedness delivers contemporaneous exogeneity but not conversely.  In
 the time series example, then, the OLS estimator is biased, but can still be

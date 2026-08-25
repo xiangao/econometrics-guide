@@ -59,9 +59,16 @@ $$
 $$ {#eq-discrete-6}
 
 For the logit and probit models, this function is globally concave
-with respect to $\beta$.  This implies that the first-order
-conditions, or likelihood equations, uniquely define the MLE estimator
-$\hat \beta$.  These likelihood equations can be written as
+with respect to $\beta$, so there are no local maxima to worry about.
+Concavity is not the whole story, though.  For the MLE to exist and be
+unique and *finite* we also need ${\symbf{X}}$ to have full column rank, and
+the data must not be separable.  If some linear combination of the
+regressors predicts the outcome perfectly -- complete or quasi-complete
+separation -- the likelihood keeps rising along that direction and the
+maximum is attained at no finite $\beta$, concave or not.  Software reports
+this as coefficients diverging or standard errors blowing up.  With full
+rank and no separation, the first-order conditions, or likelihood
+equations, uniquely define the MLE estimator $\hat \beta$.  These likelihood equations can be written as
 $$
 \sum_{t=1}^n \frac{(y_t-F({{\symbf{X_t \beta}}}))f({{\symbf{X_t
 \beta}}})x_{ti}}{F({{\symbf{X_t \beta}}})(1- F({{\symbf{X_t \beta}}}))}=0, \
@@ -165,4 +172,36 @@ the mean, including fixed-effects models, is in the
 
 Writing *both* choice-varying regressors ${{\symbf{W}}}_{tl}$ *and* choice-specific coefficients $\beta^l$ into the same formula, as some treatments do, conflates the two models.  It is worth being precise about what that costs, because the usual complaint -- that such a specification is not identified -- is not true.  Choice probabilities depend only on utility *differences*, so $\Pr(y_t=l)$ is governed by ${{\symbf{W}}}_{tj}\beta^j - {{\symbf{W}}}_{tl}\beta^l$; when the ${{\symbf{W}}}_{tj}$ vary independently across alternatives, those differences pin down each $\beta^j$ separately, with no normalization required.  It is a perfectly estimable model -- it is what Stata's `asclogit` fits when alternative-specific coefficients are requested.
 
-What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.
+What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  One caveat on "no normalization required" above: it concerns the slope coefficients $\beta^j$.  If the specification also carries alternative-specific intercepts, those are identified only up to a location shift and one of them still has to be fixed.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.
+
+### Independence of Irrelevant Alternatives
+
+Both logit forms carry a restriction that comes from the softmax itself.  Take the
+ratio of two choice probabilities.  With individual-specific regressors,
+
+$$
+\frac{\Pr(y_t = j)}{\Pr(y_t = l)} = \exp \bigl( {{\symbf{X}}}_t (\beta^j - \beta^l) \bigr),
+$$ {#eq-discrete-iia}
+
+and with alternative-specific regressors and a common coefficient the ratio is
+$\exp \bigl( ({{\symbf{W}}}_{tj} - {{\symbf{W}}}_{tl}) \beta \bigr)$.  Either way everything to
+do with the other alternatives cancels.  The relative odds of $j$ against $l$ do not
+depend on what else is on the menu, or on the attributes of any third alternative.
+That is **independence of irrelevant alternatives**, or IIA.
+
+Sometimes it is harmless.  Often it is not.  The standard illustration is travel
+mode.  Suppose commuters split evenly between a car and a red bus, so the odds are
+1:1 and each share is $1/2$.  Now add a blue bus, identical to the red one in
+everything but colour.  IIA holds the car-to-red-bus odds at 1:1, and the two buses
+are interchangeable, so the model predicts three shares of $1/3$.  What we would
+expect is that the blue bus draws almost entirely from the red bus, leaving the car
+near $1/2$.  The model has no way to know that the two buses are close substitutes,
+because the softmax gives it no way to express that.
+
+There are two standard escapes.  **Nested logit** groups alternatives into nests --
+the two buses in one, the car in another -- and allows correlation within a nest, so
+IIA holds inside nests but not across them.  **Mixed logit**, also called
+random-coefficients logit, lets $\beta$ vary across individuals; shared taste
+parameters then induce correlation across alternatives and IIA goes away, at the
+cost of simulation-based estimation.  Which one to reach for depends on whether the
+substitution pattern you are worried about can be described by a grouping.

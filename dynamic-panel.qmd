@@ -18,10 +18,15 @@ Fixed effect model setup:
 $$ y_{i,t} - \bar y_i = (X_{i,t} - \bar X_i)' \beta + \gamma (y_{i, t-1} - \overline{y_{i,-1}}) + (\epsilon_{i,t} - \bar \epsilon_i)$$ {#eq-dynamic-panel-3}
 
 where $\overline{y_{i,-1}}$ is the unit mean of the *lagged* dependent
-variable.  This is not exactly $\bar y_i$ (the mean of current
-$y_{i,t}$): the two differ at the first and last usable periods,
-though they coincide asymptotically and under the usual balanced-sample
-convention.
+variable.  This is not exactly $\bar y_i$ (the mean of current $y_{i,t}$).  Over
+the usable periods the two are $(y_{i2}+\cdots+y_{iT})/(T-1)$ and
+$(y_{i1}+\cdots+y_{i,T-1})/(T-1)$, so their difference is exactly
+
+$$\frac{y_{iT}-y_{i1}}{T-1},$$ {#eq-dynamic-panel-mean-gap}
+
+the endpoints and nothing else.  Balance does not make that vanish -- only $T$
+growing does, under stability.  The distinction is asymptotically negligible and
+finite-sample real.
 
 Nickell (1981) shows that (see also Anderson and Hsiao 1981)
 
@@ -51,7 +56,11 @@ or
 
 $$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$ {#eq-dynamic-panel-6}
 
-This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$, assuming error is not auto-correlated.
+This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$ -- provided the idiosyncratic error is serially uncorrelated.  That proviso carries the argument.  If $\epsilon_{i,t}$ is itself AR(1), then $y_{i,t-2}$ is correlated with $\Delta \epsilon_{i,t}$, the instrument fails, and one has to reach further back.
+
+The assumption is testable, which is the point of the Arellano-Bond test for serial correlation in the differenced residuals.  First-order correlation is expected by construction, since $\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ share $\epsilon_{i,t-1}$; it is the *second*-order test that carries information.  Rejecting AR(2) says the lag being used as an instrument does not sit far enough back.
+
+The other regressors need classifying too, because that is what decides how they are instrumented.  Strictly exogenous $X$ can serve as its own instrument.  Predetermined $X$ -- correlated with past shocks but not with current or future ones -- is instrumented by its own lags from $t-1$ backwards.  Endogenous $X$ is treated like the lagged dependent variable, with lags from $t-2$ backwards.  Misclassifying a regressor here is one of the commoner ways a difference-GMM specification goes quietly invalid.
 
 
 ## Arellano-Bond estimator
@@ -98,3 +107,88 @@ walk), and it allows time-invariant regressors.  A practical warning:
 the instrument count grows with $T^2$, so *instrument proliferation*
 can overfit the endogenous regressors and weaken the Hansen $J$ test;
 lags should be collapsed or capped in practice.
+
+## Diagnostics in practice
+
+The warning about instrument proliferation is easy to state and easy to ignore.  It
+is worth seeing what it does to real estimates, and what the standard diagnostics
+look like when they are working.
+
+The data are Arellano and Bond's own: an unbalanced panel of 140 UK firms observed
+between 1976 and 1984, shipped with `plm` as `EmplUK`.  The specification is theirs
+too -- log employment on its own first two lags, current and lagged log wages, three
+lags of log capital, current and lagged log output, with firm and year effects
+removed and two-step weighting.  Only the instrument set changes across the three
+fits: every available lag of log employment from $t-2$ back, the same capped at
+three lags, and then the system-GMM version that adds the level-equation moments.
+
+```{r}
+#| label: dynpanel-diagnostics
+#| warning: false
+#| message: false
+library(plm)
+data("EmplUK", package = "plm")
+
+dif_full <- pgmm(log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
+                   lag(log(capital), 0:2) + lag(log(output), 0:1) |
+                   lag(log(emp), 2:99),
+                 data = EmplUK, effect = "twoways", model = "twosteps")
+
+dif_cap  <- pgmm(log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
+                   lag(log(capital), 0:2) + lag(log(output), 0:1) |
+                   lag(log(emp), 2:4),
+                 data = EmplUK, effect = "twoways", model = "twosteps")
+
+sys      <- pgmm(log(emp) ~ lag(log(emp), 1:2) + lag(log(wage), 0:1) +
+                   lag(log(capital), 0:2) + lag(log(output), 0:1) |
+                   lag(log(emp), 2:99),
+                 data = EmplUK, effect = "twoways", model = "twosteps",
+                 transformation = "ld")
+
+diag_row <- function(fit, label) {
+  co <- summary(fit, robust = TRUE)$coefficients
+  sg <- sargan(fit)
+  data.frame(specification = label,
+             moments  = ncol(fit$W[[1]]),
+             lag1     = round(co[1, 1], 3),
+             se       = round(co[1, 2], 3),
+             sargan_p = round(sg$p.value, 3),
+             AR1_p    = round(mtest(fit, order = 1)$p.value, 3),
+             AR2_p    = round(mtest(fit, order = 2)$p.value, 3))
+}
+
+rbind(diag_row(dif_full, "difference GMM, lags 2+"),
+      diag_row(dif_cap,  "difference GMM, lags 2-4"),
+      diag_row(sys,      "system GMM"))
+```
+
+Read the AR columns first, because they are the ones that can invalidate everything
+else.  First-order serial correlation in the differenced residuals is expected:
+$\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ both contain
+$\epsilon_{i,t-1}$, so a small AR(1) $p$-value is the normal state of affairs and
+says nothing against the specification.  The AR(2) test is the informative one, and
+none of the three fits shows evidence that the instrumenting lag sits too close.
+
+The Sargan column passes in all three cases, which is exactly where the
+instrument-count warning earns its keep.  The full difference-GMM fit imposes 40
+moment conditions on 15 parameters across 140 firms; the system-GMM fit imposes 55.
+A Sargan or Hansen test with many moments and few groups has little power, so a
+comfortable $p$-value is weak reassurance rather than strong evidence.  The test is
+being asked to detect a violation using an instrument set flexible enough to fit
+almost anything.
+
+The coefficients show what that costs.  Capping the instruments at three lags cuts
+the moment conditions from 40 to 30, moves the coefficient on lagged log employment
+from about $0.65$ to about $0.44$, and nearly doubles its standard error.  That is
+the honest trade: fewer, better-behaved instruments buy less precision.  System GMM
+goes the other way and returns a coefficient above $1$ with a standard error near
+$0.05$, which should stop the reader rather than reassure them.  A persistence
+parameter above one implies an explosive employment process, and the tight interval
+around it comes from 55 moment conditions on 140 firms.  Every diagnostic in the
+table passes.  The estimate is still not credible.
+
+So what to report: the AR(2) test, the Sargan or Hansen statistic with its degrees
+of freedom, the instrument count next to the number of groups, and the estimate
+under at least one narrower instrument set.  The last of those does most of the
+work, because it is the one thing in the list that a flexible instrument set cannot
+make look good.

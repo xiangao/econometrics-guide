@@ -144,7 +144,7 @@ So the OLS estimator is unbiased for a weighted average of $b_i$'s.
 
 @eq-exact has three consequences for practice.
 
-1.  **OLS is not the ATE under heterogeneity.** $\hat\beta_{OLS}$ is not the plain average effect $\bar b = E[b_i]$. It is a variance-weighted parameter, and it equals the ATE only when the $b_i$ are uncorrelated with the leverage $d_i x_i = (x_i - \bar x)x_i$.
+1.  **OLS is not the ATE under heterogeneity.** $\hat\beta_{OLS}$ is not the plain average effect $\bar b = E[b_i]$. It is a weighted parameter whose weights are $d_i x_i = (x_i - \bar x)x_i$ --- signed, not squared --- and it equals the ATE only when the $b_i$ are uncorrelated with those weights.
 2.  **Leverage annihilates the individual bias.** @eq-esi shows $s_i$ is a hopeless estimate of $b_i$ precisely where $d_i \approx 0$. The weight $w_i = d_i^2$ zeroes out exactly those unstable points, turning biased observation-level slopes into the exact parameter of @eq-exact.
 3.  **The same mechanism runs through the causal estimators.** With a binary regressor it puts the most weight where treatment is near a coin flip (Angrist 1998); grouped by treatment status it reverses the propensity weights, favouring the smaller group (Słoczyński 2022). Both are @eq-exact read at different granularities, as the rest of the chapter shows.
 
@@ -203,15 +203,17 @@ Be careful what $\tilde V_i$ is. A single observation has no variation of its ow
 
 @eq-fwl reads two ways. This chapter takes the first; the second opens the companion chapter [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
 
-**Weights on effects.** Under a heterogeneous model $y_i = \beta_i V_i + X_i \gamma + e_i$,
+**Weights on effects.** Under a heterogeneous model $y_i = \beta_i V_i + X_i \gamma + e_i$, substituting into @eq-fwl gives
 
-$$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
+$$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i} + \frac{\sum_{i=1}^n \tilde V_i e_i}{\sum_{i=1}^n \tilde V_i^2}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
+
+The control term drops out because $\tilde V$ is orthogonal to $X$ by construction.  The error term does not.  It vanishes in conditional expectation when $E[e_i \mid V, X, \beta] = 0$, and in probability under the usual orthogonality and large-sample conditions.  That is when the weighted-average reading is the right one.  The outcome-weight identity in the companion chapter carries no such remainder --- it is exact in every sample.
 
 The denominator $\sum_i w_i = \sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$ always, by OLS orthogonality. Individual weights $w_i = \tilde V_i V_i$ can be negative — they are whenever $\tilde V_i$ and $V_i$ have opposite signs.
 
 ### Where the square comes from
 
-Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i$; over the whole sample,
+Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i + \sum_i \tilde V_i e_i$; setting the error term aside as above, over the whole sample,
 
 $$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
 
@@ -236,6 +238,8 @@ $$w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i
 Nothing new has been added: it is $w_i = \tilde V_i V_i$ from @eq-weff with a binary $V$, where $D_i^2 = D_i$ makes the sum collapse. The maximum at $\hat D(x) = 1/2$ is just the fact that a binary variable has most variance when it is a coin flip.
 
 Note what plays the role of $s_i$ here. A single observation with a binary regressor has no slope; you need one treated and one control unit to form a difference. The smallest unit carrying an effect is therefore the *stratum*, and $s_i$ becomes the stratum difference in means.
+
+A word on the labels before going further. $\hat\delta_x$ is a difference in *observed* means within a stratum. Calling the aggregate an ATT or an ATE needs the usual identification conditions: conditional exchangeability, so that treatment is as good as randomly assigned within a stratum, and overlap, so that each stratum holds both treated and control units. Saturation delivers the algebra, not the interpretation. Without those conditions the formulas below still hold exactly, but they describe weighted averages of observed contrasts rather than causal effects. The weighting is what OLS does; whether the thing being weighted is an effect is settled outside the regression.
 
 Let $\hat\delta_x$ be the stratum difference-in-means. Substituting @eq-angrist-w into @eq-weff,
 
@@ -542,7 +546,7 @@ In (A) the reweighted estimate agrees with the standard FE estimate — reweight
 ## Summary
 
 1.  **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg); units that vary more dominate the slope.
-2.  **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates the variance-weighted parameter $\sum_i w_i b_i / \sum_i w_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with the weights.
+2.  **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates $\sum_i d_i x_i b_i / \sum_i d_i x_i$ with weights $d_i x_i = (x_i - \bar x) x_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with those weights. Keep the two weightings apart: $d_i^2$ weights the observed deviation slopes $s_i$, while $d_i x_i$ weights the structural $b_i$. They share a total, since $\sum_i d_i x_i = \sum_i d_i^2$, but individually differ by $d_i \bar x$, and $d_i x_i$ can be negative where a square cannot. Centering the treatment, $y_i = \alpha + b_i(x_i - \bar x) + e_i$, is what makes them coincide.
 3.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
 4.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
 

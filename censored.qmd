@@ -72,7 +72,7 @@ them are severely biased from the "true" regression line.
 
 Here is a graph to illustrate from Davidson and MacKinnon.
 
-![Effects of truncation and censoring from Davidson and MacKinnon](davidson.png)
+![Effects of truncation and censoring from Davidson and MacKinnon](davidson.png){fig-alt="Scatterplot of y against x with four fitted lines. Filled circles lie above the zero line and hollow circles below it, marking the observations lost to censoring or truncation. The true regression line and the full-sample OLS fit are steep and nearly coincide; the censored-sample and truncated-sample fits are visibly flatter, attenuated toward zero slope."}
 
 ## Truncated Models
 
@@ -247,12 +247,15 @@ $\rho\sigma(v_t-\lambda_t)$, which is why the second-step OLS standard
 errors require correction; the coefficient $\rho\sigma$ on $\hat
 \lambda_t$ is unaffected.)
 
-One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to contain all ${\symbf{X_t}}$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the ${\symbf{X_t}}$'s.
+One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to include all the ${\symbf{X_t}}$ variables is more mundane than it is often made to sound: whatever plausibly affects selection belongs in the selection equation, and the determinants of the outcome usually do.  What identification turns on is the other direction -- at least one variable in ${\symbf{W_t}}$ kept *out* of ${\symbf{X_t}}$, affecting selection but not the outcome.  Without such an exclusion, $\hat\lambda$ is a nonlinear function of the same ${\symbf{X_t}}$'s and identification rests entirely on that nonlinearity.
 
 
 In Stata, heckman is the command to do sample selection models.  It
 has options to do a Heckman two-step estimation or MLE estimation.
-Usually MLE is preferred.
+MLE is usually preferred, on the understanding that its efficiency advantage holds
+*if* the joint normality it assumes is right.  The two-step estimator is less
+efficient but leans less heavily on the full likelihood, which makes it easier to
+diagnose when the specification is in doubt.
 
 ## Switching Regression (Treatment-Effects Model)
 
@@ -312,5 +315,10 @@ above will report a single $\delta$ that is some average of them and will not re
 the heterogeneity. Fitting it requires two outcome equations rather than one
 intercept shift.
 
-Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching
-regression.  The default is by MLE.
+A word on software, since the two models above are easy to conflate.  Stata's
+etregress fits the *common-slope* specification -- the endogenous treatment-effects
+model with a single $\delta$ -- not the two-regime switching regression with separate
+$\beta_1$ and $\beta_0$.  For the fuller Roy-type model, Stata users generally reach
+for the user-written movestay (endogenous switching regression), and SAS's qlim covers
+a range of limited-dependent and selection specifications.  The default in each case
+is MLE.

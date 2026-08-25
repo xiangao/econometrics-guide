@@ -7,8 +7,10 @@ library(ivreg)
 ```
 
 When we discuss the linear model we assume that the regressors are
-exogenous, meaning that they are independent of or uncorrelated with
-the error term.  However, there could be reasons to believe that some
+exogenous.  That word covers conditions of different strength -- full
+independence, mean independence, and mere zero correlation -- which the
+[OLS chapter](ols.qmd) sets out as a ladder.  What instrumental variables
+work with is the weakest of them, the moment condition $E[Zu]=0$.  However, there could be reasons to believe that some
 regressors are correlated with the error term.  In that case we call
 those regressors endogenous.
 
@@ -19,8 +21,11 @@ uncorrelated with the error term.  If this condition does not hold,
 OLS estimators are biased and inconsistent.
 
 When one independent variable does not satisfy this condition, we say
-this variable is endogenous.  When one variable is endogenous, the
-estimates of other coefficients will also be biased (or inconsistent).
+this variable is endogenous.  The estimates of other coefficients are then
+usually biased as well, but not always: the contamination travels through the
+correlation between regressors, so a coefficient on a regressor orthogonal to
+the endogenous one is left alone.  With an orthogonal design the damage stays
+in the endogenous coefficient.
 
 The most popular cure for endogeneity is to use instrumental variables.
 
@@ -103,17 +108,29 @@ perpendicular to $x^{\parallel}$.  Endogeneity is simply the statement that
 $x^{\parallel} \neq 0$.  (This is a decomposition of $x$, not an extra
 assumption about it -- every $x$ admits it.)
 
-Now let $z$ be a vector perpendicular to $u$ (exogeneity: $z$ is uncorrelated
-with the error) with a non-zero projection onto $x$ (relevance: $z$ actually
-predicts the regressor).  Project both $y$ and $x$ onto $z$, and write $\hat
-y_z$ and $\hat x_z$ for those two projections.  The instrumental variables
-estimator is the ratio of their lengths,
+Now let $z$ be a vector perpendicular to $u$ with a non-zero projection onto $x$
+(relevance: $z$ actually predicts the regressor).  Project both $y$ and $x$ onto
+$z$, and write $\hat y_z$ and $\hat x_z$ for those two projections.  The
+instrumental variables estimator is the ratio of their signed projection
+coefficients -- signed, because lengths are never negative and $\beta_1$ may be,
 
 $$ \hat \beta_{IV} = \frac{\hat y_z}{\hat x_z} = \frac{z'y}{z'x}, $$ {#eq-endogeneity-7}
 
-since $z'y = \beta_1 z'x + z'u = \beta_1 z'x$.  Because the two right triangles
-involved are similar, this is the same number you would get from the *infeasible*
-regression of $y$ on the exogenous part alone: that regression returns
+since $z'y = \beta_1 z'x + z'u$.  The figure draws $z$ exactly perpendicular to
+$u$, which sets $z'u = 0$ and removes the second term.  Read that as the
+idealisation it is.  Exogeneity is a statement about the population,
+$E[z_i u_i] = 0$, and it does not make $z'u$ vanish in a realised sample.  What
+we have in a sample of size $n$ is
+
+$$ \hat \beta_{IV} = \beta_1 + \frac{z'u}{z'x}, $$ {#eq-endogeneity-7a}
+
+so $\hat\beta_{IV}$ is consistent because $n^{-1} z'u \to 0$ while $n^{-1}z'x$
+converges to something non-zero -- not because the numerator is identically
+zero.  The geometry shows why IV works; it does not make IV exact.
+
+Staying inside the idealised picture for a moment: because the two right
+triangles involved are similar, $\hat\beta_{IV}$ is the same number you would get
+from the *infeasible* regression of $y$ on the exogenous part alone: that regression returns
 $$ \frac{x^{\perp\prime}y}{x^{\perp\prime}x^{\perp}} = \beta_1 \frac{x^{\perp\prime}x}{x^{\perp\prime}x^{\perp}} + \frac{x^{\perp\prime}u}{x^{\perp\prime}x^{\perp}} = \beta_1, $$ {#eq-endogeneity-8}
 where the second term vanishes because $x^{\perp} \perp u$ and the first
 collapses to $\beta_1$ because $x^{\perp} \perp x^{\parallel}$, so
@@ -304,7 +321,19 @@ $\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,
  or say, the number of overidentifying restrictions.  If we reject the null,
  then we should be concerned about the exogeneity of the whole set of
  the instruments.  This test is called Sargan's test in IV context, and
- (Hansen's) J test in GMM context.
+ (Hansen's) J test in GMM context.  The two names are not quite
+ interchangeable: Sargan's $N \times R^2$ form assumes homoskedastic errors,
+ while Hansen's $J$, built from the efficient GMM weighting, is the
+ heteroskedasticity-robust counterpart and the one to use whenever the standard
+ errors are robust.
+
+ It is worth being exact about what the test delivers, because it is easy to
+ over-read.  It is a joint test of the overidentifying restrictions.  Failing to
+ reject does not certify the instruments: the test has no power against
+ violations that all of them share, because instruments wrong in the same way
+ agree on the same wrong answer.  Rejection, for its part, does not say *which*
+ moment condition failed.  A passing $J$ is the absence of one particular kind
+ of evidence against the instruments, not evidence for them.
 
  What the J test or Sargan's test does is to test the whole set of
  instruments being exogenous or not.  There is another test for
@@ -350,7 +379,7 @@ over-identification test after the ivreg command.
   ivreg2 with   gmm option returns J test; it reports
 Sargan's test without this option.
 
-  ivreg2 also reports C test statistic, with ortho().  If the C test rejects the null, and J test without the suspect instruments fail to reject null, then the suspect instruments are indeed the ones are not exogenous.
+  ivreg2 also reports the C test statistic, with ortho().  If the C test rejects and the J test without the suspect instruments does not, the evidence points at the suspect instruments -- conditional on the retained ones being valid.  That condition does real work: a difference test cannot tell an invalid suspect from an invalid maintained instrument, so it locates the problem only when the maintained set is sound.
 
 
 
@@ -497,8 +526,17 @@ reject $H_0: \beta=\beta_0$.
 
 4.  First-stage F test.
 
-The rule of thumb for first-stage F test is $F>10$ for a single
-instrument case, the more instruments, the higher it gets.
+The familiar rule of thumb is $F>10$, and its scope is worth knowing.  It comes
+from the single-endogenous-regressor case with homoskedastic errors, where it
+corresponds roughly to a bound on the relative bias of 2SLS.  The formal
+Stock-Yogo critical values depend on how many instruments there are and on which
+criterion -- relative bias or size distortion -- is being controlled, so one
+number does not carry over to every design.  Under heteroskedasticity or
+clustering the relevant statistic is the effective first-stage F of Montiel Olea
+and Pflueger rather than the conventional one.  And when identification is weak
+the dependable route is not a higher threshold but weak-instrument-robust
+inference -- the Anderson-Rubin and CLR tests in this list, whose size does not
+depend on instrument strength.
 
 5.   Kleibergen's LM test.
 

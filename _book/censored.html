@@ -329,7 +329,7 @@ y_t^0=\beta_1 +\beta_2 x_t +u_t, \ u_t \sim NID(0, \sigma^2),
 <p>Here is a graph to illustrate from Davidson and MacKinnon.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="davidson.png" class="img-fluid figure-img"></p>
+<p><img src="davidson.png" class="img-fluid figure-img" alt="Scatterplot of y against x with four fitted lines. Filled circles lie above the zero line and hollow circles below it, marking the observations lost to censoring or truncation. The true regression line and the full-sample OLS fit are steep and nearly coincide; the censored-sample and truncated-sample fits are visibly flatter, attenuated toward zero slope."></p>
 <figcaption>Effects of truncation and censoring from Davidson and MacKinnon</figcaption>
 </figure>
 </div>
@@ -436,8 +436,8 @@ y_t={{\symbf{X}}}_t \beta + \rho\sigma \hat \lambda_t + e_t
 \tag{6.18}\]</span></span></p>
 <p>(Strictly, conditional on selection the error also contains <span class="math inline">\(\rho\sigma(v_t-\lambda_t)\)</span>, which is why the second-step OLS standard errors require correction; the coefficient <span class="math inline">\(\rho\sigma\)</span> on <span class="math inline">\(\hat
 \lambda_t\)</span> is unaffected.)</p>
-<p>One thing to note in Heckman model is that in many situations, <span class="math inline">\(\hat \lambda\)</span> is believed to be highly collinear with <span class="math inline">\({\symbf{X_t}}\)</span>, if <span class="math inline">\({\symbf{W_t}}\)</span> is the same as <span class="math inline">\({\symbf{X_t}}\)</span>. However, the model can still be estimated due to the nonlinearity of the model. Nevertheless, it becomes a regular practice to require <span class="math inline">\({\symbf{W_t}}\)</span> contains at least one extra variable than <span class="math inline">\({\symbf{X_t}}\)</span>, which is sometimes called exclusion restriction. In many situations, <span class="math inline">\({\symbf{W_t}}\)</span> contains all <span class="math inline">\({\symbf{X_t}}\)</span> variables, and at least one more variable. The reason to contain all <span class="math inline">\({\symbf{X_t}}\)</span> variables is because the selection is “endogenous” in the sense that <span class="math inline">\(y_t\)</span> is a factor in determining selection; this is modeled by including all the <span class="math inline">\({\symbf{X_t}}\)</span>’s.</p>
-<p>In Stata, heckman is the command to do sample selection models. It has options to do a Heckman two-step estimation or MLE estimation. Usually MLE is preferred.</p>
+<p>One thing to note in Heckman model is that in many situations, <span class="math inline">\(\hat \lambda\)</span> is believed to be highly collinear with <span class="math inline">\({\symbf{X_t}}\)</span>, if <span class="math inline">\({\symbf{W_t}}\)</span> is the same as <span class="math inline">\({\symbf{X_t}}\)</span>. However, the model can still be estimated due to the nonlinearity of the model. Nevertheless, it becomes a regular practice to require <span class="math inline">\({\symbf{W_t}}\)</span> contains at least one extra variable than <span class="math inline">\({\symbf{X_t}}\)</span>, which is sometimes called exclusion restriction. In many situations, <span class="math inline">\({\symbf{W_t}}\)</span> contains all <span class="math inline">\({\symbf{X_t}}\)</span> variables, and at least one more variable. The reason to include all the <span class="math inline">\({\symbf{X_t}}\)</span> variables is more mundane than it is often made to sound: whatever plausibly affects selection belongs in the selection equation, and the determinants of the outcome usually do. What identification turns on is the other direction – at least one variable in <span class="math inline">\({\symbf{W_t}}\)</span> kept <em>out</em> of <span class="math inline">\({\symbf{X_t}}\)</span>, affecting selection but not the outcome. Without such an exclusion, <span class="math inline">\(\hat\lambda\)</span> is a nonlinear function of the same <span class="math inline">\({\symbf{X_t}}\)</span>’s and identification rests entirely on that nonlinearity.</p>
+<p>In Stata, heckman is the command to do sample selection models. It has options to do a Heckman two-step estimation or MLE estimation. MLE is usually preferred, on the understanding that its efficiency advantage holds <em>if</em> the joint normality it assumes is right. The two-step estimator is less efficient but leans less heavily on the full likelihood, which makes it easier to diagnose when the specification is in doubt.</p>
 </section>
 <section id="switching-regression-treatment-effects-model" class="level2" data-number="6.6">
 <h2 data-number="6.6" class="anchored" data-anchor-id="switching-regression-treatment-effects-model"><span class="header-section-number">6.6</span> Switching Regression (Treatment-Effects Model)</h2>
@@ -467,7 +467,7 @@ y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 +
 \qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,
 \tag{6.21}\]</span></span></p>
 <p>with <span class="math inline">\(u_{1t}\)</span> and <span class="math inline">\(u_{0t}\)</span> each allowed to correlate with <span class="math inline">\(v_t\)</span> (two selection parameters, <span class="math inline">\(\rho_1\)</span> and <span class="math inline">\(\rho_0\)</span>, rather than one). This is the Roy model, and the treatment effect <span class="math inline">\({{\symbf{X}}}_t(\beta_1-\beta_0)\)</span> then varies with <span class="math inline">\({\symbf{X_t}}\)</span> instead of being a constant. The distinction matters in practice: if the returns to education genuinely differ between union and non-union jobs, the common-slope model above will report a single <span class="math inline">\(\delta\)</span> that is some average of them and will not reveal the heterogeneity. Fitting it requires two outcome equations rather than one intercept shift.</p>
-<p>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching regression. The default is by MLE.</p>
+<p>A word on software, since the two models above are easy to conflate. Stata’s etregress fits the <em>common-slope</em> specification – the endogenous treatment-effects model with a single <span class="math inline">\(\delta\)</span> – not the two-regime switching regression with separate <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_0\)</span>. For the fuller Roy-type model, Stata users generally reach for the user-written movestay (endogenous switching regression), and SAS’s qlim covers a range of limited-dependent and selection specifications. The default in each case is MLE.</p>
 
 
 <!-- -->
@@ -1012,7 +1012,7 @@ y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 +
 <span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>Here is a graph to illustrate from Davidson and MacKinnon.</span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="al">![Effects of truncation and censoring from Davidson and MacKinnon](davidson.png)</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a><span class="al">![Effects of truncation and censoring from Davidson and MacKinnon](davidson.png)</span>{fig-alt="Scatterplot of y against x with four fitted lines. Filled circles lie above the zero line and hollow circles below it, marking the observations lost to censoring or truncation. The true regression line and the full-sample OLS fit are steep and nearly coincide; the censored-sample and truncated-sample fits are visibly flatter, attenuated toward zero slope."}</span>
 <span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Truncated Models</span></span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
@@ -1187,73 +1187,81 @@ y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 +
 <span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>errors require correction; the coefficient $\rho\sigma$ on $\hat</span>
 <span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>\lambda_t$ is unaffected.)</span>
 <span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to contain all ${\symbf{X_t}}$ variables is because the selection is "endogenous" in the sense that $y_t$ is a factor in determining selection; this is modeled by including all the ${\symbf{X_t}}$'s.</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to include all the ${\symbf{X_t}}$ variables is more mundane than it is often made to sound: whatever plausibly affects selection belongs in the selection equation, and the determinants of the outcome usually do.  What identification turns on is the other direction -- at least one variable in ${\symbf{W_t}}$ kept *out* of ${\symbf{X_t}}$, affecting selection but not the outcome.  Without such an exclusion, $\hat\lambda$ is a nonlinear function of the same ${\symbf{X_t}}$'s and identification rests entirely on that nonlinearity.</span>
 <span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>In Stata, heckman is the command to do sample selection models.  It</span>
 <span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a>has options to do a Heckman two-step estimation or MLE estimation.</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>Usually MLE is preferred.</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a><span class="fu">## Switching Regression (Treatment-Effects Model)</span></span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>MLE is usually preferred, on the understanding that its efficiency advantage holds</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>*if* the joint normality it assumes is right.  The two-step estimator is less</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>efficient but leans less heavily on the full likelihood, which makes it easier to</span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>diagnose when the specification is in doubt.</span>
 <span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>There is another situation that is similar to sample selection model:</span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>we observe $y$ for $z=1$ and $z=0$.  In the example of effect of</span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>education on income, we observe both union member's income and</span>
-<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>non-member's income.  In this case, we have switching regression model</span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>or treatment-effect model.  The treatment effect model estimates the</span>
-<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>effect of an endogenous binary treatment $z_t$ (treatment, program</span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>participation, etc.) on a continuous, fully-observed variable, $y_t$,</span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>conditional on the independent variables $x_t$ and $w_t$.</span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>Suppose $z_t^0$ is a latent variable.</span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>y_t <span class="sc">\\</span> z_t^0</span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {{\symbf{X}}}_t \beta <span class="sc">\\</span> {{\symbf{W}}}_t \gamma</span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}+ \delta \begin{bmatrix} {z_t} <span class="sc">\\</span> 0</span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} +</span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}, \</span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({{\symbf{0}}},</span>
-<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} \sigma^2 &amp; \rho\sigma  <span class="sc">\\</span> \rho\sigma  &amp; 1</span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>\end{bmatrix})</span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-19}</span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>We observe $y_t$ and $z_t$:</span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a>z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.</span>
-<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-20}</span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>Notice that the only difference between this model and the</span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.</span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a>It's not a selection, but a regime switching.</span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>One caveat about the name. The specification above lets treatment shift only the</span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>*intercept*: there is a single $\beta$ and a single $\delta$, so the treatment</span>
-<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>effect is $\delta$ for everyone. That is the treatment-effects model. A</span>
-<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>**switching regression** in the fuller sense lets the whole coefficient vector</span>
-<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>differ by regime,</span>
-<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 + u_{0t}),</span>
-<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a>\qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,</span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-21}</span>
-<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection</span>
-<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the</span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>treatment effect ${{\symbf{X}}}_t(\beta_1-\beta_0)$ then varies with ${\symbf{X_t}}$ instead</span>
-<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>of being a constant. The distinction matters in practice: if the returns to</span>
-<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>education genuinely differ between union and non-union jobs, the common-slope model</span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>above will report a single $\delta$ that is some average of them and will not reveal</span>
-<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>the heterogeneity. Fitting it requires two outcome equations rather than one</span>
-<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>intercept shift.</span>
-<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>Both Stata (etregress in version 14) and SAS (qlim) can estimate the switching</span>
-<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>regression.  The default is by MLE.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a><span class="fu">## Switching Regression (Treatment-Effects Model)</span></span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a>There is another situation that is similar to sample selection model:</span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>we observe $y$ for $z=1$ and $z=0$.  In the example of effect of</span>
+<span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a>education on income, we observe both union member's income and</span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>non-member's income.  In this case, we have switching regression model</span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>or treatment-effect model.  The treatment effect model estimates the</span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>effect of an endogenous binary treatment $z_t$ (treatment, program</span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>participation, etc.) on a continuous, fully-observed variable, $y_t$,</span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>conditional on the independent variables $x_t$ and $w_t$.</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>Suppose $z_t^0$ is a latent variable.</span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>y_t <span class="sc">\\</span> z_t^0</span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>=\begin{bmatrix} {{\symbf{X}}}_t \beta <span class="sc">\\</span> {{\symbf{W}}}_t \gamma</span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}+ \delta \begin{bmatrix} {z_t} <span class="sc">\\</span> 0</span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} +</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}, \</span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} u_t <span class="sc">\\</span> v_t</span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a>\end{bmatrix} \sim NID({{\symbf{0}}},</span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix} \sigma^2 &amp; \rho\sigma  <span class="sc">\\</span> \rho\sigma  &amp; 1</span>
+<span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a>\end{bmatrix})</span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-19}</span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a>We observe $y_t$ and $z_t$:</span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>z_t = 1 \ \mbox{if} \ z_t^0 &gt; 0; \ z_t=0 \ \mbox{otherwise}.</span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-20}</span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a>Notice that the only difference between this model and the</span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a>selection model is that we observe $y_t$ when $z_t=0$ and $z_t=1$.</span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a>It's not a selection, but a regime switching.</span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>One caveat about the name. The specification above lets treatment shift only the</span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>*intercept*: there is a single $\beta$ and a single $\delta$, so the treatment</span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a>effect is $\delta$ for everyone. That is the treatment-effects model. A</span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>**switching regression** in the fuller sense lets the whole coefficient vector</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>differ by regime,</span>
+<span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>y_t = z_t ({{\symbf{X}}}_t \beta_1 + u_{1t}) + (1-z_t)({{\symbf{X}}}_t \beta_0 + u_{0t}),</span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>\qquad z_t^0 = {{\symbf{W}}}_t \gamma + v_t,</span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>$$ {#eq-censored-21}</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>with $u_{1t}$ and $u_{0t}$ each allowed to correlate with $v_t$ (two selection</span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>parameters, $\rho_1$ and $\rho_0$, rather than one). This is the Roy model, and the</span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>treatment effect ${{\symbf{X}}}_t(\beta_1-\beta_0)$ then varies with ${\symbf{X_t}}$ instead</span>
+<span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a>of being a constant. The distinction matters in practice: if the returns to</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>education genuinely differ between union and non-union jobs, the common-slope model</span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>above will report a single $\delta$ that is some average of them and will not reveal</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>the heterogeneity. Fitting it requires two outcome equations rather than one</span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>intercept shift.</span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>A word on software, since the two models above are easy to conflate.  Stata's</span>
+<span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a>etregress fits the *common-slope* specification -- the endogenous treatment-effects</span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>model with a single $\delta$ -- not the two-regime switching regression with separate</span>
+<span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a>$\beta_1$ and $\beta_0$.  For the fuller Roy-type model, Stata users generally reach</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a>for the user-written movestay (endogenous switching regression), and SAS's qlim covers</span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a>a range of limited-dependent and selection specifications.  The default in each case</span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a>is MLE.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

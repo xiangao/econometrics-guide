@@ -368,7 +368,7 @@ m(\theta)'W \bar m(\theta)\)</span> for some weighting matrix <span class="math 
 <p>The choice of <span class="math inline">\(W\)</span> matters only under overidentification. With as many moment conditions as parameters, all sample moments can be driven to zero exactly and <span class="math inline">\(W\)</span> drops out – which is why the just-identified IV estimator above did not need one. When there are more moments than parameters, the efficient choice is <span class="math inline">\(W = S^{-1}\)</span>, where <span class="math inline">\(S\)</span> is the asymptotic variance of the sample moments, <span class="math inline">\(S = \lim_{n \to \infty} \mbox{Var} \bigl( \sqrt n \, \bar m (\theta_0) \bigr)\)</span>. With that weighting, <span id="eq-gmm-17"><span class="math display">\[
 \sqrt n (\hat \theta_{GMM} - \theta_0) \xrightarrow{d} N \bigl( 0, (G'S^{-1}G)^{-1} \bigr),
 \qquad G = {{\mathrm{E}}} \left[ \frac{\partial m (Y_i ; \theta_0)}{\partial \theta'} \right],
-\tag{5.17}\]</span></span> which is the GMM counterpart of the information-matrix bound of the previous chapter. Since <span class="math inline">\(S\)</span> depends on <span class="math inline">\(\theta_0\)</span>, in practice one starts from any consistent weighting (often the identity, or <span class="math inline">\(({\symbf{Z'Z)^{-1}}}\)</span>), estimates <span class="math inline">\(\hat
+\tag{5.17}\]</span></span> which is the GMM counterpart of the information-matrix bound of the previous chapter. Since <span class="math inline">\(S\)</span> depends on <span class="math inline">\(\theta_0\)</span>, in practice one starts from any consistent weighting (often the identity, or <span class="math inline">\(({\symbf{Z'Z)^{-1}}}\)</span> – scalar multiples of <span class="math inline">\({\symbf{W}}\)</span> leave the minimizer unchanged, so with <span class="math inline">\(\bar m\)</span> defined as a sample average this can equally be written <span class="math inline">\([n^{-1}{\symbf{Z'Z}}]^{-1}\)</span>), estimates <span class="math inline">\(\hat
 S\)</span> from the resulting residuals, and re-minimizes: two-step GMM. Stopping at <span class="math inline">\(W = ({\symbf{Z'Z)^{-1}}}\)</span> is exactly 2SLS, which is therefore efficient GMM only under homoskedasticity.</p>
 <section id="an-example" class="level3" data-number="5.5.1"><h3 data-number="5.5.1" class="anchored" data-anchor-id="an-example">
 <span class="header-section-number">5.5.1</span> An example</h3>
@@ -554,7 +554,7 @@ Test E(g)=0:    1.64870  0.19914</code></pre>
 </div>
 </div>
 <p>Three readings. The weighting matrix now matters: identity weighting gives <span class="math inline">\(1.015\)</span> and the efficient two-step estimator gives <span class="math inline">\(0.989\)</span>, where in the just-identified case every weighting gave the same number. The efficiency gain is real but modest, and it shows up only against the <em>robust</em> 2SLS standard error, <span class="math inline">\(0.042\)</span> against <span class="math inline">\(0.046\)</span>. And the classical 2SLS standard error, <span class="math inline">\(0.033\)</span>, is far too small – the earlier remark about homoskedasticity, arriving as a number instead of a caveat.</p>
-<p>The <span class="math inline">\(J\)</span> statistic is now a test rather than a formality. It has one degree of freedom – three moment conditions, from the constant and the two instruments, less the two parameters – and its value of <span class="math inline">\(1.65\)</span> with a <span class="math inline">\(p\)</span>-value of <span class="math inline">\(0.20\)</span> gives no reason to doubt the moment conditions.</p>
+<p>The <span class="math inline">\(J\)</span> statistic is now a test rather than a formality. It is a joint specification test of the moment conditions, not a certificate of instrument validity. It has one degree of freedom – three moment conditions, from the constant and the two instruments, less the two parameters – and its value of <span class="math inline">\(1.65\)</span> with a <span class="math inline">\(p\)</span>-value of <span class="math inline">\(0.20\)</span> gives no reason to doubt the moment conditions.</p>
 <p>To see it earn its keep, make <span class="math inline">\(w_2\)</span> invalid by correlating it with the omitted <span class="math inline">\(z\)</span>. Nothing else changes.</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">covarMat2</span> <span class="op">&lt;-</span> <span class="va">covarMat</span></span>
@@ -613,7 +613,7 @@ Cov[X,Y]=0
 <p><span id="eq-gmm-25"><span class="math display">\[
 Cov[g(X),Y]=0
 \tag{5.25}\]</span></span></p>
-<p>These are listed in decreasing strength, and the implications run one way only: independence <span class="math inline">\(\Rightarrow\)</span> mean independence <span class="math inline">\(\Rightarrow\)</span> uncorrelatedness. The middle condition is what regression actually needs. Neither converse holds: <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be uncorrelated with <span class="math inline">\(E[Y \mid X] \neq 0\)</span> (take <span class="math inline">\(Y = X^2 - 1\)</span> with <span class="math inline">\(X \sim N(0,1)\)</span>, so <span class="math inline">\(Cov[X,Y] = E[X^3] = 0\)</span> while <span class="math inline">\(E[Y \mid X] = X^2 - 1\)</span>), and mean independence permits dependence through higher moments (any pure heteroskedasticity, <span class="math inline">\(Y = X\epsilon\)</span> with <span class="math inline">\(\epsilon\)</span> independent of <span class="math inline">\(X\)</span> and mean zero). Keeping the three apart matters because the moment conditions below need only the middle one.</p>
+<p>These are listed in decreasing strength, and the implications run one way only: independence <span class="math inline">\(\Rightarrow\)</span> mean independence <span class="math inline">\(\Rightarrow\)</span> uncorrelatedness. The middle condition is what a <em>model of the conditional mean</em> needs. Neither converse holds: <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be uncorrelated with <span class="math inline">\(E[Y \mid X] \neq 0\)</span> (take <span class="math inline">\(Y = X^2 - 1\)</span> with <span class="math inline">\(X \sim N(0,1)\)</span>, so <span class="math inline">\(Cov[X,Y] = E[X^3] = 0\)</span> while <span class="math inline">\(E[Y \mid X] = X^2 - 1\)</span>), and mean independence permits dependence through higher moments (any pure heteroskedasticity, <span class="math inline">\(Y = X\epsilon\)</span> with <span class="math inline">\(\epsilon\)</span> independent of <span class="math inline">\(X\)</span> and mean zero). Keeping the three apart matters because the moment conditions below need only the <em>weakest</em> of them. <span class="math inline">\(E[u_i]=0\)</span> and <span class="math inline">\(E[X_i u_i]=0\)</span> are statements about means and covariances, nothing more. Conditional mean zero is sufficient for them and is not necessary, which is exactly why GMM asks for less than a conditional-mean model does.</p>
 </section><section id="regression" class="level3" data-number="5.6.4"><h3 data-number="5.6.4" class="anchored" data-anchor-id="regression">
 <span class="header-section-number">5.6.4</span> Regression</h3>
 <p>A regression model is a model of <span class="math inline">\(E[Y_i|X_i]\)</span>. For example, <span id="eq-gmm-26"><span class="math display">\[
@@ -1296,283 +1296,289 @@ E[X_i(Y_i-\beta_0-\beta_1X_i)]=0
 <span id="cb19-192"><a href="#cb19-192" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-17}</span>
 <span id="cb19-193"><a href="#cb19-193" aria-hidden="true" tabindex="-1"></a>which is the GMM counterpart of the information-matrix bound of the previous</span>
 <span id="cb19-194"><a href="#cb19-194" aria-hidden="true" tabindex="-1"></a>chapter.  Since $S$ depends on $\theta_0$, in practice one starts from any</span>
-<span id="cb19-195"><a href="#cb19-195" aria-hidden="true" tabindex="-1"></a>consistent weighting (often the identity, or $({\symbf{Z'Z)^{-1}}}$), estimates $\hat</span>
-<span id="cb19-196"><a href="#cb19-196" aria-hidden="true" tabindex="-1"></a>S$ from the resulting residuals, and re-minimizes: two-step GMM.  Stopping at</span>
-<span id="cb19-197"><a href="#cb19-197" aria-hidden="true" tabindex="-1"></a>$W = ({\symbf{Z'Z)^{-1}}}$ is exactly 2SLS, which is therefore efficient GMM only</span>
-<span id="cb19-198"><a href="#cb19-198" aria-hidden="true" tabindex="-1"></a>under homoskedasticity.</span>
-<span id="cb19-199"><a href="#cb19-199" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-200"><a href="#cb19-200" aria-hidden="true" tabindex="-1"></a><span class="fu">### An example</span></span>
+<span id="cb19-195"><a href="#cb19-195" aria-hidden="true" tabindex="-1"></a>consistent weighting (often the identity, or $({\symbf{Z'Z)^{-1}}}$ -- scalar</span>
+<span id="cb19-196"><a href="#cb19-196" aria-hidden="true" tabindex="-1"></a>multiples of ${\symbf{W}}$ leave the minimizer unchanged, so with $\bar m$ defined as a</span>
+<span id="cb19-197"><a href="#cb19-197" aria-hidden="true" tabindex="-1"></a>sample average this can equally be written $<span class="co">[</span><span class="ot">n^{-1}{\symbf{Z'Z}}</span><span class="co">]</span>^{-1}$), estimates $\hat</span>
+<span id="cb19-198"><a href="#cb19-198" aria-hidden="true" tabindex="-1"></a>S$ from the resulting residuals, and re-minimizes: two-step GMM.  Stopping at</span>
+<span id="cb19-199"><a href="#cb19-199" aria-hidden="true" tabindex="-1"></a>$W = ({\symbf{Z'Z)^{-1}}}$ is exactly 2SLS, which is therefore efficient GMM only</span>
+<span id="cb19-200"><a href="#cb19-200" aria-hidden="true" tabindex="-1"></a>under homoskedasticity.</span>
 <span id="cb19-201"><a href="#cb19-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-202"><a href="#cb19-202" aria-hidden="true" tabindex="-1"></a>Let's see an example with GMM, using the same simulated data as</span>
-<span id="cb19-203"><a href="#cb19-203" aria-hidden="true" tabindex="-1"></a>before.  We have the same situation as before, $X$ is endogenous.  We</span>
-<span id="cb19-204"><a href="#cb19-204" aria-hidden="true" tabindex="-1"></a>are doing GMM version of 2sls.</span>
-<span id="cb19-205"><a href="#cb19-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-206"><a href="#cb19-206" aria-hidden="true" tabindex="-1"></a>Here I use R's "gmm" library, which makes things easy.  Its first two arguments</span>
-<span id="cb19-207"><a href="#cb19-207" aria-hidden="true" tabindex="-1"></a>are <span class="in">`g`</span> and <span class="in">`x`</span>: with the formula interface, <span class="in">`g`</span> is the model formula whose</span>
-<span id="cb19-208"><a href="#cb19-208" aria-hidden="true" tabindex="-1"></a>residual forms the moment function, and <span class="in">`x`</span> is a formula giving the instruments.</span>
-<span id="cb19-209"><a href="#cb19-209" aria-hidden="true" tabindex="-1"></a>The moment condition in this example is $E({\symbf{z' u) = 0}}$, where ${\symbf{z}}$ is the</span>
-<span id="cb19-210"><a href="#cb19-210" aria-hidden="true" tabindex="-1"></a>instrument -- the variable <span class="in">`w`</span> in the simulated data -- and $u$ is the residual</span>
-<span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>from the structural equation.  Note that ${\symbf{W}}$ above denotes the *weighting</span>
-<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a>matrix* in $\bar m' W \bar m$, which is a different object entirely, so the</span>
-<span id="cb19-213"><a href="#cb19-213" aria-hidden="true" tabindex="-1"></a>instrument is written ${\symbf{z}}$ here.</span>
-<span id="cb19-214"><a href="#cb19-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-218"><a href="#cb19-218" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-219"><a href="#cb19-219" aria-hidden="true" tabindex="-1"></a><span class="do">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
-<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
-<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a>nobs<span class="ot">=</span><span class="dv">10000</span></span>
-<span id="cb19-223"><a href="#cb19-223" aria-hidden="true" tabindex="-1"></a>nDim <span class="ot">=</span> <span class="dv">3</span></span>
-<span id="cb19-224"><a href="#cb19-224" aria-hidden="true" tabindex="-1"></a>sdxx <span class="ot">=</span> <span class="dv">1</span></span>
-<span id="cb19-225"><a href="#cb19-225" aria-hidden="true" tabindex="-1"></a>sdww<span class="ot">=</span><span class="dv">1</span></span>
-<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a>sdzz<span class="ot">=</span><span class="dv">1</span></span>
-<span id="cb19-227"><a href="#cb19-227" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a><span class="do">## here we have three variables x,z,w.</span></span>
-<span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a><span class="do">## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is independent of everything else.</span></span>
-<span id="cb19-230"><a href="#cb19-230" aria-hidden="true" tabindex="-1"></a>crxz<span class="ot">=</span>.<span class="dv">6</span></span>
-<span id="cb19-231"><a href="#cb19-231" aria-hidden="true" tabindex="-1"></a>crzw<span class="ot">=</span><span class="dv">0</span></span>
-<span id="cb19-232"><a href="#cb19-232" aria-hidden="true" tabindex="-1"></a>crxw<span class="ot">=</span>.<span class="dv">5</span></span>
-<span id="cb19-233"><a href="#cb19-233" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-234"><a href="#cb19-234" aria-hidden="true" tabindex="-1"></a>covarMat <span class="ot">=</span> <span class="fu">matrix</span>( <span class="fu">c</span>(sdxx<span class="sc">^</span><span class="dv">2</span>, crxz, crxw, crxz, sdzz<span class="sc">^</span><span class="dv">2</span>, crzw,  crxw, crzw, sdww<span class="sc">^</span><span class="dv">2</span> ) , <span class="at">nrow=</span>nDim , <span class="at">ncol=</span>nDim )</span>
-<span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a>covarMat</span>
-<span id="cb19-236"><a href="#cb19-236" aria-hidden="true" tabindex="-1"></a>data  <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n=</span>nobs, <span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,nDim), <span class="at">Sigma=</span>covarMat ))</span>
-<span id="cb19-237"><a href="#cb19-237" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'x'</span>,<span class="st">'z'</span>,<span class="st">'w'</span>)</span>
-<span id="cb19-238"><a href="#cb19-238" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs,<span class="dv">0</span>,<span class="dv">1</span>)</span>
-<span id="cb19-239"><a href="#cb19-239" aria-hidden="true" tabindex="-1"></a><span class="co"># dgp</span></span>
-<span id="cb19-240"><a href="#cb19-240" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>y <span class="ot">&lt;-</span> data<span class="sc">$</span>x <span class="sc">+</span>  data<span class="sc">$</span>z <span class="sc">+</span> data<span class="sc">$</span>u</span>
-<span id="cb19-241"><a href="#cb19-241" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-242"><a href="#cb19-242" aria-hidden="true" tabindex="-1"></a>gmm.fit <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>w, <span class="at">data =</span> data)</span>
-<span id="cb19-243"><a href="#cb19-243" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.fit)</span>
-<span id="cb19-244"><a href="#cb19-244" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-245"><a href="#cb19-245" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the 2sls results.</span></span>
-<span id="cb19-246"><a href="#cb19-246" aria-hidden="true" tabindex="-1"></a>tsls.model <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(y <span class="sc">~</span> x <span class="sc">|</span> w, <span class="at">data=</span>data)</span>
-<span id="cb19-247"><a href="#cb19-247" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tsls.model)</span>
-<span id="cb19-248"><a href="#cb19-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-249"><a href="#cb19-249" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-202"><a href="#cb19-202" aria-hidden="true" tabindex="-1"></a><span class="fu">### An example</span></span>
+<span id="cb19-203"><a href="#cb19-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-204"><a href="#cb19-204" aria-hidden="true" tabindex="-1"></a>Let's see an example with GMM, using the same simulated data as</span>
+<span id="cb19-205"><a href="#cb19-205" aria-hidden="true" tabindex="-1"></a>before.  We have the same situation as before, $X$ is endogenous.  We</span>
+<span id="cb19-206"><a href="#cb19-206" aria-hidden="true" tabindex="-1"></a>are doing GMM version of 2sls.</span>
+<span id="cb19-207"><a href="#cb19-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-208"><a href="#cb19-208" aria-hidden="true" tabindex="-1"></a>Here I use R's "gmm" library, which makes things easy.  Its first two arguments</span>
+<span id="cb19-209"><a href="#cb19-209" aria-hidden="true" tabindex="-1"></a>are <span class="in">`g`</span> and <span class="in">`x`</span>: with the formula interface, <span class="in">`g`</span> is the model formula whose</span>
+<span id="cb19-210"><a href="#cb19-210" aria-hidden="true" tabindex="-1"></a>residual forms the moment function, and <span class="in">`x`</span> is a formula giving the instruments.</span>
+<span id="cb19-211"><a href="#cb19-211" aria-hidden="true" tabindex="-1"></a>The moment condition in this example is $E({\symbf{z' u) = 0}}$, where ${\symbf{z}}$ is the</span>
+<span id="cb19-212"><a href="#cb19-212" aria-hidden="true" tabindex="-1"></a>instrument -- the variable <span class="in">`w`</span> in the simulated data -- and $u$ is the residual</span>
+<span id="cb19-213"><a href="#cb19-213" aria-hidden="true" tabindex="-1"></a>from the structural equation.  Note that ${\symbf{W}}$ above denotes the *weighting</span>
+<span id="cb19-214"><a href="#cb19-214" aria-hidden="true" tabindex="-1"></a>matrix* in $\bar m' W \bar m$, which is a different object entirely, so the</span>
+<span id="cb19-215"><a href="#cb19-215" aria-hidden="true" tabindex="-1"></a>instrument is written ${\symbf{z}}$ here.</span>
+<span id="cb19-216"><a href="#cb19-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-217"><a href="#cb19-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-220"><a href="#cb19-220" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-221"><a href="#cb19-221" aria-hidden="true" tabindex="-1"></a><span class="do">## DGP: data$y &lt;- data$x + data$z + data$u</span></span>
+<span id="cb19-222"><a href="#cb19-222" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-223"><a href="#cb19-223" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
+<span id="cb19-224"><a href="#cb19-224" aria-hidden="true" tabindex="-1"></a>nobs<span class="ot">=</span><span class="dv">10000</span></span>
+<span id="cb19-225"><a href="#cb19-225" aria-hidden="true" tabindex="-1"></a>nDim <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb19-226"><a href="#cb19-226" aria-hidden="true" tabindex="-1"></a>sdxx <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb19-227"><a href="#cb19-227" aria-hidden="true" tabindex="-1"></a>sdww<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb19-228"><a href="#cb19-228" aria-hidden="true" tabindex="-1"></a>sdzz<span class="ot">=</span><span class="dv">1</span></span>
+<span id="cb19-229"><a href="#cb19-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-230"><a href="#cb19-230" aria-hidden="true" tabindex="-1"></a><span class="do">## here we have three variables x,z,w.</span></span>
+<span id="cb19-231"><a href="#cb19-231" aria-hidden="true" tabindex="-1"></a><span class="do">## z is the omitted variable,x and z are correlated,  w is the instrument, which is correlated with x, but not z.  u is independent of everything else.</span></span>
+<span id="cb19-232"><a href="#cb19-232" aria-hidden="true" tabindex="-1"></a>crxz<span class="ot">=</span>.<span class="dv">6</span></span>
+<span id="cb19-233"><a href="#cb19-233" aria-hidden="true" tabindex="-1"></a>crzw<span class="ot">=</span><span class="dv">0</span></span>
+<span id="cb19-234"><a href="#cb19-234" aria-hidden="true" tabindex="-1"></a>crxw<span class="ot">=</span>.<span class="dv">5</span></span>
+<span id="cb19-235"><a href="#cb19-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-236"><a href="#cb19-236" aria-hidden="true" tabindex="-1"></a>covarMat <span class="ot">=</span> <span class="fu">matrix</span>( <span class="fu">c</span>(sdxx<span class="sc">^</span><span class="dv">2</span>, crxz, crxw, crxz, sdzz<span class="sc">^</span><span class="dv">2</span>, crzw,  crxw, crzw, sdww<span class="sc">^</span><span class="dv">2</span> ) , <span class="at">nrow=</span>nDim , <span class="at">ncol=</span>nDim )</span>
+<span id="cb19-237"><a href="#cb19-237" aria-hidden="true" tabindex="-1"></a>covarMat</span>
+<span id="cb19-238"><a href="#cb19-238" aria-hidden="true" tabindex="-1"></a>data  <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n=</span>nobs, <span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,nDim), <span class="at">Sigma=</span>covarMat ))</span>
+<span id="cb19-239"><a href="#cb19-239" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(data) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'x'</span>,<span class="st">'z'</span>,<span class="st">'w'</span>)</span>
+<span id="cb19-240"><a href="#cb19-240" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb19-241"><a href="#cb19-241" aria-hidden="true" tabindex="-1"></a><span class="co"># dgp</span></span>
+<span id="cb19-242"><a href="#cb19-242" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>y <span class="ot">&lt;-</span> data<span class="sc">$</span>x <span class="sc">+</span>  data<span class="sc">$</span>z <span class="sc">+</span> data<span class="sc">$</span>u</span>
+<span id="cb19-243"><a href="#cb19-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-244"><a href="#cb19-244" aria-hidden="true" tabindex="-1"></a>gmm.fit <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>w, <span class="at">data =</span> data)</span>
+<span id="cb19-245"><a href="#cb19-245" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.fit)</span>
+<span id="cb19-246"><a href="#cb19-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-247"><a href="#cb19-247" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the 2sls results.</span></span>
+<span id="cb19-248"><a href="#cb19-248" aria-hidden="true" tabindex="-1"></a>tsls.model <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(y <span class="sc">~</span> x <span class="sc">|</span> w, <span class="at">data=</span>data)</span>
+<span id="cb19-249"><a href="#cb19-249" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tsls.model)</span>
 <span id="cb19-250"><a href="#cb19-250" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-251"><a href="#cb19-251" aria-hidden="true" tabindex="-1"></a>Two things about that agreement are worth being explicit about, because it is easy</span>
-<span id="cb19-252"><a href="#cb19-252" aria-hidden="true" tabindex="-1"></a>to over-generalise from it. First, GMM and 2SLS coincide *numerically* here because</span>
-<span id="cb19-253"><a href="#cb19-253" aria-hidden="true" tabindex="-1"></a>the model is just-identified: one instrument (<span class="in">`w`</span>) for one endogenous regressor</span>
-<span id="cb19-254"><a href="#cb19-254" aria-hidden="true" tabindex="-1"></a>(<span class="in">`x`</span>), so ${\symbf{Z'X}}$ is square and the sample moments can be set to zero exactly,</span>
-<span id="cb19-255"><a href="#cb19-255" aria-hidden="true" tabindex="-1"></a>whatever the weighting matrix. The output says so -- the $J$-test reports</span>
-<span id="cb19-256"><a href="#cb19-256" aria-hidden="true" tabindex="-1"></a>"degrees of freedom is 0", and its value ($\sim 10^{-26}$) is numerical noise</span>
-<span id="cb19-257"><a href="#cb19-257" aria-hidden="true" tabindex="-1"></a>rather than evidence. Second, <span class="in">`gmm()`</span> is using an optimal two-step weighting with a</span>
-<span id="cb19-258"><a href="#cb19-258" aria-hidden="true" tabindex="-1"></a>heteroskedasticity-and-autocorrelation-consistent kernel (note <span class="in">`Method: twoStep`</span> and</span>
-<span id="cb19-259"><a href="#cb19-259" aria-hidden="true" tabindex="-1"></a><span class="in">`Kernel: Quadratic Spectral`</span> in the output). Under *over*-identification that</span>
-<span id="cb19-260"><a href="#cb19-260" aria-hidden="true" tabindex="-1"></a>choice would generally **not** reproduce 2SLS, for exactly the reason given above:</span>
-<span id="cb19-261"><a href="#cb19-261" aria-hidden="true" tabindex="-1"></a>$W = ({\symbf{Z'Z)^{-1}}}$ is the efficient weighting only under homoskedasticity.</span>
-<span id="cb19-262"><a href="#cb19-262" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-263"><a href="#cb19-263" aria-hidden="true" tabindex="-1"></a>In OLS case, it would be $E(X u) = 0$.</span>
+<span id="cb19-251"><a href="#cb19-251" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-252"><a href="#cb19-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-253"><a href="#cb19-253" aria-hidden="true" tabindex="-1"></a>Two things about that agreement are worth being explicit about, because it is easy</span>
+<span id="cb19-254"><a href="#cb19-254" aria-hidden="true" tabindex="-1"></a>to over-generalise from it. First, GMM and 2SLS coincide *numerically* here because</span>
+<span id="cb19-255"><a href="#cb19-255" aria-hidden="true" tabindex="-1"></a>the model is just-identified: one instrument (<span class="in">`w`</span>) for one endogenous regressor</span>
+<span id="cb19-256"><a href="#cb19-256" aria-hidden="true" tabindex="-1"></a>(<span class="in">`x`</span>), so ${\symbf{Z'X}}$ is square and the sample moments can be set to zero exactly,</span>
+<span id="cb19-257"><a href="#cb19-257" aria-hidden="true" tabindex="-1"></a>whatever the weighting matrix. The output says so -- the $J$-test reports</span>
+<span id="cb19-258"><a href="#cb19-258" aria-hidden="true" tabindex="-1"></a>"degrees of freedom is 0", and its value ($\sim 10^{-26}$) is numerical noise</span>
+<span id="cb19-259"><a href="#cb19-259" aria-hidden="true" tabindex="-1"></a>rather than evidence. Second, <span class="in">`gmm()`</span> is using an optimal two-step weighting with a</span>
+<span id="cb19-260"><a href="#cb19-260" aria-hidden="true" tabindex="-1"></a>heteroskedasticity-and-autocorrelation-consistent kernel (note <span class="in">`Method: twoStep`</span> and</span>
+<span id="cb19-261"><a href="#cb19-261" aria-hidden="true" tabindex="-1"></a><span class="in">`Kernel: Quadratic Spectral`</span> in the output). Under *over*-identification that</span>
+<span id="cb19-262"><a href="#cb19-262" aria-hidden="true" tabindex="-1"></a>choice would generally **not** reproduce 2SLS, for exactly the reason given above:</span>
+<span id="cb19-263"><a href="#cb19-263" aria-hidden="true" tabindex="-1"></a>$W = ({\symbf{Z'Z)^{-1}}}$ is the efficient weighting only under homoskedasticity.</span>
 <span id="cb19-264"><a href="#cb19-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-265"><a href="#cb19-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-268"><a href="#cb19-268" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-269"><a href="#cb19-269" aria-hidden="true" tabindex="-1"></a>gmm.ols <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>x, <span class="at">data =</span> data)</span>
-<span id="cb19-270"><a href="#cb19-270" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.ols)</span>
-<span id="cb19-271"><a href="#cb19-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-272"><a href="#cb19-272" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the OLS results.</span></span>
-<span id="cb19-273"><a href="#cb19-273" aria-hidden="true" tabindex="-1"></a>ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data=</span>data)</span>
-<span id="cb19-274"><a href="#cb19-274" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols)</span>
-<span id="cb19-275"><a href="#cb19-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-276"><a href="#cb19-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-265"><a href="#cb19-265" aria-hidden="true" tabindex="-1"></a>In OLS case, it would be $E(X u) = 0$.</span>
+<span id="cb19-266"><a href="#cb19-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-267"><a href="#cb19-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-270"><a href="#cb19-270" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-271"><a href="#cb19-271" aria-hidden="true" tabindex="-1"></a>gmm.ols <span class="ot">=</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span>x, <span class="at">data =</span> data)</span>
+<span id="cb19-272"><a href="#cb19-272" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(gmm.ols)</span>
+<span id="cb19-273"><a href="#cb19-273" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-274"><a href="#cb19-274" aria-hidden="true" tabindex="-1"></a><span class="co"># It returns the same estimates as the OLS results.</span></span>
+<span id="cb19-275"><a href="#cb19-275" aria-hidden="true" tabindex="-1"></a>ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data=</span>data)</span>
+<span id="cb19-276"><a href="#cb19-276" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ols)</span>
 <span id="cb19-277"><a href="#cb19-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-278"><a href="#cb19-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-279"><a href="#cb19-279" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overidentification, the weighting matrix, and the $J$ test</span></span>
+<span id="cb19-278"><a href="#cb19-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-279"><a href="#cb19-279" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-280"><a href="#cb19-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-281"><a href="#cb19-281" aria-hidden="true" tabindex="-1"></a>The example above cannot show what GMM adds, because it is just-identified.  One</span>
-<span id="cb19-282"><a href="#cb19-282" aria-hidden="true" tabindex="-1"></a>instrument for one endogenous regressor leaves nothing for the weighting matrix to</span>
-<span id="cb19-283"><a href="#cb19-283" aria-hidden="true" tabindex="-1"></a>do and nothing for a specification test to check.  Two things have to change.  We</span>
-<span id="cb19-284"><a href="#cb19-284" aria-hidden="true" tabindex="-1"></a>need more instruments than endogenous regressors, and we need errors that are not</span>
-<span id="cb19-285"><a href="#cb19-285" aria-hidden="true" tabindex="-1"></a>homoskedastic -- under homoskedasticity $({\symbf{Z'Z)^{-1}}}$ already is the efficient</span>
-<span id="cb19-286"><a href="#cb19-286" aria-hidden="true" tabindex="-1"></a>weighting, so 2SLS and efficient GMM agree and the comparison is empty.</span>
-<span id="cb19-287"><a href="#cb19-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-288"><a href="#cb19-288" aria-hidden="true" tabindex="-1"></a>The design keeps $y = x + z + u$ with $z$ omitted from the regression, so the</span>
-<span id="cb19-289"><a href="#cb19-289" aria-hidden="true" tabindex="-1"></a>composite error is $z+u$ and $x$ is endogenous through its correlation with $z$.</span>
-<span id="cb19-290"><a href="#cb19-290" aria-hidden="true" tabindex="-1"></a>There are now two instruments.  Both $w_1$ and $w_2$ correlate $0.5$ with $x$ and</span>
-<span id="cb19-291"><a href="#cb19-291" aria-hidden="true" tabindex="-1"></a>$0.2$ with each other, and neither correlates with $z$, so both are valid.  The</span>
-<span id="cb19-292"><a href="#cb19-292" aria-hidden="true" tabindex="-1"></a>error is drawn with standard deviation $\exp(0.8 w_1)$, which leaves</span>
-<span id="cb19-293"><a href="#cb19-293" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">u \mid w</span><span class="co">]</span>=0$ intact while making the variance depend on an instrument.  That is</span>
-<span id="cb19-294"><a href="#cb19-294" aria-hidden="true" tabindex="-1"></a>exactly the case where the efficient weighting differs from</span>
-<span id="cb19-295"><a href="#cb19-295" aria-hidden="true" tabindex="-1"></a>$({\symbf{Z'Z)^{-1}}}$.  The true coefficient on $x$ is $1$.</span>
-<span id="cb19-296"><a href="#cb19-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-299"><a href="#cb19-299" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-300"><a href="#cb19-300" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
-<span id="cb19-301"><a href="#cb19-301" aria-hidden="true" tabindex="-1"></a>nobs <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
-<span id="cb19-302"><a href="#cb19-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-303"><a href="#cb19-303" aria-hidden="true" tabindex="-1"></a><span class="co"># cor(x,z)=.6; cor(x,w1)=cor(x,w2)=.5; cor(z,w1)=cor(z,w2)=0; cor(w1,w2)=.2</span></span>
-<span id="cb19-304"><a href="#cb19-304" aria-hidden="true" tabindex="-1"></a>covarMat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,  .<span class="dv">6</span>, .<span class="dv">5</span>, .<span class="dv">5</span>,</span>
-<span id="cb19-305"><a href="#cb19-305" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">6</span>, <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,</span>
-<span id="cb19-306"><a href="#cb19-306" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">5</span>, <span class="dv">0</span>,  <span class="dv">1</span>,  .<span class="dv">2</span>,</span>
-<span id="cb19-307"><a href="#cb19-307" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">5</span>, <span class="dv">0</span>,  .<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">4</span>)</span>
-<span id="cb19-308"><a href="#cb19-308" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n =</span> nobs, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> covarMat))</span>
-<span id="cb19-309"><a href="#cb19-309" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"z"</span>, <span class="st">"w1"</span>, <span class="st">"w2"</span>)</span>
-<span id="cb19-310"><a href="#cb19-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-311"><a href="#cb19-311" aria-hidden="true" tabindex="-1"></a><span class="co"># the error variance depends on w1, so E[u|w] = 0 still holds but 2SLS is</span></span>
-<span id="cb19-312"><a href="#cb19-312" aria-hidden="true" tabindex="-1"></a><span class="co"># no longer the efficient GMM estimator</span></span>
-<span id="cb19-313"><a href="#cb19-313" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="fl">0.8</span> <span class="sc">*</span> d<span class="sc">$</span>w1))</span>
-<span id="cb19-314"><a href="#cb19-314" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>y <span class="ot">&lt;-</span> d<span class="sc">$</span>x <span class="sc">+</span> d<span class="sc">$</span>z <span class="sc">+</span> d<span class="sc">$</span>u</span>
-<span id="cb19-315"><a href="#cb19-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-316"><a href="#cb19-316" aria-hidden="true" tabindex="-1"></a>fit_ident <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d, <span class="at">wmatrix =</span> <span class="st">"ident"</span>)</span>
-<span id="cb19-317"><a href="#cb19-317" aria-hidden="true" tabindex="-1"></a>fit_eff   <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d)</span>
-<span id="cb19-318"><a href="#cb19-318" aria-hidden="true" tabindex="-1"></a>tsls      <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(y <span class="sc">~</span> x <span class="sc">|</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d)</span>
-<span id="cb19-319"><a href="#cb19-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-320"><a href="#cb19-320" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb19-321"><a href="#cb19-321" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimator =</span> <span class="fu">c</span>(<span class="st">"GMM, identity weighting"</span>, <span class="st">"GMM, efficient two-step"</span>,</span>
-<span id="cb19-322"><a href="#cb19-322" aria-hidden="true" tabindex="-1"></a>                <span class="st">"2SLS, classical SE"</span>, <span class="st">"2SLS, robust SE"</span>),</span>
-<span id="cb19-323"><a href="#cb19-323" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_x =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">coef</span>(fit_ident)[<span class="st">"x"</span>], <span class="fu">coef</span>(fit_eff)[<span class="st">"x"</span>],</span>
-<span id="cb19-324"><a href="#cb19-324" aria-hidden="true" tabindex="-1"></a>                <span class="fu">coef</span>(tsls)[<span class="st">"x"</span>], <span class="fu">coef</span>(tsls)[<span class="st">"x"</span>]), <span class="dv">4</span>),</span>
-<span id="cb19-325"><a href="#cb19-325" aria-hidden="true" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(fit_ident)))[<span class="st">"x"</span>], <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(fit_eff)))[<span class="st">"x"</span>],</span>
-<span id="cb19-326"><a href="#cb19-326" aria-hidden="true" tabindex="-1"></a>               <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(tsls)))[<span class="st">"x"</span>],</span>
-<span id="cb19-327"><a href="#cb19-327" aria-hidden="true" tabindex="-1"></a>               <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcovHC</span>(tsls, <span class="at">type =</span> <span class="st">"HC0"</span>)))[<span class="st">"x"</span>]), <span class="dv">4</span>),</span>
-<span id="cb19-328"><a href="#cb19-328" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">NULL</span>)</span>
-<span id="cb19-329"><a href="#cb19-329" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-330"><a href="#cb19-330" aria-hidden="true" tabindex="-1"></a><span class="fu">specTest</span>(fit_eff)</span>
-<span id="cb19-331"><a href="#cb19-331" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-332"><a href="#cb19-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-333"><a href="#cb19-333" aria-hidden="true" tabindex="-1"></a>Three readings.  The weighting matrix now matters: identity weighting gives</span>
-<span id="cb19-334"><a href="#cb19-334" aria-hidden="true" tabindex="-1"></a>$1.015$ and the efficient two-step estimator gives $0.989$, where in the</span>
-<span id="cb19-335"><a href="#cb19-335" aria-hidden="true" tabindex="-1"></a>just-identified case every weighting gave the same number.  The efficiency gain is</span>
-<span id="cb19-336"><a href="#cb19-336" aria-hidden="true" tabindex="-1"></a>real but modest, and it shows up only against the *robust* 2SLS standard error,</span>
-<span id="cb19-337"><a href="#cb19-337" aria-hidden="true" tabindex="-1"></a>$0.042$ against $0.046$.  And the classical 2SLS standard error, $0.033$, is far</span>
-<span id="cb19-338"><a href="#cb19-338" aria-hidden="true" tabindex="-1"></a>too small -- the earlier remark about homoskedasticity, arriving as a number</span>
-<span id="cb19-339"><a href="#cb19-339" aria-hidden="true" tabindex="-1"></a>instead of a caveat.</span>
-<span id="cb19-340"><a href="#cb19-340" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-341"><a href="#cb19-341" aria-hidden="true" tabindex="-1"></a>The $J$ statistic is now a test rather than a formality.  It has one degree of</span>
-<span id="cb19-342"><a href="#cb19-342" aria-hidden="true" tabindex="-1"></a>freedom -- three moment conditions, from the constant and the two instruments,</span>
-<span id="cb19-343"><a href="#cb19-343" aria-hidden="true" tabindex="-1"></a>less the two parameters -- and its value of $1.65$ with a $p$-value of $0.20$</span>
-<span id="cb19-344"><a href="#cb19-344" aria-hidden="true" tabindex="-1"></a>gives no reason to doubt the moment conditions.</span>
-<span id="cb19-345"><a href="#cb19-345" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-346"><a href="#cb19-346" aria-hidden="true" tabindex="-1"></a>To see it earn its keep, make $w_2$ invalid by correlating it with the omitted</span>
-<span id="cb19-347"><a href="#cb19-347" aria-hidden="true" tabindex="-1"></a>$z$.  Nothing else changes.</span>
+<span id="cb19-281"><a href="#cb19-281" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overidentification, the weighting matrix, and the $J$ test</span></span>
+<span id="cb19-282"><a href="#cb19-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-283"><a href="#cb19-283" aria-hidden="true" tabindex="-1"></a>The example above cannot show what GMM adds, because it is just-identified.  One</span>
+<span id="cb19-284"><a href="#cb19-284" aria-hidden="true" tabindex="-1"></a>instrument for one endogenous regressor leaves nothing for the weighting matrix to</span>
+<span id="cb19-285"><a href="#cb19-285" aria-hidden="true" tabindex="-1"></a>do and nothing for a specification test to check.  Two things have to change.  We</span>
+<span id="cb19-286"><a href="#cb19-286" aria-hidden="true" tabindex="-1"></a>need more instruments than endogenous regressors, and we need errors that are not</span>
+<span id="cb19-287"><a href="#cb19-287" aria-hidden="true" tabindex="-1"></a>homoskedastic -- under homoskedasticity $({\symbf{Z'Z)^{-1}}}$ already is the efficient</span>
+<span id="cb19-288"><a href="#cb19-288" aria-hidden="true" tabindex="-1"></a>weighting, so 2SLS and efficient GMM agree and the comparison is empty.</span>
+<span id="cb19-289"><a href="#cb19-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-290"><a href="#cb19-290" aria-hidden="true" tabindex="-1"></a>The design keeps $y = x + z + u$ with $z$ omitted from the regression, so the</span>
+<span id="cb19-291"><a href="#cb19-291" aria-hidden="true" tabindex="-1"></a>composite error is $z+u$ and $x$ is endogenous through its correlation with $z$.</span>
+<span id="cb19-292"><a href="#cb19-292" aria-hidden="true" tabindex="-1"></a>There are now two instruments.  Both $w_1$ and $w_2$ correlate $0.5$ with $x$ and</span>
+<span id="cb19-293"><a href="#cb19-293" aria-hidden="true" tabindex="-1"></a>$0.2$ with each other, and neither correlates with $z$, so both are valid.  The</span>
+<span id="cb19-294"><a href="#cb19-294" aria-hidden="true" tabindex="-1"></a>error is drawn with standard deviation $\exp(0.8 w_1)$, which leaves</span>
+<span id="cb19-295"><a href="#cb19-295" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">u \mid w</span><span class="co">]</span>=0$ intact while making the variance depend on an instrument.  That is</span>
+<span id="cb19-296"><a href="#cb19-296" aria-hidden="true" tabindex="-1"></a>exactly the case where the efficient weighting differs from</span>
+<span id="cb19-297"><a href="#cb19-297" aria-hidden="true" tabindex="-1"></a>$({\symbf{Z'Z)^{-1}}}$.  The true coefficient on $x$ is $1$.</span>
+<span id="cb19-298"><a href="#cb19-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-301"><a href="#cb19-301" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-302"><a href="#cb19-302" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
+<span id="cb19-303"><a href="#cb19-303" aria-hidden="true" tabindex="-1"></a>nobs <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb19-304"><a href="#cb19-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-305"><a href="#cb19-305" aria-hidden="true" tabindex="-1"></a><span class="co"># cor(x,z)=.6; cor(x,w1)=cor(x,w2)=.5; cor(z,w1)=cor(z,w2)=0; cor(w1,w2)=.2</span></span>
+<span id="cb19-306"><a href="#cb19-306" aria-hidden="true" tabindex="-1"></a>covarMat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>,  .<span class="dv">6</span>, .<span class="dv">5</span>, .<span class="dv">5</span>,</span>
+<span id="cb19-307"><a href="#cb19-307" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">6</span>, <span class="dv">1</span>,  <span class="dv">0</span>,  <span class="dv">0</span>,</span>
+<span id="cb19-308"><a href="#cb19-308" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">5</span>, <span class="dv">0</span>,  <span class="dv">1</span>,  .<span class="dv">2</span>,</span>
+<span id="cb19-309"><a href="#cb19-309" aria-hidden="true" tabindex="-1"></a>                     .<span class="dv">5</span>, <span class="dv">0</span>,  .<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">nrow =</span> <span class="dv">4</span>)</span>
+<span id="cb19-310"><a href="#cb19-310" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n =</span> nobs, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> covarMat))</span>
+<span id="cb19-311"><a href="#cb19-311" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"z"</span>, <span class="st">"w1"</span>, <span class="st">"w2"</span>)</span>
+<span id="cb19-312"><a href="#cb19-312" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-313"><a href="#cb19-313" aria-hidden="true" tabindex="-1"></a><span class="co"># the error variance depends on w1, so E[u|w] = 0 still holds but 2SLS is</span></span>
+<span id="cb19-314"><a href="#cb19-314" aria-hidden="true" tabindex="-1"></a><span class="co"># no longer the efficient GMM estimator</span></span>
+<span id="cb19-315"><a href="#cb19-315" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="fl">0.8</span> <span class="sc">*</span> d<span class="sc">$</span>w1))</span>
+<span id="cb19-316"><a href="#cb19-316" aria-hidden="true" tabindex="-1"></a>d<span class="sc">$</span>y <span class="ot">&lt;-</span> d<span class="sc">$</span>x <span class="sc">+</span> d<span class="sc">$</span>z <span class="sc">+</span> d<span class="sc">$</span>u</span>
+<span id="cb19-317"><a href="#cb19-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-318"><a href="#cb19-318" aria-hidden="true" tabindex="-1"></a>fit_ident <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d, <span class="at">wmatrix =</span> <span class="st">"ident"</span>)</span>
+<span id="cb19-319"><a href="#cb19-319" aria-hidden="true" tabindex="-1"></a>fit_eff   <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d)</span>
+<span id="cb19-320"><a href="#cb19-320" aria-hidden="true" tabindex="-1"></a>tsls      <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(y <span class="sc">~</span> x <span class="sc">|</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d)</span>
+<span id="cb19-321"><a href="#cb19-321" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-322"><a href="#cb19-322" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb19-323"><a href="#cb19-323" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimator =</span> <span class="fu">c</span>(<span class="st">"GMM, identity weighting"</span>, <span class="st">"GMM, efficient two-step"</span>,</span>
+<span id="cb19-324"><a href="#cb19-324" aria-hidden="true" tabindex="-1"></a>                <span class="st">"2SLS, classical SE"</span>, <span class="st">"2SLS, robust SE"</span>),</span>
+<span id="cb19-325"><a href="#cb19-325" aria-hidden="true" tabindex="-1"></a>  <span class="at">b_x =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">coef</span>(fit_ident)[<span class="st">"x"</span>], <span class="fu">coef</span>(fit_eff)[<span class="st">"x"</span>],</span>
+<span id="cb19-326"><a href="#cb19-326" aria-hidden="true" tabindex="-1"></a>                <span class="fu">coef</span>(tsls)[<span class="st">"x"</span>], <span class="fu">coef</span>(tsls)[<span class="st">"x"</span>]), <span class="dv">4</span>),</span>
+<span id="cb19-327"><a href="#cb19-327" aria-hidden="true" tabindex="-1"></a>  <span class="at">se =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(fit_ident)))[<span class="st">"x"</span>], <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(fit_eff)))[<span class="st">"x"</span>],</span>
+<span id="cb19-328"><a href="#cb19-328" aria-hidden="true" tabindex="-1"></a>               <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(tsls)))[<span class="st">"x"</span>],</span>
+<span id="cb19-329"><a href="#cb19-329" aria-hidden="true" tabindex="-1"></a>               <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcovHC</span>(tsls, <span class="at">type =</span> <span class="st">"HC0"</span>)))[<span class="st">"x"</span>]), <span class="dv">4</span>),</span>
+<span id="cb19-330"><a href="#cb19-330" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">NULL</span>)</span>
+<span id="cb19-331"><a href="#cb19-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-332"><a href="#cb19-332" aria-hidden="true" tabindex="-1"></a><span class="fu">specTest</span>(fit_eff)</span>
+<span id="cb19-333"><a href="#cb19-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-334"><a href="#cb19-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-335"><a href="#cb19-335" aria-hidden="true" tabindex="-1"></a>Three readings.  The weighting matrix now matters: identity weighting gives</span>
+<span id="cb19-336"><a href="#cb19-336" aria-hidden="true" tabindex="-1"></a>$1.015$ and the efficient two-step estimator gives $0.989$, where in the</span>
+<span id="cb19-337"><a href="#cb19-337" aria-hidden="true" tabindex="-1"></a>just-identified case every weighting gave the same number.  The efficiency gain is</span>
+<span id="cb19-338"><a href="#cb19-338" aria-hidden="true" tabindex="-1"></a>real but modest, and it shows up only against the *robust* 2SLS standard error,</span>
+<span id="cb19-339"><a href="#cb19-339" aria-hidden="true" tabindex="-1"></a>$0.042$ against $0.046$.  And the classical 2SLS standard error, $0.033$, is far</span>
+<span id="cb19-340"><a href="#cb19-340" aria-hidden="true" tabindex="-1"></a>too small -- the earlier remark about homoskedasticity, arriving as a number</span>
+<span id="cb19-341"><a href="#cb19-341" aria-hidden="true" tabindex="-1"></a>instead of a caveat.</span>
+<span id="cb19-342"><a href="#cb19-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-343"><a href="#cb19-343" aria-hidden="true" tabindex="-1"></a>The $J$ statistic is now a test rather than a formality.  It is a joint specification</span>
+<span id="cb19-344"><a href="#cb19-344" aria-hidden="true" tabindex="-1"></a>test of the moment conditions, not a certificate of instrument validity.  It has one degree of</span>
+<span id="cb19-345"><a href="#cb19-345" aria-hidden="true" tabindex="-1"></a>freedom -- three moment conditions, from the constant and the two instruments,</span>
+<span id="cb19-346"><a href="#cb19-346" aria-hidden="true" tabindex="-1"></a>less the two parameters -- and its value of $1.65$ with a $p$-value of $0.20$</span>
+<span id="cb19-347"><a href="#cb19-347" aria-hidden="true" tabindex="-1"></a>gives no reason to doubt the moment conditions.</span>
 <span id="cb19-348"><a href="#cb19-348" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-351"><a href="#cb19-351" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb19-352"><a href="#cb19-352" aria-hidden="true" tabindex="-1"></a>covarMat2 <span class="ot">&lt;-</span> covarMat</span>
-<span id="cb19-353"><a href="#cb19-353" aria-hidden="true" tabindex="-1"></a>covarMat2[<span class="dv">2</span>, <span class="dv">4</span>] <span class="ot">&lt;-</span> covarMat2[<span class="dv">4</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fl">0.4</span>   <span class="co"># w2 now correlates with omitted z</span></span>
-<span id="cb19-354"><a href="#cb19-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-355"><a href="#cb19-355" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
-<span id="cb19-356"><a href="#cb19-356" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n =</span> nobs, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> covarMat2))</span>
-<span id="cb19-357"><a href="#cb19-357" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"z"</span>, <span class="st">"w1"</span>, <span class="st">"w2"</span>)</span>
-<span id="cb19-358"><a href="#cb19-358" aria-hidden="true" tabindex="-1"></a>d2<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="fl">0.8</span> <span class="sc">*</span> d2<span class="sc">$</span>w1))</span>
-<span id="cb19-359"><a href="#cb19-359" aria-hidden="true" tabindex="-1"></a>d2<span class="sc">$</span>y <span class="ot">&lt;-</span> d2<span class="sc">$</span>x <span class="sc">+</span> d2<span class="sc">$</span>z <span class="sc">+</span> d2<span class="sc">$</span>u</span>
-<span id="cb19-360"><a href="#cb19-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-361"><a href="#cb19-361" aria-hidden="true" tabindex="-1"></a>fit_bad <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d2)</span>
-<span id="cb19-362"><a href="#cb19-362" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_bad)[<span class="st">"x"</span>]</span>
-<span id="cb19-363"><a href="#cb19-363" aria-hidden="true" tabindex="-1"></a><span class="fu">specTest</span>(fit_bad)</span>
-<span id="cb19-364"><a href="#cb19-364" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb19-365"><a href="#cb19-365" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-366"><a href="#cb19-366" aria-hidden="true" tabindex="-1"></a>The coefficient moves to $1.60$ and the $J$ statistic goes to $143$, with a</span>
-<span id="cb19-367"><a href="#cb19-367" aria-hidden="true" tabindex="-1"></a>$p$-value of $5 \times 10^{-33}$.  This is what overidentification buys.  With one</span>
-<span id="cb19-368"><a href="#cb19-368" aria-hidden="true" tabindex="-1"></a>instrument there is no way to notice that it is invalid, because a single moment</span>
-<span id="cb19-369"><a href="#cb19-369" aria-hidden="true" tabindex="-1"></a>condition can always be satisfied exactly.  With two, the instruments have to</span>
-<span id="cb19-370"><a href="#cb19-370" aria-hidden="true" tabindex="-1"></a>agree about $\beta$, and when one of them is contaminated they do not.  Two limits</span>
-<span id="cb19-371"><a href="#cb19-371" aria-hidden="true" tabindex="-1"></a>are worth keeping in view.  The test does not say *which* instrument is at fault,</span>
-<span id="cb19-372"><a href="#cb19-372" aria-hidden="true" tabindex="-1"></a>and it has no power against violations the instruments share: if $w_1$ and $w_2$</span>
-<span id="cb19-373"><a href="#cb19-373" aria-hidden="true" tabindex="-1"></a>were both correlated with $z$ in the same way they would agree on the same wrong</span>
-<span id="cb19-374"><a href="#cb19-374" aria-hidden="true" tabindex="-1"></a>answer, and $J$ would pass.</span>
-<span id="cb19-375"><a href="#cb19-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-376"><a href="#cb19-376" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-377"><a href="#cb19-377" aria-hidden="true" tabindex="-1"></a><span class="fu">## A few concepts of conditioning</span></span>
+<span id="cb19-349"><a href="#cb19-349" aria-hidden="true" tabindex="-1"></a>To see it earn its keep, make $w_2$ invalid by correlating it with the omitted</span>
+<span id="cb19-350"><a href="#cb19-350" aria-hidden="true" tabindex="-1"></a>$z$.  Nothing else changes.</span>
+<span id="cb19-351"><a href="#cb19-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-354"><a href="#cb19-354" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb19-355"><a href="#cb19-355" aria-hidden="true" tabindex="-1"></a>covarMat2 <span class="ot">&lt;-</span> covarMat</span>
+<span id="cb19-356"><a href="#cb19-356" aria-hidden="true" tabindex="-1"></a>covarMat2[<span class="dv">2</span>, <span class="dv">4</span>] <span class="ot">&lt;-</span> covarMat2[<span class="dv">4</span>, <span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fl">0.4</span>   <span class="co"># w2 now correlates with omitted z</span></span>
+<span id="cb19-357"><a href="#cb19-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-358"><a href="#cb19-358" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">66</span>)</span>
+<span id="cb19-359"><a href="#cb19-359" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">mvrnorm</span>(<span class="at">n =</span> nobs, <span class="at">mu =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">4</span>), <span class="at">Sigma =</span> covarMat2))</span>
+<span id="cb19-360"><a href="#cb19-360" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(d2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"x"</span>, <span class="st">"z"</span>, <span class="st">"w1"</span>, <span class="st">"w2"</span>)</span>
+<span id="cb19-361"><a href="#cb19-361" aria-hidden="true" tabindex="-1"></a>d2<span class="sc">$</span>u <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(nobs, <span class="dv">0</span>, <span class="fu">exp</span>(<span class="fl">0.8</span> <span class="sc">*</span> d2<span class="sc">$</span>w1))</span>
+<span id="cb19-362"><a href="#cb19-362" aria-hidden="true" tabindex="-1"></a>d2<span class="sc">$</span>y <span class="ot">&lt;-</span> d2<span class="sc">$</span>x <span class="sc">+</span> d2<span class="sc">$</span>z <span class="sc">+</span> d2<span class="sc">$</span>u</span>
+<span id="cb19-363"><a href="#cb19-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-364"><a href="#cb19-364" aria-hidden="true" tabindex="-1"></a>fit_bad <span class="ot">&lt;-</span> <span class="fu">gmm</span>(y <span class="sc">~</span> x, <span class="at">x =</span> <span class="sc">~</span> w1 <span class="sc">+</span> w2, <span class="at">data =</span> d2)</span>
+<span id="cb19-365"><a href="#cb19-365" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_bad)[<span class="st">"x"</span>]</span>
+<span id="cb19-366"><a href="#cb19-366" aria-hidden="true" tabindex="-1"></a><span class="fu">specTest</span>(fit_bad)</span>
+<span id="cb19-367"><a href="#cb19-367" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb19-368"><a href="#cb19-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-369"><a href="#cb19-369" aria-hidden="true" tabindex="-1"></a>The coefficient moves to $1.60$ and the $J$ statistic goes to $143$, with a</span>
+<span id="cb19-370"><a href="#cb19-370" aria-hidden="true" tabindex="-1"></a>$p$-value of $5 \times 10^{-33}$.  This is what overidentification buys.  With one</span>
+<span id="cb19-371"><a href="#cb19-371" aria-hidden="true" tabindex="-1"></a>instrument there is no way to notice that it is invalid, because a single moment</span>
+<span id="cb19-372"><a href="#cb19-372" aria-hidden="true" tabindex="-1"></a>condition can always be satisfied exactly.  With two, the instruments have to</span>
+<span id="cb19-373"><a href="#cb19-373" aria-hidden="true" tabindex="-1"></a>agree about $\beta$, and when one of them is contaminated they do not.  Two limits</span>
+<span id="cb19-374"><a href="#cb19-374" aria-hidden="true" tabindex="-1"></a>are worth keeping in view.  The test does not say *which* instrument is at fault,</span>
+<span id="cb19-375"><a href="#cb19-375" aria-hidden="true" tabindex="-1"></a>and it has no power against violations the instruments share: if $w_1$ and $w_2$</span>
+<span id="cb19-376"><a href="#cb19-376" aria-hidden="true" tabindex="-1"></a>were both correlated with $z$ in the same way they would agree on the same wrong</span>
+<span id="cb19-377"><a href="#cb19-377" aria-hidden="true" tabindex="-1"></a>answer, and $J$ would pass.</span>
 <span id="cb19-378"><a href="#cb19-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-379"><a href="#cb19-379" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence</span></span>
-<span id="cb19-380"><a href="#cb19-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-381"><a href="#cb19-381" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
-<span id="cb19-382"><a href="#cb19-382" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-383"><a href="#cb19-383" aria-hidden="true" tabindex="-1"></a>f(x,y)=f(x)f(y)</span>
-<span id="cb19-384"><a href="#cb19-384" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-18}</span>
-<span id="cb19-385"><a href="#cb19-385" aria-hidden="true" tabindex="-1"></a>and hence</span>
-<span id="cb19-386"><a href="#cb19-386" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-387"><a href="#cb19-387" aria-hidden="true" tabindex="-1"></a>f(y|x)=f(y).</span>
-<span id="cb19-388"><a href="#cb19-388" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-19}</span>
-<span id="cb19-389"><a href="#cb19-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-390"><a href="#cb19-390" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
-<span id="cb19-391"><a href="#cb19-391" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-392"><a href="#cb19-392" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">g(X)h(Y)</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">g(X)</span><span class="co">]</span>\cdot E<span class="co">[</span><span class="ot">h(Y)</span><span class="co">]</span></span>
-<span id="cb19-393"><a href="#cb19-393" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-20}</span>
-<span id="cb19-394"><a href="#cb19-394" aria-hidden="true" tabindex="-1"></a>and hence</span>
-<span id="cb19-395"><a href="#cb19-395" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-396"><a href="#cb19-396" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0.</span>
-<span id="cb19-397"><a href="#cb19-397" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-21}</span>
-<span id="cb19-398"><a href="#cb19-398" aria-hidden="true" tabindex="-1"></a>i.e. all functions of $X$ and $Y$ are uncorrelated.</span>
-<span id="cb19-399"><a href="#cb19-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-400"><a href="#cb19-400" aria-hidden="true" tabindex="-1"></a><span class="fu">###  Law of Iterated Expectations</span></span>
-<span id="cb19-401"><a href="#cb19-401" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-402"><a href="#cb19-402" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">E(Y|X)</span><span class="co">]</span>.</span>
-<span id="cb19-403"><a href="#cb19-403" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-22}</span>
-<span id="cb19-404"><a href="#cb19-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-405"><a href="#cb19-405" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dependence Concepts</span></span>
-<span id="cb19-406"><a href="#cb19-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-407"><a href="#cb19-407" aria-hidden="true" tabindex="-1"></a> $X$, $Y$ independent:</span>
-<span id="cb19-408"><a href="#cb19-408" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-409"><a href="#cb19-409" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0</span>
-<span id="cb19-410"><a href="#cb19-410" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-23}</span>
-<span id="cb19-411"><a href="#cb19-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-412"><a href="#cb19-412" aria-hidden="true" tabindex="-1"></a>$X$, $Y$ uncorrelated:</span>
-<span id="cb19-413"><a href="#cb19-413" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-414"><a href="#cb19-414" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span>=0</span>
-<span id="cb19-415"><a href="#cb19-415" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-24}</span>
-<span id="cb19-416"><a href="#cb19-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-417"><a href="#cb19-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-418"><a href="#cb19-418" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>=0$:</span>
+<span id="cb19-379"><a href="#cb19-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-380"><a href="#cb19-380" aria-hidden="true" tabindex="-1"></a><span class="fu">## A few concepts of conditioning</span></span>
+<span id="cb19-381"><a href="#cb19-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-382"><a href="#cb19-382" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence</span></span>
+<span id="cb19-383"><a href="#cb19-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-384"><a href="#cb19-384" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
+<span id="cb19-385"><a href="#cb19-385" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-386"><a href="#cb19-386" aria-hidden="true" tabindex="-1"></a>f(x,y)=f(x)f(y)</span>
+<span id="cb19-387"><a href="#cb19-387" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-18}</span>
+<span id="cb19-388"><a href="#cb19-388" aria-hidden="true" tabindex="-1"></a>and hence</span>
+<span id="cb19-389"><a href="#cb19-389" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-390"><a href="#cb19-390" aria-hidden="true" tabindex="-1"></a>f(y|x)=f(y).</span>
+<span id="cb19-391"><a href="#cb19-391" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-19}</span>
+<span id="cb19-392"><a href="#cb19-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-393"><a href="#cb19-393" aria-hidden="true" tabindex="-1"></a>If $X$ and $Y$ are independent then</span>
+<span id="cb19-394"><a href="#cb19-394" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-395"><a href="#cb19-395" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">g(X)h(Y)</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">g(X)</span><span class="co">]</span>\cdot E<span class="co">[</span><span class="ot">h(Y)</span><span class="co">]</span></span>
+<span id="cb19-396"><a href="#cb19-396" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-20}</span>
+<span id="cb19-397"><a href="#cb19-397" aria-hidden="true" tabindex="-1"></a>and hence</span>
+<span id="cb19-398"><a href="#cb19-398" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-399"><a href="#cb19-399" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0.</span>
+<span id="cb19-400"><a href="#cb19-400" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-21}</span>
+<span id="cb19-401"><a href="#cb19-401" aria-hidden="true" tabindex="-1"></a>i.e. all functions of $X$ and $Y$ are uncorrelated.</span>
+<span id="cb19-402"><a href="#cb19-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-403"><a href="#cb19-403" aria-hidden="true" tabindex="-1"></a><span class="fu">###  Law of Iterated Expectations</span></span>
+<span id="cb19-404"><a href="#cb19-404" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-405"><a href="#cb19-405" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y</span><span class="co">]</span>=E<span class="co">[</span><span class="ot">E(Y|X)</span><span class="co">]</span>.</span>
+<span id="cb19-406"><a href="#cb19-406" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-22}</span>
+<span id="cb19-407"><a href="#cb19-407" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-408"><a href="#cb19-408" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dependence Concepts</span></span>
+<span id="cb19-409"><a href="#cb19-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-410"><a href="#cb19-410" aria-hidden="true" tabindex="-1"></a> $X$, $Y$ independent:</span>
+<span id="cb19-411"><a href="#cb19-411" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-412"><a href="#cb19-412" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),h(Y)</span><span class="co">]</span>=0</span>
+<span id="cb19-413"><a href="#cb19-413" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-23}</span>
+<span id="cb19-414"><a href="#cb19-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-415"><a href="#cb19-415" aria-hidden="true" tabindex="-1"></a>$X$, $Y$ uncorrelated:</span>
+<span id="cb19-416"><a href="#cb19-416" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-417"><a href="#cb19-417" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span>=0</span>
+<span id="cb19-418"><a href="#cb19-418" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-24}</span>
 <span id="cb19-419"><a href="#cb19-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-420"><a href="#cb19-420" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-421"><a href="#cb19-421" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),Y</span><span class="co">]</span>=0</span>
-<span id="cb19-422"><a href="#cb19-422" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-25}</span>
-<span id="cb19-423"><a href="#cb19-423" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-424"><a href="#cb19-424" aria-hidden="true" tabindex="-1"></a>These are listed in decreasing strength, and the implications run one way only:</span>
-<span id="cb19-425"><a href="#cb19-425" aria-hidden="true" tabindex="-1"></a>independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The</span>
-<span id="cb19-426"><a href="#cb19-426" aria-hidden="true" tabindex="-1"></a>middle condition is what regression actually needs. Neither converse holds: $X$ and</span>
-<span id="cb19-427"><a href="#cb19-427" aria-hidden="true" tabindex="-1"></a>$Y$ can be uncorrelated with $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> \neq 0$ (take $Y = X^2 - 1$ with</span>
-<span id="cb19-428"><a href="#cb19-428" aria-hidden="true" tabindex="-1"></a>$X \sim N(0,1)$, so $Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">X^3</span><span class="co">]</span> = 0$ while $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> = X^2 - 1$), and</span>
-<span id="cb19-429"><a href="#cb19-429" aria-hidden="true" tabindex="-1"></a>mean independence permits dependence through higher moments (any pure</span>
-<span id="cb19-430"><a href="#cb19-430" aria-hidden="true" tabindex="-1"></a>heteroskedasticity, $Y = X\epsilon$ with $\epsilon$ independent of $X$ and mean</span>
-<span id="cb19-431"><a href="#cb19-431" aria-hidden="true" tabindex="-1"></a>zero). Keeping the three apart matters because the moment conditions below need only</span>
-<span id="cb19-432"><a href="#cb19-432" aria-hidden="true" tabindex="-1"></a>the middle one.</span>
-<span id="cb19-433"><a href="#cb19-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-434"><a href="#cb19-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-435"><a href="#cb19-435" aria-hidden="true" tabindex="-1"></a><span class="fu">### Regression</span></span>
-<span id="cb19-436"><a href="#cb19-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-437"><a href="#cb19-437" aria-hidden="true" tabindex="-1"></a>A regression model is a model of $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>$.  For example,</span>
-<span id="cb19-438"><a href="#cb19-438" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-439"><a href="#cb19-439" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i</span>
-<span id="cb19-440"><a href="#cb19-440" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-26}</span>
-<span id="cb19-441"><a href="#cb19-441" aria-hidden="true" tabindex="-1"></a>where $E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0$.</span>
+<span id="cb19-420"><a href="#cb19-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-421"><a href="#cb19-421" aria-hidden="true" tabindex="-1"></a>$E<span class="co">[</span><span class="ot">Y|X</span><span class="co">]</span>=0$:</span>
+<span id="cb19-422"><a href="#cb19-422" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-423"><a href="#cb19-423" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-424"><a href="#cb19-424" aria-hidden="true" tabindex="-1"></a>Cov<span class="co">[</span><span class="ot">g(X),Y</span><span class="co">]</span>=0</span>
+<span id="cb19-425"><a href="#cb19-425" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-25}</span>
+<span id="cb19-426"><a href="#cb19-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-427"><a href="#cb19-427" aria-hidden="true" tabindex="-1"></a>These are listed in decreasing strength, and the implications run one way only:</span>
+<span id="cb19-428"><a href="#cb19-428" aria-hidden="true" tabindex="-1"></a>independence $\Rightarrow$ mean independence $\Rightarrow$ uncorrelatedness. The</span>
+<span id="cb19-429"><a href="#cb19-429" aria-hidden="true" tabindex="-1"></a>middle condition is what a *model of the conditional mean* needs. Neither converse holds: $X$ and</span>
+<span id="cb19-430"><a href="#cb19-430" aria-hidden="true" tabindex="-1"></a>$Y$ can be uncorrelated with $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> \neq 0$ (take $Y = X^2 - 1$ with</span>
+<span id="cb19-431"><a href="#cb19-431" aria-hidden="true" tabindex="-1"></a>$X \sim N(0,1)$, so $Cov<span class="co">[</span><span class="ot">X,Y</span><span class="co">]</span> = E<span class="co">[</span><span class="ot">X^3</span><span class="co">]</span> = 0$ while $E<span class="co">[</span><span class="ot">Y \mid X</span><span class="co">]</span> = X^2 - 1$), and</span>
+<span id="cb19-432"><a href="#cb19-432" aria-hidden="true" tabindex="-1"></a>mean independence permits dependence through higher moments (any pure</span>
+<span id="cb19-433"><a href="#cb19-433" aria-hidden="true" tabindex="-1"></a>heteroskedasticity, $Y = X\epsilon$ with $\epsilon$ independent of $X$ and mean</span>
+<span id="cb19-434"><a href="#cb19-434" aria-hidden="true" tabindex="-1"></a>zero). Keeping the three apart matters because the moment conditions below need only the</span>
+<span id="cb19-435"><a href="#cb19-435" aria-hidden="true" tabindex="-1"></a>*weakest* of them.  $E<span class="co">[</span><span class="ot">u_i</span><span class="co">]</span>=0$ and $E<span class="co">[</span><span class="ot">X_i u_i</span><span class="co">]</span>=0$ are statements about means and</span>
+<span id="cb19-436"><a href="#cb19-436" aria-hidden="true" tabindex="-1"></a>covariances, nothing more.  Conditional mean zero is sufficient for them and is not</span>
+<span id="cb19-437"><a href="#cb19-437" aria-hidden="true" tabindex="-1"></a>necessary, which is exactly why GMM asks for less than a conditional-mean model</span>
+<span id="cb19-438"><a href="#cb19-438" aria-hidden="true" tabindex="-1"></a>does.</span>
+<span id="cb19-439"><a href="#cb19-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-440"><a href="#cb19-440" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-441"><a href="#cb19-441" aria-hidden="true" tabindex="-1"></a><span class="fu">### Regression</span></span>
 <span id="cb19-442"><a href="#cb19-442" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-443"><a href="#cb19-443" aria-hidden="true" tabindex="-1"></a><span class="fu">### GMM regression</span></span>
-<span id="cb19-444"><a href="#cb19-444" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-445"><a href="#cb19-445" aria-hidden="true" tabindex="-1"></a>The regression model</span>
-<span id="cb19-446"><a href="#cb19-446" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-447"><a href="#cb19-447" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i, \quad E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0</span>
-<span id="cb19-448"><a href="#cb19-448" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-27}</span>
-<span id="cb19-449"><a href="#cb19-449" aria-hidden="true" tabindex="-1"></a>implies the moment condition</span>
-<span id="cb19-450"><a href="#cb19-450" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-451"><a href="#cb19-451" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_i</span><span class="co">]</span>=0 \quad  \mbox{and} \quad  E<span class="co">[</span><span class="ot">X_i u_i</span><span class="co">]</span>=0</span>
-<span id="cb19-452"><a href="#cb19-452" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-28}</span>
-<span id="cb19-453"><a href="#cb19-453" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-454"><a href="#cb19-454" aria-hidden="true" tabindex="-1"></a>That is,</span>
-<span id="cb19-455"><a href="#cb19-455" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-456"><a href="#cb19-456" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y_i-\beta_0-\beta_1X_i</span><span class="co">]</span>=0</span>
-<span id="cb19-457"><a href="#cb19-457" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-29}</span>
-<span id="cb19-458"><a href="#cb19-458" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-459"><a href="#cb19-459" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">X_i(Y_i-\beta_0-\beta_1X_i)</span><span class="co">]</span>=0</span>
-<span id="cb19-460"><a href="#cb19-460" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-30}</span>
-<span id="cb19-461"><a href="#cb19-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-462"><a href="#cb19-462" aria-hidden="true" tabindex="-1"></a>The sample moment conditions are</span>
-<span id="cb19-463"><a href="#cb19-463" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-464"><a href="#cb19-464" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
-<span id="cb19-465"><a href="#cb19-465" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-31}</span>
-<span id="cb19-466"><a href="#cb19-466" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb19-467"><a href="#cb19-467" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}x_i(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
-<span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-32}</span>
-<span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a>These are just normal equations for OLS.</span>
-<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>A characteristic of GMM:  the specification of the model generates</span>
-<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>the estimator.  i.e. only $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>=\beta_0+\beta_1 X_i$ is</span>
-<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>assumed.</span>
+<span id="cb19-443"><a href="#cb19-443" aria-hidden="true" tabindex="-1"></a>A regression model is a model of $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>$.  For example,</span>
+<span id="cb19-444"><a href="#cb19-444" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-445"><a href="#cb19-445" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i</span>
+<span id="cb19-446"><a href="#cb19-446" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-26}</span>
+<span id="cb19-447"><a href="#cb19-447" aria-hidden="true" tabindex="-1"></a>where $E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0$.</span>
+<span id="cb19-448"><a href="#cb19-448" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-449"><a href="#cb19-449" aria-hidden="true" tabindex="-1"></a><span class="fu">### GMM regression</span></span>
+<span id="cb19-450"><a href="#cb19-450" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-451"><a href="#cb19-451" aria-hidden="true" tabindex="-1"></a>The regression model</span>
+<span id="cb19-452"><a href="#cb19-452" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-453"><a href="#cb19-453" aria-hidden="true" tabindex="-1"></a>Y_i=\beta_0+\beta_1X_i+u_i, \quad E<span class="co">[</span><span class="ot">u_i|X_i</span><span class="co">]</span>=0</span>
+<span id="cb19-454"><a href="#cb19-454" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-27}</span>
+<span id="cb19-455"><a href="#cb19-455" aria-hidden="true" tabindex="-1"></a>implies the moment condition</span>
+<span id="cb19-456"><a href="#cb19-456" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-457"><a href="#cb19-457" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_i</span><span class="co">]</span>=0 \quad  \mbox{and} \quad  E<span class="co">[</span><span class="ot">X_i u_i</span><span class="co">]</span>=0</span>
+<span id="cb19-458"><a href="#cb19-458" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-28}</span>
+<span id="cb19-459"><a href="#cb19-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-460"><a href="#cb19-460" aria-hidden="true" tabindex="-1"></a>That is,</span>
+<span id="cb19-461"><a href="#cb19-461" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-462"><a href="#cb19-462" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">Y_i-\beta_0-\beta_1X_i</span><span class="co">]</span>=0</span>
+<span id="cb19-463"><a href="#cb19-463" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-29}</span>
+<span id="cb19-464"><a href="#cb19-464" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-465"><a href="#cb19-465" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">X_i(Y_i-\beta_0-\beta_1X_i)</span><span class="co">]</span>=0</span>
+<span id="cb19-466"><a href="#cb19-466" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-30}</span>
+<span id="cb19-467"><a href="#cb19-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-468"><a href="#cb19-468" aria-hidden="true" tabindex="-1"></a>The sample moment conditions are</span>
+<span id="cb19-469"><a href="#cb19-469" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-470"><a href="#cb19-470" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
+<span id="cb19-471"><a href="#cb19-471" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-31}</span>
+<span id="cb19-472"><a href="#cb19-472" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb19-473"><a href="#cb19-473" aria-hidden="true" tabindex="-1"></a>\frac{1}{n}\sum_{i=1}^{n}x_i(y_i-\hat \beta_0-\hat \beta_1x_i)=0</span>
+<span id="cb19-474"><a href="#cb19-474" aria-hidden="true" tabindex="-1"></a>$$ {#eq-gmm-32}</span>
 <span id="cb19-475"><a href="#cb19-475" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a>Note there are no assumptions that $u_i$ is homoscedastic, not</span>
-<span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a>autocorrelated or normally distributed.  These properties affect</span>
-<span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a>the statistical properties of the GMM estimator, not its</span>
-<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>definition.</span>
+<span id="cb19-476"><a href="#cb19-476" aria-hidden="true" tabindex="-1"></a>These are just normal equations for OLS.</span>
+<span id="cb19-477"><a href="#cb19-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-478"><a href="#cb19-478" aria-hidden="true" tabindex="-1"></a>A characteristic of GMM:  the specification of the model generates</span>
+<span id="cb19-479"><a href="#cb19-479" aria-hidden="true" tabindex="-1"></a>the estimator.  i.e. only $E<span class="co">[</span><span class="ot">Y_i|X_i</span><span class="co">]</span>=\beta_0+\beta_1 X_i$ is</span>
+<span id="cb19-480"><a href="#cb19-480" aria-hidden="true" tabindex="-1"></a>assumed.</span>
+<span id="cb19-481"><a href="#cb19-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-482"><a href="#cb19-482" aria-hidden="true" tabindex="-1"></a>Note there are no assumptions that $u_i$ is homoscedastic, not</span>
+<span id="cb19-483"><a href="#cb19-483" aria-hidden="true" tabindex="-1"></a>autocorrelated or normally distributed.  These properties affect</span>
+<span id="cb19-484"><a href="#cb19-484" aria-hidden="true" tabindex="-1"></a>the statistical properties of the GMM estimator, not its</span>
+<span id="cb19-485"><a href="#cb19-485" aria-hidden="true" tabindex="-1"></a>definition.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -16,6 +16,23 @@ history analysis.  We use survival models to analyze data that have the followin
 2. some observations are censored; that is, some units are not in the data set anymore for some reason before an event happens.  For some units we observe the event and the exact waiting time; for others it has not occurred, and all we know is that the waiting time exceeds the observation time.  However, we believe if they stayed in the study, sooner or later an event would happen.
 3.  we are trying to explain (predict) the occurrence of an event with some predictors (explanatory variables).
 
+Censoring is what makes this its own subject, and it carries an assumption that
+belongs before any estimator.  Kaplan-Meier and the Cox partial likelihood below
+both require censoring to be **independent**, or noninformative: conditional on the
+covariates in the model, units censored at a given time must be neither more nor
+less likely to experience the event than comparable units still under observation.
+Put plainly, being censored may not carry information about when the event would
+have happened.
+
+This is an identification assumption, not a technical footnote.  It fails whenever
+units leave for reasons tied to the outcome -- patients withdrawing because they are
+deteriorating, firms vanishing from a sample shortly before they fail, workers
+leaving a spell study just as re-employment arrives.  Nothing in the data announces
+the failure and no sample size repairs it.  The usual response is to bring the
+relevant variables into the model, since the assumption is conditional on
+covariates, and then to argue explicitly why the censoring that remains is
+unrelated to the event process.
+
 
 Let $T$ denote the time variable, a nonnegative, continuous
 random variable with PDF $f(t)$ and CDF $F(t)$, where $t$ is a
@@ -102,7 +119,7 @@ However, Weibull distribution does not allow for the possibility
 that the hazard may first increase then decrease over time.
 Log-normal distribution does allow this.
 
-![Various hazard functions from Davidson and MacKinnon](davidson2.png)
+![Various hazard functions from Davidson and MacKinnon](davidson2.png){fig-alt="Six hazard functions h(t) plotted against time t from 0 to 10. The exponential hazard is flat at one. Weibull with shape below one falls steeply from a high value; Weibull with shape above one rises monotonically. A lognormal with small sigma rises to a peak near t equals two and then declines, illustrating a non-monotone hazard; a lognormal with sigma one stays low throughout. Together they show constant, increasing, decreasing and hump-shaped hazard shapes."}
 
 ## Log-likelihood function
 
@@ -164,8 +181,8 @@ we observe ties of event time, because in many situations, we observe
 grouped data.  For example, we observe case $m$ and $n$ have events at
 the same time $j$.  In that case, in the denominator, whether we include
 case $m$ in the calculation of the likelihood of case $n$ is
-ambiguous.  In that case, special treatment is needed.  A standard
-approximation (Breslow and Peto) is to let
+ambiguous.  In that case, special treatment is needed.  The standard
+approximation here is Breslow's:
 
 $$
 L_{m \in D(t_j)} \simeq \frac{ \prod_{m \in D(t_j)} \exp(x_m' \beta)} {[\sum_{l \in R(t_j)} \exp(x_l' \beta)]^{d_j}}
@@ -174,7 +191,12 @@ $$ {#eq-survival-16}
 where $D(t_j)$ is the set of cases that die at time $t_j$ and $d_j$
 denotes the number of cases that die at time $t_j$.  This
 approximation works well with small number of ties relative to total
-number of cases at risk.
+number of cases at risk.  Peto's approximation is a close relative of it.  Efron's
+is a finer adjustment that apportions the risk set among the tied cases, and it is
+the more accurate of the two when ties are common.  The defaults differ by
+software: R's `coxph` uses Efron, Stata's `stcox` uses Breslow, so the same data
+can produce slightly different coefficients in the two without either being
+wrong.
 
 
 One important feature (disadvantage?) for the proportional hazard
@@ -189,7 +211,10 @@ which does not depend on $t$.
 One advantage of Cox's model is that it is considered as a
 semi-parametric model since it does not have to specify the
 distribution of the survival time.  The estimation process relies only
-on the order in which events occur, not the exact time they occur.
+on the order in which events occur, not on the spacing between them.  The exact
+times still matter, because they are what determines who sits in each risk set.
+What drops out is the baseline hazard, and with it any need to model how far apart
+the events are.
 Parameter estimates are derived assuming continuous survival times.
 
 ### Interpretation
@@ -249,6 +274,15 @@ One caveat when reading these next to the Cox fit above.  `survreg` estimates
 *opposite* signs for the same underlying effect: a covariate that raises the
 hazard shortens expected survival time.  A sign flip between the two tables is
 the expected result of the differing parameterizations, not a contradiction.
+
+Expect the reversal of direction; do not expect mirror-image magnitudes.
+Exponential and Weibull are the families that are both PH and AFT, and there the
+two parameterizations are related exactly through the shape parameter, so the AFT
+coefficient scaled by the shape recovers the PH coefficient up to sign.
+Log-logistic, the third fit above, is an AFT family that is *not* proportional
+hazards at all, so it has no PH coefficient to be the mirror of.  Setting a
+log-logistic fit beside a Cox fit compares two different models of the same data,
+and only the direction of the effect should be expected to agree.
 
 
 
