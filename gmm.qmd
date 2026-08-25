@@ -1,10 +1,11 @@
-# General Method of Moments (GMM)
+# Generalized Method of Moments (GMM)
 
 ```{r}
 #| include: false
 library(MASS)
 library(ivreg)
 library(gmm)
+library(sandwich)
 ```
 
 ## The Method of Moments (MOM)
@@ -267,6 +268,100 @@ ols <- lm(y ~ x, data=data)
 summary(ols)
 
 ```
+
+
+### Overidentification, the weighting matrix, and the $J$ test
+
+The example above cannot show what GMM adds, because it is just-identified.  One
+instrument for one endogenous regressor leaves nothing for the weighting matrix to
+do and nothing for a specification test to check.  Two things have to change.  We
+need more instruments than endogenous regressors, and we need errors that are not
+homoskedastic -- under homoskedasticity $({\symbf{Z'Z)^{-1}}}$ already is the efficient
+weighting, so 2SLS and efficient GMM agree and the comparison is empty.
+
+The design keeps $y = x + z + u$ with $z$ omitted from the regression, so the
+composite error is $z+u$ and $x$ is endogenous through its correlation with $z$.
+There are now two instruments.  Both $w_1$ and $w_2$ correlate $0.5$ with $x$ and
+$0.2$ with each other, and neither correlates with $z$, so both are valid.  The
+error is drawn with standard deviation $\exp(0.8 w_1)$, which leaves
+$E[u \mid w]=0$ intact while making the variance depend on an instrument.  That is
+exactly the case where the efficient weighting differs from
+$({\symbf{Z'Z)^{-1}}}$.  The true coefficient on $x$ is $1$.
+
+```{r}
+set.seed(66)
+nobs <- 10000
+
+# cor(x,z)=.6; cor(x,w1)=cor(x,w2)=.5; cor(z,w1)=cor(z,w2)=0; cor(w1,w2)=.2
+covarMat <- matrix(c(1,  .6, .5, .5,
+                     .6, 1,  0,  0,
+                     .5, 0,  1,  .2,
+                     .5, 0,  .2, 1), nrow = 4)
+d <- data.frame(mvrnorm(n = nobs, mu = rep(0, 4), Sigma = covarMat))
+names(d) <- c("x", "z", "w1", "w2")
+
+# the error variance depends on w1, so E[u|w] = 0 still holds but 2SLS is
+# no longer the efficient GMM estimator
+d$u <- rnorm(nobs, 0, exp(0.8 * d$w1))
+d$y <- d$x + d$z + d$u
+
+fit_ident <- gmm(y ~ x, x = ~ w1 + w2, data = d, wmatrix = "ident")
+fit_eff   <- gmm(y ~ x, x = ~ w1 + w2, data = d)
+tsls      <- ivreg(y ~ x | w1 + w2, data = d)
+
+data.frame(
+  estimator = c("GMM, identity weighting", "GMM, efficient two-step",
+                "2SLS, classical SE", "2SLS, robust SE"),
+  b_x = round(c(coef(fit_ident)["x"], coef(fit_eff)["x"],
+                coef(tsls)["x"], coef(tsls)["x"]), 4),
+  se = round(c(sqrt(diag(vcov(fit_ident)))["x"], sqrt(diag(vcov(fit_eff)))["x"],
+               sqrt(diag(vcov(tsls)))["x"],
+               sqrt(diag(vcovHC(tsls, type = "HC0")))["x"]), 4),
+  row.names = NULL)
+
+specTest(fit_eff)
+```
+
+Three readings.  The weighting matrix now matters: identity weighting gives
+$1.015$ and the efficient two-step estimator gives $0.989$, where in the
+just-identified case every weighting gave the same number.  The efficiency gain is
+real but modest, and it shows up only against the *robust* 2SLS standard error,
+$0.042$ against $0.046$.  And the classical 2SLS standard error, $0.033$, is far
+too small -- the earlier remark about homoskedasticity, arriving as a number
+instead of a caveat.
+
+The $J$ statistic is now a test rather than a formality.  It has one degree of
+freedom -- three moment conditions, from the constant and the two instruments,
+less the two parameters -- and its value of $1.65$ with a $p$-value of $0.20$
+gives no reason to doubt the moment conditions.
+
+To see it earn its keep, make $w_2$ invalid by correlating it with the omitted
+$z$.  Nothing else changes.
+
+```{r}
+covarMat2 <- covarMat
+covarMat2[2, 4] <- covarMat2[4, 2] <- 0.4   # w2 now correlates with omitted z
+
+set.seed(66)
+d2 <- data.frame(mvrnorm(n = nobs, mu = rep(0, 4), Sigma = covarMat2))
+names(d2) <- c("x", "z", "w1", "w2")
+d2$u <- rnorm(nobs, 0, exp(0.8 * d2$w1))
+d2$y <- d2$x + d2$z + d2$u
+
+fit_bad <- gmm(y ~ x, x = ~ w1 + w2, data = d2)
+coef(fit_bad)["x"]
+specTest(fit_bad)
+```
+
+The coefficient moves to $1.60$ and the $J$ statistic goes to $143$, with a
+$p$-value of $5 \times 10^{-33}$.  This is what overidentification buys.  With one
+instrument there is no way to notice that it is invalid, because a single moment
+condition can always be satisfied exactly.  With two, the instruments have to
+agree about $\beta$, and when one of them is contaminated they do not.  Two limits
+are worth keeping in view.  The test does not say *which* instrument is at fault,
+and it has no power against violations the instruments share: if $w_1$ and $w_2$
+were both correlated with $z$ in the same way they would agree on the same wrong
+answer, and $J$ would pass.
 
 
 ## A few concepts of conditioning

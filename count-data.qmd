@@ -1,4 +1,4 @@
-# Count data models
+# Count Data Models
 ## Poisson Model
 
 If the interested variable is a count data variable, it is natural to model it as a Poisson process.  The number of occurrence follows a Poisson process:

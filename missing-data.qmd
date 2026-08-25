@@ -1,4 +1,4 @@
-# Missing data
+# Missing Data
 
 Data set like:
 

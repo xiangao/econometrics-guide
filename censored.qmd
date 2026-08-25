@@ -1,4 +1,4 @@
-# Censored, truncated or selected data
+# Censored, Truncated or Selected Data
 
 ## Compare three different cases
 
