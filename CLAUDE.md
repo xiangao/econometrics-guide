@@ -1,5 +1,14 @@
 # Econometrics Guide
 
+## Prose style
+
+- Match the author's direct, conversational style. State the question, show the equation or example, and explain what the result means.
+- Prefer "we," "I," "suppose," and "let's look" where they sound natural. Do not replace them with an impersonal textbook voice.
+- Use sentence case and descriptive headings. Avoid canned headings such as "The Problem," "The Solution," "Key Takeaways," and "Why This Matters."
+- Do not turn ordinary explanations into lists of bold labels. Use a list only when the items are genuinely parallel steps or alternatives.
+- Avoid slogan-like contrasts, rhetorical fragments, and repeated em dashes. Write the qualification directly.
+- Preserve technical qualifications. Tightening prose must not make a claim stronger or more general than the algebra, code, or evidence supports.
+
 ## Project Overview
 A Quarto book covering core econometrics topics (OLS, MLE, GLS, IV, GMM, discrete choice, count data, panel data, survival analysis, dynamic panels, missing data). Originally an Rmd document, converted to a multi-chapter Quarto book in March 2026.
 
@@ -918,4 +927,3 @@ Do not reinstate these without a reason that survives the objection that killed 
   "do not change just because i question. we need to convince each other"). Sizing a change to the
   size of the objection is the error. Decide on the merits once, and say whether you are arguing or
   conceding.
-

@@ -140,13 +140,11 @@ $$E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_{i=1}^n d_i x_i b_i}{\sum_{i=1}^n d_
 
 So the OLS estimator is unbiased for a weighted average of $b_i$'s.
 
-### So what?
+### What this implies
 
-@eq-exact has three consequences for practice.
+Under heterogeneous effects, $\hat\beta_{OLS}$ is not generally the plain average $\bar b=E[b_i]$. It averages the $b_i$ using $d_i x_i=(x_i-\bar x)x_i$, which can be negative. It equals the ATE only when the effects are uncorrelated with these weights.
 
-1.  **OLS is not the ATE under heterogeneity.** $\hat\beta_{OLS}$ is not the plain average effect $\bar b = E[b_i]$. It is a weighted parameter whose weights are $d_i x_i = (x_i - \bar x)x_i$ --- signed, not squared --- and it equals the ATE only when the $b_i$ are uncorrelated with those weights.
-2.  **Leverage annihilates the individual bias.** @eq-esi shows $s_i$ is a hopeless estimate of $b_i$ precisely where $d_i \approx 0$. The weight $w_i = d_i^2$ zeroes out exactly those unstable points, turning biased observation-level slopes into the exact parameter of @eq-exact.
-3.  **The same mechanism runs through the causal estimators.** With a binary regressor it puts the most weight where treatment is near a coin flip (Angrist 1998); grouped by treatment status it reverses the propensity weights, favouring the smaller group (Słoczyński 2022). Both are @eq-exact read at different granularities, as the rest of the chapter shows.
+@eq-esi also shows why the weighting helps. The individual slope $s_i$ is most unstable when $d_i\approx0$, and the weight $d_i^2$ gives those observations almost no influence. With a binary regressor, the same calculation puts more weight on strata where treatment is close to a coin flip (Angrist 1998). If we aggregate by treatment status, it gives more weight to the smaller group (Słoczyński 2022). The rest of the chapter derives these two cases.
 
 **Simulation — deviation slopes versus true effects.** We check the algebra directly, drawing $n = 2000$ with heterogeneous slopes $b_i \sim N(1, 0.5^2)$, regressor $x_i \sim N(0, 2^2)$, and $y_i = b_i x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 2^2)$.
 

@@ -11,7 +11,7 @@ vtab <- function(x, d = 3) knitr::kable(data.frame(value = round(x, d)), col.nam
 mtab <- function(x, d = 3) knitr::kable(round(x, d))
 ```
 
-The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) read the OLS coefficient as a weighting of unobservable effects — it answered *whose* effect $\hat\beta$ estimates. The same Frisch–Waugh–Lovell identity reads a second way, as a weighting of the *observed* outcomes. This reading answers a different question — which rows drive $\hat\beta$, and in which direction — and, unlike the first, it is computable and generalises past OLS. This chapter follows it.
+The companion chapter [Interpreting OLS: Effect Weights](interpreting-ols.qmd) treats the OLS coefficient as a weighted average of unobserved effects and asks whose effect $\hat\beta$ estimates. We can read the same Frisch--Waugh--Lovell identity as a weighting of observed outcomes. This second reading asks which rows move $\hat\beta$ and in which direction. Unlike the effect weights, these outcome weights can be calculated from the data and extended beyond OLS.
 
 ## The other reading of FWL
 
@@ -19,7 +19,7 @@ Residualise the regressor of interest $V$ on the controls $X$, write $\tilde V_i
 
 $$ \hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}. $$ {#eq-outcome-weights-1}
 
-The previous chapter grouped each $\tilde V_i$ with $V_i$ and read $\hat\beta$ as a weighting $w_i = \tilde V_i V_i$ of effects (@eq-weff). Group $\tilde V_i$ with $y_i$ instead — pairing each residual with its own outcome in the numerator — and the *same* expression is a linear combination of the observed outcomes:
+The previous chapter groups $\tilde V_i$ with $V_i$ and writes $\hat\beta$ as a weighting $w_i=\tilde V_iV_i$ of effects (@eq-weff). If we instead group each residual with its outcome $y_i$, the same expression becomes a linear combination of the observed outcomes:
 
 $$ \hat\beta = \sum_{i=1}^n \omega_i y_i, \qquad \omega_i = \frac{\tilde V_i}{\sum_{j=1}^n \tilde V_j^2}. $$ {#eq-omega}
 
