@@ -26,6 +26,15 @@ A public econometrics study guide by Xiang Ao (Research Computing Services, Harv
   `MASS`, `survival` and `parallel` ship with R and need no installation.
   No versions are pinned; an `renv.lock` would be the durable fix.
 
+## Writing style
+
+Chapters are written in a direct, conversational voice: state the question, show the
+equation or example, then say what the result means. Headings are sentence case and
+descriptive — the canned "The Problem" / "The Solution" / "Key Takeaways" template is
+not used, and an ordinary explanation is written as prose rather than a list of bold
+labels. Tightening prose must not make a claim stronger or more general than the
+algebra, code or evidence supports. The full convention is in `CLAUDE.md`.
+
 ## Legacy file
 
 `econometrics_guide.rmd` is a deprecated single-file R Markdown archive
