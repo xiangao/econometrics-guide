@@ -927,3 +927,42 @@ Do not reinstate these without a reason that survives the objection that killed 
   "do not change just because i question. we need to convince each other"). Sizing a change to the
   size of the objection is the error. Decide on the merits once, and say whether you are arguing or
   conceding.
+
+## Addition (2026-09-18) — Borusyak & Hull, ex-post vs ex-ante effect weights
+
+Read `~/projects/papers/bh_weights_20231230.pdf` ("Negative Weights Are No Concern in Design-Based
+Specifications") as an extension of Ch. 13 and Ch. 14. Prose-only edits; no code chunk changed
+(chunk MD5s identical to the previous commit).
+
+**Ch. 13, new section "Ex post in the sample, ex ante in the design."** Population estimand with
+`r_i = V_i - X_i'λ` the residual from the projection of treatment on a *low-dimensional* `X_i`. Two
+non-interchangeable ways to kill `E[r_i Y_i(0)]`: an outcome model `E[Y_i(0) | V_i, X_i] = X_i'γ`, or
+the design assumption `E[V_i | Y_i(0), β_i, X_i] = X_i'λ` (@eq-design-assignment). Under either, the
+ex-post representation `β = E[ψ_i β_i]/E[ψ_i]` with `ψ_i = r_i V_i`, which can be negative. Under the
+design assumption only, averaging over assignment gives `φ_i = Var(V_i | X_i, β_i) ≥ 0`
+(@eq-exante-weight) — a convex representation of the *same* estimand, so no sign reversal. Three
+qualifications kept in the text: this is not a correction to OLS and does not recover the ATE; the
+variance may depend on `β_i`, so a stratum's units need not share a weight; `φ_i` is not identified,
+reducing to the estimable `Var(V_i | X_i)` only under full conditional unconfoundedness.
+
+**Scope.** The low-dimensionality requirement on `X` excludes unit fixed effects in short panels, so
+the result does *not* reach the staggered-TWFE material in Ch. 14. That section was left alone
+deliberately.
+
+**Two errors in Ch. 14 fixed on the way.** The comparison table recorded the effect weights as
+"non-negative (under saturation)". Wrong both directions: for binary `D`, `w_i = (D_i - D̂_i)D_i` is
+0 for controls and `1 - D̂_i` for treated, so non-negativity needs only `D̂_i ≤ 1` — saturation
+delivers that but is not required; for continuous `V`, saturation is *not* sufficient, since a unit
+below its own cell mean has `r_i < 0` and `V_i > 0`. And "a hidden extrapolation the non-negative
+`w_i` can never show" contradicted Ch. 13 ("can be negative — whenever `Ṽ_i` and `V_i` have opposite
+signs") and was false in exactly the case under discussion: the treated unit with `D̂_i > 1` has
+`w_i < 0`. The real reason `w_i` is not the diagnostic is that under binary treatment every control
+has `w_i = 0`, so it sees one side of the comparison only. Both restated.
+
+Also weakened the wrong-sign claim: `D̂_i ∉ [0,1]` is evidence of realised linear extrapolation, not
+proof that the population propensity is out of range — sampling error and functional form produce it
+too, and in-range fits do not establish overlap.
+
+Borusyak and Hull (2023) added to `references.qmd`. Two new numbered equations in Ch. 13 shift the
+downstream numbering by two; nothing hardcodes a number, and `@eq-fwl`/`@eq-weff` still render as
+13.12/13.13. Full `quarto render` (HTML + PDF), all crossrefs resolve.

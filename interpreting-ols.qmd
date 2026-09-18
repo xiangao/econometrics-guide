@@ -209,6 +209,35 @@ The control term drops out because $\tilde V$ is orthogonal to $X$ by constructi
 
 The denominator $\sum_i w_i = \sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$ always, by OLS orthogonality. Individual weights $w_i = \tilde V_i V_i$ can be negative — they are whenever $\tilde V_i$ and $V_i$ have opposite signs.
 
+### Ex post in the sample, ex ante in the design
+
+The sign of a realised weight is not the end of the causal question. Borusyak and Hull (2023) make the distinction by moving from the sample identity above to the population regression estimand. Write
+
+$$y_i = V_i\beta_i + Y_i(0), \qquad r_i = V_i - X_i'\lambda,$$
+
+where $r_i$ is the residual from the *population* projection of treatment on a low-dimensional $X_i$. There are two different ways to make the baseline term $E[r_iY_i(0)]$ vanish. An outcome model assumes
+
+$$E[Y_i(0)\mid V_i,X_i]=X_i'\gamma.$$
+
+A design-based specification instead assumes
+
+$$E[V_i\mid Y_i(0),\beta_i,X_i]=X_i'\lambda.$$ {#eq-design-assignment}
+
+The second condition does two jobs: treatment is conditionally mean-independent of the untreated outcome and the effect, and the controls correctly span its conditional mean. Correctly fitting $E[V_i\mid X_i]$ alone is not enough if assignment still depends on $\beta_i$ or $Y_i(0)$.
+
+Under either justification, the population coefficient has the ex-post representation
+
+$$\beta = \frac{E[\psi_i\beta_i]}{E[\psi_i]}, \qquad \psi_i=r_iV_i.$$
+
+The $\psi_i$ can be negative. Under @eq-design-assignment, however, average each realised weight over possible assignments while holding $X_i$ and $\beta_i$ fixed:
+
+$$\phi_i=E[\psi_i\mid X_i,\beta_i]
+       =\operatorname{Var}(V_i\mid X_i,\beta_i)\ge 0.$$ {#eq-exante-weight}
+
+Thus the *same population estimand* also satisfies $\beta=E[\phi_i\beta_i]/E[\phi_i]$, a convex representation that rules out a sign reversal when all effects share a sign. This is not a correction to OLS and it does not generally recover the ATE. The variance can depend on $\beta_i$, so units in one $X$-stratum need not receive equal weight; because $\beta_i$ is unobserved, the weights are not generally identified either. Full conditional unconfoundedness is one sufficient, but stronger than necessary, condition under which they reduce to the estimable $\operatorname{Var}(V_i\mid X_i)$.
+
+Keep the objects separate. The $w_i$ in @eq-weff are realised sample weights and come with the sample error remainder. The $\psi_i$ above are population ex-post weights, and the $\phi_i$ average those weights over the assignment distribution. Saturated controls make realised effect weights non-negative in the binary-treatment case below; the design result instead supplies a non-negative representation under @eq-design-assignment, including for continuous treatments whose realised weights can remain negative.
+
 ### Where the square comes from
 
 Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i + \sum_i \tilde V_i e_i$; setting the error term aside as above, over the whole sample,
@@ -229,7 +258,7 @@ Let $D \in \{0, 1\}$ be a binary treatment and $X$ discrete strata $x \in \{1, \
 
 ### Angrist (1998): weighting by stratum
 
-Residualising $D_i$ on a full set of stratum indicators gives $\tilde D_i = D_i - \hat D(x)$, where $\hat D(x) = E[D \mid X = x]$. Saturation is what makes this the true cell proportion: the OLS projection on a complete set of dummies recovers the conditional mean exactly. Sum the effect weights $w_i = \tilde D_i D_i$ within a stratum:
+Residualising $D_i$ on a full set of stratum indicators gives $\tilde D_i = D_i - \hat D(x)$, where $\hat D(x)=n_x^{-1}\sum_{i\in x}D_i$ is the sample treatment fraction in cell $x$. Saturation makes the fitted value equal that cell mean exactly; its population counterpart is the propensity $p(x)=E[D\mid X=x]$. Sum the realised effect weights $w_i = \tilde D_i D_i$ within a stratum:
 
 $$w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i \in x} D_i = n_x \hat D(x) - n_x \hat D(x)^2 = n_x \hat D(x)(1 - \hat D(x))$$ {#eq-angrist-w}
 
@@ -545,7 +574,8 @@ In (A) the reweighted estimate agrees with the standard FE estimate — reweight
 
 1.  **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg); units that vary more dominate the slope.
 2.  **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates $\sum_i d_i x_i b_i / \sum_i d_i x_i$ with weights $d_i x_i = (x_i - \bar x) x_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with those weights. Keep the two weightings apart: $d_i^2$ weights the observed deviation slopes $s_i$, while $d_i x_i$ weights the structural $b_i$. They share a total, since $\sum_i d_i x_i = \sum_i d_i^2$, but individually differ by $d_i \bar x$, and $d_i x_i$ can be negative where a square cannot. Centering the treatment, $y_i = \alpha + b_i(x_i - \bar x) + e_i$, is what makes them coincide.
-3.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
-4.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
+3.  **Design-based specifications.** Negative realised effect weights do not permit sign reversal when @eq-design-assignment holds: the same population estimand has the non-negative ex-ante weights $\phi_i=\operatorname{Var}(V_i\mid X_i,\beta_i)$ in @eq-exante-weight. This guarantees convexity, not the ATE, and is distinct from finite-sample saturation.
+4.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
+5.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
 
 Everything here is the *effect* reading — weights on the unobservable $\beta_i$, answering what $\hat\beta$ estimates. The same FWL identity also weights the *observed* outcomes, a signed and fully computable combination that answers which rows drive the number and reaches, unchanged, into estimators far beyond OLS. That is the companion chapter, [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
