@@ -1046,3 +1046,37 @@ Figure PNGs byte-identical, so the printed weight shares (2.4%, 65%, 0.18%) stil
 `mjx-merror`, no unresolved crossrefs in either chapter. Ch. 13 is 439 lines, 11 chunks, 18
 equations; @eq-fwl/@eq-weff now render **13.2/13.3** (not 13.12/13.13 — the chapter is shorter),
 and Ch. 14's three crossrefs into it resolve.
+
+### Corrections from `chapter13_rewrite_suggestions.md` (2026-09-19)
+
+Codex left a review note in the repo root (untracked). Six items applied, two declined, one argued
+down.
+
+**The note's main correction was right, and the bug was mine.** @eq-weff defines the effect weight
+as `w_i = Ṽ_i V_i`; with an intercept only that is `d_i x_i`, **not** `d_i²`. My rebuild moved the
+ray figures under "One formula" and wrote "the weight is `w_i = d_i²`", which contradicts the
+chapter's own formula. Cutting the `s_i` material had deleted the old summary item 2, the one place
+that kept `d_i²` (weights on the deviation slopes) apart from `d_i x_i` (weights on the structural
+effects). Checked on the chapter's own n=100 sample: totals agree exactly (290.2155 both ways) but
+**49% of the effect weights are negative while no `d_i²` can be**. Section retitled "Where the
+identifying variation comes from", @eq-weight-split added (`w_i = d_i² + x̄ d_i`), and the negative
+share is now a live row in the table rather than an assertion.
+
+**Also applied.** "Near-equal shares are where the weighting does least" → where the *grouping by
+treatment status* does least; the reversed-share gap is `(1-2ρ)(ATT-ATU)`, zero at `ρ=0.5`, but the
+stratum weighting survives it. "The fix is weighted least squares" → "one response is", plus a
+paragraph on stayers (`σ̂_i²=0` makes the weight undefined, near-stayers explosive, and dropping
+them changes the population). "FE estimates the effect for the movers" → a within-variation-weighted
+average over units whose `x` moves. The side-by-side table's Słoczyński row now names the linearity
+condition, with equal propensity variance attached to the reversed-share form specifically.
+
+**Argued down.** The note calls the heading "Smaller groups get larger weights" too general because
+the weights depend on `V_0`, `V_1`. The *values* do; the direction does not:
+`∂w_1/∂ρ = -V_0V_1/(ρV_1+(1-ρ)V_0)² < 0` for any positive variances, checked numerically at
+`V_1/V_0` = 1, 1/15, 15. Heading kept (it is Słoczyński's own title) and the derivative added to the
+text as a strengthening.
+
+**Declined.** Moving "pulling the groups apart" to the panel chapter, and cutting to one ray figure
+— both re-litigate what xao decided in the rebuild. Data point if it comes back: the chapter is
+~4,700 words of prose against the note's suggested 3,500-4,000, and the four-figure sequence is the
+cheapest ~600 of them.

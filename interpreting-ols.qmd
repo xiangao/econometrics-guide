@@ -54,11 +54,17 @@ This is the chapter in one equation. The controls fix $\tilde V_i$, $\tilde V_i$
 
 @eq-fwl reads a second way, as a signed weighting of the observed outcomes rather than of the unobserved effects. That reading opens the companion chapter [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
 
-### What the weights look like
+### Where the identifying variation comes from
 
-Take the simplest case, $y$ on a single $x$ with an intercept. The only control is the constant, so $\tilde V_i = x_i - \bar x \equiv d_i$ and the weight is $w_i = d_i^2$, the squared distance from the mean of $x$. Squaring concentrates: a few points far from $\bar x$ can dominate the fit while most points near it contribute almost nothing.
+Take the simplest case, $y$ on a single $x$ with an intercept. The only control is the constant, so $\tilde V_i = x_i - \bar x \equiv d_i$.
 
-The figures draw $w_i$ as the thickness of the ray from the sample centroid $(\bar x, \bar y)$ to each point, with each point's share of the total weight printed beside it.
+Two quantities have to be kept apart here. The identifying variation is $\tilde V_i^2 = d_i^2$, the squared distance from the mean of $x$, which is what the denominator of @eq-fwl adds up. The effect weight is $w_i = \tilde V_i V_i = d_i x_i$. Substituting $x_i = d_i + \bar x$,
+
+$$w_i = d_i^2 + \bar x\, d_i$$ {#eq-weight-split}
+
+The two agree in total, since $\sum_i \bar x d_i = 0$ — that is @eq-square — and differ observation by observation by $\bar x d_i$. The difference is not cosmetic: in the hundred-point sample below every $d_i^2$ is positive while $49\%$ of the effect weights are negative. Centring the regressor, so that $\bar x = 0$, is what collapses the two into one.
+
+The figures draw the identifying variation $d_i^2$ as the thickness of the ray from the sample centroid $(\bar x, \bar y)$ to each point, with each point's share of the total printed beside it. Squaring concentrates it: a few points far from $\bar x$ can dominate the fit while most points near it contribute almost nothing.
 
 ```{r}
 #| fig-width: 5
@@ -115,12 +121,13 @@ segments(xb, yb, x, y, lwd = 0.3 + 10 * w / max(w), col = "#9E431870")
 abline(lm(y ~ x), lwd = 2.5, col = "#0E6473")
 points(xb, yb, pch = 21, bg = "white", col = "#0E6473", lwd = 2.5, cex = 1.8)
 
-vtab(c(`Weight 10 Nearest Mean (%)` = 100 * sum(w[o[91:100]]) / sum(w),
-        `Weight 10 Furthest (%)`     = 100 * sum(w[o[1:10]]) / sum(w),
-        `OLS Estimate`                = coef(lm(y ~ x))[["x"]]), 3)
+vtab(c(`Weight 10 Nearest Mean (%)`     = 100 * sum(w[o[91:100]]) / sum(w),
+        `Weight 10 Furthest (%)`         = 100 * sum(w[o[1:10]]) / sum(w),
+        `Effect Weights $d_ix_i < 0$ (%)` = 100 * mean((x - xb) * x < 0),
+        `OLS Estimate`                    = coef(lm(y ~ x))[["x"]]), 3)
 ```
 
-The $10\%$ of points furthest from $\bar x$ hold $35\%$ of the weight; the $10\%$ closest hold $0.14\%$. An observation sitting exactly at $\bar x$ has zero weight.
+The $10\%$ of points furthest from $\bar x$ hold $35\%$ of the identifying variation; the $10\%$ closest hold $0.14\%$. An observation sitting exactly at $\bar x$ contributes nothing. The last row gives the share of effect weights that are negative: $49\%$, in a sample where no $d_i^2$ can be.
 
 ## Binary treatment: OLS weights overlap
 
@@ -178,7 +185,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1$$ {#
 
 where $V_j$ is the variance of the propensity score within group $j$. This is exact for the effects of the within-group linear projections; for ATT and ATU it is exact when the group means are linear in $p$ and an approximation otherwise.
 
-Two things about @eq-sloc-main matter. First, the weight $w_1$ on ATT falls as the treated share $\rho$ rises: the larger the treated group, the smaller its say. That is the whole of "smaller groups get more weight." Second, when the propensity has equal variance in the two groups, $V_1 = V_0$, the weights collapse to the reversed shares,
+Two things about @eq-sloc-main matter. First, the weight $w_1$ on ATT falls as the treated share $\rho$ rises: the larger the treated group, the smaller its say. That is the whole of "smaller groups get more weight," and it does not depend on the propensity variances. Differentiating @eq-sloc-main, $\partial w_1/\partial\rho = -V_0 V_1/(\rho V_1 + (1 - \rho) V_0)^2 < 0$ for any $V_0, V_1 > 0$. The variances set the level of the weight, not the direction it moves. Second, when the propensity has equal variance in the two groups, $V_1 = V_0$, the weights collapse to the reversed shares,
 
 $$\hat\beta_{OLS} \approx (1 - \rho)\, \text{ATT} + \rho\, \text{ATU}$$ {#eq-reversed}
 
@@ -213,7 +220,7 @@ res <- cbind(`$\\rho \\approx 0.5$`  = compare(c(.08, .20, .50, .75, .93)),
 mtab(res, 4)
 ```
 
-The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `$\\max\\lvert\\text{weight diff}\\rvert$` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal treated and control shares are where the weighting does least. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. Nothing about the effects changed. Only the treated share did.
+The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `$\\max\\lvert\\text{weight diff}\\rvert$` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal shares are where the *grouping by treatment status* does least — the reversed-share gap is $(1 - 2\rho)(\text{ATT} - \text{ATU})$, identically zero at $\rho = 0.5$. That is not a general immunity. The stratum weighting of @eq-angrist survives it, and at any $\rho$ the coefficient still departs from the ATE when the effects line up with $\hat D(x)(1 - \hat D(x))$. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. Nothing about the effects changed. Only the treated share did.
 
 Why does OLS overweight the treated when they are few? The FWL residual is $\tilde D_i = D_i - \hat D(x)$. When $\rho$ is small, $\hat D(x)$ is small in most strata: a treated unit has $\tilde D_i = 1 - \hat D(x) \approx 1$, a control unit has $\tilde D_i = -\hat D(x) \approx 0$. Treated units are the unusual ones — they sit far from the stratum mean of $D$ — so they carry most of the leverage, the same way a point far from $\bar x$ dominates the simple regression. At $\rho = 0.09$ the reversed-share approximation puts weight $1 - \rho = 0.91$ on ATT and only $0.09$ on ATU, while the ATE puts $0.09$ on ATT and $0.91$ on ATU. In observational data where the treated group is small — a common setting — the OLS coefficient can be far from the population average effect even under unconfoundedness, purely because of the weighting.
 
@@ -225,7 +232,7 @@ The reversed-share Słoczyński approximation $(1-\rho)\,\text{ATT} + \rho\,\tex
 |---------------|---------------|---------------|---------------|---------------|
 | Observation rule | nothing | the unit effect $\beta_i$ | always | @eq-weff |
 | Angrist (1998) | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
-| Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | equal propensity variance | @eq-reversed |
+| Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | group means linear in $p$; reversed shares also need $V_1 = V_0$ | @eq-reversed |
 
 Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
 
@@ -249,7 +256,7 @@ with $V_{within} = E[\text{Var}(x \mid G)]$, $V_{between} = \text{Var}(E[x \mid 
 
 ### Within-unit weighting: an extreme case
 
-A fixed-effects estimate is identified by units whose $x$ changes over time. Units whose $x$ barely moves get near-zero weight regardless of their true effect. So the FE coefficient estimates the effect for the movers, not the population average. When the movers and the stayers have different effects, the two diverge.
+A fixed-effects estimate is identified by units whose $x$ changes over time. Units whose $x$ barely moves get near-zero weight regardless of their true effect. So the FE coefficient is a within-variation-weighted average over the units whose $x$ moves, not the population average. When the movers and the stayers have different effects, the two diverge.
 
 The simulation below constructs the extreme version. Half the units barely move and have a true slope of zero; the other half move a lot and have a true slope of two. The average slope across all units is one. The DGP draws $N = 1000$ units for $T = 6$ periods, with $y_{it} = b_i x_{it} + \alpha_i + \varepsilon_{it}$, $\alpha_i \sim N(0,1)$, $\varepsilon_{it} \sim N(0,1)$. Both groups have $E[x_{it}] = 0$, so they differ only in how much $x$ moves within a unit, not in its level.
 
@@ -396,9 +403,11 @@ In (A) all three numbers agree to within sampling noise: the weighting is there 
 
 FE still removes confounding from the unit effects $\alpha_i$ — that is its job, and it does it in both designs. What FE does not do is change the within-variance weighting. Even after demeaning, OLS leans on units whose $x$ moves more, and in design (B) those units happen to have higher slopes. The gap between the FE estimate and the plain average is not a failure of FE; it is what OLS does by construction, and it matters only when $b_i$ covaries with $\text{Var}_i(x)$. Without knowing the true slopes, the problem is undetectable from the data alone — the FE estimate looks well-behaved, standard errors are fine, it is just consistently estimating a different parameter than the simple average.
 
-**Reweighting to recover the simple average.** The fix is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. Running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate converges to the simple average of slopes rather than the variance-weighted average. This is the logic behind Gibbons, Suárez Serrato, and Urbancic (2018), who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.
+**Reweighting to recover the simple average.** One response is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. In this model, running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind Gibbons, Suárez Serrato, and Urbancic (2018), who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.
 
 The trade-off is efficiency. The high-variance units are the ones whose slope is best estimated — their $x$ moves a lot, so there is real information there. Downweighting them inflates the standard error. We are giving up precision to change which parameter we estimate.
+
+The weights are also not always available. A unit whose $x$ never moves has $\hat\sigma_i^2 = 0$, so its weight is undefined, and a unit that barely moves gets an explosive one. A panel with true stayers forces a choice — drop them or bound the weights — and either choice changes the population the estimate refers to. Inverse-within-variation weighting swaps a variation-weighted target for a unit-weighted one; whether that is the right swap depends on the estimand, not on the weighting being more neutral.
 
 The table below adds the reweighted FE estimate to both designs.
 
