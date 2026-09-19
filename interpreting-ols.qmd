@@ -146,7 +146,7 @@ Under heterogeneous effects, $\hat\beta_{OLS}$ is not generally the plain averag
 
 @eq-esi also shows why the weighting helps. The individual slope $s_i$ is most unstable when $d_i\approx0$, and the weight $d_i^2$ gives those observations almost no influence. With a binary regressor, the same calculation puts more weight on strata where treatment is close to a coin flip (Angrist 1998). If we aggregate by treatment status, it gives more weight to the smaller group (Słoczyński 2022). The rest of the chapter derives these two cases.
 
-**Simulation — deviation slopes versus true effects.** We check the algebra directly, drawing $n = 2000$ with heterogeneous slopes $b_i \sim N(1, 0.5^2)$, regressor $x_i \sim N(0, 2^2)$, and $y_i = b_i x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 2^2)$.
+The algebra leaves one question open. @eq-wavg and @eq-exact are statements about aggregates: the $d_i^2$-weighted average of the $s_i$ is $\hat\beta_{OLS}$ exactly, and the same weights on the $b_i$ give the value $\hat\beta_{OLS}$ is unbiased for. Neither says how close one $s_i$ is to its own $b_i$. A natural hope is that $s_i$ is a noisy but usable reading of unit $i$'s effect, so that sorting the $s_i$ sorts the units by effect size. The simulation tests that hope, and confirms the two aggregate identities in a finite sample. We draw $n = 2000$ units with heterogeneous slopes $b_i \sim N(1, 0.5^2)$ and regressor $x_i \sim N(0, 2^2)$, and set $y_i = b_i x_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 2^2)$. We then compare each $s_i$ with its own $b_i$, and the two weighted averages with `lm`.
 
 ```{r}
 set.seed(6)
@@ -166,9 +166,9 @@ mtab(cbind(value = c(
   `$E[\\beta \\mid x, b]$ (eq-exact)` = sum(d * x * b) / sum(d * x))), 3)
 ```
 
-The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, though the rank correlation is $0.26$, higher once the explosive tails near $\bar x$ are set aside. Their leverage-weighted average equals $\hat\beta_{OLS}$ exactly; that is @eq-wavg, an identity. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta$ estimates *in expectation* (@eq-exact) — and this sample's $\hat\beta = 0.95$ sits about two standard errors below it. The gap between $0.95$ and $0.99$ is ordinary sampling variation, not a failure of the weighting identity. @eq-exact pins down what $\hat\beta$ converges to across repeated samples; any single draw fluctuates around that target, and $0.95$ versus $0.99$ is well within the range one would expect. The structural relationship between the weights and the true slopes is exact and permanent; it is the realisation, not the identity, that is noisy.
+The hope fails. The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, rank correlation $0.26$, the latter higher once the explosive tails near $\bar x$ are set aside. The identities hold. The leverage-weighted average of the $s_i$ is $\hat\beta_{OLS}$ exactly; that is @eq-wavg. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta_{OLS}$ estimates in expectation (@eq-exact), and this sample's $\hat\beta_{OLS} = 0.95$ sits about two standard errors below it. That gap is sampling variation: @eq-exact fixes the target, not the realisation.
 
-Noise is not what distorts $s_i$. Turn it off entirely, set $y_i = b_i x_i$, and ask how well each $s_i$ tracks its own $b_i$:
+Is noise the reason $s_i$ misses $b_i$? Turn it off entirely, set $y_i = b_i x_i$, and ask again how well each $s_i$ tracks its own $b_i$.
 
 ```{r}
 y0 <- b * x
@@ -179,7 +179,9 @@ vtab(c(`$\\mathrm{cor}(s_i, b_i)$, no noise` = cor(s0, b),
         `OLS, noiseless`          = unname(coef(lm(y0 ~ x))[2])), 4)
 ```
 
-The correlation stays at $0.14$ with no noise in the data at all. The reason is visible in @eq-decomp: even without the error term, $s_i$ contains $\bar x(b_i - \bar b)/d_i$, which depends on every unit's slope through $\bar b$ and on every unit's position through $\bar x$. A ray from the centroid is anchored at $(\bar x, \bar y)$, and $\bar y$ shifts when any other unit's slope changes. So $s_i$ is a function of the entire sample, not of unit $i$ alone, and heterogeneity in the $b_i$ makes it impossible for any single ray to isolate its own unit's effect. Adding noise inflates the variance of $s_i$ further through the $(e_i - \bar e)/d_i$ term, but the low correlation is already present without it.
+The correlation stays at $0.14$ with no noise in the data at all. The reason is visible in @eq-decomp: even without the error term, $s_i$ contains $\bar x(b_i - \bar b)/d_i$, which depends on every unit's slope through $\bar b$ and on every unit's position through $\bar x$. A ray from the centroid is anchored at $(\bar x, \bar y)$, and $\bar y$ shifts when any other unit's slope changes. So $s_i$ is a function of the whole sample, not of unit $i$ alone, and heterogeneity in the $b_i$ makes it impossible for any single ray to isolate its own unit's effect. Noise through $(e_i - \bar e)/d_i$ inflates the variance of $s_i$ further, but the low correlation is already there without it.
+
+So $s_i$ has no reading on its own. The $d_i^2$-weighted average of the $s_i$ does, and it is exact. That aggregate targets a $d_i x_i$-weighted average of the $b_i$, and the rest of the chapter takes that object apart.
 
 ### Under homogeneity, the weights buy precision
 
