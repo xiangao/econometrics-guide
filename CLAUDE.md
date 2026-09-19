@@ -1005,3 +1005,44 @@ went away. 13.3 now has a single subsection.
 `_book/interpreting-ols_files/` carry tracked PNGs from older numberings (7, 10, 11, 12, 13) that no
 render produces any more. Harmless — every figure the page references exists — but they are dead
 weight; prune in a separate commit if it matters.
+
+## Revision (2026-09-19, later) — Ch. 13 rebuilt on a new spine
+
+xao asked Codex to make Ch. 13 focused and concise. Codex cut it from 520 lines to 154: **all 11
+code chunks gone** (every simulation and figure), 31 equations down to 10, Słoczyński dropped
+entirely and left orphaned in `references.qmd`, and the two surviving numbers (1.53, 1.99) were
+hand-computed hypotheticals rather than executed output. It also renamed the effect weight to
+`ω_i` — the symbol Ch. 14 reserves for **outcome** weights, which is the one distinction the
+two-chapter pair exists to draw — and switched `V`/`Ṽ` to `D`/`D̃`, which broke Ch. 14's own
+description of this chapter at its lines 18 and 22.
+
+xao: "Now i feel it has cut too much content." Resolution, his choice of the three options offered:
+**keep Codex's spine, restore the evidence, revert the notation.**
+
+**Kept from Codex.** The main point stated up front as a block quote ("OLS gives more weight to
+comparisons where the regressor varies more, once the controls have been partialled out"); the
+"One formula" FWL core as the chapter's spine; the section order (one rule → binary → panel → when
+it matters → start with the estimand); the closing "Start with the estimand" section; and the gap
+identity `Σw_iβ_i/Σw_i − β̄ = Cov_n(w_i, β_i)/w̄` (@eq-weight-gap), which states when the weighting
+changes the answer better than anything in the old chapter.
+
+**Restored.** All 11 chunks, verbatim from 07a5400 — the four ray figures, the 400,000-observation
+Angrist/Słoczyński simulation, the movers simulation, the `park()` shift simulation, the
+three-panel within/between figure, and both `compareAB` tables. Słoczyński's derivation and the
+three-side-by-side table came back with them.
+
+**Deliberately left out** (xao's call): the `s_i` deviation-slope build-up (old 13.1-13.2,
+@eq-si/@eq-wavg/@eq-decomp/@eq-esi/@eq-exact/@eq-precision) and the within/between *derivation*
+(@eq-totcov/@eq-totvar/@eq-within-comp/@eq-between-comp/@eq-slopes/@eq-two-group). The
+within/between *result* @eq-pooled stays as a stated equation with a one-sentence justification,
+because the `park()` simulation and the three-panel figure are meaningless without it.
+
+**Notation.** Back to `V`, `Ṽ_i`, `w_i = Ṽ_iV_i`, effects `β_i`. No edit to Ch. 14 was needed;
+its lines 18 and 22 describe this chapter correctly again.
+
+**Verified.** Render exit 0. All 114 rendered table cells identical to 07a5400 except the three
+side-by-side rows edited on purpose, so every number cited in the prose still matches live output.
+Figure PNGs byte-identical, so the printed weight shares (2.4%, 65%, 0.18%) still hold. No
+`mjx-merror`, no unresolved crossrefs in either chapter. Ch. 13 is 439 lines, 11 chunks, 18
+equations; @eq-fwl/@eq-weff now render **13.2/13.3** (not 13.12/13.13 — the chapter is shorter),
+and Ch. 14's three crossrefs into it resolve.

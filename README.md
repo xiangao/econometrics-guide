@@ -131,7 +131,7 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > which is all fixed effects does. Every cited number was verified against live output.
 
 > **2026-08-05:** Split **Interpreting OLS** into two chapters — *Effect Weights* (the original,
-> retitled: leverage weighting, `sᵢ`-vs-`bᵢ`, Angrist, Słoczyński, within/between) and a new
+> retitled: leverage weighting, Angrist, Słoczyński, within/between) and a new
 > *Outcome Weights* chapter. The new chapter reads the coefficient as `β̂ = Σ ωᵢ yᵢ`, a signed
 > weighting of the observed outcomes: it draws the weights, derives the two-dot slope construction
 > (`β̂` is the rise-over-run between the `|d|`-weighted centroids of the two sides of the mean), and
@@ -173,3 +173,13 @@ Materials drawn from Davidson and MacKinnon's *Econometric Theory and Methods*, 
 > 2018), and an intercept in the weights avoids that case. New render dep: `synthdid`. Also folded
 > code blocks by default across all four books and narrowed two-column result tables so label and
 > value stay readable. Rendered clean; every cited number verified against live output.
+
+> **2026-09-19:** **Interpreting OLS: Effect Weights** (Ch. 13) rebuilt on a tighter spine. The
+> chapter now opens with its main point in one sentence — OLS weights comparisons by how much the
+> regressor varies once the controls are partialled out — derives that rule once from FWL, then
+> evaluates it in three settings: overlap weighting under a saturated binary regression (Angrist
+> 1998), the reversed ATT/ATU shares (Słoczyński 2022), and within-variation weighting under fixed
+> effects. A new identity, `Σwᵢβᵢ/Σwᵢ − β̄ = Covₙ(wᵢ, βᵢ)/w̄`, says exactly when the weighting moves
+> the answer. All simulations and figures retained. Dropped: the deviation-slope build-up, the
+> within/between derivation (the result is kept, the derivation is in the Panel Data chapter), and
+> a short-lived section on Borusyak-Hull ex-ante weights.

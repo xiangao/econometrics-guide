@@ -12,35 +12,53 @@ vtab <- function(x, d = 3) knitr::kable(data.frame(value = round(x, d)), col.nam
 mtab <- function(x, d = 3) knitr::kable(round(x, d))
 ```
 
-An OLS regression returns one number, $\hat\beta$. What that number estimates when effects are heterogeneous, and how each observation contributes to it, depends on the geometry of the sample and on what else is in the model. This chapter derives the implicit weights OLS uses, and follows them across cross-sectional and panel settings.
+An OLS regression returns one number. If every observation has the same effect, that number is the effect. If effects differ, OLS still returns one number, and it is generally not the plain average effect. It is a weighted average, and the specification chooses the weights.
+
+The main point of this chapter is one sentence:
+
+> OLS gives more weight to comparisons where the regressor varies more, once the controls have been partialled out.
+
+That one rule produces the overlap weighting of a saturated cross-sectional regression and the within-variation weighting of fixed effects. The chapter derives it, evaluates the weights in each setting, and asks when they change the answer.
 
 Two companion notes work through related applications in causal inference: [Weights in OLS in causal inference](https://xiangao.github.io/blog_book/weights-ols.html) and [OLS cannot be ATE](https://xiangao.github.io/blog_book/ols-ate.html).
 
-## OLS as a weighted average
+## One formula
 
-Start with a simple regression of $y$ on $x$ with an intercept:
+Let $V$ be the regressor of interest and $X$ the controls, including an intercept, and let the effect differ across observations:
 
-$$ y_i = \alpha + \beta x_i + e_i $$ {#eq-simple}
+$$y_i = \beta_i V_i + X_i'\gamma + e_i$$ {#eq-het}
 
-The OLS slope is the familiar ratio of a covariance to a variance:
+Write $\bar\beta = n^{-1}\sum_i \beta_i$ for the plain average effect. Regress $V$ on $X$, call the fitted value $\hat V_i$ and the residual $\tilde V_i = V_i - \hat V_i$. By the Frisch–Waugh–Lovell theorem,
 
-$$\hat\beta = \frac{\sum_{i=1}^n (x_i - \bar x)(y_i - \bar y)}{\sum_{i=1}^n (x_i - \bar x)^2}$$ {#eq-slope}
+$$\hat\beta_{OLS} = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}$$ {#eq-fwl}
 
-Now give each observation its own slope through the sample centroid $(\bar x, \bar y)$:
+Be careful what $\tilde V_i$ is. A single observation has no variation of its own; variation belongs to a collection. What it has is a *deviation* — how far its regressor sits from what the rest of the model predicts for it. With only an intercept, that is distance from the grand mean. With unit fixed effects, it is distance from the unit's own mean. Which mean gets subtracted is the most consequential detail in this section, and we come back to it.
 
-$$s_i \equiv \frac{y_i - \bar y}{x_i - \bar x}$$ {#eq-si}
+Substitute @eq-het into @eq-fwl:
 
-Write $d_i \equiv x_i - \bar x$ for the horizontal distance from the centroid, and $w_i \equiv d_i^2$. Multiply and divide each term of @eq-slope by $d_i$ and it rearranges into
+$$ \hat\beta_{OLS} = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i} + \frac{\sum_{i=1}^n \tilde V_i e_i}{\sum_{i=1}^n \tilde V_i^2}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
 
-$$\hat\beta = \frac{\sum_{i=1}^n d_i^2 s_i}{\sum_{i=1}^n d_i^2} = \frac{\sum_{i=1}^n w_i s_i}{\sum_{i=1}^n w_i}$$ {#eq-wavg}
+The control term drops out because $\tilde V$ is orthogonal to $X$ by construction.  The error term does not.  It vanishes in conditional expectation when $E[e_i \mid V, X, \beta] = 0$, and in probability under the usual orthogonality and large-sample conditions.  That is when the weighted-average reading is the right one.  The outcome-weight identity in the companion chapter carries no such remainder --- it is exact in every sample.
 
-So $\hat\beta$ is an exact weighted average of the deviation slopes $s_i$, and the weight each observation carries is its squared distance from the mean of $x$.
+The denominator is a sum of squares. Split $V_i = \hat V_i + \tilde V_i$; the cross term $\sum_i \tilde V_i \hat V_i$ vanishes by OLS orthogonality, so
+
+$$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
+
+and $\sum_i w_i \ge 0$ always. A single $w_i$ is under no such constraint — it is negative whenever $\tilde V_i$ and $V_i$ have opposite signs. Non-negativity of the total says nothing about the terms.
+
+When the remainder vanishes,
+
+$$E[\hat\beta_{OLS} \mid V, X, \beta] = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i}$$ {#eq-effect-target}
+
+This is the chapter in one equation. The controls fix $\tilde V_i$, $\tilde V_i$ fixes the weights, and the weights fix which average of the $\beta_i$ OLS estimates. Three things follow. Changing the controls changes the weights, so it changes the estimand and not merely the precision. Individual weights can be negative. And if $\beta_i = \beta$ for everyone the weights stop mattering, since every weighted average of a constant is that constant.
+
+@eq-fwl reads a second way, as a signed weighting of the observed outcomes rather than of the unobserved effects. That reading opens the companion chapter [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
 
 ### What the weights look like
 
-The weights are highly concentrated. Because they grow with the *square* of distance from $\bar x$, a few points far from the mean can dominate the estimate while most points near the mean contribute almost nothing. The examples below show how adding or moving a single observation redistributes the weights across the entire sample.
+Take the simplest case, $y$ on a single $x$ with an intercept. The only control is the constant, so $\tilde V_i = x_i - \bar x \equiv d_i$ and the weight is $w_i = d_i^2$, the squared distance from the mean of $x$. Squaring concentrates: a few points far from $\bar x$ can dominate the fit while most points near it contribute almost nothing.
 
-The figures draw the weights $w_i$ of @eq-wavg as the thickness of each ray from the centroid.
+The figures draw $w_i$ as the thickness of the ray from the sample centroid $(\bar x, \bar y)$ to each point, with each point's share of the total weight printed beside it.
 
 ```{r}
 #| fig-width: 5
@@ -60,7 +78,7 @@ show <- function(x, y, main = "") {
 show(c(1, 3), c(2, 8), "Two Points")
 ```
 
-With two points the weights are equal, $50\%$ each, and both $s_i$ are just the line through the pair.
+With two points the weights are equal, $50\%$ each.
 
 ```{r}
 #| fig-width: 5
@@ -68,7 +86,7 @@ With two points the weights are equal, $50\%$ each, and both $s_i$ are just the 
 show(c(1, 3, 4), c(2, 8, 5), "Three Points")
 ```
 
-Add a third point at $x=4$ and $\bar x$ moves to $2.67$. The point at $x=3$ now sits almost on top of $\bar x$, so it takes only $2.4\%$ of the weight even though its deviation slope is the largest of the three ($s_2 = 9.0$).
+Add a third point at $x=4$ and $\bar x$ moves to $2.67$. The point at $x=3$ now sits almost on top of $\bar x$, so it takes only $2.4\%$ of the weight.
 
 ```{r}
 #| fig-width: 5
@@ -78,7 +96,7 @@ show(c(1, 3, 4, 9), c(2, 8, 5, 6), "Four Points")
 
 Add an extreme point at $x=9$ and $\bar x$ moves to $4.25$. That one observation now carries $65\%$ of the total weight, while $x=4$ falls to $0.18\%$ because it has landed near the new centroid. The weights are relative to the whole sample: add data anywhere and the weights everywhere change.
 
-**Simulation — a 100-point sample.** The concentration does not wash out in larger samples. We draw $n = 100$ points, $x_i \sim N(5, 2^2)$ and $y_i = 2 x_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 3^2)$, and compare the weight held by the ten points nearest $\bar x$ against the ten furthest.
+The concentration does not wash out in larger samples. We draw $n = 100$ points, $x_i \sim N(5, 2^2)$ and $y_i = 2 x_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 3^2)$, and compare the weight held by the ten points nearest $\bar x$ against the ten furthest.
 
 ```{r}
 #| fig-width: 6.5
@@ -102,101 +120,13 @@ vtab(c(`Weight 10 Nearest Mean (%)` = 100 * sum(w[o[91:100]]) / sum(w),
         `OLS Estimate`                = coef(lm(y ~ x))[["x"]]), 3)
 ```
 
-The $10\%$ of points furthest from $\bar x$ hold $35\%$ of the weight; the $10\%$ closest hold $0.14\%$. A point sitting exactly at $\bar x$ has an undefined $s_i$ and zero weight: the wild value arrives paired with a weight that annihilates it.
+The $10\%$ of points furthest from $\bar x$ hold $35\%$ of the weight; the $10\%$ closest hold $0.14\%$. An observation sitting exactly at $\bar x$ has zero weight.
 
-## Deviation slopes $s_i$ versus true effects $b_i$
+## Binary treatment: OLS weights overlap
 
-Now let each unit have its own structural slope $b_i$:
-
-$$ y_i = \alpha + b_i x_i + e_i $$ {#eq-het}
-
-$b_i$ is a parameter we never see. $s_i$ from @eq-si is computed from the data. The two are not the same object, we observe $s_i$, but are interested in $b_i$, or function of $b_i$.
-
-### Decomposing $s_i$
-
-Let $\bar b = n^{-1}\sum_i b_i$ and $C = n^{-1}\sum_i (b_i - \bar b)(x_i - \bar x)$, the sample covariance between $b$ and $x$. Substituting $x_i = d_i + \bar x$ into @eq-het,
-
-$$s_i = b_i + \frac{\bar x (b_i - \bar b) - C}{d_i} + \frac{e_i - \bar e}{d_i}$$ {#eq-decomp}
-
-The middle term is the trouble. When effects are heterogeneous ($b_i \neq \bar b$) it does not vanish, and dividing it by $d_i$ makes $s_i$ blow up for points near $\bar x$ — before any noise enters. Taking expectations over $e_i$,
-
-$$E[s_i \mid x, b] = b_i + \frac{\bar x (b_i - \bar b) - C}{d_i} \neq b_i$$ {#eq-esi}
-
-So $s_i$ is biased for $b_i$, observation by observation.
-
-### Aggregating up to $\hat\beta_{OLS}$
-
-Take the $d_i^2$-weighted expectation of $s_i$, combining @eq-wavg and @eq-esi:
-
-$$E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_i d_i^2 E[s_i \mid x, b]}{\sum_i d_i^2} = \frac{\sum_i d_i^2 b_i + \bar x \sum_i d_i (b_i - \bar b) - C \sum_i d_i}{\sum_i d_i^2}$$ {#eq-agg}
-
-Because $\sum_i d_i = 0$ and $\sum_i d_i (b_i - \bar b) = n C$, the numerator collapses:
-
-$$\sum_i d_i^2 E[s_i \mid x, b] = \sum_i d_i^2 b_i + n \bar x C = \sum_i b_i d_i (d_i + \bar x) = \sum_i b_i d_i x_i$$ {#eq-num}
-
-And since $\sum_i d_i^2 = \sum_i d_i x_i$, we get the exact expectation:
-
-$$E[\hat\beta_{OLS} \mid x, b] = \frac{\sum_{i=1}^n d_i x_i b_i}{\sum_{i=1}^n d_i x_i} = \frac{\sum_{i=1}^n (x_i - \bar x) x_i b_i}{\sum_{i=1}^n (x_i - \bar x)^2}$$ {#eq-exact}
-
-So the OLS estimator is unbiased for a weighted average of $b_i$'s.
-
-### What this implies
-
-Under heterogeneous effects, $\hat\beta_{OLS}$ is not generally the plain average $\bar b=E[b_i]$. It averages the $b_i$ using $d_i x_i=(x_i-\bar x)x_i$, which can be negative. It equals the ATE only when the effects are uncorrelated with these weights.
-
-@eq-decomp says more than that $s_i$ is biased. Even with the error term switched off, $s_i$ carries $\bar x(b_i-\bar b)/d_i$, which depends on every unit's slope through $\bar b$ and on every unit's position through $\bar x$. A ray from the centroid is anchored at $(\bar x,\bar y)$, and $\bar y$ moves when any other unit's slope changes. So $s_i$ is a function of the whole sample, not of unit $i$ alone, and no single ray can isolate its own unit's effect. The $d_i^2$-weighted average of the $s_i$ is the only reading that survives, and by @eq-wavg it is exact.
-
-@eq-esi also shows why the weighting helps. The individual slope $s_i$ is most unstable when $d_i\approx0$, and the weight $d_i^2$ gives those observations almost no influence. With a binary regressor, the same calculation puts more weight on strata where treatment is close to a coin flip (Angrist 1998). If we aggregate by treatment status, it gives more weight to the smaller group (Słoczyński 2022). The rest of the chapter derives these two cases.
-
-### Under homogeneity, the weights buy precision
-
-If $b_i = b$ for all $i$, @eq-decomp reduces to $s_i = b + (e_i - \bar e)/d_i$. With homoskedastic errors $\text{Var}(e_i) = \sigma^2$,
-
-$$E[s_i \mid X] = b, \qquad \text{Var}(s_i \mid X) = \frac{\sigma^2 (1 - 1/n)}{d_i^2} \propto \frac{1}{d_i^2}$$ {#eq-precision}
-
-Now $w_i = d_i^2$ is exactly the inverse-variance weight. Any weighting of the $s_i$ — equal, $d_i^2$, anything — is unbiased for $b$; what the weights buy is precision, not correctness, and $d_i^2$ is the choice that minimises variance. That is OLS as BLUE. The argument is conditional on $X$, where $d_i$ is a known constant and the weights are functions of $x$ alone.
-
-## The general rule: FWL
-
-The panel chapter met two weightings — by $T_i$ when a panel is unbalanced, and by variance when a regression mixes within and between variation.
-
-Regress $y$ on a regressor of interest $V$ and a control matrix $X$, and let $\tilde V$ be the residual from projecting $V$ on $X$. By the Frisch–Waugh–Lovell theorem,
-
-$$\hat\beta = \frac{\sum_{i=1}^n \tilde V_i y_i}{\sum_{i=1}^n \tilde V_i^2}$$ {#eq-fwl}
-
-Be careful what $\tilde V_i$ is. A single observation has no variation of its own; variation belongs to a collection. What it has is a *deviation* — how far its regressor sits from what the rest of the model predicts for it. With only an intercept, that is distance from the grand mean. With unit fixed effects, it is distance from the unit's own mean. Which mean gets subtracted is the most consequential detail in this section, and we come back to it.
-
-@eq-fwl reads two ways. This chapter takes the first; the second opens the companion chapter [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
-
-**Weights on effects.** Under a heterogeneous model $y_i = \beta_i V_i + X_i \gamma + e_i$, substituting into @eq-fwl gives
-
-$$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i} + \frac{\sum_{i=1}^n \tilde V_i e_i}{\sum_{i=1}^n \tilde V_i^2}, \qquad w_i = \tilde V_i V_i $$ {#eq-weff}
-
-The control term drops out because $\tilde V$ is orthogonal to $X$ by construction.  The error term does not.  It vanishes in conditional expectation when $E[e_i \mid V, X, \beta] = 0$, and in probability under the usual orthogonality and large-sample conditions.  That is when the weighted-average reading is the right one.  The outcome-weight identity in the companion chapter carries no such remainder --- it is exact in every sample.
-
-### Why the weights sum to a sum of squares
-
-The weights in @eq-weff are $w_i = \tilde V_i V_i$, and the denominator that normalises them is written $\sum_i \tilde V_i^2$. Why are those the same number, and why does the identity not carry down to the individual terms?
-
-Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i + \sum_i \tilde V_i e_i$; setting the error term aside as above, over the whole sample,
-
-$$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
-
-because $\tilde V$ is orthogonal to the fitted part of $V$: split $V_i = \hat V_i + \tilde V_i$ and the cross term $\sum_i \tilde V_i \hat V_i$ vanishes. So the weights sum to a sum of squares and $\sum_i w_i \ge 0$ always. A single $w_i$ is under no such constraint — it is negative whenever $\tilde V_i$ and $V_i$ have opposite signs. Non-negativity of the total says nothing about the terms.
-
-In a panel, several rows share a unit, and it is natural to ask whether the same identity holds *within a single unit* — summed over that unit's own $t$'s — and not only over the whole sample. It does. Write $V_{it}$ for the observation and $\bar V_i$ for the unit's own mean. With unit fixed effects $\tilde V_{it} = V_{it} - \bar V_i$, and expanding the product gives the within-unit version directly,
-
-$$\sum_{t=1}^{T} (V_{it} - \bar V_i) V_{it} = \sum_{t=1}^{T} V_{it}^2 - T \bar V_i^{\,2} = \sum_{t=1}^{T} (V_{it} - \bar V_i)^2$$ {#eq-within-square}
-
-So a unit's total weight under fixed effects is its own within sum of squares, $T$ times its within-variance. A unit whose regressor barely moves carries almost none of the estimate, whatever its effect. The fixed-effects results later in the chapter follow from this.
-
-## Two causal decompositions: Angrist and Słoczyński
-
-@eq-weff says the coefficient is a weighted average of effects with weights $w_i = \tilde V_i V_i$; everything below only evaluates those weights. Angrist reads them at the stratum level. Słoczyński reads the same weights one level up, grouped by treatment status, where they come out reversed relative to the natural shares of the ATE.
+Now evaluate $w_i = \tilde V_i V_i$ for a binary treatment with saturated controls. Two readings of the same weights follow: Angrist sorts them by covariate stratum, Słoczyński sorts them by treatment status.
 
 Let $D \in \{0, 1\}$ be a binary treatment and $X$ discrete strata $x \in \{1, \dots, K\}$, with the controls saturated — one indicator per stratum, so no functional form is imposed within cells. Discreteness is essential: saturated controls require a finite number of cells, so continuous $X$ cannot be saturated. With continuous controls the linear projection $\hat D(X)$ is not the cell proportion — it is a linear approximation that can fall outside $[0, 1]$ — and the stratum-by-stratum decomposition below does not go through. With continuous $X$ one could bin it, but the result then holds for the chosen bins, not for $X$ itself.
-
-### Angrist (1998): weighting by stratum
 
 Residualising $D_i$ on a full set of stratum indicators gives $\tilde D_i = D_i - \hat D(x)$, where $\hat D(x)=n_x^{-1}\sum_{i\in x}D_i$ is the sample treatment fraction in cell $x$. Saturation makes the fitted value equal that cell mean exactly; its population counterpart is the propensity $p(x)=E[D\mid X=x]$. Sum the realised effect weights $w_i = \tilde D_i D_i$ within a stratum:
 
@@ -204,7 +134,7 @@ $$w_x = \sum_{i \in x} \tilde D_i D_i = \sum_{i \in x} D_i^2 - \hat D(x) \sum_{i
 
 Nothing new has been added: it is $w_i = \tilde V_i V_i$ from @eq-weff with a binary $V$, where $D_i^2 = D_i$ makes the sum collapse. The maximum at $\hat D(x) = 1/2$ is just the fact that a binary variable has most variance when it is a coin flip.
 
-Note what plays the role of $s_i$ here. A single observation with a binary regressor has no slope; you need one treated and one control unit to form a difference. The smallest unit carrying an effect is therefore the *stratum*, and $s_i$ becomes the stratum difference in means.
+A single observation with a binary regressor has no slope of its own: forming a difference takes one treated and one control unit. The smallest unit that carries an effect here is the stratum, so what gets weighted is the stratum difference in means.
 
 A word on the labels before going further. $\hat\delta_x$ is a difference in *observed* means within a stratum. Calling the aggregate an ATT or an ATE needs the usual identification conditions: conditional exchangeability, so that treatment is as good as randomly assigned within a stratum, and overlap, so that each stratum holds both treated and control units. Saturation delivers the algebra, not the interpretation. Without those conditions the formulas below still hold exactly, but they describe weighted averages of observed contrasts rather than causal effects. The weighting is what OLS does; whether the thing being weighted is an effect is settled outside the regression.
 
@@ -214,7 +144,7 @@ $$\hat\beta_{OLS} = \frac{\sum_{x=1}^K n_x \hat D(x)(1 - \hat D(x))\, \hat\delta
 
 so strata with propensity near $\hat D(x) = 0.5$ get the most weight per observation. A stratum that contains only treated or only control units has $\hat D(x) = 1$ or $0$, so $w_x = 0$: it drops out entirely, because there is no within-stratum comparison to make. A linear model with continuous controls would extrapolate into those strata instead of dropping them.
 
-### Słoczyński (2022): aggregating to two groups
+## Smaller groups get larger weights
 
 Angrist sorts by covariate stratum. Słoczyński sorts by treatment status instead, collapsing everything into two numbers — the effect on the treated and the effect on the untreated. Aggregating the stratum effects $\hat\delta_x$ of @eq-angrist with each stratum's count of treated or untreated units gives
 
@@ -293,17 +223,29 @@ The reversed-share Słoczyński approximation $(1-\rho)\,\text{ATT} + \rho\,\tex
 
 | Decomposition | Sorted by | Smallest effect unit | Exact when | Reference |
 |---------------|---------------|---------------|---------------|---------------|
-| Observation rule | nothing | $s_i$ | always (identity) | @eq-wavg |
+| Observation rule | nothing | the unit effect $\beta_i$ | always | @eq-weff |
 | Angrist (1998) | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
 | Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | equal propensity variance | @eq-reversed |
 
-Read down the last column. The observation identity always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
+Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
 
-## Within versus between, in panels
+## Fixed effects: OLS weights movers
 
-Pooled OLS mixes two sources of variation: within-unit, the deviations from a unit's own mean, and between-unit, the differences across unit means. Which one dominates is not chosen; it follows from the same rule. Take the within side first.
+In a panel the same rule applies with a different mean subtracted. Unit fixed effects residualise against unit dummies, so $\tilde V_{it} = V_{it} - \bar V_i$, and grouping the observation weights by unit gives that unit's total weight,
 
-Nothing new happens here — it is the opening leverage rule with a different mean subtracted. @eq-fwl weights every observation by its squared deviation $\tilde V_i^2$ from whatever the controls predict for it; @eq-weff weights each effect by $w_i = \tilde V_i V_i$. Simple OLS residualises against an intercept alone, so the deviation is from the grand mean and $w_i = (x_i - \bar x)^2$, the leverage of @eq-wavg. Panel fixed effects residualises against unit dummies, so the deviation is from the unit's *own* mean and $w_i = \sum_t (x_{it} - \bar x_i)^2$ by @eq-within-square. Pooled OLS drops the dummies and is back to distance from the grand mean — which is exactly why the between comparison creeps back in. So the whole section is @eq-wavg read with the unit mean in place of the grand mean.
+$$W_i = \sum_{t=1}^{T} (V_{it} - \bar V_i) V_{it} = \sum_{t=1}^{T} (V_{it} - \bar V_i)^2$$ {#eq-within-square}
+
+its own within sum of squares. So
+
+$$E[\hat\beta_{FE} \mid V, \beta] = \frac{\sum_i W_i \beta_i}{\sum_i W_i}$$ {#eq-fe-target}
+
+A unit whose treatment never changes has $W_i = 0$ and contributes nothing, whatever its effect. Demeaning removes time-invariant confounding; it does not make every unit equally influential.
+
+Pooled OLS drops the dummies, so its deviation is from the grand mean and both channels are in play. Conditioning on the unit and applying the laws of total variance and total covariance splits $\text{Cov}(x,y)$ and $\text{Var}(x)$ each into a within and a between piece, and the pooled slope comes out as a convex combination of the two channel slopes,
+
+$$\text{plim}\;\hat\beta_{OLS} = \frac{V_{within}\, \beta_{within} + V_{between}\, \beta_{between}}{V_{within} + V_{between}}$$ {#eq-pooled}
+
+with $V_{within} = E[\text{Var}(x \mid G)]$, $V_{between} = \text{Var}(E[x \mid G])$, and each $\beta$ the corresponding covariance over variance. Fixed effects removes $V_{between}$ by demeaning and isolates $\beta_{within}$. With two equal groups $V_{between} = \tfrac{1}{4}\Delta\mu^2$, so pulling the group means apart inflates the between weight without touching a single within slope. The [Panel Data Models](panel-data.qmd) chapter develops the decomposition itself.
 
 ### Within-unit weighting: an extreme case
 
@@ -333,49 +275,9 @@ mtab(cbind(value = c(
   `weight held by the steady half (%)`  = 100 * sum(wg[1:half]) / sum(wg))), 3)
 ```
 
-Both estimates are near $2$, not the simple average of $1$. The steady units hold under half of one percent of the FE weight: their six observations sit almost on top of their own unit mean, and squaring those tiny deviations puts them nowhere in the sum. Pooled OLS agrees because both groups have $E[x_{it}] = 0$ — there is no between-group difference in $x$ levels, so $V_{between} = 0$ and pooled OLS collapses to $\beta_{within}$. Both estimators weight by variance, and the movers contribute $\sigma^2 = 9$ against the steady group's $0.04$, so neither comes close to the simple average. The two estimators diverge only when the group means of $x$ differ, creating a between channel with its own slope. The next subsection shifts the steady group's mean $x$ away from zero and shows FE holding steady while pooled OLS collapses toward the between-slope.
+Both estimates are near $2$, not the simple average of $1$. The steady units hold under half of one percent of the FE weight: their six observations sit almost on top of their own unit mean, and squaring those tiny deviations puts them nowhere in the sum. Pooled OLS agrees because both groups have $E[x_{it}] = 0$ — there is no between-group difference in $x$ levels, so $V_{between} = 0$ and pooled OLS collapses to $\beta_{within}$. Both estimators weight by variance, and the movers contribute $\sigma^2 = 9$ against the steady group's $0.04$, so neither comes close to the simple average. The two estimators diverge only when the group means of $x$ differ, creating a between channel with its own slope. Shift the steady group's mean $x$ away from zero and the two part company.
 
-### Splitting the two channels
-
-That result was about the *within-unit* deviation. Plain pooled OLS uses distance from the grand mean instead, and the two coincided above only because both halves were built around zero. Separate them and the algebra says exactly what happens.
-
-Let $G$ index groups — any number of them, any sizes — with shares $p_g$, group means $\mu_g = E[x \mid G=g]$ and $\bar y_g = E[y \mid G=g]$, within-group variances $\sigma_g^2$, and true slopes $\beta_g$. The pooled slope is $\text{plim}\;\hat\beta_{OLS} = \text{Cov}(x, y)/\text{Var}(x)$, and the whole derivation is one move: condition on $G$ and split numerator and denominator each into a within piece and a between piece. The laws of total covariance and total variance do this exactly,
-
-$$\text{Cov}(x, y) = \underbrace{E[\text{Cov}(x, y \mid G)]}_{\text{within}} + \underbrace{\text{Cov}(E[x \mid G],\, E[y \mid G])}_{\text{between}}$$ {#eq-totcov}
-
-$$\text{Var}(x) = \underbrace{E[\text{Var}(x \mid G)]}_{\text{within}} + \underbrace{\text{Var}(E[x \mid G])}_{\text{between}}$$ {#eq-totvar}
-
-Name each variance, and define each slope as its own covariance over its own variance:
-
-$$V_{within} = E[\text{Var}(x \mid G)], \qquad \beta_{within} = \frac{E[\text{Cov}(x, y \mid G)]}{E[\text{Var}(x \mid G)]}$$ {#eq-within-comp}
-
-$$V_{between} = \text{Var}(E[x \mid G]), \qquad \beta_{between} = \frac{\text{Cov}(E[x \mid G],\, E[y \mid G])}{\text{Var}(E[x \mid G])}$$ {#eq-between-comp}
-
-With those definitions the within numerator of @eq-totcov *is* $V_{within}\beta_{within}$ and the between numerator *is* $V_{between}\beta_{between}$ — no algebra, just the definitions. Dividing @eq-totcov by @eq-totvar therefore gives the pooled slope as a convex combination,
-
-$$\text{plim}\;\hat\beta_{OLS} = \frac{V_{within}\, \beta_{within} + V_{between}\, \beta_{between}}{V_{within} + V_{between}}$$ {#eq-pooled}
-
-Nothing here used how many groups there are or that they are balanced; @eq-pooled holds for any grouping — including $G$ = the panel unit, with $N$ groups of sizes $T_i$. The only modelling input is $\text{Cov}(x, y \mid G=g) = \beta_g \sigma_g^2$, that within a group the error is uncorrelated with $x$. It makes $\beta_{within}$ an explicit share- and variance-weighted average of the group slopes, and leaves $\beta_{between}$ as the across-group regression of the group $y$-means on the group $x$-means:
-
-$$\beta_{within} = \frac{\sum_g p_g \beta_g \sigma_g^2}{\sum_g p_g \sigma_g^2}, \qquad
-\beta_{between} = \frac{\sum_g p_g (\mu_g - \bar\mu)(\bar y_g - \bar\mu_y)}{\sum_g p_g (\mu_g - \bar\mu)^2}$$ {#eq-slopes}
-
-with grand means $\bar\mu = \sum_g p_g \mu_g$ and $\bar\mu_y = \sum_g p_g \bar y_g$.
-
-The two-equal-group case in the simulation below is where these collapse to closed forms. Equal shares turn the averages into $\tfrac12$'s. The two group means then form a fair two-point variable, and such a variable taking values $a_1, a_2$ has variance $\tfrac14(a_1 - a_2)^2$ — that is where the $\tfrac14$ comes from — so
-
-$$V_{within} = \tfrac{1}{2}(\sigma_1^2 + \sigma_2^2), \quad
-\beta_{within} = \frac{\beta_1 \sigma_1^2 + \beta_2 \sigma_2^2}{\sigma_1^2 + \sigma_2^2}, \quad
-V_{between} = \tfrac{1}{4}\Delta\mu^2, \quad
-\beta_{between} = \frac{\Delta\bar y}{\Delta\mu}$$ {#eq-two-group}
-
-where $\Delta\mu = \mu_1 - \mu_2$ and $\Delta\bar y = \bar y_1 - \bar y_2$: with only two groups $\beta_{between}$ is a single rise over run between the centroids.
-
-$\beta_{within}$ is a variance-weighted average of the group slopes — the same $\sigma^2$ weighting as everywhere else in this chapter, one level up. And $\beta_{between}$ depends only on where the group centroids sit, so it can take any value at all, regardless of the within-group slopes.
-
-The closed forms are special to two equal groups. With two *unequal* groups every $\tfrac12$ becomes a share $p_g$ and the $\tfrac14$ becomes $p(1-p)$ — Angrist's weight again; with *more than two* groups $\beta_{between}$ is the genuine across-group regression slope of @eq-slopes, not a two-point ratio.
-
-Fixed effects removes $V_{between}$ by demeaning and isolates $\beta_{within}$. As the groups pull apart, $\Delta\mu \to \infty$, $V_{between}$ swamps $V_{within}$ and drags $\hat\beta_{OLS}$ toward $\beta_{between}$.
+### Pulling the groups apart
 
 **Simulation — pulling the groups apart.** The DGP is the same as the within-unit weighting simulation: 500 steady units ($b_i = 0$, $\text{sd}(x) = 0.2$) and 500 movers ($b_i = 2$, $\text{sd}(x) = 3$). The one change is that the steady group's mean $x$ is shifted from $0$ to $10$ or $100$, while the movers stay centred at zero. This opens a gap $\Delta\mu$ between the two group centroids without changing any within-unit slope. The between-slope $\beta_{between} = \Delta\bar y / \Delta\mu$ is near zero, because the steady group's slope is zero and the movers' mean $y$ is also near zero. So as $\Delta\mu$ grows, pooled OLS is dragged toward zero while FE, which removes the between channel by demeaning, stays at $\beta_{within} \approx 2$.
 
@@ -447,9 +349,16 @@ A group dummy removes that channel. Demeaning subtracts each cloud's *own* mean,
 
 So "the weight is how much $x$ moves" is the demeaned case only. It is exact once unit effects are removed, and false in general, because with the halves at different levels of $x$ part of the fitted line is a comparison *between* them rather than a weighting of within-unit slopes.
 
-### When the weighting changes nothing
+## When does the weighting change the answer?
 
-The previous two subsections showed variance weighting at its most consequential: FE estimated the movers' effect rather than the population average, and pooled OLS was dragged toward a between-slope of zero. The reader might conclude that unequal weighting is always a problem. It is not. The variance-weighted average equals the plain average whenever effects are unrelated to the weights. The weighting tilts the estimate only when units whose $x$ moves more have systematically different slopes — that is, when $b_i$ covaries with $w_i$.
+The variance-weighted average equals the plain average whenever effects are unrelated to the weights. The weighting tilts the estimate only when units whose $x$ moves more have systematically different slopes — that is, when $b_i$ covaries with $w_i$.
+
+The gap is exactly a covariance. For any weights $w_i$,
+
+$$\frac{\sum_i w_i \beta_i}{\sum_i w_i} - \bar\beta = \frac{\text{Cov}_n(w_i, \beta_i)}{\bar w}$$ {#eq-weight-gap}
+
+If high-effect units carry more weight the coefficient exceeds the plain average; if they carry less it falls below; if weights and effects are unrelated the gap is zero. Nothing about the estimator is broken in any of the three cases.
+
 
 The following two designs illustrate the distinction. Both draw $N = 1000$ units, $T = 6$ periods, with $\text{sd}_i(x) \sim U(0.2, 3)$ and $y_{it} = b_i x_{it} + \alpha_i + \varepsilon_{it}$. Both share the same $x$. What differs is how the true slopes $b_i$ relate to regressor volatility:
 
@@ -510,11 +419,21 @@ mtab(cbind(`(A) unrelated` = compareAB2(h1, b1),
 
 In (A) the reweighted estimate agrees with the standard FE estimate — reweighting changes nothing when effects are independent of variance. In (B) the reweighted estimate falls from $1.53$ back to near $1.01$, recovering the simple average. The price is a larger standard error, because we have deliberately downweighted the most informative units.
 
+Standard errors do not reveal any of this. An estimate can be precise, and unbiased for its own weighted target, while answering a different question from the one that was asked. The issue is the estimand, not estimator failure.
+
+## Start with the estimand
+
+Before interpreting an OLS coefficient, ask which average effect is the substantive target: the average across people, the average among the treated, the average across firms, the effect where there is overlap. Then compare that target with the weights the specification implies.
+
+If the two differ, the response depends on the application. Report the weighted estimand for what it is, model the heterogeneity, or reweight toward the population of interest. Reweighting is not free — observations with little residual variation carry little information, so giving them more influence costs precision, as the reweighted fixed-effects estimate above shows.
+
+The lesson is not to avoid OLS. It is to stop calling the coefficient "the average effect" without checking which average the regression built.
+
 ## Summary
 
-1.  **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg); units that vary more dominate the slope.
-2.  **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates $\sum_i d_i x_i b_i / \sum_i d_i x_i$ with weights $d_i x_i = (x_i - \bar x) x_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with those weights. Keep the two weightings apart: $d_i^2$ weights the observed deviation slopes $s_i$, while $d_i x_i$ weights the structural $b_i$. They share a total, since $\sum_i d_i x_i = \sum_i d_i^2$, but individually differ by $d_i \bar x$, and $d_i x_i$ can be negative where a square cannot. Centering the treatment, $y_i = \alpha + b_i(x_i - \bar x) + e_i$, is what makes them coincide.
-3.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
-4.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
+1.  **One rule.** OLS weights each observation by $w_i = \tilde V_i V_i$, the regressor times what is left of it after the controls (@eq-weff). The weights sum to $\sum_i \tilde V_i^2 \ge 0$; individual weights need not be positive.
+2.  **Cross-section.** With binary treatment and saturated strata the weight on a stratum is $n_x \hat D(x)(1 - \hat D(x))$ (@eq-angrist): overlap gets the weight, and a stratum with no comparison gets none. Sorted by treatment status instead, the same weights put $1 - \rho$ on the ATT and $\rho$ on the ATU (@eq-reversed) — the ATE's own shares, reversed.
+3.  **Panel.** Under fixed effects a unit's weight is its own within sum of squares (@eq-within-square): movers are the estimate, stayers are not. Drop the dummies and group-mean differences re-enter through $V_{between}\beta_{between}$ (@eq-pooled).
+4.  **When it matters.** The weighting always happens. It moves the answer only when the effects line up with the weights, and then by exactly $\text{Cov}_n(w_i, \beta_i)/\bar w$ (@eq-weight-gap).
 
 Everything here is the *effect* reading — weights on the unobservable $\beta_i$, answering what $\hat\beta$ estimates. The same FWL identity also weights the *observed* outcomes, a signed and fully computable combination that answers which rows drive the number and reaches, unchanged, into estimators far beyond OLS. That is the companion chapter, [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
