@@ -144,44 +144,9 @@ So the OLS estimator is unbiased for a weighted average of $b_i$'s.
 
 Under heterogeneous effects, $\hat\beta_{OLS}$ is not generally the plain average $\bar b=E[b_i]$. It averages the $b_i$ using $d_i x_i=(x_i-\bar x)x_i$, which can be negative. It equals the ATE only when the effects are uncorrelated with these weights.
 
+@eq-decomp says more than that $s_i$ is biased. Even with the error term switched off, $s_i$ carries $\bar x(b_i-\bar b)/d_i$, which depends on every unit's slope through $\bar b$ and on every unit's position through $\bar x$. A ray from the centroid is anchored at $(\bar x,\bar y)$, and $\bar y$ moves when any other unit's slope changes. So $s_i$ is a function of the whole sample, not of unit $i$ alone, and no single ray can isolate its own unit's effect. The $d_i^2$-weighted average of the $s_i$ is the only reading that survives, and by @eq-wavg it is exact.
+
 @eq-esi also shows why the weighting helps. The individual slope $s_i$ is most unstable when $d_i\approx0$, and the weight $d_i^2$ gives those observations almost no influence. With a binary regressor, the same calculation puts more weight on strata where treatment is close to a coin flip (Angrist 1998). If we aggregate by treatment status, it gives more weight to the smaller group (Słoczyński 2022). The rest of the chapter derives these two cases.
-
-The algebra leaves one question open. @eq-wavg and @eq-exact are statements about aggregates: the $d_i^2$-weighted average of the $s_i$ is $\hat\beta_{OLS}$ exactly, and the same weights on the $b_i$ give the value $\hat\beta_{OLS}$ is unbiased for. Neither says how close one $s_i$ is to its own $b_i$. A natural hope is that $s_i$ is a noisy but usable reading of unit $i$'s effect, so that sorting the $s_i$ sorts the units by effect size. The simulation tests that hope, and confirms the two aggregate identities in a finite sample. We draw $n = 2000$ units with heterogeneous slopes $b_i \sim N(1, 0.5^2)$ and regressor $x_i \sim N(0, 2^2)$, and set $y_i = b_i x_i + \varepsilon_i$ with $\varepsilon_i \sim N(0, 2^2)$. We then compare each $s_i$ with its own $b_i$, and the two weighted averages with `lm`.
-
-```{r}
-set.seed(6)
-n <- 2000
-b <- rnorm(n, 1, 0.5)
-x <- rnorm(n, 0, 2)
-y <- b * x + rnorm(n, 0, 2)
-xb <- mean(x); d <- x - xb; w <- d^2
-s  <- (y - mean(y)) / d
-
-mtab(cbind(value = c(
-  `$\\mathrm{cor}(s_i, b_i)$, Pearson`    = cor(s, b),
-  `$\\mathrm{cor}(s_i, b_i)$, Spearman`   = cor(s, b, method = "spearman"),
-  `$\\mathrm{sd}(s_i)$`                   = sd(s),
-  `weighted average of $s_i$`       = sum(w * s) / sum(w),
-  `OLS Estimate`              = unname(coef(lm(y ~ x))[2]),
-  `$E[\\beta \\mid x, b]$ (eq-exact)` = sum(d * x * b) / sum(d * x))), 3)
-```
-
-The hope fails. The $s_i$ are wildly dispersed ($\text{sd}(s_i) > 100$) and barely correlated with the true $b_i$ — Pearson $0.02$, rank correlation $0.26$, the latter higher once the explosive tails near $\bar x$ are set aside. The identities hold. The leverage-weighted average of the $s_i$ is $\hat\beta_{OLS}$ exactly; that is @eq-wavg. The same leverage applied to the true $b_i$ gives $0.99$, the value $\hat\beta_{OLS}$ estimates in expectation (@eq-exact), and this sample's $\hat\beta_{OLS} = 0.95$ sits about two standard errors below it. That gap is sampling variation: @eq-exact fixes the target, not the realisation.
-
-Is noise the reason $s_i$ misses $b_i$? Turn it off entirely, set $y_i = b_i x_i$, and ask again how well each $s_i$ tracks its own $b_i$.
-
-```{r}
-y0 <- b * x
-s0 <- (y0 - mean(y0)) / (x - xb)
-vtab(c(`$\\mathrm{cor}(s_i, b_i)$, no noise` = cor(s0, b),
-        `weighted average of $s_i$`     = sum(w * s0) / sum(w),
-        `weighted average of $b_i$` = sum(w * b) / sum(w),
-        `OLS, noiseless`          = unname(coef(lm(y0 ~ x))[2])), 4)
-```
-
-The correlation stays at $0.14$ with no noise in the data at all. The reason is visible in @eq-decomp: even without the error term, $s_i$ contains $\bar x(b_i - \bar b)/d_i$, which depends on every unit's slope through $\bar b$ and on every unit's position through $\bar x$. A ray from the centroid is anchored at $(\bar x, \bar y)$, and $\bar y$ shifts when any other unit's slope changes. So $s_i$ is a function of the whole sample, not of unit $i$ alone, and heterogeneity in the $b_i$ makes it impossible for any single ray to isolate its own unit's effect. Noise through $(e_i - \bar e)/d_i$ inflates the variance of $s_i$ further, but the low correlation is already there without it.
-
-So $s_i$ has no reading on its own. The $d_i^2$-weighted average of the $s_i$ does, and it is exact. That aggregate targets a $d_i x_i$-weighted average of the $b_i$, and the rest of the chapter takes that object apart.
 
 ### Under homogeneity, the weights buy precision
 
@@ -213,11 +178,13 @@ The denominator $\sum_i w_i = \sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$
 
 ### Ex post in the sample, ex ante in the design
 
-The sign of a realised weight is not the end of the causal question. Borusyak and Hull (2023) make the distinction by moving from the sample identity above to the population regression estimand. Write
+How much should a negative $w_i$ worry us? The answer depends on what is held fixed. Borusyak and Hull (2023) show that one estimand carries two weight representations: one conditional on the treatment values we happened to draw, which can go negative, and one averaged over the assignment mechanism, which cannot.
+
+Move from the sample identity above to the population regression estimand. Write
 
 $$y_i = V_i\beta_i + Y_i(0), \qquad r_i = V_i - X_i'\lambda,$$
 
-where $r_i$ is the residual from the *population* projection of treatment on a low-dimensional $X_i$. There are two different ways to make the baseline term $E[r_iY_i(0)]$ vanish. An outcome model assumes
+where $r_i$ is the residual from the *population* projection of treatment on a low-dimensional $X_i$. Two different assumptions make the baseline term $E[r_iY_i(0)]$ vanish. An outcome model assumes
 
 $$E[Y_i(0)\mid V_i,X_i]=X_i'\gamma.$$
 
@@ -225,32 +192,39 @@ A design-based specification instead assumes
 
 $$E[V_i\mid Y_i(0),\beta_i,X_i]=X_i'\lambda.$$ {#eq-design-assignment}
 
-The second condition does two jobs: treatment is conditionally mean-independent of the untreated outcome and the effect, and the controls correctly span its conditional mean. Correctly fitting $E[V_i\mid X_i]$ alone is not enough if assignment still depends on $\beta_i$ or $Y_i(0)$.
+The second condition does two jobs: treatment is conditionally mean-independent of the untreated outcome and of the effect, and the controls correctly span its conditional mean. Correctly fitting $E[V_i\mid X_i]$ alone is not enough if assignment still depends on $\beta_i$ or $Y_i(0)$.
 
 Under either justification, the population coefficient has the ex-post representation
 
-$$\beta = \frac{E[\psi_i\beta_i]}{E[\psi_i]}, \qquad \psi_i=r_iV_i.$$
+$$\beta = \frac{E[\psi_i\beta_i]}{E[\psi_i]}, \qquad \psi_i=r_iV_i,$$
 
-The $\psi_i$ can be negative. Under @eq-design-assignment, however, average each realised weight over possible assignments while holding $X_i$ and $\beta_i$ fixed:
+and the $\psi_i$ can be negative, exactly as the sample $w_i$ can. Now average a realised weight over possible assignments, holding $X_i$ and $\beta_i$ fixed. Under @eq-design-assignment the control fit $X_i'\lambda$ *is* the conditional mean of $V_i$, so $r_i$ is a deviation from that mean and the average of the product is a variance:
 
 $$\phi_i=E[\psi_i\mid X_i,\beta_i]
+       =E\!\left[\left(V_i-E[V_i\mid X_i,\beta_i]\right)V_i \;\middle|\; X_i,\beta_i\right]
        =\operatorname{Var}(V_i\mid X_i,\beta_i)\ge 0.$$ {#eq-exante-weight}
 
-Thus the *same population estimand* also satisfies $\beta=E[\phi_i\beta_i]/E[\phi_i]$, a convex representation that rules out a sign reversal when all effects share a sign. This is not a correction to OLS and it does not generally recover the ATE. The variance can depend on $\beta_i$, so units in one $X$-stratum need not receive equal weight; because $\beta_i$ is unobserved, the weights are not generally identified either. Full conditional unconfoundedness is one sufficient, but stronger than necessary, condition under which they reduce to the estimable $\operatorname{Var}(V_i\mid X_i)$.
+A variance cannot be negative. So the *same population estimand* also satisfies $\beta=E[\phi_i\beta_i]/E[\phi_i]$, a convex representation, and a sign reversal is impossible when all effects share a sign. The negative realised weights were a feature of the draw, not of the estimand.
+
+The result has limits. It is not a correction to OLS and it does not deliver the ATE: the variance can depend on $\beta_i$, so units in one $X$-stratum need not receive equal weight, and because $\beta_i$ is unobserved the $\phi_i$ are not generally identified. Full conditional unconfoundedness reduces them to the estimable $\operatorname{Var}(V_i\mid X_i)$, which is sufficient but stronger than necessary. The scope condition is that $X_i$ be low-dimensional: $\lambda$ must be a fixed population parameter that the assignment mechanism satisfies, which rules out unit fixed effects in a short panel, where the controls grow with the sample. The staggered-timing results in the companion chapter are untouched by this argument.
 
 Keep the objects separate. The $w_i$ in @eq-weff are realised sample weights and come with the sample error remainder. The $\psi_i$ above are population ex-post weights, and the $\phi_i$ average those weights over the assignment distribution. Saturated controls make realised effect weights non-negative in the binary-treatment case below; the design result instead supplies a non-negative representation under @eq-design-assignment, including for continuous treatments whose realised weights can remain negative.
 
-### Where the square comes from
+### Why the weights sum to a sum of squares
+
+The end of the last section asserted $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2$. Here is why, and why it does not carry down to the individual terms.
 
 Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i + \sum_i \tilde V_i e_i$; setting the error term aside as above, over the whole sample,
 
 $$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
 
-because $\tilde V$ is orthogonal to the fitted part of $V$.
+because $\tilde V$ is orthogonal to the fitted part of $V$: split $V_i = \hat V_i + \tilde V_i$ and the cross term $\sum_i \tilde V_i \hat V_i$ vanishes. So the weights sum to a sum of squares and $\sum_i w_i \ge 0$ always, while any single $w_i$ is free to be negative. Non-negativity of the total says nothing about the terms.
 
-In a panel, several rows share a unit, and it is natural to ask whether the same identity holds *within a single unit* — summed over that unit's own $t$'s — and not only over the whole sample. Write $V_{it}$ for the observation and $\bar V_i$ for the unit's own mean. With unit fixed effects $\tilde V_{it} = V_{it} - \bar V_i$, and expanding the product gives the within-unit version directly,
+In a panel, several rows share a unit, and it is natural to ask whether the same identity holds *within a single unit* — summed over that unit's own $t$'s — and not only over the whole sample. It does. Write $V_{it}$ for the observation and $\bar V_i$ for the unit's own mean. With unit fixed effects $\tilde V_{it} = V_{it} - \bar V_i$, and expanding the product gives the within-unit version directly,
 
 $$\sum_{t=1}^{T} (V_{it} - \bar V_i) V_{it} = \sum_{t=1}^{T} V_{it}^2 - T \bar V_i^{\,2} = \sum_{t=1}^{T} (V_{it} - \bar V_i)^2$$ {#eq-within-square}
+
+So a unit's total weight under fixed effects is its own within sum of squares, $T$ times its within-variance. A unit whose regressor barely moves carries almost none of the estimate, whatever its effect. The fixed-effects results later in the chapter follow from this.
 
 ## Two causal decompositions: Angrist and Słoczyński
 
