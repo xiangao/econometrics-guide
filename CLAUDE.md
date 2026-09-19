@@ -930,6 +930,8 @@ Do not reinstate these without a reason that survives the objection that killed 
 
 ## Addition (2026-09-18) — Borusyak & Hull, ex-post vs ex-ante effect weights
 
+**Superseded 2026-09-19: the Ch. 13 section described here was removed. The Ch. 14 fixes below stand.**
+
 Read `~/projects/papers/bh_weights_20231230.pdf` ("Negative Weights Are No Concern in Design-Based
 Specifications") as an extension of Ch. 13 and Ch. 14. Prose-only edits; no code chunk changed
 (chunk MD5s identical to the previous commit).
@@ -966,3 +968,40 @@ too, and in-range fits do not establish overlap.
 Borusyak and Hull (2023) added to `references.qmd`. Two new numbered equations in Ch. 13 shift the
 downstream numbering by two; nothing hardcodes a number, and `@eq-fwl`/`@eq-weff` still render as
 13.12/13.13. Full `quarto render` (HTML + PDF), all crossrefs resolve.
+
+## Revision (2026-09-19) — Ch. 13 clarity pass; the Borusyak-Hull section removed
+
+Three rounds in one session, all prose; no code chunk was edited and every numeric output from
+13.4 on is unchanged (verified by diffing rendered HTML, 107 values identical).
+
+**13.2.3 simulations cut.** Codex had replaced the section with a hand-worked three-observation
+table; reverted, then the two simulation chunks were cut outright on xao's call. They reported
+three things: the `d_i^2`-weighted average of the `s_i` equals `β̂` (@eq-wavg) and the
+`d_i x_i`-weighted average of the `b_i` equals `E[β̂]` (@eq-exact) — both proved a page earlier, so
+simulating them violates "do not simulate what algebra settles" — and `cor(s_i, b_i) ≈ 0.02` for one
+arbitrary DGP, which nothing in the chapter uses. @eq-esi already gives the qualitative point. What
+survived is the one result needing no draws: `s_i` carries `x̄(b_i - b̄)/d_i`, so it depends on the
+whole sample through `x̄` and `b̄` and has no unit-level reading. Section is now three paragraphs.
+
+**"Ex post in the sample, ex ante in the design" deleted** (the 2026-09-18 addition below). xao: "i
+don't get it". Conceded on the merits, not merely on the objection: it summarized an outside paper
+using potential outcomes, a population projection and a design assumption, in a chapter otherwise
+built from sample algebra, reached a conclusion hedged three ways (not a correction to OLS, does not
+recover the ATE, `φ_i` not identified), and was never used again. `@eq-design-assignment` and
+`@eq-exante-weight` are gone, so Ch. 13 numbering shifts **down** by two below @eq-weff;
+`@eq-fwl`/`@eq-weff` still render 13.12/13.13 and Ch. 14's crossrefs into this chapter all resolve.
+Summary item 3 dropped and the list renumbered; Borusyak and Hull (2023) removed from
+`references.qmd` (Borusyak-Jaravel-Spiess 2024 stays, cited in Ch. 14). The Ch. 14 corrections in the
+2026-09-18 entry stand — only the Ch. 13 section went.
+
+**13.3 tightened.** The old "Where the square comes from" is now "Why the weights sum to a sum of
+squares": it opens with the question it answers, gives the orthogonality step
+(`V_i = V̂_i + Ṽ_i`, cross term vanishes), says why the identity does not carry down to individual
+terms, and closes on the panel payoff (a unit's FE weight is its own within sum of squares). The
+intro's duplicate denominator paragraph was folded into it once the ex-ante section between them
+went away. 13.3 now has a single subsection.
+
+**Leftover build artifacts.** Cutting chunks renumbers knitr figures. `_freeze/` and
+`_book/interpreting-ols_files/` carry tracked PNGs from older numberings (7, 10, 11, 12, 13) that no
+render produces any more. Harmless — every figure the page references exists — but they are dead
+weight; prune in a separate commit if it matters.

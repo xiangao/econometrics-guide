@@ -22,7 +22,6 @@ collects the works cited across the chapters.
 - Arkhangelsky, D., S. Athey, D. A. Hirshberg, G. W. Imbens, and S. Wager (2021). "Synthetic Difference-in-Differences." *American Economic Review* 111(12): 4088–4118. R package `synthdid`.
 - Baltagi, B. H., and D. Levin (1992). "Cigarette Taxation: Raising Revenues and Reducing Consumption." *Structural Change and Economic Dynamics* 3(2): 321–335.
 - Blundell, R., and S. Bond (1998). "Initial Conditions and Moment Restrictions in Dynamic Panel Data Models." *Journal of Econometrics* 87: 115–143.
-- Borusyak, K., and P. Hull (2023). "Negative Weights Are No Concern in Design-Based Specifications." Working paper, December 30.
 - Borusyak, K., X. Jaravel, and J. Spiess (2024). "Revisiting Event-Study Designs: Robust and Efficient Estimation." *Review of Economic Studies* 91(6): 3253–3285.
 - Breslow, N. E. (1974). "Covariance Analysis of Censored Survival Data." *Biometrics* 30(1): 89–99.
 - Callaway, B., and P. H. C. Sant'Anna (2021). "Difference-in-Differences with Multiple Time Periods." *Journal of Econometrics* 225(2): 200–230. R package `did`.

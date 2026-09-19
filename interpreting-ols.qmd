@@ -174,51 +174,15 @@ $$ \hat\beta = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i} + \frac{\sum_{i
 
 The control term drops out because $\tilde V$ is orthogonal to $X$ by construction.  The error term does not.  It vanishes in conditional expectation when $E[e_i \mid V, X, \beta] = 0$, and in probability under the usual orthogonality and large-sample conditions.  That is when the weighted-average reading is the right one.  The outcome-weight identity in the companion chapter carries no such remainder --- it is exact in every sample.
 
-The denominator $\sum_i w_i = \sum_i \tilde V_i V_i = \sum_i \tilde V_i^2 \ge 0$ always, by OLS orthogonality. Individual weights $w_i = \tilde V_i V_i$ can be negative — they are whenever $\tilde V_i$ and $V_i$ have opposite signs.
-
-### Ex post in the sample, ex ante in the design
-
-How much should a negative $w_i$ worry us? The answer depends on what is held fixed. Borusyak and Hull (2023) show that one estimand carries two weight representations: one conditional on the treatment values we happened to draw, which can go negative, and one averaged over the assignment mechanism, which cannot.
-
-Move from the sample identity above to the population regression estimand. Write
-
-$$y_i = V_i\beta_i + Y_i(0), \qquad r_i = V_i - X_i'\lambda,$$
-
-where $r_i$ is the residual from the *population* projection of treatment on a low-dimensional $X_i$. Two different assumptions make the baseline term $E[r_iY_i(0)]$ vanish. An outcome model assumes
-
-$$E[Y_i(0)\mid V_i,X_i]=X_i'\gamma.$$
-
-A design-based specification instead assumes
-
-$$E[V_i\mid Y_i(0),\beta_i,X_i]=X_i'\lambda.$$ {#eq-design-assignment}
-
-The second condition does two jobs: treatment is conditionally mean-independent of the untreated outcome and of the effect, and the controls correctly span its conditional mean. Correctly fitting $E[V_i\mid X_i]$ alone is not enough if assignment still depends on $\beta_i$ or $Y_i(0)$.
-
-Under either justification, the population coefficient has the ex-post representation
-
-$$\beta = \frac{E[\psi_i\beta_i]}{E[\psi_i]}, \qquad \psi_i=r_iV_i,$$
-
-and the $\psi_i$ can be negative, exactly as the sample $w_i$ can. Now average a realised weight over possible assignments, holding $X_i$ and $\beta_i$ fixed. Under @eq-design-assignment the control fit $X_i'\lambda$ *is* the conditional mean of $V_i$, so $r_i$ is a deviation from that mean and the average of the product is a variance:
-
-$$\phi_i=E[\psi_i\mid X_i,\beta_i]
-       =E\!\left[\left(V_i-E[V_i\mid X_i,\beta_i]\right)V_i \;\middle|\; X_i,\beta_i\right]
-       =\operatorname{Var}(V_i\mid X_i,\beta_i)\ge 0.$$ {#eq-exante-weight}
-
-A variance cannot be negative. So the *same population estimand* also satisfies $\beta=E[\phi_i\beta_i]/E[\phi_i]$, a convex representation, and a sign reversal is impossible when all effects share a sign. The negative realised weights were a feature of the draw, not of the estimand.
-
-The result has limits. It is not a correction to OLS and it does not deliver the ATE: the variance can depend on $\beta_i$, so units in one $X$-stratum need not receive equal weight, and because $\beta_i$ is unobserved the $\phi_i$ are not generally identified. Full conditional unconfoundedness reduces them to the estimable $\operatorname{Var}(V_i\mid X_i)$, which is sufficient but stronger than necessary. The scope condition is that $X_i$ be low-dimensional: $\lambda$ must be a fixed population parameter that the assignment mechanism satisfies, which rules out unit fixed effects in a short panel, where the controls grow with the sample. The staggered-timing results in the companion chapter are untouched by this argument.
-
-Keep the objects separate. The $w_i$ in @eq-weff are realised sample weights and come with the sample error remainder. The $\psi_i$ above are population ex-post weights, and the $\phi_i$ average those weights over the assignment distribution. Saturated controls make realised effect weights non-negative in the binary-treatment case below; the design result instead supplies a non-negative representation under @eq-design-assignment, including for continuous treatments whose realised weights can remain negative.
-
 ### Why the weights sum to a sum of squares
 
-The end of the last section asserted $\sum_i \tilde V_i V_i = \sum_i \tilde V_i^2$. Here is why, and why it does not carry down to the individual terms.
+The weights in @eq-weff are $w_i = \tilde V_i V_i$, and the denominator that normalises them is written $\sum_i \tilde V_i^2$. Why are those the same number, and why does the identity not carry down to the individual terms?
 
 Substitute $y_i = \beta_i V_i + X_i \gamma + e_i$ into the numerator of @eq-fwl and it becomes $\sum_i \beta_i \tilde V_i V_i + \sum_i \tilde V_i e_i$; setting the error term aside as above, over the whole sample,
 
 $$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
 
-because $\tilde V$ is orthogonal to the fitted part of $V$: split $V_i = \hat V_i + \tilde V_i$ and the cross term $\sum_i \tilde V_i \hat V_i$ vanishes. So the weights sum to a sum of squares and $\sum_i w_i \ge 0$ always, while any single $w_i$ is free to be negative. Non-negativity of the total says nothing about the terms.
+because $\tilde V$ is orthogonal to the fitted part of $V$: split $V_i = \hat V_i + \tilde V_i$ and the cross term $\sum_i \tilde V_i \hat V_i$ vanishes. So the weights sum to a sum of squares and $\sum_i w_i \ge 0$ always. A single $w_i$ is under no such constraint — it is negative whenever $\tilde V_i$ and $V_i$ have opposite signs. Non-negativity of the total says nothing about the terms.
 
 In a panel, several rows share a unit, and it is natural to ask whether the same identity holds *within a single unit* — summed over that unit's own $t$'s — and not only over the whole sample. It does. Write $V_{it}$ for the observation and $\bar V_i$ for the unit's own mean. With unit fixed effects $\tilde V_{it} = V_{it} - \bar V_i$, and expanding the product gives the within-unit version directly,
 
@@ -550,8 +514,7 @@ In (A) the reweighted estimate agrees with the standard FE estimate — reweight
 
 1.  **Leverage weighting.** OLS weights each observation by regressor variance $\tilde V_i^2 = (x_i - \bar x)^2$ (@eq-wavg); units that vary more dominate the slope.
 2.  **What is being estimated.** Under heterogeneous slopes $b_i$, OLS estimates $\sum_i d_i x_i b_i / \sum_i d_i x_i$ with weights $d_i x_i = (x_i - \bar x) x_i$ (@eq-exact); it equals the ATE only when the $b_i$ are uncorrelated with those weights. Keep the two weightings apart: $d_i^2$ weights the observed deviation slopes $s_i$, while $d_i x_i$ weights the structural $b_i$. They share a total, since $\sum_i d_i x_i = \sum_i d_i^2$, but individually differ by $d_i \bar x$, and $d_i x_i$ can be negative where a square cannot. Centering the treatment, $y_i = \alpha + b_i(x_i - \bar x) + e_i$, is what makes them coincide.
-3.  **Design-based specifications.** Negative realised effect weights do not permit sign reversal when @eq-design-assignment holds: the same population estimand has the non-negative ex-ante weights $\phi_i=\operatorname{Var}(V_i\mid X_i,\beta_i)$ in @eq-exante-weight. This guarantees convexity, not the ATE, and is distinct from finite-sample saturation.
-4.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
-5.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
+3.  **Between-group bias in pooled OLS.** Without fixed effects, group-mean differences $\Delta\mu$ enter through $V_{between}\,\beta_{between}$ (@eq-pooled) and distort the within-unit parameter; demeaning removes them.
+4.  **When it matters.** The weighting always happens. It changes the answer only when effects are heterogeneous and the heterogeneity lines up with the weight. With homogeneous effects it does no harm; with heterogeneous effects the question is not whether OLS is weighting but whether we know what it weighted.
 
 Everything here is the *effect* reading — weights on the unobservable $\beta_i$, answering what $\hat\beta$ estimates. The same FWL identity also weights the *observed* outcomes, a signed and fully computable combination that answers which rows drive the number and reaches, unchanged, into estimators far beyond OLS. That is the companion chapter, [Interpreting OLS: Outcome Weights](outcome-weights.qmd).
