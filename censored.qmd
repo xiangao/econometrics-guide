@@ -25,22 +25,26 @@ lower than \$20,000 per year), then we have a censored sample.
 
 
 
-The problem of sample selection arises when no observations have been
-systematically excluded but some information has been suppressed, just
-like censoring.  However, in sample selection problems, we have
-information on how the "selection" happens.  In censoring, usually a
-constant "threshold" is set.  Observations on dependent variable for
-those above (or below) that criteria are missing. Using the income
-example again, the threshold is set to be \$20,000, we have no
-information on exactly how much their income is for those whose income
-below the limit (only thing we know is that it's lower than \$20,000
-per year).  When we have a third variable that determines the
-censoring situation, then we call it sample selection.  For example,
-we have observed only union member's information on income, but we
-observe information on education for everybody, including union
-members or non-members.  In this example, union membership is an
-additional variable that "selects" the sample which are involved in
-the estimation of effect of education on income.
+Sample selection is a third case, and it is not censoring with an extra variable
+attached.  In a censored sample the outcome is missing in a *known* way: the
+threshold is known, and the suppressed value is known to lie beyond it.  That is
+information, and the Tobit model below uses it.  In a selected sample the outcome
+is simply unobserved for some units, and what decides whether we observe it is a
+separate selection process rather than the value of $y$ crossing a threshold.
+There need be no threshold in $y$ at all.
+
+|  | Truncation | Censoring | Sample selection |
+|---|---|---|---|
+| **What we observe for a unit that is selected out** | nothing; the unit is absent from the sample | $x$, and the fact that $y$ lies beyond the threshold | $x$; $y$ is missing |
+| **Is a threshold in $y$ known?** | yes | yes | not in general |
+| **What determines observation** | the value of $y$ | the value of $y$ | a separate selection process, usually its own equation |
+
+The union example is sample selection.  We observe education for everybody,
+members and non-members alike, and income only for members.  Nothing tells us
+that a non-member's income sits above or below any particular figure; it is
+simply missing.  Union membership is the selection equation, and it is what the
+estimation below has to model.  So read sample selection as missing outcome data
+governed by a selection process.
 
 
 

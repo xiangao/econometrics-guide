@@ -1080,3 +1080,46 @@ text as a strengthening.
 — both re-litigate what xao decided in the rebuild. Data point if it comes back: the chapter is
 ~4,700 words of prose against the note's suggested 3,500-4,000, and the four-figure sequence is the
 cheapest ~600 of them.
+
+
+## 2026-09-25 — Codex review pass: assumption statements and the two weight chapters
+
+Source: `../BOOK_REVIEW_20260925.md`. Prose-only; all chunk hashes unchanged.
+
+Core chapters. `ols.qmd` called two different conditions "the weakest"; contemporaneous
+exogeneity is now sufficient-but-not-necessary and the moment condition is what
+consistency needs. `mle.qmd`: binary logit/probit is correctly specified MLE, not
+quasi-MLE — a correct conditional probability fully specifies a Bernoulli law, and
+the latent-error story is a representation. Asymptotic validity without normality
+now carries the covariance-estimator proviso. Fixed `\bar y_t` -> `\bar y_T` in
+@eq-mle-41. `endogeneity.qmd`: Sargan tests joint compatibility, it does not
+"verify" orthogonality; overidentification efficiency is conditional; the
+Anderson-Rubin equivalence states its rank condition. `survival.qmd`: unstratified
+Kaplan-Meier needs *marginal* censoring independence, conditional-on-covariates is
+not enough — that one was a real identification error. Cox/AFT sign agreement is
+evidence, not a parameterization identity. Person-period rows are a likelihood
+factorization, not independent Bernoulli draws. `dynamic-panel.qmd`: system GMM
+admits time-invariant regressors but does not generically identify their
+coefficients. `missing-data.qmd`: MAR defined formally and separated from
+modelability; MICE row deletion made conditional on usable information;
+compatibility and convergence paragraph added; ignorability carried into FIML.
+`censored.qmd`: sample selection is not censoring with a third variable — replaced
+with a three-row comparison table.
+
+Weight chapters. `interpreting-ols.qmd`: the effect weights depend on the origin of
+`V`, so a reported negative-weight share is partly a choice of zero point, and
+centering changes the structural parameterization under heterogeneous effects. The
+summary now keeps the remainder condition and both Słoczyński conditions, and the
+derivative in the treated share is stated as holding the propensity variances fixed.
+`outcome-weights.qmd`: cross-fitting narrows but does not remove outcome dependence
+of the smoother, so the representation is exact conditional on the fitted learners;
+the exact AIPW normalization is a property of the smoother, not of AIPW; the
+Goodman-Bacon comparison weights are non-negative and the contamination lives in
+the estimand, which is a different decomposition from de Chaisemartin-D'Haultfœuille's
+negative treatment-effect weights; rank one does not by itself sign the weights;
+"a closer match always means fewer effective controls" is not globally monotone;
+weight fitting is a close cousin of a pretest, not the Roth (2022) procedure; and a
+stationary AR(1) does not contain a random walk, since the stationary variance
+diverges as `rho -> 1`.
+
+Rendered clean to HTML and PDF.

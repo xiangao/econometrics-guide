@@ -261,14 +261,15 @@ This is a moment condition, and it is what GMM estimators are built on.  It is a
 
 ### Consistency
 
-For OLS estimator to be consistent, a much weaker condition is needed:
+Consistency does not need strict exogeneity. A much weaker condition suffices:
 $$
 {{\mathrm{E}}} (u_t|X_t)=0,
 $$ {#eq-ols-22}
 
-This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of
-three exogeneity conditions worth keeping apart, which is precisely why it is the
-one to invoke for consistency:
+This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of the
+three conditional-mean conditions worth keeping apart.  It is sufficient for
+consistency but not necessary: what consistency actually requires is the moment
+condition at the foot of the list below.
 
 - **Strict exogeneity**, $E[u_t \mid X_1, \dots, X_n]=0$: the error in every
   period is mean-independent of the regressors in *every* period.  This is what

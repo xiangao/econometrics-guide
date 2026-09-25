@@ -103,7 +103,14 @@ The level-equation moments are valid only under the extra assumption
 that the initial deviations from the long-run mean are uncorrelated
 with $C_i$ (mean stationarity of the process).  System GMM is more
 efficient than difference GMM when $y$ is persistent (near a random
-walk), and it allows time-invariant regressors.  A practical warning:
+walk), and the level equation lets time-invariant regressors enter, which
+differencing removes altogether.  That they appear is not the same as their
+coefficients being identified.  A time-invariant regressor has no within
+variation, so its own lagged differences cannot instrument it.  Identification
+comes from the level moments, and it requires the regressor to be uncorrelated
+with the unit effect $C_i$, or an external instrument for it.  For a
+time-invariant regressor correlated with $C_i$ and lacking such an instrument,
+system GMM reports a coefficient that is not identified.  A practical warning:
 the instrument count grows with $T^2$, so *instrument proliferation*
 can overfit the endogenous regressors and weaken the Hansen $J$ test;
 lags should be collapsed or capped in practice.

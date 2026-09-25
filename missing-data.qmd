@@ -15,7 +15,9 @@ Data set like:
 
 1. Missing completely at Random (MCAR):  the occurrence of missing data is not related to the missing value, the values of any other variables, or the pattern of missingness in other variables.  Too good to be true situation.
 
-2. Missing at Random (MAR): the occurrence of missing values for a variable is random, contingent on the value or missingness of observable variables.  Or, the missingness can be modeled.
+2. Missing at Random (MAR): the probability that a value is missing depends only on data we observe.  Write $R$ for the missingness indicator and split the data into an observed and a missing part.  MAR is the restriction
+$$R \perp Y_{mis} \mid Y_{obs},$$
+that given what we see, whether a value is missing does not depend on the value we do not see.  Two things follow.  It is a restriction on the mechanism, so it is untestable from the observed data: the data we have are equally consistent with MAR and with MNAR alternatives.  And it is not the statement that the missingness can be modelled.  A model for missingness can always be fitted, and fitting one is no evidence that the restriction holds.
 
 3. Missing Not at Random (MNAR):  the occurrence of missing values is systematically related to the unobserved value itself, even after conditioning on observed data.  This is the hardest case: there is no model-free fix, but it is not hopeless.  It can be addressed with selection models, pattern-mixture models, or sensitivity analysis, all of which rely on untestable assumptions about the missingness mechanism.
 
@@ -98,7 +100,7 @@ where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde 
 
 ### MI through Chained Equations (MICE) (by Buuren)
 
-1. Discard observations with all missing.
+1. Drop an observation only when it carries no usable information: no observed outcome, no auxiliary variable, no weight or design information.  A row holding any of these still contributes, to the imputation model if not to the analysis, and discarding it wastes information and can induce selection.
 
 2. Fill in the missing data with random draws from the observed values.
 
@@ -122,7 +124,7 @@ Many ways to implement MICE.
 
 ### Bayesian Data Augmentation
 
-* MICE is Markov Chain
+* MICE iterates a sequence of single-variable conditional models, so it has the form of a Markov chain.  The chain is not guaranteed to have the stationary distribution we want.  The conditionals are specified one at a time, and separately specified conditionals need not be *compatible*: there may be no joint distribution that has all of them as its conditionals.  When they are incompatible the iteration can still settle down, and where it settles can depend on the order in which the variables are visited.  Run the convergence diagnostics -- trace plots of imputed means and variances across iterations and chains -- but read them for what they are.  They check mixing.  They do not validate the imputation model, and no diagnostic of the observed data can, because MAR is untestable.
 
 * Build a missing data model into a Bayesian model, treating missing values as another parameter to estimate by drawing out of its posterior distribution.
 
@@ -159,6 +161,11 @@ $\Sigma$.  The parameters are the same $\mu$ and $\Sigma$ for everyone; what var
 by unit is which rows and columns get selected.  Written this way the mechanism is
 visible -- each contribution is the marginal density obtained by integrating out
 that unit's missing components, and no imputation happens anywhere.
+
+FIML leaves the missingness mechanism out of the likelihood, and it needs the same
+ignorability conditions as the Bayesian version above to do so: MAR, together with
+parameters of the mechanism distinct from $(\mu, \Sigma)$.  MAR on its own is not
+sufficient here either.
 
 
 ### mi in stata

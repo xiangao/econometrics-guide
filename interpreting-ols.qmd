@@ -46,6 +46,10 @@ $$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
 
 and $\sum_i w_i \ge 0$ always. A single $w_i$ is under no such constraint — it is negative whenever $\tilde V_i$ and $V_i$ have opposite signs. Non-negativity of the total says nothing about the terms.
 
+The individual weights also depend on where $V$ has its zero. Replace $V_i$ by $V_i + c$. The controls carry an intercept, so $\tilde V_i$ does not move and neither does the total $\sum_i \tilde V_i^2$; each weight becomes $\tilde V_i V_i + c\,\tilde V_i$. So a reported share of negative weights is partly a choice of origin rather than a fact about the design, and it should be quoted with the scale of $V$ stated.
+
+Centering is not a free normalization either. Under @eq-het, writing $V_i = (V_i - c) + c$ turns $\beta_i V_i$ into $\beta_i (V_i - c) + \beta_i c$, and that second piece is a *heterogeneous* intercept which the common $X_i'\gamma$ cannot absorb unless $\beta_i$ is constant. Centering therefore changes the structural parameterization. It earns its place when the reference level means something, or when the specification allows heterogeneous intercepts.
+
 When the remainder vanishes,
 
 $$E[\hat\beta_{OLS} \mid V, X, \beta] = \frac{\sum_{i=1}^n w_i \beta_i}{\sum_{i=1}^n w_i}$$ {#eq-effect-target}
@@ -185,7 +189,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1$$ {#
 
 where $V_j$ is the variance of the propensity score within group $j$. This is exact for the effects of the within-group linear projections; for ATT and ATU it is exact when the group means are linear in $p$ and an approximation otherwise.
 
-Two things about @eq-sloc-main matter. First, the weight $w_1$ on ATT falls as the treated share $\rho$ rises: the larger the treated group, the smaller its say. That is the whole of "smaller groups get more weight," and it does not depend on the propensity variances. Differentiating @eq-sloc-main, $\partial w_1/\partial\rho = -V_0 V_1/(\rho V_1 + (1 - \rho) V_0)^2 < 0$ for any $V_0, V_1 > 0$. The variances set the level of the weight, not the direction it moves. Second, when the propensity has equal variance in the two groups, $V_1 = V_0$, the weights collapse to the reversed shares,
+Two things about @eq-sloc-main matter. First, the weight $w_1$ on ATT falls as the treated share $\rho$ rises: the larger the treated group, the smaller its say. That is the whole of "smaller groups get more weight," and it does not depend on the propensity variances. Differentiating @eq-sloc-main, $\partial w_1/\partial\rho = -V_0 V_1/(\rho V_1 + (1 - \rho) V_0)^2 < 0$ for any $V_0, V_1 > 0$. The variances set the level of the weight, not the direction it moves. That derivative holds $V_0$ and $V_1$ fixed, so it is a statement about the formula rather than about changing the assignment process: a policy that treats more units usually changes the within-group propensity variances as well, and then both channels move together. Second, when the propensity has equal variance in the two groups, $V_1 = V_0$, the weights collapse to the reversed shares,
 
 $$\hat\beta_{OLS} \approx (1 - \rho)\, \text{ATT} + \rho\, \text{ATU}$$ {#eq-reversed}
 
@@ -440,8 +444,8 @@ The lesson is not to avoid OLS. It is to stop calling the coefficient "the avera
 
 ## Summary
 
-1.  **One rule.** OLS weights each observation by $w_i = \tilde V_i V_i$, the regressor times what is left of it after the controls (@eq-weff). The weights sum to $\sum_i \tilde V_i^2 \ge 0$; individual weights need not be positive.
-2.  **Cross-section.** With binary treatment and saturated strata the weight on a stratum is $n_x \hat D(x)(1 - \hat D(x))$ (@eq-angrist): overlap gets the weight, and a stratum with no comparison gets none. Sorted by treatment status instead, the same weights put $1 - \rho$ on the ATT and $\rho$ on the ATU (@eq-reversed) — the ATE's own shares, reversed.
+1.  **One rule.** OLS weights each observation by $w_i = \tilde V_i V_i$, the regressor times what is left of it after the controls (@eq-weff). The weights sum to $\sum_i \tilde V_i^2 \ge 0$; individual weights need not be positive. Two conditions travel with that reading: the remainder in @eq-weff has to vanish, in conditional expectation or in probability, and the individual weights shift with the origin of $V$.
+2.  **Cross-section.** With binary treatment and saturated strata the weight on a stratum is $n_x \hat D(x)(1 - \hat D(x))$ (@eq-angrist): overlap gets the weight, and a stratum with no comparison gets none. Sorted by treatment status instead, the same weights put $1 - \rho$ on the ATT and $\rho$ on the ATU (@eq-reversed) — the ATE's own shares, reversed. Both qualifications from the body survive into the summary: the ATT/ATU reading is exact when the group means are linear in the propensity score, and the reversed shares need equal propensity variance across the two groups.
 3.  **Panel.** Under fixed effects a unit's weight is its own within sum of squares (@eq-within-square): movers are the estimate, stayers are not. Drop the dummies and group-mean differences re-enter through $V_{between}\beta_{between}$ (@eq-pooled).
 4.  **When it matters.** The weighting always happens. It moves the answer only when the effects line up with the weights, and then by exactly $\text{Cov}_n(w_i, \beta_i)/\bar w$ (@eq-weight-gap).
 

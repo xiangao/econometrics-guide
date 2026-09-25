@@ -310,10 +310,12 @@ as their own instruments, the total number of instruments must be at
 least the total number of regressors.)  If $l_e=k_e$ we have
 exact-identification.  If $l_e>k_e$, we have over-identification.
 
-Over-identification generates more efficient estimates, given the
-assumption of instruments being exogenous.  The other advantage of
-over-identification is that over-identification tests can be done to
-test the adequacy of instruments.
+Additional valid instruments that carry independent information can improve
+asymptotic precision under a suitable weighting scheme.  The gain is not
+automatic: a redundant instrument adds nothing, a weak one need not help, and a
+large number of instruments worsens finite-sample behaviour even when every one
+of them is valid.  The other advantage of over-identification is that
+over-identification tests can be done to test the adequacy of instruments.
 
 Under the null hypothesis that all the instruments are uncorrelated
 with the error term, an LM statistic  $N \times R^2$ conforms to
@@ -389,8 +391,10 @@ Sargan's test without this option.
 
 An instrument needs to satisfy two criteria: orthogonality and
 relevance.  We need instruments to be orthogonal to the error term.
-We can verify the orthogonality condition  by Sargan's test if there are extra
-instruments.
+With extra instruments, Sargan's test lets us test the joint compatibility of
+the overidentifying restrictions.  As stressed above, that is a test of the set
+as a whole and not a verification of orthogonality: passing it leaves the
+instruments untested in every direction they share.
 
 It turns out instrument relevance is important too: if instruments are
 weak, the usual large-sample approximations are poor.  It helps to
@@ -510,9 +514,12 @@ $$
 
 The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic
 is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F
-test that the coefficient vector on $Z$ is zero (under the model that
-coefficient equals $\Pi (\beta - \beta_0)$, so it is zero exactly when
-$\beta=\beta_0$):
+test that the coefficient vector on $Z$ is zero.  Under the model that
+coefficient equals $\Pi (\beta - \beta_0)$, which is zero exactly when
+$\beta=\beta_0$ provided $\Pi$ has full column rank.  Without that rank
+condition the test stays valid and weak-instrument robust, but it cannot
+distinguish $\beta_0$ from an alternative differing in a direction $\Pi$
+annihilates:
 
 
 $$

@@ -415,10 +415,10 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <p>This is a moment condition, and it is what GMM estimators are built on. It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have <span class="math inline">\(E({\symbf{Xu}}) \neq 0\)</span>, which is exactly the endogeneity problem of a later chapter.</p>
 </section><section id="consistency" class="level3" data-number="1.5.2"><h3 data-number="1.5.2" class="anchored" data-anchor-id="consistency">
 <span class="header-section-number">1.5.2</span> Consistency</h3>
-<p>For OLS estimator to be consistent, a much weaker condition is needed: <span id="eq-ols-22"><span class="math display">\[
+<p>Consistency does not need strict exogeneity. A much weaker condition suffices: <span id="eq-ols-22"><span class="math display">\[
 {{\mathrm{E}}} (u_t|X_t)=0,
 \tag{1.34}\]</span></span></p>
-<p>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors. Even a model with lagged dependent variable can easily satisfy this condition. This condition is called <strong>contemporaneous exogeneity</strong>. It is the weakest of three exogeneity conditions worth keeping apart, which is precisely why it is the one to invoke for consistency:</p>
+<p>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors. Even a model with lagged dependent variable can easily satisfy this condition. This condition is called <strong>contemporaneous exogeneity</strong>. It is the weakest of the three conditional-mean conditions worth keeping apart. It is sufficient for consistency but not necessary: what consistency actually requires is the moment condition at the foot of the list below.</p>
 <ul>
 <li>
 <strong>Strict exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_1, \dots, X_n]=0\)</span>: the error in every period is mean-independent of the regressors in <em>every</em> period. This is what unbiasedness requires, and what the lagged-dependent-variable example above violates.</li>
@@ -1161,52 +1161,53 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
 <span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a><span class="fu">### Consistency</span></span>
 <span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>For OLS estimator to be consistent, a much weaker condition is needed:</span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>Consistency does not need strict exogeneity. A much weaker condition suffices:</span>
 <span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (u_t|X_t)=0,</span>
 <span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-22}</span>
 <span id="cb3-270"><a href="#cb3-270" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of</span>
-<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>three exogeneity conditions worth keeping apart, which is precisely why it is the</span>
-<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>one to invoke for consistency:</span>
-<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strict exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_1, \dots, X_n</span><span class="co">]</span>=0$: the error in every</span>
-<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
-<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
-<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  violates.</span>
-<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_t</span><span class="co">]</span>=0$, where</span>
-<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a>  $\mathcal F_t = \sigma(X_1, \dots, X_t)$ is the regressor history through period</span>
-<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>  $t$ -- equivalently, $X_t$ is orthogonal to the</span>
-<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
-<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
-<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>  variable.</span>
-<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
-<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
-<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
-<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers -- which for dependent</span>
-<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>  data needs the weak-dependence conditions of the <span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span> -- it gives</span>
-<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
-<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
-<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
-<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
-<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
-<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
-<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  The ladder needs the</span>
-<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>information sets to be nested, which is why $\mathcal F_t$ is defined above as</span>
-<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>regressor history:</span>
-<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>$\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)$.</span>
-<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>Widen $\mathcal F_t$ to include past errors or other series and strict exogeneity no</span>
-<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>longer implies predeterminedness, because then neither information set contains the</span>
-<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a>other.  By the law of iterated expectations,</span>
-<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
-<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
-<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
-<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
-<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
-<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
+<span id="cb3-271"><a href="#cb3-271" aria-hidden="true" tabindex="-1"></a>This condition is much weaker since it only assumes that the mean of current error term does not depend on the current predictors.  Even a model with lagged dependent variable can easily satisfy this condition.  This condition is called **contemporaneous exogeneity**.  It is the weakest of the</span>
+<span id="cb3-272"><a href="#cb3-272" aria-hidden="true" tabindex="-1"></a>three conditional-mean conditions worth keeping apart.  It is sufficient for</span>
+<span id="cb3-273"><a href="#cb3-273" aria-hidden="true" tabindex="-1"></a>consistency but not necessary: what consistency actually requires is the moment</span>
+<span id="cb3-274"><a href="#cb3-274" aria-hidden="true" tabindex="-1"></a>condition at the foot of the list below.</span>
+<span id="cb3-275"><a href="#cb3-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-276"><a href="#cb3-276" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Strict exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_1, \dots, X_n</span><span class="co">]</span>=0$: the error in every</span>
+<span id="cb3-277"><a href="#cb3-277" aria-hidden="true" tabindex="-1"></a>  period is mean-independent of the regressors in *every* period.  This is what</span>
+<span id="cb3-278"><a href="#cb3-278" aria-hidden="true" tabindex="-1"></a>  unbiasedness requires, and what the lagged-dependent-variable example above</span>
+<span id="cb3-279"><a href="#cb3-279" aria-hidden="true" tabindex="-1"></a>  violates.</span>
+<span id="cb3-280"><a href="#cb3-280" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Predeterminedness**, $E<span class="co">[</span><span class="ot">u_t \mid \mathcal F_t</span><span class="co">]</span>=0$, where</span>
+<span id="cb3-281"><a href="#cb3-281" aria-hidden="true" tabindex="-1"></a>  $\mathcal F_t = \sigma(X_1, \dots, X_t)$ is the regressor history through period</span>
+<span id="cb3-282"><a href="#cb3-282" aria-hidden="true" tabindex="-1"></a>  $t$ -- equivalently, $X_t$ is orthogonal to the</span>
+<span id="cb3-283"><a href="#cb3-283" aria-hidden="true" tabindex="-1"></a>  current and all *future* errors, while being allowed to correlate with *past*</span>
+<span id="cb3-284"><a href="#cb3-284" aria-hidden="true" tabindex="-1"></a>  errors.  This is the relevant condition in models with a lagged dependent</span>
+<span id="cb3-285"><a href="#cb3-285" aria-hidden="true" tabindex="-1"></a>  variable.</span>
+<span id="cb3-286"><a href="#cb3-286" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous exogeneity**, $E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span>=0$.</span>
+<span id="cb3-287"><a href="#cb3-287" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Contemporaneous orthogonality**, $E<span class="co">[</span><span class="ot">X_t u_t</span><span class="co">]</span>=0$ -- mere zero correlation. This</span>
+<span id="cb3-288"><a href="#cb3-288" aria-hidden="true" tabindex="-1"></a>  is weakest of all, and it is what consistency actually needs: together with a</span>
+<span id="cb3-289"><a href="#cb3-289" aria-hidden="true" tabindex="-1"></a>  rank condition and a law of large numbers -- which for dependent</span>
+<span id="cb3-290"><a href="#cb3-290" aria-hidden="true" tabindex="-1"></a>  data needs the weak-dependence conditions of the <span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span> -- it gives</span>
+<span id="cb3-291"><a href="#cb3-291" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
+<span id="cb3-292"><a href="#cb3-292" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
+<span id="cb3-293"><a href="#cb3-293" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
+<span id="cb3-294"><a href="#cb3-294" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
+<span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
+<span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>is a more restrictive requirement, not a less restrictive one.  The ladder needs the</span>
+<span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>information sets to be nested, which is why $\mathcal F_t$ is defined above as</span>
+<span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a>regressor history:</span>
+<span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>$\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)$.</span>
+<span id="cb3-302"><a href="#cb3-302" aria-hidden="true" tabindex="-1"></a>Widen $\mathcal F_t$ to include past errors or other series and strict exogeneity no</span>
+<span id="cb3-303"><a href="#cb3-303" aria-hidden="true" tabindex="-1"></a>longer implies predeterminedness, because then neither information set contains the</span>
+<span id="cb3-304"><a href="#cb3-304" aria-hidden="true" tabindex="-1"></a>other.  By the law of iterated expectations,</span>
+<span id="cb3-305"><a href="#cb3-305" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-306"><a href="#cb3-306" aria-hidden="true" tabindex="-1"></a>E<span class="co">[</span><span class="ot">u_t \mid X_t</span><span class="co">]</span> = E \bigl<span class="co">[</span><span class="ot"> E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr</span><span class="co">]</span> = 0,</span>
+<span id="cb3-307"><a href="#cb3-307" aria-hidden="true" tabindex="-1"></a>$$ {#eq-ols-23}</span>
+<span id="cb3-308"><a href="#cb3-308" aria-hidden="true" tabindex="-1"></a>so predeterminedness delivers contemporaneous exogeneity but not conversely.  In</span>
+<span id="cb3-309"><a href="#cb3-309" aria-hidden="true" tabindex="-1"></a>the time series example, then, the OLS estimator is biased, but can still be</span>
+<span id="cb3-310"><a href="#cb3-310" aria-hidden="true" tabindex="-1"></a>consistent, if we are willing to assume no contemporaneous correlation.</span>
+<span id="cb3-311"><a href="#cb3-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-312"><a href="#cb3-312" aria-hidden="true" tabindex="-1"></a>Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the <span class="co">[</span><span class="ot">Maximum Likelihood chapter</span><span class="co">](mle.qmd)</span> alongside this guide's other estimation-inference material rather than repeated here.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

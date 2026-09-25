@@ -191,11 +191,15 @@ with the sandwich, since the Poisson variance assumption
 $\mathrm{Var}(Y_t \mid {\symbf{x}}_t) = \mu_t$ will generally be wrong.
 A fuller treatment is in the [Count Data chapter](count-data.qmd).
 
-The same logic applies to logit and probit for binary data: as long
-as the conditional mean $P(Y=1 \mid X) = F(X'\beta)$ is correctly
-specified, the MLE is consistent for $\beta$ even if the error
-distribution is not exactly logistic or normal.  In this sense,
-binary response MLE is already quasi-MLE.
+Binary response is a different case, and it is worth being exact about why.  If
+$P(Y=1 \mid X) = F(X'\beta)$ is correct, then the whole conditional distribution
+is correct: a Bernoulli law has nothing left to specify once its mean is fixed.
+Logit and probit are therefore correctly specified maximum likelihood here, not
+quasi-MLE.  The latent-variable story is a representation rather than an extra
+assumption, and a different latent error distribution generating the same
+$F(X'\beta)$ is observationally equivalent.  Keep the quasi-MLE label for the
+Poisson case above, where the criterion is used without the full conditional
+distribution being correct.
 
 ### M-Estimators
 
@@ -287,7 +291,7 @@ $$
 {\symbf{u \sim N(0, \sigma^2 I)
 }}$$ {#eq-mle-11}
 
-Even if this assumption does not hold, we still have asymptotic normality for ${\symbf{\hat \beta}}$, so the tests below remain valid asymptotically.
+Even if this assumption does not hold, we still have asymptotic normality for ${\symbf{\hat \beta}}$, so the tests below remain valid asymptotically -- provided the covariance estimator is valid for whatever heteroskedasticity or dependence is actually present.  The model-based $\sigma^2 ({\symbf{X'X}})^{-1}$ is not: it encodes the homoskedastic, serially uncorrelated structure of @eq-mle-11.  Drop normality, keep that formula, and the tests are no longer asymptotically valid.  Use a sandwich estimator under heteroskedasticity and a HAC estimator under serial correlation.
 
 Since linear combination of normal variables are also normally
 distributed,
@@ -627,7 +631,7 @@ covariance is not a function of time) *and* its autocovariances are absolutely
 summable, $\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert < \infty$.  Then, as in
 Hamilton (1994), the sample mean satisfies:
 
-$${\symbf{\bar y_t \to \mu , }}$$ {#eq-mle-41}
+$${\symbf{\bar y_T \to \mu , }}$$ {#eq-mle-41}
 $$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}
 where ${\symbf{\Gamma_v}}$ is the variance-covariance matrix for ${\symbf{y_t}}$ and ${\symbf{y_{t-v}}}$.
 

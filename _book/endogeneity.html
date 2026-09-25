@@ -532,7 +532,7 @@ hausman iv ., constant sigmamore</code></pre>
 </section></section><section id="identification" class="level2" data-number="4.4"><h2 data-number="4.4" class="anchored" data-anchor-id="identification">
 <span class="header-section-number">4.4</span> Identification</h2>
 <p>Identification in a regression equation means that all parameters can be uniquely estimated. The relevant counting rule (the <em>order condition</em>) is most cleanly stated in terms of <em>excluded</em> instruments. Let <span class="math inline">\(k_e\)</span> be the number of endogenous regressors and <span class="math inline">\(l_e\)</span> the number of excluded instruments (instruments not already included as exogenous regressors). A necessary condition is <span class="math inline">\(l_e \ge k_e\)</span>: there must be at least as many excluded instruments as endogenous regressors. (Equivalently, counting the included exogenous regressors as their own instruments, the total number of instruments must be at least the total number of regressors.) If <span class="math inline">\(l_e=k_e\)</span> we have exact-identification. If <span class="math inline">\(l_e&gt;k_e\)</span>, we have over-identification.</p>
-<p>Over-identification generates more efficient estimates, given the assumption of instruments being exogenous. The other advantage of over-identification is that over-identification tests can be done to test the adequacy of instruments.</p>
+<p>Additional valid instruments that carry independent information can improve asymptotic precision under a suitable weighting scheme. The gain is not automatic: a redundant instrument adds nothing, a weak one need not help, and a large number of instruments worsens finite-sample behaviour even when every one of them is valid. The other advantage of over-identification is that over-identification tests can be done to test the adequacy of instruments.</p>
 <p>Under the null hypothesis that all the instruments are uncorrelated with the error term, an LM statistic <span class="math inline">\(N \times R^2\)</span> conforms to <span class="math inline">\(\chi^2 (r)\)</span> distribution, <span class="math inline">\(r=l_e-k_e\)</span>, the number of excess instruments, or say, the number of overidentifying restrictions. If we reject the null, then we should be concerned about the exogeneity of the whole set of the instruments. This test is called Sargan’s test in IV context, and (Hansen’s) J test in GMM context. The two names are not quite interchangeable: Sargan’s <span class="math inline">\(N \times R^2\)</span> form assumes homoskedastic errors, while Hansen’s <span class="math inline">\(J\)</span>, built from the efficient GMM weighting, is the heteroskedasticity-robust counterpart and the one to use whenever the standard errors are robust.</p>
 <p>It is worth being exact about what the test delivers, because it is easy to over-read. It is a joint test of the overidentifying restrictions. Failing to reject does not certify the instruments: the test has no power against violations that all of them share, because instruments wrong in the same way agree on the same wrong answer. Rejection, for its part, does not say <em>which</em> moment condition failed. A passing <span class="math inline">\(J\)</span> is the absence of one particular kind of evidence against the instruments, not evidence for them.</p>
 <p>What the J test or Sargan’s test does is to test the whole set of instruments being exogenous or not. There is another test for testing exogeneity for a subset of instruments. It’s call a C test or a difference-in-Sargan test. The idea is to calculate the difference between two Sargan’s statistics (or Hansen’s J in GMM setting); one is with the whole set of instruments, the other one without the suspected instruments. The null is that the suspect instruments are exogenous; or orthogonal to the error term. Obviously to conduct the C test, we’ll have to have at least one extra instrument more than the number of endogenous variables.</p>
@@ -560,7 +560,7 @@ hausman iv ., constant sigmamore</code></pre>
 <span class="header-section-number">4.5</span> Weak Instruments</h2>
 <section id="problem-with-the-cure" class="level3" data-number="4.5.1"><h3 data-number="4.5.1" class="anchored" data-anchor-id="problem-with-the-cure">
 <span class="header-section-number">4.5.1</span> Problem with the cure</h3>
-<p>An instrument needs to satisfy two criteria: orthogonality and relevance. We need instruments to be orthogonal to the error term. We can verify the orthogonality condition by Sargan’s test if there are extra instruments.</p>
+<p>An instrument needs to satisfy two criteria: orthogonality and relevance. We need instruments to be orthogonal to the error term. With extra instruments, Sargan’s test lets us test the joint compatibility of the overidentifying restrictions. As stressed above, that is a test of the set as a whole and not a verification of orthogonality: passing it leaves the instruments untested in every direction they share.</p>
 <p>It turns out instrument relevance is important too: if instruments are weak, the usual large-sample approximations are poor. It helps to keep three cases apart. With fixed, nonzero first-stage relevance, IV remains <em>consistent</em> but can be badly <em>biased</em> in finite samples (and biased toward OLS), with the normal approximation working poorly. Under weak-instrument (local-to-zero) asymptotics, the limiting distribution is <em>nonstandard</em> and not centered in the usual way, so conventional standard errors and <span class="math inline">\(t\)</span>-statistics mislead. Only in the limiting case of complete irrelevance (<span class="math inline">\(\Pi=0\)</span>) is the parameter unidentified.</p>
 <p>To see the problem, suppose</p>
 <p><span id="eq-endogeneity-10"><span class="math display">\[
@@ -623,7 +623,7 @@ z_u \\z_v
 <p><span id="eq-endogeneity-17"><span class="math display">\[
 {\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,
 }} \tag{4.18}\]</span></span></p>
-<p>The null hypothesis <span class="math inline">\(H_0: \beta=\beta_0\)</span>. Anderson-Rubin statistic is the F statistic in the regression of <span class="math inline">\(y-X \beta_0\)</span> on <span class="math inline">\(Z\)</span>, the F test that the coefficient vector on <span class="math inline">\(Z\)</span> is zero (under the model that coefficient equals <span class="math inline">\(\Pi (\beta - \beta_0)\)</span>, so it is zero exactly when <span class="math inline">\(\beta=\beta_0\)</span>):</p>
+<p>The null hypothesis <span class="math inline">\(H_0: \beta=\beta_0\)</span>. Anderson-Rubin statistic is the F statistic in the regression of <span class="math inline">\(y-X \beta_0\)</span> on <span class="math inline">\(Z\)</span>, the F test that the coefficient vector on <span class="math inline">\(Z\)</span> is zero. Under the model that coefficient equals <span class="math inline">\(\Pi (\beta - \beta_0)\)</span>, which is zero exactly when <span class="math inline">\(\beta=\beta_0\)</span> provided <span class="math inline">\(\Pi\)</span> has full column rank. Without that rank condition the test stays valid and weak-instrument robust, but it cannot distinguish <span class="math inline">\(\beta_0\)</span> from an alternative differing in a direction <span class="math inline">\(\Pi\)</span> annihilates:</p>
 <p><span id="eq-endogeneity-18"><span class="math display">\[
 AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
   (y-X\beta_0)/(N-l)}
@@ -1426,295 +1426,302 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-316"><a href="#cb16-316" aria-hidden="true" tabindex="-1"></a>least the total number of regressors.)  If $l_e=k_e$ we have</span>
 <span id="cb16-317"><a href="#cb16-317" aria-hidden="true" tabindex="-1"></a>exact-identification.  If $l_e&gt;k_e$, we have over-identification.</span>
 <span id="cb16-318"><a href="#cb16-318" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a>Over-identification generates more efficient estimates, given the</span>
-<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a>assumption of instruments being exogenous.  The other advantage of</span>
-<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a>over-identification is that over-identification tests can be done to</span>
-<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a>test the adequacy of instruments.</span>
-<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a>Under the null hypothesis that all the instruments are uncorrelated</span>
-<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a>with the error term, an LM statistic  $N \times R^2$ conforms to</span>
-<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a>$\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,</span>
-<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a> or say, the number of overidentifying restrictions.  If we reject the null,</span>
-<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a> then we should be concerned about the exogeneity of the whole set of</span>
-<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a> the instruments.  This test is called Sargan's test in IV context, and</span>
-<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a> (Hansen's) J test in GMM context.  The two names are not quite</span>
-<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a> interchangeable: Sargan's $N \times R^2$ form assumes homoskedastic errors,</span>
-<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a> while Hansen's $J$, built from the efficient GMM weighting, is the</span>
-<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a> heteroskedasticity-robust counterpart and the one to use whenever the standard</span>
-<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a> errors are robust.</span>
-<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a> It is worth being exact about what the test delivers, because it is easy to</span>
-<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a> over-read.  It is a joint test of the overidentifying restrictions.  Failing to</span>
-<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a> reject does not certify the instruments: the test has no power against</span>
-<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a> violations that all of them share, because instruments wrong in the same way</span>
-<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a> agree on the same wrong answer.  Rejection, for its part, does not say *which*</span>
-<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a> moment condition failed.  A passing $J$ is the absence of one particular kind</span>
-<span id="cb16-342"><a href="#cb16-342" aria-hidden="true" tabindex="-1"></a> of evidence against the instruments, not evidence for them.</span>
-<span id="cb16-343"><a href="#cb16-343" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a> What the J test or Sargan's test does is to test the whole set of</span>
-<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a> instruments being exogenous or not.  There is another test for</span>
-<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a> testing exogeneity for a subset of instruments.  It's call a C test</span>
-<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a> or a difference-in-Sargan test.  The idea is to calculate the</span>
-<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a> difference between two Sargan's statistics (or Hansen's J in GMM</span>
-<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a> setting); one is with the whole set of instruments, the other one</span>
-<span id="cb16-350"><a href="#cb16-350" aria-hidden="true" tabindex="-1"></a> without the suspected instruments.  The null is that the suspect</span>
-<span id="cb16-351"><a href="#cb16-351" aria-hidden="true" tabindex="-1"></a> instruments are exogenous; or orthogonal to the error term.</span>
-<span id="cb16-352"><a href="#cb16-352" aria-hidden="true" tabindex="-1"></a> Obviously to conduct the C test, we'll have to have at least one</span>
-<span id="cb16-353"><a href="#cb16-353" aria-hidden="true" tabindex="-1"></a> extra instrument more than the number of endogenous variables.</span>
-<span id="cb16-354"><a href="#cb16-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a> To understand it better, we look at how to implement Sargan's test</span>
-<span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a> manually: For the 2SLS estimator, the test statistic is Sargan's</span>
-<span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a> statistic, typically calculated as $N \times R^2$ from a regression of</span>
-<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a> the IV residuals on the full set of instruments.</span>
-<span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a><span class="in">    . ivregress 2sls rent pcturban (hsngval = faminc i.region)</span></span>
-<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a><span class="in">    . estat overid</span></span>
-<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a><span class="in">      Tests of overidentifying restrictions:</span></span>
+<span id="cb16-319"><a href="#cb16-319" aria-hidden="true" tabindex="-1"></a>Additional valid instruments that carry independent information can improve</span>
+<span id="cb16-320"><a href="#cb16-320" aria-hidden="true" tabindex="-1"></a>asymptotic precision under a suitable weighting scheme.  The gain is not</span>
+<span id="cb16-321"><a href="#cb16-321" aria-hidden="true" tabindex="-1"></a>automatic: a redundant instrument adds nothing, a weak one need not help, and a</span>
+<span id="cb16-322"><a href="#cb16-322" aria-hidden="true" tabindex="-1"></a>large number of instruments worsens finite-sample behaviour even when every one</span>
+<span id="cb16-323"><a href="#cb16-323" aria-hidden="true" tabindex="-1"></a>of them is valid.  The other advantage of over-identification is that</span>
+<span id="cb16-324"><a href="#cb16-324" aria-hidden="true" tabindex="-1"></a>over-identification tests can be done to test the adequacy of instruments.</span>
+<span id="cb16-325"><a href="#cb16-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-326"><a href="#cb16-326" aria-hidden="true" tabindex="-1"></a>Under the null hypothesis that all the instruments are uncorrelated</span>
+<span id="cb16-327"><a href="#cb16-327" aria-hidden="true" tabindex="-1"></a>with the error term, an LM statistic  $N \times R^2$ conforms to</span>
+<span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a>$\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,</span>
+<span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a> or say, the number of overidentifying restrictions.  If we reject the null,</span>
+<span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a> then we should be concerned about the exogeneity of the whole set of</span>
+<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a> the instruments.  This test is called Sargan's test in IV context, and</span>
+<span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a> (Hansen's) J test in GMM context.  The two names are not quite</span>
+<span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a> interchangeable: Sargan's $N \times R^2$ form assumes homoskedastic errors,</span>
+<span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a> while Hansen's $J$, built from the efficient GMM weighting, is the</span>
+<span id="cb16-335"><a href="#cb16-335" aria-hidden="true" tabindex="-1"></a> heteroskedasticity-robust counterpart and the one to use whenever the standard</span>
+<span id="cb16-336"><a href="#cb16-336" aria-hidden="true" tabindex="-1"></a> errors are robust.</span>
+<span id="cb16-337"><a href="#cb16-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-338"><a href="#cb16-338" aria-hidden="true" tabindex="-1"></a> It is worth being exact about what the test delivers, because it is easy to</span>
+<span id="cb16-339"><a href="#cb16-339" aria-hidden="true" tabindex="-1"></a> over-read.  It is a joint test of the overidentifying restrictions.  Failing to</span>
+<span id="cb16-340"><a href="#cb16-340" aria-hidden="true" tabindex="-1"></a> reject does not certify the instruments: the test has no power against</span>
+<span id="cb16-341"><a href="#cb16-341" aria-hidden="true" tabindex="-1"></a> violations that all of them share, because instruments wrong in the same way</span>
+<span id="cb16-342"><a href="#cb16-342" aria-hidden="true" tabindex="-1"></a> agree on the same wrong answer.  Rejection, for its part, does not say *which*</span>
+<span id="cb16-343"><a href="#cb16-343" aria-hidden="true" tabindex="-1"></a> moment condition failed.  A passing $J$ is the absence of one particular kind</span>
+<span id="cb16-344"><a href="#cb16-344" aria-hidden="true" tabindex="-1"></a> of evidence against the instruments, not evidence for them.</span>
+<span id="cb16-345"><a href="#cb16-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-346"><a href="#cb16-346" aria-hidden="true" tabindex="-1"></a> What the J test or Sargan's test does is to test the whole set of</span>
+<span id="cb16-347"><a href="#cb16-347" aria-hidden="true" tabindex="-1"></a> instruments being exogenous or not.  There is another test for</span>
+<span id="cb16-348"><a href="#cb16-348" aria-hidden="true" tabindex="-1"></a> testing exogeneity for a subset of instruments.  It's call a C test</span>
+<span id="cb16-349"><a href="#cb16-349" aria-hidden="true" tabindex="-1"></a> or a difference-in-Sargan test.  The idea is to calculate the</span>
+<span id="cb16-350"><a href="#cb16-350" aria-hidden="true" tabindex="-1"></a> difference between two Sargan's statistics (or Hansen's J in GMM</span>
+<span id="cb16-351"><a href="#cb16-351" aria-hidden="true" tabindex="-1"></a> setting); one is with the whole set of instruments, the other one</span>
+<span id="cb16-352"><a href="#cb16-352" aria-hidden="true" tabindex="-1"></a> without the suspected instruments.  The null is that the suspect</span>
+<span id="cb16-353"><a href="#cb16-353" aria-hidden="true" tabindex="-1"></a> instruments are exogenous; or orthogonal to the error term.</span>
+<span id="cb16-354"><a href="#cb16-354" aria-hidden="true" tabindex="-1"></a> Obviously to conduct the C test, we'll have to have at least one</span>
+<span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a> extra instrument more than the number of endogenous variables.</span>
+<span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a> To understand it better, we look at how to implement Sargan's test</span>
+<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a> manually: For the 2SLS estimator, the test statistic is Sargan's</span>
+<span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a> statistic, typically calculated as $N \times R^2$ from a regression of</span>
+<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a> the IV residuals on the full set of instruments.</span>
+<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a><span class="in">    . ivregress 2sls rent pcturban (hsngval = faminc i.region)</span></span>
+<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a><span class="in">    . estat overid</span></span>
 <span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a><span class="in">      Sargan (score) chi2(3) =  11.2877  (p = 0.0103)</span></span>
-<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a><span class="in">      Basmann chi2(3)        =  12.8294  (p = 0.0050)</span></span>
-<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a><span class="in">    . predict res, residual</span></span>
+<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a><span class="in">      Tests of overidentifying restrictions:</span></span>
+<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a><span class="in">      Sargan (score) chi2(3) =  11.2877  (p = 0.0103)</span></span>
+<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a><span class="in">      Basmann chi2(3)        =  12.8294  (p = 0.0050)</span></span>
 <span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a><span class="in">    . reg res pcturban faminc i.region</span></span>
+<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a><span class="in">    . predict res, residual</span></span>
 <span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a><span class="in">    . disp e(N)*e(r2)</span></span>
-<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a><span class="in">    11.287665</span></span>
-<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a><span class="in">    . reg res pcturban faminc i.region</span></span>
+<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a><span class="in">    . disp e(N)*e(r2)</span></span>
+<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a><span class="in">    11.287665</span></span>
 <span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-378"><a href="#cb16-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementation in Stata</span></span>
+<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a>In Stata, there are different ways to do over-identification test,</span>
-<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a>ivreg2 reports a comprehensive set of tests; overid command does the</span>
-<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a>over-identification test after the ivreg command.</span>
-<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>  ivreg2 with   gmm option returns J test; it reports</span>
-<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a>Sargan's test without this option.</span>
-<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>  ivreg2 also reports the C test statistic, with ortho().  If the C test rejects and the J test without the suspect instruments does not, the evidence points at the suspect instruments -- conditional on the retained ones being valid.  That condition does real work: a difference test cannot tell an invalid suspect from an invalid maintained instrument, so it locates the problem only when the maintained set is sound.</span>
+<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a><span class="fu">### Implementation in Stata</span></span>
+<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a>In Stata, there are different ways to do over-identification test,</span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a>ivreg2 reports a comprehensive set of tests; overid command does the</span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>over-identification test after the ivreg command.</span>
+<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a>  ivreg2 with   gmm option returns J test; it reports</span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>Sargan's test without this option.</span>
 <span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a>  ivreg2 also reports the C test statistic, with ortho().  If the C test rejects and the J test without the suspect instruments does not, the evidence points at the suspect instruments -- conditional on the retained ones being valid.  That condition does real work: a difference test cannot tell an invalid suspect from an invalid maintained instrument, so it locates the problem only when the maintained set is sound.</span>
 <span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a><span class="fu">## Weak Instruments</span></span>
+<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a><span class="fu">### Problem with the cure</span></span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a><span class="fu">## Weak Instruments</span></span>
 <span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>An instrument needs to satisfy two criteria: orthogonality and</span>
-<span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a>relevance.  We need instruments to be orthogonal to the error term.</span>
-<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>We can verify the orthogonality condition  by Sargan's test if there are extra</span>
-<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a>instruments.</span>
-<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>It turns out instrument relevance is important too: if instruments are</span>
-<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>weak, the usual large-sample approximations are poor.  It helps to</span>
-<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>keep three cases apart.  With fixed, nonzero first-stage relevance, IV</span>
-<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a>remains *consistent* but can be badly *biased* in finite samples (and</span>
-<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a>biased toward OLS), with the normal approximation working poorly.</span>
-<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a>Under weak-instrument (local-to-zero) asymptotics, the limiting</span>
-<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>distribution is *nonstandard* and not centered in the usual way, so</span>
-<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a>conventional standard errors and $t$-statistics mislead.  Only in the</span>
-<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>limiting case of complete irrelevance ($\Pi=0$) is the parameter</span>
-<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>unidentified.</span>
-<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a>To see the problem, suppose</span>
-<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
-<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-10}</span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a><span class="fu">### Problem with the cure</span></span>
+<span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>An instrument needs to satisfy two criteria: orthogonality and</span>
+<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a>relevance.  We need instruments to be orthogonal to the error term.</span>
+<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a>With extra instruments, Sargan's test lets us test the joint compatibility of</span>
+<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>the overidentifying restrictions.  As stressed above, that is a test of the set</span>
+<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a>as a whole and not a verification of orthogonality: passing it leaves the</span>
+<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a>instruments untested in every direction they share.</span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a>It turns out instrument relevance is important too: if instruments are</span>
+<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a>weak, the usual large-sample approximations are poor.  It helps to</span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>keep three cases apart.  With fixed, nonzero first-stage relevance, IV</span>
+<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a>remains *consistent* but can be badly *biased* in finite samples (and</span>
+<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>biased toward OLS), with the normal approximation working poorly.</span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>Under weak-instrument (local-to-zero) asymptotics, the limiting</span>
+<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>distribution is *nonstandard* and not centered in the usual way, so</span>
+<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a>conventional standard errors and $t$-statistics mislead.  Only in the</span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>limiting case of complete irrelevance ($\Pi=0$) is the parameter</span>
+<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a>unidentified.</span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>To see the problem, suppose</span>
 <span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
-<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-11}</span>
+<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
+<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-10}</span>
 <span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>and</span>
-<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}}({\symbf{Z u )=0.</span>
-<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-12}</span>
-<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>We can see here ${\symbf{Z}}$ is exogenous.  However, the model does not say</span>
-<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>anything about relevance.  To illustrate the problem caused by weak</span>
-<span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a>instrument, suppose we have only one endogenous variable and one</span>
-<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a>instrument.</span>
-<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}=\frac{{\symbf{Z' y}}}{{\symbf{Z' X}}} = \frac{{\symbf{Z'(X \beta +</span>
-<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a>  u)}}}{{\symbf{Z'</span>
-<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a>  X}}}= \beta + \frac{{\symbf{Z' u}}}{{\symbf{Z' X}}} .</span>
-<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-13}</span>
-<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a>If ${\symbf{Z}}$ is irrelevant, or, $\Pi=0$, then</span>
-<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}- \beta=\frac{{\symbf{Z' u}}}{{\symbf{Z' v}}} =\frac{ \frac{1}{\sqrt n}</span>
-<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}</span>
-<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a>\xrightarrow{d} \frac{z_u}{z_v} ,</span>
-<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-14}</span>
-<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a>where (normalizing ${{\mathrm{Var}}}(Z_i)=1$, which is harmless since any</span>
-<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a>common scale factor cancels in the ratio)</span>
-<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
-<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a>z_u <span class="sc">\\</span>z_v</span>
-<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a>\sim N(0, \begin{bmatrix}</span>
-<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a>\sigma_u^2 \quad \sigma_{uv} <span class="sc">\\</span>  \sigma_{uv} \quad \sigma_v^2</span>
-<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}).</span>
-<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-15}</span>
-<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a>Therefore, if ${\symbf{Z}}$ is irrelevant, $\beta_{2sls}$ is inconsistent.</span>
-<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a>Also, the distribution of the bias is Cauchy-like (the ratio of</span>
-<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a>correlated normals).</span>
+<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
+<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-11}</span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a>and</span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}}({\symbf{Z u )=0.</span>
+<span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-12}</span>
+<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a>We can see here ${\symbf{Z}}$ is exogenous.  However, the model does not say</span>
+<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a>anything about relevance.  To illustrate the problem caused by weak</span>
+<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a>instrument, suppose we have only one endogenous variable and one</span>
+<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a>instrument.</span>
+<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}=\frac{{\symbf{Z' y}}}{{\symbf{Z' X}}} = \frac{{\symbf{Z'(X \beta +</span>
+<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a>  u)}}}{{\symbf{Z'</span>
+<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a>  X}}}= \beta + \frac{{\symbf{Z' u}}}{{\symbf{Z' X}}} .</span>
+<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-13}</span>
+<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a>If ${\symbf{Z}}$ is irrelevant, or, $\Pi=0$, then</span>
+<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a>\hat \beta_{2sls}- \beta=\frac{{\symbf{Z' u}}}{{\symbf{Z' v}}} =\frac{ \frac{1}{\sqrt n}</span>
+<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a>\sum_{i=1}^n Z_i u_i}{\frac{1}{\sqrt n} \sum_{i=1}^n Z_i v_i}</span>
+<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a>\xrightarrow{d} \frac{z_u}{z_v} ,</span>
+<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-14}</span>
+<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a>where (normalizing ${{\mathrm{Var}}}(Z_i)=1$, which is harmless since any</span>
+<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a>common scale factor cancels in the ratio)</span>
+<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a>z_u <span class="sc">\\</span>z_v</span>
+<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a>\sim N(0, \begin{bmatrix}</span>
+<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a>\sigma_u^2 \quad \sigma_{uv} <span class="sc">\\</span>  \sigma_{uv} \quad \sigma_v^2</span>
+<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}).</span>
+<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-15}</span>
 <span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a>This is a case where the cure might be worse than the disease itself:</span>
-<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a>the bias can be big comparing to the bias an OLS estimate suffers.</span>
-<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a><span class="fu">### Weak Instrument Tests</span></span>
-<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a>There are a variety of weak-instruments tests proposed.  Most of them</span>
-<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a>are based on so-called weak-instruments asymptotics and a new</span>
-<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a>parameter called "concentration parameter" $\mu^2 = \Pi' Z' Z \Pi</span>
-<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a>/ \sigma_v^2$.  Sample size only enters the distribution through</span>
-<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a>$\mu^2$.</span>
-<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a>With weak-instruments asymptotics, IV estimators are no longer</span>
-<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a>consistent, and they are not normal asymptotically.  Most test</span>
-<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>statistics (J test, etc.) do not have normal or $\chi^2$ distributions</span>
-<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a>anymore.</span>
-<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>Now I list the following tests in the order of recommended level by</span>
-<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>James Stock:</span>
-<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Moreira (2003) conditional likelihood ratio test (CLR).</span>
-<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>  Advantages of this test:</span>
-<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a>      a.  Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006).</span>
-<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a>      b.  Implemented in Stata as condivreg.</span>
+<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a>Therefore, if ${\symbf{Z}}$ is irrelevant, $\beta_{2sls}$ is inconsistent.</span>
+<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a>Also, the distribution of the bias is Cauchy-like (the ratio of</span>
+<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a>correlated normals).</span>
+<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a>This is a case where the cure might be worse than the disease itself:</span>
+<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a>the bias can be big comparing to the bias an OLS estimate suffers.</span>
+<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a><span class="fu">### Weak Instrument Tests</span></span>
+<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a>There are a variety of weak-instruments tests proposed.  Most of them</span>
+<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a>are based on so-called weak-instruments asymptotics and a new</span>
+<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a>parameter called "concentration parameter" $\mu^2 = \Pi' Z' Z \Pi</span>
+<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a>/ \sigma_v^2$.  Sample size only enters the distribution through</span>
+<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>$\mu^2$.</span>
+<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a>With weak-instruments asymptotics, IV estimators are no longer</span>
+<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>consistent, and they are not normal asymptotically.  Most test</span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>statistics (J test, etc.) do not have normal or $\chi^2$ distributions</span>
+<span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a>anymore.</span>
+<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a>Now I list the following tests in the order of recommended level by</span>
+<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>James Stock:</span>
+<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Moreira (2003) conditional likelihood ratio test (CLR).</span>
+<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a>Disadvantages:</span>
-<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a>   a.  Complicated.  Only developed so far for one endogenous</span>
-<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a>  variable case.</span>
-<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stock-Yogo bias method and size method.</span>
-<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a>Stock and Yogo (2005) provide critical values for both methods: one is</span>
-<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>to control the size of bias, the other one is to control the size of a</span>
-<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a>Wald test of $\beta=\beta_0$.  Bias method is more frequently used.</span>
-<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a>In the case of multiple endogenous variables, the Cragg-Donald</span>
-<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>statistics is used to compare with the critical values.  It is</span>
-<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>implemented in Stata as part of the *ivreg2* command, but it's</span>
-<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>only available for the situation there are at least two excluded</span>
-<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a>variables (meaning the number of instruments minus the number of</span>
-<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a>endogenous variables).</span>
-<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a><span class="ss">3.   </span>Anderson-Rubin confidence intervals.</span>
-<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a>In the model of</span>
+<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a>  Advantages of this test:</span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>      a.  Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006).</span>
+<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a>      b.  Implemented in Stata as condivreg.</span>
+<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>Disadvantages:</span>
+<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>   a.  Complicated.  Only developed so far for one endogenous</span>
+<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a>  variable case.</span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stock-Yogo bias method and size method.</span>
+<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>Stock and Yogo (2005) provide critical values for both methods: one is</span>
+<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>to control the size of bias, the other one is to control the size of a</span>
+<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>Wald test of $\beta=\beta_0$.  Bias method is more frequently used.</span>
+<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a>In the case of multiple endogenous variables, the Cragg-Donald</span>
+<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a>statistics is used to compare with the critical values.  It is</span>
+<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a>implemented in Stata as part of the *ivreg2* command, but it's</span>
+<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a>only available for the situation there are at least two excluded</span>
+<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a>variables (meaning the number of instruments minus the number of</span>
+<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a>endogenous variables).</span>
 <span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
-<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-16}</span>
+<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a><span class="ss">3.   </span>Anderson-Rubin confidence intervals.</span>
+<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a>In the model of</span>
 <span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
-<span id="cb16-515"><a href="#cb16-515" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-17}</span>
+<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u u')=\sigma_u^2 I,</span>
+<span id="cb16-515"><a href="#cb16-515" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-16}</span>
 <span id="cb16-516"><a href="#cb16-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a>The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic</span>
-<span id="cb16-518"><a href="#cb16-518" aria-hidden="true" tabindex="-1"></a>is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F</span>
-<span id="cb16-519"><a href="#cb16-519" aria-hidden="true" tabindex="-1"></a>test that the coefficient vector on $Z$ is zero (under the model that</span>
-<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a>coefficient equals $\Pi (\beta - \beta_0)$, so it is zero exactly when</span>
-<span id="cb16-521"><a href="#cb16-521" aria-hidden="true" tabindex="-1"></a>$\beta=\beta_0$):</span>
-<span id="cb16-522"><a href="#cb16-522" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-523"><a href="#cb16-523" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-524"><a href="#cb16-524" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb16-525"><a href="#cb16-525" aria-hidden="true" tabindex="-1"></a>AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z</span>
-<span id="cb16-526"><a href="#cb16-526" aria-hidden="true" tabindex="-1"></a>  (y-X\beta_0)/(N-l)}</span>
-<span id="cb16-527"><a href="#cb16-527" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-18}</span>
-<span id="cb16-528"><a href="#cb16-528" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-529"><a href="#cb16-529" aria-hidden="true" tabindex="-1"></a>where $l$ is the number of instruments.  The idea of AR confidence</span>
-<span id="cb16-530"><a href="#cb16-530" aria-hidden="true" tabindex="-1"></a>interval is to collect all values of $\beta_0$ at which we fail to</span>
-<span id="cb16-531"><a href="#cb16-531" aria-hidden="true" tabindex="-1"></a>reject $H_0: \beta=\beta_0$.</span>
-<span id="cb16-532"><a href="#cb16-532" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-533"><a href="#cb16-533" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>First-stage F test.</span>
-<span id="cb16-534"><a href="#cb16-534" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-535"><a href="#cb16-535" aria-hidden="true" tabindex="-1"></a>The familiar rule of thumb is $F&gt;10$, and its scope is worth knowing.  It comes</span>
-<span id="cb16-536"><a href="#cb16-536" aria-hidden="true" tabindex="-1"></a>from the single-endogenous-regressor case with homoskedastic errors, where it</span>
-<span id="cb16-537"><a href="#cb16-537" aria-hidden="true" tabindex="-1"></a>corresponds roughly to a bound on the relative bias of 2SLS.  The formal</span>
-<span id="cb16-538"><a href="#cb16-538" aria-hidden="true" tabindex="-1"></a>Stock-Yogo critical values depend on how many instruments there are and on which</span>
-<span id="cb16-539"><a href="#cb16-539" aria-hidden="true" tabindex="-1"></a>criterion -- relative bias or size distortion -- is being controlled, so one</span>
-<span id="cb16-540"><a href="#cb16-540" aria-hidden="true" tabindex="-1"></a>number does not carry over to every design.  Under heteroskedasticity or</span>
-<span id="cb16-541"><a href="#cb16-541" aria-hidden="true" tabindex="-1"></a>clustering the relevant statistic is the effective first-stage F of Montiel Olea</span>
-<span id="cb16-542"><a href="#cb16-542" aria-hidden="true" tabindex="-1"></a>and Pflueger rather than the conventional one.  And when identification is weak</span>
-<span id="cb16-543"><a href="#cb16-543" aria-hidden="true" tabindex="-1"></a>the dependable route is not a higher threshold but weak-instrument-robust</span>
-<span id="cb16-544"><a href="#cb16-544" aria-hidden="true" tabindex="-1"></a>inference -- the Anderson-Rubin and CLR tests in this list, whose size does not</span>
-<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>depend on instrument strength.</span>
-<span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a><span class="ss">5.   </span>Kleibergen's LM test.</span>
-<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a>This test is dominated by the CLR test, thus no longer the optimal</span>
-<span id="cb16-550"><a href="#cb16-550" aria-hidden="true" tabindex="-1"></a>test to use.</span>
-<span id="cb16-551"><a href="#cb16-551" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-552"><a href="#cb16-552" aria-hidden="true" tabindex="-1"></a><span class="ss">6.   </span>First-stage $R^2$, or partial $R^2$, etc., are not recommended.</span>
+<span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-518"><a href="#cb16-518" aria-hidden="true" tabindex="-1"></a>{\symbf{X=Z\Pi+v, \quad {E} (v v')=\sigma_v^2 I,</span>
+<span id="cb16-519"><a href="#cb16-519" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-endogeneity-17}</span>
+<span id="cb16-520"><a href="#cb16-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-521"><a href="#cb16-521" aria-hidden="true" tabindex="-1"></a>The null hypothesis $H_0: \beta=\beta_0$.  Anderson-Rubin statistic</span>
+<span id="cb16-522"><a href="#cb16-522" aria-hidden="true" tabindex="-1"></a>is the F statistic in the regression of $y-X \beta_0$ on $Z$, the F</span>
+<span id="cb16-523"><a href="#cb16-523" aria-hidden="true" tabindex="-1"></a>test that the coefficient vector on $Z$ is zero.  Under the model that</span>
+<span id="cb16-524"><a href="#cb16-524" aria-hidden="true" tabindex="-1"></a>coefficient equals $\Pi (\beta - \beta_0)$, which is zero exactly when</span>
+<span id="cb16-525"><a href="#cb16-525" aria-hidden="true" tabindex="-1"></a>$\beta=\beta_0$ provided $\Pi$ has full column rank.  Without that rank</span>
+<span id="cb16-526"><a href="#cb16-526" aria-hidden="true" tabindex="-1"></a>condition the test stays valid and weak-instrument robust, but it cannot</span>
+<span id="cb16-527"><a href="#cb16-527" aria-hidden="true" tabindex="-1"></a>distinguish $\beta_0$ from an alternative differing in a direction $\Pi$</span>
+<span id="cb16-528"><a href="#cb16-528" aria-hidden="true" tabindex="-1"></a>annihilates:</span>
+<span id="cb16-529"><a href="#cb16-529" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-530"><a href="#cb16-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-531"><a href="#cb16-531" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb16-532"><a href="#cb16-532" aria-hidden="true" tabindex="-1"></a>AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z</span>
+<span id="cb16-533"><a href="#cb16-533" aria-hidden="true" tabindex="-1"></a>  (y-X\beta_0)/(N-l)}</span>
+<span id="cb16-534"><a href="#cb16-534" aria-hidden="true" tabindex="-1"></a>$$ {#eq-endogeneity-18}</span>
+<span id="cb16-535"><a href="#cb16-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-536"><a href="#cb16-536" aria-hidden="true" tabindex="-1"></a>where $l$ is the number of instruments.  The idea of AR confidence</span>
+<span id="cb16-537"><a href="#cb16-537" aria-hidden="true" tabindex="-1"></a>interval is to collect all values of $\beta_0$ at which we fail to</span>
+<span id="cb16-538"><a href="#cb16-538" aria-hidden="true" tabindex="-1"></a>reject $H_0: \beta=\beta_0$.</span>
+<span id="cb16-539"><a href="#cb16-539" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-540"><a href="#cb16-540" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>First-stage F test.</span>
+<span id="cb16-541"><a href="#cb16-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-542"><a href="#cb16-542" aria-hidden="true" tabindex="-1"></a>The familiar rule of thumb is $F&gt;10$, and its scope is worth knowing.  It comes</span>
+<span id="cb16-543"><a href="#cb16-543" aria-hidden="true" tabindex="-1"></a>from the single-endogenous-regressor case with homoskedastic errors, where it</span>
+<span id="cb16-544"><a href="#cb16-544" aria-hidden="true" tabindex="-1"></a>corresponds roughly to a bound on the relative bias of 2SLS.  The formal</span>
+<span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>Stock-Yogo critical values depend on how many instruments there are and on which</span>
+<span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a>criterion -- relative bias or size distortion -- is being controlled, so one</span>
+<span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a>number does not carry over to every design.  Under heteroskedasticity or</span>
+<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a>clustering the relevant statistic is the effective first-stage F of Montiel Olea</span>
+<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a>and Pflueger rather than the conventional one.  And when identification is weak</span>
+<span id="cb16-550"><a href="#cb16-550" aria-hidden="true" tabindex="-1"></a>the dependable route is not a higher threshold but weak-instrument-robust</span>
+<span id="cb16-551"><a href="#cb16-551" aria-hidden="true" tabindex="-1"></a>inference -- the Anderson-Rubin and CLR tests in this list, whose size does not</span>
+<span id="cb16-552"><a href="#cb16-552" aria-hidden="true" tabindex="-1"></a>depend on instrument strength.</span>
 <span id="cb16-553"><a href="#cb16-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-554"><a href="#cb16-554" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-555"><a href="#cb16-555" aria-hidden="true" tabindex="-1"></a><span class="fu">## When is endogeneity a problem and what can we say from an IV regression</span></span>
-<span id="cb16-556"><a href="#cb16-556" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-557"><a href="#cb16-557" aria-hidden="true" tabindex="-1"></a>Let's consider a model of housing price on no. of rooms</span>
-<span id="cb16-558"><a href="#cb16-558" aria-hidden="true" tabindex="-1"></a>and square footage.</span>
-<span id="cb16-559"><a href="#cb16-559" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-560"><a href="#cb16-560" aria-hidden="true" tabindex="-1"></a>$$ P = \alpha R + \beta F + \epsilon $$ {#eq-endogeneity-19}</span>
+<span id="cb16-554"><a href="#cb16-554" aria-hidden="true" tabindex="-1"></a><span class="ss">5.   </span>Kleibergen's LM test.</span>
+<span id="cb16-555"><a href="#cb16-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-556"><a href="#cb16-556" aria-hidden="true" tabindex="-1"></a>This test is dominated by the CLR test, thus no longer the optimal</span>
+<span id="cb16-557"><a href="#cb16-557" aria-hidden="true" tabindex="-1"></a>test to use.</span>
+<span id="cb16-558"><a href="#cb16-558" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-559"><a href="#cb16-559" aria-hidden="true" tabindex="-1"></a><span class="ss">6.   </span>First-stage $R^2$, or partial $R^2$, etc., are not recommended.</span>
+<span id="cb16-560"><a href="#cb16-560" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-561"><a href="#cb16-561" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-562"><a href="#cb16-562" aria-hidden="true" tabindex="-1"></a>Should square footage really be there?  We are not interested in,</span>
-<span id="cb16-563"><a href="#cb16-563" aria-hidden="true" tabindex="-1"></a>given square footage, how much money we need to pay for an additional</span>
-<span id="cb16-564"><a href="#cb16-564" aria-hidden="true" tabindex="-1"></a>room.  We are generally interested in how much money we need to pay</span>
-<span id="cb16-565"><a href="#cb16-565" aria-hidden="true" tabindex="-1"></a>for an additional footage.  However, if we do not include footage,</span>
-<span id="cb16-566"><a href="#cb16-566" aria-hidden="true" tabindex="-1"></a>then we "sort of" have endogeneity problem due to omitted variable.</span>
-<span id="cb16-567"><a href="#cb16-567" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-568"><a href="#cb16-568" aria-hidden="true" tabindex="-1"></a>Another example would be education's impact on wage.  Say IQ is an</span>
-<span id="cb16-569"><a href="#cb16-569" aria-hidden="true" tabindex="-1"></a>omitted variable.  Do we want to say something about education's</span>
-<span id="cb16-570"><a href="#cb16-570" aria-hidden="true" tabindex="-1"></a>impact on wage controlling on IQ, or not?</span>
-<span id="cb16-571"><a href="#cb16-571" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-572"><a href="#cb16-572" aria-hidden="true" tabindex="-1"></a>So it depends on what questions to ask.  If I am a builder and ask</span>
-<span id="cb16-573"><a href="#cb16-573" aria-hidden="true" tabindex="-1"></a>what an extra bedroom on the already built house would bring to me, I</span>
-<span id="cb16-574"><a href="#cb16-574" aria-hidden="true" tabindex="-1"></a>need to control for footage.  If I am generally asking what an extra</span>
-<span id="cb16-575"><a href="#cb16-575" aria-hidden="true" tabindex="-1"></a>bedroom would cost, then I am implying what that bedroom and</span>
-<span id="cb16-576"><a href="#cb16-576" aria-hidden="true" tabindex="-1"></a>associated footage would cost me.  In that case, without controlling</span>
-<span id="cb16-577"><a href="#cb16-577" aria-hidden="true" tabindex="-1"></a>for footage is not a problem, since the question is:  what an</span>
-<span id="cb16-578"><a href="#cb16-578" aria-hidden="true" tabindex="-1"></a>additional bedroom (AND the associated average square footage) would</span>
-<span id="cb16-579"><a href="#cb16-579" aria-hidden="true" tabindex="-1"></a>cost me.</span>
-<span id="cb16-580"><a href="#cb16-580" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-581"><a href="#cb16-581" aria-hidden="true" tabindex="-1"></a>In the wage and education example, if I am asking: what's the effect</span>
-<span id="cb16-582"><a href="#cb16-582" aria-hidden="true" tabindex="-1"></a>of education on wage?  I implicitly ask what would be my pay raise if</span>
-<span id="cb16-583"><a href="#cb16-583" aria-hidden="true" tabindex="-1"></a>I go to college (given IQ, of course), for example.  Then we are</span>
-<span id="cb16-584"><a href="#cb16-584" aria-hidden="true" tabindex="-1"></a>concerned that this model of</span>
-<span id="cb16-585"><a href="#cb16-585" aria-hidden="true" tabindex="-1"></a>$$ wage= \alpha edu + \epsilon $$ {#eq-endogeneity-20}</span>
-<span id="cb16-586"><a href="#cb16-586" aria-hidden="true" tabindex="-1"></a>will generate biased estimate of $\alpha$, because we are not</span>
-<span id="cb16-587"><a href="#cb16-587" aria-hidden="true" tabindex="-1"></a>controlling for IQ.  But if I am an employer and interested in hiring</span>
-<span id="cb16-588"><a href="#cb16-588" aria-hidden="true" tabindex="-1"></a>a person, what would I have to pay extra to hire a college graduate</span>
-<span id="cb16-589"><a href="#cb16-589" aria-hidden="true" tabindex="-1"></a>vs. a high school graduate?  Then I don't have to include that IQ</span>
-<span id="cb16-590"><a href="#cb16-590" aria-hidden="true" tabindex="-1"></a>variable, because implicitly I am asking: what extra I need to pay for</span>
-<span id="cb16-591"><a href="#cb16-591" aria-hidden="true" tabindex="-1"></a>that college graduate who comes with a higher IQ, and everything else</span>
-<span id="cb16-592"><a href="#cb16-592" aria-hidden="true" tabindex="-1"></a>that is associated with higher education.</span>
-<span id="cb16-593"><a href="#cb16-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-594"><a href="#cb16-594" aria-hidden="true" tabindex="-1"></a>In addition, what an IV regression really gives us is part of the causal</span>
-<span id="cb16-595"><a href="#cb16-595" aria-hidden="true" tabindex="-1"></a>inference of $X$ (suspected to be endogenous) on $y$, namely the part</span>
-<span id="cb16-596"><a href="#cb16-596" aria-hidden="true" tabindex="-1"></a>induced by $Z$.  For example, we are interested in the relationship</span>
-<span id="cb16-597"><a href="#cb16-597" aria-hidden="true" tabindex="-1"></a>between college education and wage.  If we use distance to college as</span>
-<span id="cb16-598"><a href="#cb16-598" aria-hidden="true" tabindex="-1"></a>an instrument, then our inference is the effect of college education</span>
-<span id="cb16-599"><a href="#cb16-599" aria-hidden="true" tabindex="-1"></a>from those who decide to go because of proximity of the college.</span>
+<span id="cb16-562"><a href="#cb16-562" aria-hidden="true" tabindex="-1"></a><span class="fu">## When is endogeneity a problem and what can we say from an IV regression</span></span>
+<span id="cb16-563"><a href="#cb16-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-564"><a href="#cb16-564" aria-hidden="true" tabindex="-1"></a>Let's consider a model of housing price on no. of rooms</span>
+<span id="cb16-565"><a href="#cb16-565" aria-hidden="true" tabindex="-1"></a>and square footage.</span>
+<span id="cb16-566"><a href="#cb16-566" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-567"><a href="#cb16-567" aria-hidden="true" tabindex="-1"></a>$$ P = \alpha R + \beta F + \epsilon $$ {#eq-endogeneity-19}</span>
+<span id="cb16-568"><a href="#cb16-568" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-569"><a href="#cb16-569" aria-hidden="true" tabindex="-1"></a>Should square footage really be there?  We are not interested in,</span>
+<span id="cb16-570"><a href="#cb16-570" aria-hidden="true" tabindex="-1"></a>given square footage, how much money we need to pay for an additional</span>
+<span id="cb16-571"><a href="#cb16-571" aria-hidden="true" tabindex="-1"></a>room.  We are generally interested in how much money we need to pay</span>
+<span id="cb16-572"><a href="#cb16-572" aria-hidden="true" tabindex="-1"></a>for an additional footage.  However, if we do not include footage,</span>
+<span id="cb16-573"><a href="#cb16-573" aria-hidden="true" tabindex="-1"></a>then we "sort of" have endogeneity problem due to omitted variable.</span>
+<span id="cb16-574"><a href="#cb16-574" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-575"><a href="#cb16-575" aria-hidden="true" tabindex="-1"></a>Another example would be education's impact on wage.  Say IQ is an</span>
+<span id="cb16-576"><a href="#cb16-576" aria-hidden="true" tabindex="-1"></a>omitted variable.  Do we want to say something about education's</span>
+<span id="cb16-577"><a href="#cb16-577" aria-hidden="true" tabindex="-1"></a>impact on wage controlling on IQ, or not?</span>
+<span id="cb16-578"><a href="#cb16-578" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-579"><a href="#cb16-579" aria-hidden="true" tabindex="-1"></a>So it depends on what questions to ask.  If I am a builder and ask</span>
+<span id="cb16-580"><a href="#cb16-580" aria-hidden="true" tabindex="-1"></a>what an extra bedroom on the already built house would bring to me, I</span>
+<span id="cb16-581"><a href="#cb16-581" aria-hidden="true" tabindex="-1"></a>need to control for footage.  If I am generally asking what an extra</span>
+<span id="cb16-582"><a href="#cb16-582" aria-hidden="true" tabindex="-1"></a>bedroom would cost, then I am implying what that bedroom and</span>
+<span id="cb16-583"><a href="#cb16-583" aria-hidden="true" tabindex="-1"></a>associated footage would cost me.  In that case, without controlling</span>
+<span id="cb16-584"><a href="#cb16-584" aria-hidden="true" tabindex="-1"></a>for footage is not a problem, since the question is:  what an</span>
+<span id="cb16-585"><a href="#cb16-585" aria-hidden="true" tabindex="-1"></a>additional bedroom (AND the associated average square footage) would</span>
+<span id="cb16-586"><a href="#cb16-586" aria-hidden="true" tabindex="-1"></a>cost me.</span>
+<span id="cb16-587"><a href="#cb16-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-588"><a href="#cb16-588" aria-hidden="true" tabindex="-1"></a>In the wage and education example, if I am asking: what's the effect</span>
+<span id="cb16-589"><a href="#cb16-589" aria-hidden="true" tabindex="-1"></a>of education on wage?  I implicitly ask what would be my pay raise if</span>
+<span id="cb16-590"><a href="#cb16-590" aria-hidden="true" tabindex="-1"></a>I go to college (given IQ, of course), for example.  Then we are</span>
+<span id="cb16-591"><a href="#cb16-591" aria-hidden="true" tabindex="-1"></a>concerned that this model of</span>
+<span id="cb16-592"><a href="#cb16-592" aria-hidden="true" tabindex="-1"></a>$$ wage= \alpha edu + \epsilon $$ {#eq-endogeneity-20}</span>
+<span id="cb16-593"><a href="#cb16-593" aria-hidden="true" tabindex="-1"></a>will generate biased estimate of $\alpha$, because we are not</span>
+<span id="cb16-594"><a href="#cb16-594" aria-hidden="true" tabindex="-1"></a>controlling for IQ.  But if I am an employer and interested in hiring</span>
+<span id="cb16-595"><a href="#cb16-595" aria-hidden="true" tabindex="-1"></a>a person, what would I have to pay extra to hire a college graduate</span>
+<span id="cb16-596"><a href="#cb16-596" aria-hidden="true" tabindex="-1"></a>vs. a high school graduate?  Then I don't have to include that IQ</span>
+<span id="cb16-597"><a href="#cb16-597" aria-hidden="true" tabindex="-1"></a>variable, because implicitly I am asking: what extra I need to pay for</span>
+<span id="cb16-598"><a href="#cb16-598" aria-hidden="true" tabindex="-1"></a>that college graduate who comes with a higher IQ, and everything else</span>
+<span id="cb16-599"><a href="#cb16-599" aria-hidden="true" tabindex="-1"></a>that is associated with higher education.</span>
 <span id="cb16-600"><a href="#cb16-600" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-601"><a href="#cb16-601" aria-hidden="true" tabindex="-1"></a>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist</span>
-<span id="cb16-602"><a href="#cb16-602" aria-hidden="true" tabindex="-1"></a>(1994): with a binary instrument and heterogeneous treatment effects,</span>
-<span id="cb16-603"><a href="#cb16-603" aria-hidden="true" tabindex="-1"></a>IV identifies the causal effect for *compliers* --- those whose</span>
-<span id="cb16-604"><a href="#cb16-604" aria-hidden="true" tabindex="-1"></a>treatment status is shifted by the instrument --- rather than for the</span>
-<span id="cb16-605"><a href="#cb16-605" aria-hidden="true" tabindex="-1"></a>full population.  The formal derivation, including the monotonicity</span>
-<span id="cb16-606"><a href="#cb16-606" aria-hidden="true" tabindex="-1"></a>assumption and the complier/always-taker/never-taker decomposition, is</span>
-<span id="cb16-607"><a href="#cb16-607" aria-hidden="true" tabindex="-1"></a>in the <span class="co">[</span><span class="ot">Causal Econometrics Guide</span><span class="co">](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html)</span>.</span>
+<span id="cb16-601"><a href="#cb16-601" aria-hidden="true" tabindex="-1"></a>In addition, what an IV regression really gives us is part of the causal</span>
+<span id="cb16-602"><a href="#cb16-602" aria-hidden="true" tabindex="-1"></a>inference of $X$ (suspected to be endogenous) on $y$, namely the part</span>
+<span id="cb16-603"><a href="#cb16-603" aria-hidden="true" tabindex="-1"></a>induced by $Z$.  For example, we are interested in the relationship</span>
+<span id="cb16-604"><a href="#cb16-604" aria-hidden="true" tabindex="-1"></a>between college education and wage.  If we use distance to college as</span>
+<span id="cb16-605"><a href="#cb16-605" aria-hidden="true" tabindex="-1"></a>an instrument, then our inference is the effect of college education</span>
+<span id="cb16-606"><a href="#cb16-606" aria-hidden="true" tabindex="-1"></a>from those who decide to go because of proximity of the college.</span>
+<span id="cb16-607"><a href="#cb16-607" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-608"><a href="#cb16-608" aria-hidden="true" tabindex="-1"></a>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist</span>
+<span id="cb16-609"><a href="#cb16-609" aria-hidden="true" tabindex="-1"></a>(1994): with a binary instrument and heterogeneous treatment effects,</span>
+<span id="cb16-610"><a href="#cb16-610" aria-hidden="true" tabindex="-1"></a>IV identifies the causal effect for *compliers* --- those whose</span>
+<span id="cb16-611"><a href="#cb16-611" aria-hidden="true" tabindex="-1"></a>treatment status is shifted by the instrument --- rather than for the</span>
+<span id="cb16-612"><a href="#cb16-612" aria-hidden="true" tabindex="-1"></a>full population.  The formal derivation, including the monotonicity</span>
+<span id="cb16-613"><a href="#cb16-613" aria-hidden="true" tabindex="-1"></a>assumption and the complier/always-taker/never-taker decomposition, is</span>
+<span id="cb16-614"><a href="#cb16-614" aria-hidden="true" tabindex="-1"></a>in the <span class="co">[</span><span class="ot">Causal Econometrics Guide</span><span class="co">](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
