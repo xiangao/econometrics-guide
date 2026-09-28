@@ -235,10 +235,10 @@ The reversed-share Słoczyński approximation $(1-\rho)\,\text{ATT} + \rho\,\tex
 | Decomposition | Sorted by | Smallest effect unit | Exact when | Reference |
 |---------------|---------------|---------------|---------------|---------------|
 | Observation rule | nothing | the unit effect $\beta_i$ | always | @eq-weff |
-| Angrist (1998) | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
-| Słoczyński (2022) | treatment status $D$ | group averages ATT, ATU | group means linear in $p$; reversed shares also need $V_1 = V_0$ | @eq-reversed |
+| @angrist-1998 | covariate stratum $x$ | stratum difference $\hat\delta_x$ | saturated controls | @eq-angrist |
+| @sloczynski-2022 | treatment status $D$ | group averages ATT, ATU | group means linear in $p$; reversed shares also need $V_1 = V_0$ | @eq-reversed |
 
-Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
+Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, @shinkre-hazlett-2024 show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.
 
 ## Fixed effects: OLS weights movers
 
@@ -407,7 +407,7 @@ In (A) all three numbers agree to within sampling noise: the weighting is there 
 
 FE still removes confounding from the unit effects $\alpha_i$ — that is its job, and it does it in both designs. What FE does not do is change the within-variance weighting. Even after demeaning, OLS leans on units whose $x$ moves more, and in design (B) those units happen to have higher slopes. The gap between the FE estimate and the plain average is not a failure of FE; it is what OLS does by construction, and it matters only when $b_i$ covaries with $\text{Var}_i(x)$. Without knowing the true slopes, the problem is undetectable from the data alone — the FE estimate looks well-behaved, standard errors are fine, it is just consistently estimating a different parameter than the simple average.
 
-**Reweighting to recover the simple average.** One response is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. In this model, running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind Gibbons, Suárez Serrato, and Urbancic (2018), who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.
+**Reweighting to recover the simple average.** One response is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. In this model, running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind @gibbons-2018, who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.
 
 The trade-off is efficiency. The high-variance units are the ones whose slope is best estimated — their $x$ moves a lot, so there is real information there. Downweighting them inflates the standard error. We are giving up precision to change which parameter we estimate.
 

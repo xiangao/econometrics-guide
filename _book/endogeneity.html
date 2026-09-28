@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -533,7 +553,7 @@ hausman iv ., constant sigmamore</code></pre>
 <span class="header-section-number">4.4</span> Identification</h2>
 <p>Identification in a regression equation means that all parameters can be uniquely estimated. The relevant counting rule (the <em>order condition</em>) is most cleanly stated in terms of <em>excluded</em> instruments. Let <span class="math inline">\(k_e\)</span> be the number of endogenous regressors and <span class="math inline">\(l_e\)</span> the number of excluded instruments (instruments not already included as exogenous regressors). A necessary condition is <span class="math inline">\(l_e \ge k_e\)</span>: there must be at least as many excluded instruments as endogenous regressors. (Equivalently, counting the included exogenous regressors as their own instruments, the total number of instruments must be at least the total number of regressors.) If <span class="math inline">\(l_e=k_e\)</span> we have exact-identification. If <span class="math inline">\(l_e&gt;k_e\)</span>, we have over-identification.</p>
 <p>Additional valid instruments that carry independent information can improve asymptotic precision under a suitable weighting scheme. The gain is not automatic: a redundant instrument adds nothing, a weak one need not help, and a large number of instruments worsens finite-sample behaviour even when every one of them is valid. The other advantage of over-identification is that over-identification tests can be done to test the adequacy of instruments.</p>
-<p>Under the null hypothesis that all the instruments are uncorrelated with the error term, an LM statistic <span class="math inline">\(N \times R^2\)</span> conforms to <span class="math inline">\(\chi^2 (r)\)</span> distribution, <span class="math inline">\(r=l_e-k_e\)</span>, the number of excess instruments, or say, the number of overidentifying restrictions. If we reject the null, then we should be concerned about the exogeneity of the whole set of the instruments. This test is called Sargan’s test in IV context, and (Hansen’s) J test in GMM context. The two names are not quite interchangeable: Sargan’s <span class="math inline">\(N \times R^2\)</span> form assumes homoskedastic errors, while Hansen’s <span class="math inline">\(J\)</span>, built from the efficient GMM weighting, is the heteroskedasticity-robust counterpart and the one to use whenever the standard errors are robust.</p>
+<p>Under the null hypothesis that all the instruments are uncorrelated with the error term, an LM statistic <span class="math inline">\(N \times R^2\)</span> conforms to <span class="math inline">\(\chi^2 (r)\)</span> distribution, <span class="math inline">\(r=l_e-k_e\)</span>, the number of excess instruments, or say, the number of overidentifying restrictions. If we reject the null, then we should be concerned about the exogeneity of the whole set of the instruments. This test is called Sargan’s <span class="citation" data-cites="sargan-1958">(<a href="references.html#ref-sargan-1958" role="doc-biblioref">1958</a>)</span> test in IV context, and (Hansen’s) J test in GMM context. The two names are not quite interchangeable: Sargan’s <span class="math inline">\(N \times R^2\)</span> form assumes homoskedastic errors, while Hansen’s <span class="math inline">\(J\)</span>, built from the efficient GMM weighting, is the heteroskedasticity-robust counterpart and the one to use whenever the standard errors are robust.</p>
 <p>It is worth being exact about what the test delivers, because it is easy to over-read. It is a joint test of the overidentifying restrictions. Failing to reject does not certify the instruments: the test has no power against violations that all of them share, because instruments wrong in the same way agree on the same wrong answer. Rejection, for its part, does not say <em>which</em> moment condition failed. A passing <span class="math inline">\(J\)</span> is the absence of one particular kind of evidence against the instruments, not evidence for them.</p>
 <p>What the J test or Sargan’s test does is to test the whole set of instruments being exogenous or not. There is another test for testing exogeneity for a subset of instruments. It’s call a C test or a difference-in-Sargan test. The idea is to calculate the difference between two Sargan’s statistics (or Hansen’s J in GMM setting); one is with the whole set of instruments, the other one without the suspected instruments. The null is that the suspect instruments are exogenous; or orthogonal to the error term. Obviously to conduct the C test, we’ll have to have at least one extra instrument more than the number of endogenous variables.</p>
 <p>To understand it better, we look at how to implement Sargan’s test manually: For the 2SLS estimator, the test statistic is Sargan’s statistic, typically calculated as <span class="math inline">\(N \times R^2\)</span> from a regression of the IV residuals on the full set of instruments.</p>
@@ -602,9 +622,10 @@ z_u \\z_v
 <p>With weak-instruments asymptotics, IV estimators are no longer consistent, and they are not normal asymptotically. Most test statistics (J test, etc.) do not have normal or <span class="math inline">\(\chi^2\)</span> distributions anymore.</p>
 <p>Now I list the following tests in the order of recommended level by James Stock:</p>
 <ol type="1">
-<li>Moreira (2003) conditional likelihood ratio test (CLR).</li>
+<li>
+<span class="citation" data-cites="moreira-2003">Moreira (<a href="references.html#ref-moreira-2003" role="doc-biblioref">2003</a>)</span> conditional likelihood ratio test (CLR).</li>
 </ol>
-<p>Advantages of this test: a. Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006). b. Implemented in Stata as condivreg.</p>
+<p>Advantages of this test: a. Nearly optimal among invariant similar tests <span class="citation" data-cites="andrews-moreira-stock-2006">(<a href="references.html#ref-andrews-moreira-stock-2006" role="doc-biblioref">Andrews, Moreira, and Stock 2006</a>)</span>. b. Implemented in Stata as condivreg.</p>
 <p>Disadvantages:</p>
 <ol type="a">
 <li>Complicated. Only developed so far for one endogenous variable case.</li>
@@ -612,7 +633,7 @@ z_u \\z_v
 <ol start="2" type="1">
 <li>Stock-Yogo bias method and size method.</li>
 </ol>
-<p>Stock and Yogo (2005) provide critical values for both methods: one is to control the size of bias, the other one is to control the size of a Wald test of <span class="math inline">\(\beta=\beta_0\)</span>. Bias method is more frequently used. In the case of multiple endogenous variables, the Cragg-Donald statistics is used to compare with the critical values. It is implemented in Stata as part of the <em>ivreg2</em> command, but it’s only available for the situation there are at least two excluded variables (meaning the number of instruments minus the number of endogenous variables).</p>
+<p><span class="citation" data-cites="stock-yogo-2005">Stock and Yogo (<a href="references.html#ref-stock-yogo-2005" role="doc-biblioref">2005</a>)</span> provide critical values for both methods: one is to control the size of bias, the other one is to control the size of a Wald test of <span class="math inline">\(\beta=\beta_0\)</span>. Bias method is more frequently used. In the case of multiple endogenous variables, the Cragg-Donald statistics is used to compare with the critical values. It is implemented in Stata as part of the <em>ivreg2</em> command, but it’s only available for the situation there are at least two excluded variables (meaning the number of instruments minus the number of endogenous variables).</p>
 <ol start="3" type="1">
 <li>Anderson-Rubin confidence intervals.</li>
 </ol>
@@ -632,7 +653,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <ol start="4" type="1">
 <li>First-stage F test.</li>
 </ol>
-<p>The familiar rule of thumb is <span class="math inline">\(F&gt;10\)</span>, and its scope is worth knowing. It comes from the single-endogenous-regressor case with homoskedastic errors, where it corresponds roughly to a bound on the relative bias of 2SLS. The formal Stock-Yogo critical values depend on how many instruments there are and on which criterion – relative bias or size distortion – is being controlled, so one number does not carry over to every design. Under heteroskedasticity or clustering the relevant statistic is the effective first-stage F of Montiel Olea and Pflueger rather than the conventional one. And when identification is weak the dependable route is not a higher threshold but weak-instrument-robust inference – the Anderson-Rubin and CLR tests in this list, whose size does not depend on instrument strength.</p>
+<p>The familiar rule of thumb is <span class="math inline">\(F&gt;10\)</span>, and its scope is worth knowing. It comes from the single-endogenous-regressor case with homoskedastic errors, where it corresponds roughly to a bound on the relative bias of 2SLS. The formal Stock-Yogo critical values depend on how many instruments there are and on which criterion – relative bias or size distortion – is being controlled, so one number does not carry over to every design. Under heteroskedasticity or clustering the relevant statistic is the effective first-stage F of <span class="citation" data-cites="montiel-olea-pflueger-2013">Montiel Olea and Pflueger (<a href="references.html#ref-montiel-olea-pflueger-2013" role="doc-biblioref">2013</a>)</span> rather than the conventional one. And when identification is weak the dependable route is not a higher threshold but weak-instrument-robust inference – the Anderson-Rubin and CLR tests in this list, whose size does not depend on instrument strength.</p>
 <ol start="5" type="1">
 <li>Kleibergen’s LM test.</li>
 </ol>
@@ -648,11 +669,31 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <p>So it depends on what questions to ask. If I am a builder and ask what an extra bedroom on the already built house would bring to me, I need to control for footage. If I am generally asking what an extra bedroom would cost, then I am implying what that bedroom and associated footage would cost me. In that case, without controlling for footage is not a problem, since the question is: what an additional bedroom (AND the associated average square footage) would cost me.</p>
 <p>In the wage and education example, if I am asking: what’s the effect of education on wage? I implicitly ask what would be my pay raise if I go to college (given IQ, of course), for example. Then we are concerned that this model of <span id="eq-endogeneity-20"><span class="math display">\[ wage= \alpha edu + \epsilon  \tag{4.21}\]</span></span> will generate biased estimate of <span class="math inline">\(\alpha\)</span>, because we are not controlling for IQ. But if I am an employer and interested in hiring a person, what would I have to pay extra to hire a college graduate vs.&nbsp;a high school graduate? Then I don’t have to include that IQ variable, because implicitly I am asking: what extra I need to pay for that college graduate who comes with a higher IQ, and everything else that is associated with higher education.</p>
 <p>In addition, what an IV regression really gives us is part of the causal inference of <span class="math inline">\(X\)</span> (suspected to be endogenous) on <span class="math inline">\(y\)</span>, namely the part induced by <span class="math inline">\(Z\)</span>. For example, we are interested in the relationship between college education and wage. If we use distance to college as an instrument, then our inference is the effect of college education from those who decide to go because of proximity of the college.</p>
-<p>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist (1994): with a binary instrument and heterogeneous treatment effects, IV identifies the causal effect for <em>compliers</em> — those whose treatment status is shifted by the instrument — rather than for the full population. The formal derivation, including the monotonicity assumption and the complier/always-taker/never-taker decomposition, is in the <a href="https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html">Causal Econometrics Guide</a>.</p>
+<p>This is the Local Average Treatment Effect (LATE) of <span class="citation" data-cites="imbens-angrist-1994-late">Imbens and Angrist (<a href="references.html#ref-imbens-angrist-1994-late" role="doc-biblioref">1994</a>)</span>: with a binary instrument and heterogeneous treatment effects, IV identifies the causal effect for <em>compliers</em> — those whose treatment status is shifted by the instrument — rather than for the full population. The formal derivation, including the monotonicity assumption and the complier/always-taker/never-taker decomposition, is in the <a href="https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html">Causal Econometrics Guide</a>.</p>
 
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-andrews-moreira-stock-2006" class="csl-entry" role="listitem">
+Andrews, Donald W. K., Marcelo J. Moreira, and James H. Stock. 2006. <span>“Optimal Two-Sided Invariant Tests for Instrumental Variables Regression.”</span> <em>Econometrica</em> 74 (3): 715–52. <a href="https://doi.org/10.1111/j.1468-0262.2006.00680.x">https://doi.org/10.1111/j.1468-0262.2006.00680.x</a>.
+</div>
+<div id="ref-imbens-angrist-1994-late" class="csl-entry" role="listitem">
+Imbens, Guido W., and Joshua D. Angrist. 1994. <span>“Identification and Estimation of Local Average Treatment Effects.”</span> <em>Econometrica</em> 62 (2): 467–75.
+</div>
+<div id="ref-montiel-olea-pflueger-2013" class="csl-entry" role="listitem">
+Montiel Olea, José Luis, and Carolin Pflueger. 2013. <span>“A Robust Test for Weak Instruments.”</span> <em>Journal of Business &amp; Economic Statistics</em> 31 (3): 358–69. <a href="https://doi.org/10.1080/00401706.2013.806694">https://doi.org/10.1080/00401706.2013.806694</a>.
+</div>
+<div id="ref-moreira-2003" class="csl-entry" role="listitem">
+Moreira, Marcelo J. 2003. <span>“A Conditional Likelihood Ratio Test for Structural Models.”</span> <em>Econometrica</em> 71 (4): 1027–48. <a href="https://doi.org/10.1111/1468-0262.00438">https://doi.org/10.1111/1468-0262.00438</a>.
+</div>
+<div id="ref-sargan-1958" class="csl-entry" role="listitem">
+Sargan, J. D. 1958. <span>“The Estimation of Economic Relationships Using Instrumental Variables.”</span> <em>Econometrica</em> 26 (3): 393–415. <a href="https://doi.org/10.2307/1907619">https://doi.org/10.2307/1907619</a>.
+</div>
+<div id="ref-stock-yogo-2005" class="csl-entry" role="listitem">
+Stock, James H., and Motohiro Yogo. 2005. <span>“Testing for Weak Instruments in Linear IV Regression.”</span> In <em>Identification and Inference for Econometric Models</em>, 80–108. Cambridge University Press. <a href="https://doi.org/10.1017/cbo9780511614491.006">https://doi.org/10.1017/cbo9780511614491.006</a>.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1438,7 +1479,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-328"><a href="#cb16-328" aria-hidden="true" tabindex="-1"></a>$\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,</span>
 <span id="cb16-329"><a href="#cb16-329" aria-hidden="true" tabindex="-1"></a> or say, the number of overidentifying restrictions.  If we reject the null,</span>
 <span id="cb16-330"><a href="#cb16-330" aria-hidden="true" tabindex="-1"></a> then we should be concerned about the exogeneity of the whole set of</span>
-<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a> the instruments.  This test is called Sargan's test in IV context, and</span>
+<span id="cb16-331"><a href="#cb16-331" aria-hidden="true" tabindex="-1"></a> the instruments.  This test is called Sargan's <span class="co">[</span><span class="ot">-@sargan-1958</span><span class="co">]</span> test in IV context, and</span>
 <span id="cb16-332"><a href="#cb16-332" aria-hidden="true" tabindex="-1"></a> (Hansen's) J test in GMM context.  The two names are not quite</span>
 <span id="cb16-333"><a href="#cb16-333" aria-hidden="true" tabindex="-1"></a> interchangeable: Sargan's $N \times R^2$ form assumes homoskedastic errors,</span>
 <span id="cb16-334"><a href="#cb16-334" aria-hidden="true" tabindex="-1"></a> while Hansen's $J$, built from the efficient GMM weighting, is the</span>
@@ -1592,11 +1633,11 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a>Now I list the following tests in the order of recommended level by</span>
 <span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a>James Stock:</span>
 <span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Moreira (2003) conditional likelihood ratio test (CLR).</span>
+<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>@moreira-2003 conditional likelihood ratio test (CLR).</span>
 <span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a>  Advantages of this test:</span>
-<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>      a.  Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006).</span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>      a.  Nearly optimal among invariant similar tests <span class="co">[</span><span class="ot">@andrews-moreira-stock-2006</span><span class="co">]</span>.</span>
 <span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a>      b.  Implemented in Stata as condivreg.</span>
 <span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>Disadvantages:</span>
@@ -1606,7 +1647,7 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Stock-Yogo bias method and size method.</span>
 <span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>Stock and Yogo (2005) provide critical values for both methods: one is</span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>@stock-yogo-2005 provide critical values for both methods: one is</span>
 <span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>to control the size of bias, the other one is to control the size of a</span>
 <span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>Wald test of $\beta=\beta_0$.  Bias method is more frequently used.</span>
 <span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a>In the case of multiple endogenous variables, the Cragg-Donald</span>
@@ -1655,8 +1696,8 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-545"><a href="#cb16-545" aria-hidden="true" tabindex="-1"></a>Stock-Yogo critical values depend on how many instruments there are and on which</span>
 <span id="cb16-546"><a href="#cb16-546" aria-hidden="true" tabindex="-1"></a>criterion -- relative bias or size distortion -- is being controlled, so one</span>
 <span id="cb16-547"><a href="#cb16-547" aria-hidden="true" tabindex="-1"></a>number does not carry over to every design.  Under heteroskedasticity or</span>
-<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a>clustering the relevant statistic is the effective first-stage F of Montiel Olea</span>
-<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a>and Pflueger rather than the conventional one.  And when identification is weak</span>
+<span id="cb16-548"><a href="#cb16-548" aria-hidden="true" tabindex="-1"></a>clustering the relevant statistic is the effective first-stage F of</span>
+<span id="cb16-549"><a href="#cb16-549" aria-hidden="true" tabindex="-1"></a>@montiel-olea-pflueger-2013 rather than the conventional one.  And when identification is weak</span>
 <span id="cb16-550"><a href="#cb16-550" aria-hidden="true" tabindex="-1"></a>the dependable route is not a higher threshold but weak-instrument-robust</span>
 <span id="cb16-551"><a href="#cb16-551" aria-hidden="true" tabindex="-1"></a>inference -- the Anderson-Rubin and CLR tests in this list, whose size does not</span>
 <span id="cb16-552"><a href="#cb16-552" aria-hidden="true" tabindex="-1"></a>depend on instrument strength.</span>
@@ -1715,13 +1756,12 @@ AR(\beta_0)= \frac{(y-X\beta_0)' P_Z (y-X\beta_0)/l}{(y-X\beta_0)' M_Z
 <span id="cb16-605"><a href="#cb16-605" aria-hidden="true" tabindex="-1"></a>an instrument, then our inference is the effect of college education</span>
 <span id="cb16-606"><a href="#cb16-606" aria-hidden="true" tabindex="-1"></a>from those who decide to go because of proximity of the college.</span>
 <span id="cb16-607"><a href="#cb16-607" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-608"><a href="#cb16-608" aria-hidden="true" tabindex="-1"></a>This is the Local Average Treatment Effect (LATE) of Imbens and Angrist</span>
-<span id="cb16-609"><a href="#cb16-609" aria-hidden="true" tabindex="-1"></a>(1994): with a binary instrument and heterogeneous treatment effects,</span>
-<span id="cb16-610"><a href="#cb16-610" aria-hidden="true" tabindex="-1"></a>IV identifies the causal effect for *compliers* --- those whose</span>
-<span id="cb16-611"><a href="#cb16-611" aria-hidden="true" tabindex="-1"></a>treatment status is shifted by the instrument --- rather than for the</span>
-<span id="cb16-612"><a href="#cb16-612" aria-hidden="true" tabindex="-1"></a>full population.  The formal derivation, including the monotonicity</span>
-<span id="cb16-613"><a href="#cb16-613" aria-hidden="true" tabindex="-1"></a>assumption and the complier/always-taker/never-taker decomposition, is</span>
-<span id="cb16-614"><a href="#cb16-614" aria-hidden="true" tabindex="-1"></a>in the <span class="co">[</span><span class="ot">Causal Econometrics Guide</span><span class="co">](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html)</span>.</span>
+<span id="cb16-608"><a href="#cb16-608" aria-hidden="true" tabindex="-1"></a>This is the Local Average Treatment Effect (LATE) of @imbens-angrist-1994-late: with a binary instrument and heterogeneous treatment effects,</span>
+<span id="cb16-609"><a href="#cb16-609" aria-hidden="true" tabindex="-1"></a>IV identifies the causal effect for *compliers* --- those whose</span>
+<span id="cb16-610"><a href="#cb16-610" aria-hidden="true" tabindex="-1"></a>treatment status is shifted by the instrument --- rather than for the</span>
+<span id="cb16-611"><a href="#cb16-611" aria-hidden="true" tabindex="-1"></a>full population.  The formal derivation, including the monotonicity</span>
+<span id="cb16-612"><a href="#cb16-612" aria-hidden="true" tabindex="-1"></a>assumption and the complier/always-taker/never-taker decomposition, is</span>
+<span id="cb16-613"><a href="#cb16-613" aria-hidden="true" tabindex="-1"></a>in the <span class="co">[</span><span class="ot">Causal Econometrics Guide</span><span class="co">](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html)</span>.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

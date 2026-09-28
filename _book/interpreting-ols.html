@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -561,7 +581,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 <td><a href="#eq-weff" class="quarto-xref">Equation&nbsp;<span>13.3</span></a></td>
 </tr>
 <tr class="even">
-<td>Angrist (1998)</td>
+<td><span class="citation" data-cites="angrist-1998">Angrist (<a href="references.html#ref-angrist-1998" role="doc-biblioref">1998</a>)</span></td>
 <td>covariate stratum <span class="math inline">\(x\)</span>
 </td>
 <td>stratum difference <span class="math inline">\(\hat\delta_x\)</span>
@@ -570,7 +590,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 <td><a href="#eq-angrist" class="quarto-xref">Equation&nbsp;<span>13.8</span></a></td>
 </tr>
 <tr class="odd">
-<td>Słoczyński (2022)</td>
+<td><span class="citation" data-cites="sloczynski-2022">Słoczyński (<a href="references.html#ref-sloczynski-2022" role="doc-biblioref">2022</a>)</span></td>
 <td>treatment status <span class="math inline">\(D\)</span>
 </td>
 <td>group averages ATT, ATU</td>
@@ -580,7 +600,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 </tr>
 </tbody>
 </table>
-<p>Read down the last column. The observation rule always holds and says little. Angrist’s needs saturation and gives an interpretable weight. Słoczyński’s needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.</p>
+<p>Read down the last column. The observation rule always holds and says little. Angrist’s needs saturation and gives an interpretable weight. Słoczyński’s needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, <span class="citation" data-cites="shinkre-hazlett-2024">Shinkre and Hazlett (<a href="references.html#ref-shinkre-hazlett-2024" role="doc-biblioref">2024</a>)</span> show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.</p>
 </section></section><section id="fixed-effects-ols-weights-movers" class="level2" data-number="13.4"><h2 data-number="13.4" class="anchored" data-anchor-id="fixed-effects-ols-weights-movers">
 <span class="header-section-number">13.4</span> Fixed effects: OLS weights movers</h2>
 <p>In a panel the same rule applies with a different mean subtracted. Unit fixed effects residualise against unit dummies, so <span class="math inline">\(\tilde V_{it} = V_{it} - \bar V_i\)</span>, and grouping the observation weights by unit gives that unit’s total weight,</p>
@@ -871,7 +891,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 </div>
 <p>In (A) all three numbers agree to within sampling noise: the weighting is there but costs nothing, because the slopes are independent of the weights. In (B) the FE estimate is <span class="math inline">\(1.53\)</span> while the plain average of the true slopes is <span class="math inline">\(1.01\)</span>, and the weighted average, <span class="math inline">\(1.54\)</span>, confirms what the estimator was tracking all along — it overweights the high-slope units precisely because they are the high-variance units.</p>
 <p>FE still removes confounding from the unit effects <span class="math inline">\(\alpha_i\)</span> — that is its job, and it does it in both designs. What FE does not do is change the within-variance weighting. Even after demeaning, OLS leans on units whose <span class="math inline">\(x\)</span> moves more, and in design (B) those units happen to have higher slopes. The gap between the FE estimate and the plain average is not a failure of FE; it is what OLS does by construction, and it matters only when <span class="math inline">\(b_i\)</span> covaries with <span class="math inline">\(\text{Var}_i(x)\)</span>. Without knowing the true slopes, the problem is undetectable from the data alone — the FE estimate looks well-behaved, standard errors are fine, it is just consistently estimating a different parameter than the simple average.</p>
-<p><strong>Reweighting to recover the simple average.</strong> One response is weighted least squares. The FE weight on unit <span class="math inline">\(i\)</span> is proportional to its within-variance <span class="math inline">\(\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2\)</span>. In this model, running WLS-FE with weight <span class="math inline">\(1/\hat\sigma_i^2\)</span> gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind Gibbons, Suárez Serrato, and Urbancic (2018), who formalize the reweighting to recover what they call the “unit-average treatment effect,” and it is the continuous analog of Słoczyński’s reweighting in the binary case.</p>
+<p><strong>Reweighting to recover the simple average.</strong> One response is weighted least squares. The FE weight on unit <span class="math inline">\(i\)</span> is proportional to its within-variance <span class="math inline">\(\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2\)</span>. In this model, running WLS-FE with weight <span class="math inline">\(1/\hat\sigma_i^2\)</span> gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind <span class="citation" data-cites="gibbons-2018">Gibbons, Suárez Serrato, and Urbancic (<a href="references.html#ref-gibbons-2018" role="doc-biblioref">2018</a>)</span>, who formalize the reweighting to recover what they call the “unit-average treatment effect,” and it is the continuous analog of Słoczyński’s reweighting in the binary case.</p>
 <p>The trade-off is efficiency. The high-variance units are the ones whose slope is best estimated — their <span class="math inline">\(x\)</span> moves a lot, so there is real information there. Downweighting them inflates the standard error. We are giving up precision to change which parameter we estimate.</p>
 <p>The weights are also not always available. A unit whose <span class="math inline">\(x\)</span> never moves has <span class="math inline">\(\hat\sigma_i^2 = 0\)</span>, so its weight is undefined, and a unit that barely moves gets an explosive one. A panel with true stayers forces a choice — drop them or bound the weights — and either choice changes the population the estimate refers to. Inverse-within-variation weighting swaps a variation-weighted target for a unit-weighted one; whether that is the right swap depends on the estimand, not on the weighting being more neutral.</p>
 <p>The table below adds the reweighted FE estimate to both designs.</p>
@@ -944,6 +964,20 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-angrist-1998" class="csl-entry" role="listitem">
+Angrist, Joshua D. 1998. <span>“Estimating the Labor Market Impact of Voluntary Military Service Using Social Security Data on Military Applicants.”</span> <em>Econometrica</em> 66 (2): 249–88. <a href="https://doi.org/10.2307/2998558">https://doi.org/10.2307/2998558</a>.
+</div>
+<div id="ref-gibbons-2018" class="csl-entry" role="listitem">
+Gibbons, Charles E., Juan Carlos Suárez Serrato, and Michael B. Urbancic. 2018. <span>“Broken or Fixed Effects?”</span> <em>Journal of Econometric Methods</em> 8 (1): 1–12. <a href="https://doi.org/10.1515/jem-2017-0002">https://doi.org/10.1515/jem-2017-0002</a>.
+</div>
+<div id="ref-shinkre-hazlett-2024" class="csl-entry" role="listitem">
+Shinkre, Tanvi, and Chad Hazlett. 2024. <span>“Demystifying and Avoiding the <span>OLS</span> "Weighting Problem": Unmodeled Heterogeneity and Straightforward Solutions.”</span> <a href="https://doi.org/10.48550/arXiv.2403.03299">https://doi.org/10.48550/arXiv.2403.03299</a>.
+</div>
+<div id="ref-sloczynski-2022" class="csl-entry" role="listitem">
+Słoczyński, Tymon. 2022. <span>“Interpreting <span>OLS</span> Estimands When Treatment Effects Are Heterogeneous: Smaller Groups Get Larger Weights.”</span> <em>The Review of Economics and Statistics</em> 104 (3): 501–9.
+</div>
+</div>
 </section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1642,10 +1676,10 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 <span id="cb13-247"><a href="#cb13-247" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Decomposition <span class="pp">|</span> Sorted by <span class="pp">|</span> Smallest effect unit <span class="pp">|</span> Exact when <span class="pp">|</span> Reference <span class="pp">|</span></span>
 <span id="cb13-248"><a href="#cb13-248" aria-hidden="true" tabindex="-1"></a><span class="pp">|---------------|---------------|---------------|---------------|---------------|</span></span>
 <span id="cb13-249"><a href="#cb13-249" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Observation rule <span class="pp">|</span> nothing <span class="pp">|</span> the unit effect $\beta_i$ <span class="pp">|</span> always <span class="pp">|</span> @eq-weff <span class="pp">|</span></span>
-<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Angrist (1998) <span class="pp">|</span> covariate stratum $x$ <span class="pp">|</span> stratum difference $\hat\delta_x$ <span class="pp">|</span> saturated controls <span class="pp">|</span> @eq-angrist <span class="pp">|</span></span>
-<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Słoczyński (2022) <span class="pp">|</span> treatment status $D$ <span class="pp">|</span> group averages ATT, ATU <span class="pp">|</span> group means linear in $p$; reversed shares also need $V_1 = V_0$ <span class="pp">|</span> @eq-reversed <span class="pp">|</span></span>
+<span id="cb13-250"><a href="#cb13-250" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> @angrist-1998 <span class="pp">|</span> covariate stratum $x$ <span class="pp">|</span> stratum difference $\hat\delta_x$ <span class="pp">|</span> saturated controls <span class="pp">|</span> @eq-angrist <span class="pp">|</span></span>
+<span id="cb13-251"><a href="#cb13-251" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> @sloczynski-2022 <span class="pp">|</span> treatment status $D$ <span class="pp">|</span> group averages ATT, ATU <span class="pp">|</span> group means linear in $p$; reversed shares also need $V_1 = V_0$ <span class="pp">|</span> @eq-reversed <span class="pp">|</span></span>
 <span id="cb13-252"><a href="#cb13-252" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a>Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, Hazlett and Shinkre (2024) show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.</span>
+<span id="cb13-253"><a href="#cb13-253" aria-hidden="true" tabindex="-1"></a>Read down the last column. The observation rule always holds and says little. Angrist's needs saturation and gives an interpretable weight. Słoczyński's needs more and gives the sharpest statement of the three: the coefficient and the ATE are the same two numbers with the weights reversed. Underneath all of them, @shinkre-hazlett-2024 show these weights are exactly the bias from fitting a constant effect when effects vary, and argue for estimators that tolerate heterogeneity rather than for diagnosing the weights after the fact.</span>
 <span id="cb13-254"><a href="#cb13-254" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-255"><a href="#cb13-255" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed effects: OLS weights movers</span></span>
 <span id="cb13-256"><a href="#cb13-256" aria-hidden="true" tabindex="-1"></a></span>
@@ -1814,7 +1848,7 @@ w_1 = \frac{(1 - \rho) V_0}{\rho V_1 + (1 - \rho) V_0}, \quad w_0 = 1 - w_1 \tag
 <span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>FE still removes confounding from the unit effects $\alpha_i$ — that is its job, and it does it in both designs. What FE does not do is change the within-variance weighting. Even after demeaning, OLS leans on units whose $x$ moves more, and in design (B) those units happen to have higher slopes. The gap between the FE estimate and the plain average is not a failure of FE; it is what OLS does by construction, and it matters only when $b_i$ covaries with $\text{Var}_i(x)$. Without knowing the true slopes, the problem is undetectable from the data alone — the FE estimate looks well-behaved, standard errors are fine, it is just consistently estimating a different parameter than the simple average.</span>
 <span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>**Reweighting to recover the simple average.** One response is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. In this model, running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind Gibbons, Suárez Serrato, and Urbancic (2018), who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.</span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>**Reweighting to recover the simple average.** One response is weighted least squares. The FE weight on unit $i$ is proportional to its within-variance $\hat\sigma_i^2 = \sum_t (x_{it} - \bar x_i)^2$. In this model, running WLS-FE with weight $1/\hat\sigma_i^2$ gives each unit equal influence, so the estimate targets the simple average of slopes rather than the variance-weighted average. This is the logic behind @gibbons-2018, who formalize the reweighting to recover what they call the "unit-average treatment effect," and it is the continuous analog of Słoczyński's reweighting in the binary case.</span>
 <span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a>The trade-off is efficiency. The high-variance units are the ones whose slope is best estimated — their $x$ moves a lot, so there is real information there. Downweighting them inflates the standard error. We are giving up precision to change which parameter we estimate.</span>
 <span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a></span>

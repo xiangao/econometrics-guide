@@ -322,7 +322,7 @@ with the error term, an LM statistic  $N \times R^2$ conforms to
 $\chi^2 (r)$ distribution, $r=l_e-k_e$, the number of excess instruments,
  or say, the number of overidentifying restrictions.  If we reject the null,
  then we should be concerned about the exogeneity of the whole set of
- the instruments.  This test is called Sargan's test in IV context, and
+ the instruments.  This test is called Sargan's [-@sargan-1958] test in IV context, and
  (Hansen's) J test in GMM context.  The two names are not quite
  interchangeable: Sargan's $N \times R^2$ form assumes homoskedastic errors,
  while Hansen's $J$, built from the efficient GMM weighting, is the
@@ -476,11 +476,11 @@ anymore.
 Now I list the following tests in the order of recommended level by
 James Stock:
 
-1. Moreira (2003) conditional likelihood ratio test (CLR).
+1. @moreira-2003 conditional likelihood ratio test (CLR).
 
 
   Advantages of this test:
-      a.  Nearly optimal among invariant similar tests (Andrews, Moreira and Stock 2006).
+      a.  Nearly optimal among invariant similar tests [@andrews-moreira-stock-2006].
       b.  Implemented in Stata as condivreg.
 
 Disadvantages:
@@ -490,7 +490,7 @@ Disadvantages:
 
 2.  Stock-Yogo bias method and size method.
 
-Stock and Yogo (2005) provide critical values for both methods: one is
+@stock-yogo-2005 provide critical values for both methods: one is
 to control the size of bias, the other one is to control the size of a
 Wald test of $\beta=\beta_0$.  Bias method is more frequently used.
 In the case of multiple endogenous variables, the Cragg-Donald
@@ -539,8 +539,8 @@ corresponds roughly to a bound on the relative bias of 2SLS.  The formal
 Stock-Yogo critical values depend on how many instruments there are and on which
 criterion -- relative bias or size distortion -- is being controlled, so one
 number does not carry over to every design.  Under heteroskedasticity or
-clustering the relevant statistic is the effective first-stage F of Montiel Olea
-and Pflueger rather than the conventional one.  And when identification is weak
+clustering the relevant statistic is the effective first-stage F of
+@montiel-olea-pflueger-2013 rather than the conventional one.  And when identification is weak
 the dependable route is not a higher threshold but weak-instrument-robust
 inference -- the Anderson-Rubin and CLR tests in this list, whose size does not
 depend on instrument strength.
@@ -599,8 +599,7 @@ between college education and wage.  If we use distance to college as
 an instrument, then our inference is the effect of college education
 from those who decide to go because of proximity of the college.
 
-This is the Local Average Treatment Effect (LATE) of Imbens and Angrist
-(1994): with a binary instrument and heterogeneous treatment effects,
+This is the Local Average Treatment Effect (LATE) of @imbens-angrist-1994-late: with a binary instrument and heterogeneous treatment effects,
 IV identifies the causal effect for *compliers* --- those whose
 treatment status is shifted by the instrument --- rather than for the
 full population.  The formal derivation, including the monotonicity

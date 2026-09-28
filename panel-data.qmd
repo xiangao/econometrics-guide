@@ -12,7 +12,7 @@ cross-sectional units) over time.  Panel data models are used since it
 has advantages over cross-sectional models or time-series models.  The
 major advantage it has over cross-sectional models is: **Controlling for individual heterogeneity**.
 
-For example, Baltagi and Levin (1992) studies cigarette demand across
+For example, @baltagi-levin-1992 studies cigarette demand across
 46 states for the years 1963-88.  Consumption is modeled as a function
 of lagged consumption, price and income.  These variables vary across
 states and time.  However, there are other variables that may be
@@ -100,7 +100,7 @@ $$ {\symbf{\hat \beta_{RE} = (\sum_{i=1}^N X_i' \hat \Omega^{-1} X_i)^{-1} (\sum
 
 It is a special case of GLS.  Before calculating $\hat \beta_{RE}$, $\sigma_{c}^2$ and $\sigma_{u}^2$ need to be estimated.  This is
 generally done by using residuals from within and between regressions
-(the Swamy-Arora method, the default in most software), or from pooled
+(the method of @swamy-arora-1972, the default in most software), or from pooled
 OLS.
 
 ## Fixed Effect Methods
@@ -164,7 +164,7 @@ clusters by unit to allow serial correlation within $i$.
 
 Random effects is more efficient (it uses both within and between
 variation) but is consistent only if $c_i$ is uncorrelated with
-${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The Hausman test
+${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The @hausman-1978 test
 compares the two estimators:
 
 $$
@@ -190,7 +190,7 @@ Take the case where every regressor is time-invariant, so the model is
 $y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled
 OLS on the $NT$ rows and OLS on the $N$ unit means give the same
 $\hat\gamma$.  Not close --- identical.  Random effects returns the same
-number as well.  Wooldridge (2010) states the reason plainly: because
+number as well.  @wooldridge-2010-crosssection states the reason plainly: because
 $c_i$ is there, new observations within a unit carry no information
 about $\gamma$ beyond how they move the unit average $\bar y_i$.  In
 effect we only have $N$ useful pieces of information.  Averaging
@@ -198,8 +198,8 @@ discards nothing, because ${{\symbf{z}}}_i$ was already constant over $t$ and
 the within variation was never available to $\gamma$ in the first place.
 
 What does differ is the degrees of freedom.  The unit-mean regression
-uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  Moulton
-(1990) is the classic illustration, and Donald and Lang (2007) show that
+uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  @moulton-1990
+is the classic illustration, and @donald-lang-2007 show that
 $t_{N-k}$ is the reference distribution that keeps the size right here -- an exact
 result resting on the distributional and design assumptions of the group-level
 regression, not a universal small-sample repair.  With few clusters and
@@ -233,7 +233,7 @@ from the design, not from a theorem: a regressor orthogonal to the rest, or $T_i
 variation that happens to leave the weighting unchanged, can leave particular
 coefficients coinciding.  What you lose is the right to count on it.
 
-The reconciliation is Mundlak's device, the same one used above for the
+The reconciliation is Mundlak's [-@mundlak-1978] device, the same one used above for the
 regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to
 the long regression alongside ${{\symbf{x}}}_{it}$, and the within and between
 variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the

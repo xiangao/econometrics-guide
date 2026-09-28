@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -292,7 +312,7 @@ window.Quarto = {
 </header><section id="background" class="level2" data-number="9.1"><h2 data-number="9.1" class="anchored" data-anchor-id="background">
 <span class="header-section-number">9.1</span> Background</h2>
 <p>Panel data are repeated observations on the same “unit” (we call that cross-sectional units) over time. Panel data models are used since it has advantages over cross-sectional models or time-series models. The major advantage it has over cross-sectional models is: <strong>Controlling for individual heterogeneity</strong>.</p>
-<p>For example, Baltagi and Levin (1992) studies cigarette demand across 46 states for the years 1963-88. Consumption is modeled as a function of lagged consumption, price and income. These variables vary across states and time. However, there are other variables that may be time-invariant (<span class="math inline">\(z_i\)</span>) or individual-invariant (<span class="math inline">\(w_t\)</span>). Examples of <span class="math inline">\(z_i\)</span> are religion and, in a panel of adults, completed education. For example, Utah, as a Mormon state, has very low cigarette demand due to religious reason. Generally we consider it does not change over time or change very little over time. Examples of <span class="math inline">\(w_t\)</span> include cigarette commercials on national TV or radio. Panel data models are able to control for individual heterogeneity (or cross-sectional heterogeneity) while cross-sectional models are not. In many (or most) social science studies, there is “unobserved effects” which is embedded in the error term. In other words, we have “omitted variable” problem. Without controlling for it, the estimation results are generally biased and inconsistent.</p>
+<p>For example, <span class="citation" data-cites="baltagi-levin-1992">Baltagi and Levin (<a href="references.html#ref-baltagi-levin-1992" role="doc-biblioref">1992</a>)</span> studies cigarette demand across 46 states for the years 1963-88. Consumption is modeled as a function of lagged consumption, price and income. These variables vary across states and time. However, there are other variables that may be time-invariant (<span class="math inline">\(z_i\)</span>) or individual-invariant (<span class="math inline">\(w_t\)</span>). Examples of <span class="math inline">\(z_i\)</span> are religion and, in a panel of adults, completed education. For example, Utah, as a Mormon state, has very low cigarette demand due to religious reason. Generally we consider it does not change over time or change very little over time. Examples of <span class="math inline">\(w_t\)</span> include cigarette commercials on national TV or radio. Panel data models are able to control for individual heterogeneity (or cross-sectional heterogeneity) while cross-sectional models are not. In many (or most) social science studies, there is “unobserved effects” which is embedded in the error term. In other words, we have “omitted variable” problem. Without controlling for it, the estimation results are generally biased and inconsistent.</p>
 <p>Panel data give more informative data, more variability and less collinearity among variables. Often time series data suffers from multicollinearity, while panel data has more variability from its cross-sectional units.</p>
 <p>The basic unobserved effects model can be written as: <span id="eq-panel-data-1"><span class="math display">\[
 y_{it}={{\symbf{{x_{it} \beta}}}} + c_i + u_{it}
@@ -315,7 +335,7 @@ y_{it}={{\symbf{{x_{it} \beta}}}} + c_i + u_{it}
 \tag{9.2}\]</span></span></p>
 <p>The random effect estimator is:</p>
 <p><span id="eq-panel-data-3"><span class="math display">\[ {\symbf{\hat \beta_{RE} = (\sum_{i=1}^N X_i' \hat \Omega^{-1} X_i)^{-1} (\sum_{i=1}^N X_i' \hat \Omega^{-1} y_i)}} \tag{9.3}\]</span></span></p>
-<p>It is a special case of GLS. Before calculating <span class="math inline">\(\hat \beta_{RE}\)</span>, <span class="math inline">\(\sigma_{c}^2\)</span> and <span class="math inline">\(\sigma_{u}^2\)</span> need to be estimated. This is generally done by using residuals from within and between regressions (the Swamy-Arora method, the default in most software), or from pooled OLS.</p>
+<p>It is a special case of GLS. Before calculating <span class="math inline">\(\hat \beta_{RE}\)</span>, <span class="math inline">\(\sigma_{c}^2\)</span> and <span class="math inline">\(\sigma_{u}^2\)</span> need to be estimated. This is generally done by using residuals from within and between regressions (the method of <span class="citation" data-cites="swamy-arora-1972">Swamy and Arora (<a href="references.html#ref-swamy-arora-1972" role="doc-biblioref">1972</a>)</span>, the default in most software), or from pooled OLS.</p>
 </section><section id="fixed-effect-methods" class="level2" data-number="9.3"><h2 data-number="9.3" class="anchored" data-anchor-id="fixed-effect-methods">
 <span class="header-section-number">9.3</span> Fixed Effect Methods</h2>
 <p>Random effect methods assume that <span class="math inline">\(c_i\)</span> be orthogonal to <span class="math inline">\({\symbf{x_{it}}}\)</span>. In many applications, the whole point of using panel data is to allow <span class="math inline">\(c_i\)</span> be correlated with <span class="math inline">\({\symbf{x_{it}}}\)</span>. We need fixed-effect models in those cases.</p>
@@ -336,7 +356,7 @@ y_{it}={{\symbf{{x_{it} \beta}}}} + c_i + u_{it}
 <p>This is consistent for <span class="math inline">\(\beta\)</span> even when <span class="math inline">\(c_i\)</span> is correlated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, which is the key advantage of FE over random effects. Consistency still asks for the rest of the usual package: strict exogeneity of the idiosyncratic error conditional on the unit effect, <span class="math inline">\(E[u_{it} \mid c_i, {{\symbf{x}}}_{i1}, \dots, {{\symbf{x}}}_{iT}]=0\)</span>, enough within-unit variation for the demeaned cross-product to have full rank, and an asymptotic scheme – usually <span class="math inline">\(N \to \infty\)</span> with <span class="math inline">\(T\)</span> fixed. What FE buys is freedom from correlation between <span class="math inline">\(c_i\)</span> and the regressors. It buys nothing at all against correlation between <span class="math inline">\(u_{it}\)</span> and them. The price is that any time-invariant regressor (the <span class="math inline">\(z_i\)</span> above) is also swept out by the demeaning and cannot be estimated. The usual variance estimator is <span class="math inline">\(\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}\)</span> with <span class="math inline">\(\hat\sigma_u^2\)</span> using degrees of freedom <span class="math inline">\(NT-N-k\)</span>; in practice one clusters by unit to allow serial correlation within <span class="math inline">\(i\)</span>.</p>
 </section><section id="fixed-effects-or-random-effects-the-hausman-test" class="level2" data-number="9.4"><h2 data-number="9.4" class="anchored" data-anchor-id="fixed-effects-or-random-effects-the-hausman-test">
 <span class="header-section-number">9.4</span> Fixed effects or random effects: the Hausman test</h2>
-<p>Random effects is more efficient (it uses both within and between variation) but is consistent only if <span class="math inline">\(c_i\)</span> is uncorrelated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>; fixed effects is consistent either way. The Hausman test compares the two estimators:</p>
+<p>Random effects is more efficient (it uses both within and between variation) but is consistent only if <span class="math inline">\(c_i\)</span> is uncorrelated with <span class="math inline">\({{\symbf{x}}}_{it}\)</span>; fixed effects is consistent either way. The <span class="citation" data-cites="hausman-1978">Hausman (<a href="references.html#ref-hausman-1978" role="doc-biblioref">1978</a>)</span> test compares the two estimators:</p>
 <p><span id="eq-panel-data-7"><span class="math display">\[
 H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{RE})]^{-1}\,(\hat\beta_{FE}-\hat\beta_{RE}) \;\sim\; \chi^2_k
 \tag{9.7}\]</span></span></p>
@@ -345,8 +365,8 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 </section><section id="collapse-to-unit-means-or-keep-the-long-format" class="level2" data-number="9.5"><h2 data-number="9.5" class="anchored" data-anchor-id="collapse-to-unit-means-or-keep-the-long-format">
 <span class="header-section-number">9.5</span> Collapse to unit means, or keep the long format?</h2>
 <p>A practical question comes up whenever we hold a panel. Should we average each unit over time and run one regression on the <span class="math inline">\(N\)</span> resulting rows, or keep all <span class="math inline">\(NT\)</span> rows and cluster the standard errors by unit? Many people treat this as a trade-off and assume the long format must carry more information. It usually does not. The answer turns entirely on where the regressors live.</p>
-<p>Take the case where every regressor is time-invariant, so the model is <span class="math inline">\(y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}\)</span>. With a balanced panel, pooled OLS on the <span class="math inline">\(NT\)</span> rows and OLS on the <span class="math inline">\(N\)</span> unit means give the same <span class="math inline">\(\hat\gamma\)</span>. Not close — identical. Random effects returns the same number as well. Wooldridge (2010) states the reason plainly: because <span class="math inline">\(c_i\)</span> is there, new observations within a unit carry no information about <span class="math inline">\(\gamma\)</span> beyond how they move the unit average <span class="math inline">\(\bar y_i\)</span>. In effect we only have <span class="math inline">\(N\)</span> useful pieces of information. Averaging discards nothing, because <span class="math inline">\({{\symbf{z}}}_i\)</span> was already constant over <span class="math inline">\(t\)</span> and the within variation was never available to <span class="math inline">\(\gamma\)</span> in the first place.</p>
-<p>What does differ is the degrees of freedom. The unit-mean regression uses <span class="math inline">\(N-k\)</span>; pooled OLS reports <span class="math inline">\(NT-k\)</span>, and that is the mistake. Moulton (1990) is the classic illustration, and Donald and Lang (2007) show that <span class="math inline">\(t_{N-k}\)</span> is the reference distribution that keeps the size right here – an exact result resting on the distributional and design assumptions of the group-level regression, not a universal small-sample repair. With few clusters and heteroskedasticity the practical routes are a cluster-robust variance with a few-cluster correction, or a cluster bootstrap. Clustering by unit repairs the standard error when <span class="math inline">\(N\)</span> is large, but it does not repair the degrees of freedom when <span class="math inline">\(N\)</span> is small.</p>
+<p>Take the case where every regressor is time-invariant, so the model is <span class="math inline">\(y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}\)</span>. With a balanced panel, pooled OLS on the <span class="math inline">\(NT\)</span> rows and OLS on the <span class="math inline">\(N\)</span> unit means give the same <span class="math inline">\(\hat\gamma\)</span>. Not close — identical. Random effects returns the same number as well. <span class="citation" data-cites="wooldridge-2010-crosssection">Wooldridge (<a href="references.html#ref-wooldridge-2010-crosssection" role="doc-biblioref">2010</a>)</span> states the reason plainly: because <span class="math inline">\(c_i\)</span> is there, new observations within a unit carry no information about <span class="math inline">\(\gamma\)</span> beyond how they move the unit average <span class="math inline">\(\bar y_i\)</span>. In effect we only have <span class="math inline">\(N\)</span> useful pieces of information. Averaging discards nothing, because <span class="math inline">\({{\symbf{z}}}_i\)</span> was already constant over <span class="math inline">\(t\)</span> and the within variation was never available to <span class="math inline">\(\gamma\)</span> in the first place.</p>
+<p>What does differ is the degrees of freedom. The unit-mean regression uses <span class="math inline">\(N-k\)</span>; pooled OLS reports <span class="math inline">\(NT-k\)</span>, and that is the mistake. <span class="citation" data-cites="moulton-1990">Moulton (<a href="references.html#ref-moulton-1990" role="doc-biblioref">1990</a>)</span> is the classic illustration, and <span class="citation" data-cites="donald-lang-2007">Donald and Lang (<a href="references.html#ref-donald-lang-2007" role="doc-biblioref">2007</a>)</span> show that <span class="math inline">\(t_{N-k}\)</span> is the reference distribution that keeps the size right here – an exact result resting on the distributional and design assumptions of the group-level regression, not a universal small-sample repair. With few clusters and heteroskedasticity the practical routes are a cluster-robust variance with a few-cluster correction, or a cluster bootstrap. Clustering by unit repairs the standard error when <span class="math inline">\(N\)</span> is large, but it does not repair the degrees of freedom when <span class="math inline">\(N\)</span> is small.</p>
 <p>Now put a time-varying <span class="math inline">\({{\symbf{x}}}_{it}\)</span> into the model. The two options stop agreeing, and not only for the coefficient on <span class="math inline">\({{\symbf{x}}}_{it}\)</span> — every coefficient moves, the one on <span class="math inline">\({{\symbf{z}}}_i\)</span> included. Averaging to unit means throws away all within variation, so what survives is the between estimator. Pooled OLS keeps both sources and forces a single coefficient on them, so it returns a variance-weighted average of the within and the between relationship. The two agree only when the within and between coefficients are equal, which is what the Hausman test is looking for in practice. Strictly the null is consistency of random effects – orthogonality of <span class="math inline">\(c_i\)</span> and the regressor history – which <em>implies</em> equal within and between coefficients rather than being the same statement. Equality could hold under an alternative, and equality in one sample is not the null at all. So this is not a new problem. It is the FE-versus-RE question in different clothes.</p>
 <table class="caption-top table">
 <colgroup>
@@ -375,7 +395,7 @@ H = (\hat\beta_{FE}-\hat\beta_{RE})'\,[\hat V(\hat\beta_{FE})-\hat V(\hat\beta_{
 </tbody>
 </table>
 <p>The word to hold on to in the last two rows is <em>generally</em>. The differences come from the design, not from a theorem: a regressor orthogonal to the rest, or <span class="math inline">\(T_i\)</span> variation that happens to leave the weighting unchanged, can leave particular coefficients coinciding. What you lose is the right to count on it.</p>
-<p>The reconciliation is Mundlak’s device, the same one used above for the regression-based Hausman test. Add the unit means <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> to the long regression alongside <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, and the within and between variation carry separate coefficients: <span class="math inline">\({{\symbf{x}}}_{it}\)</span> picks up the within estimate, <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> picks up the <em>difference</em> between the between and within estimates, so the two coefficients sum to what the collapsed regression reports. That second coefficient is the Hausman contrast. With a single time-varying regressor its <span class="math inline">\(t\)</span>-statistic <em>is</em> the Hausman test; with several, the test is the joint Wald or <span class="math inline">\(F\)</span> test on all the mean coefficients together, not any one <span class="math inline">\(t\)</span>. Exact numerical agreement with the collapsed regression also depends on balance and on the weighting, so read it as the same comparison rather than an identity to check to the last digit. We keep the within variation and recover the between answer in one regression.</p>
+<p>The reconciliation is Mundlak’s <span class="citation" data-cites="mundlak-1978">(<a href="references.html#ref-mundlak-1978" role="doc-biblioref">1978</a>)</span> device, the same one used above for the regression-based Hausman test. Add the unit means <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> to the long regression alongside <span class="math inline">\({{\symbf{x}}}_{it}\)</span>, and the within and between variation carry separate coefficients: <span class="math inline">\({{\symbf{x}}}_{it}\)</span> picks up the within estimate, <span class="math inline">\({{\symbf{\bar x}}}_i\)</span> picks up the <em>difference</em> between the between and within estimates, so the two coefficients sum to what the collapsed regression reports. That second coefficient is the Hausman contrast. With a single time-varying regressor its <span class="math inline">\(t\)</span>-statistic <em>is</em> the Hausman test; with several, the test is the joint Wald or <span class="math inline">\(F\)</span> test on all the mean coefficients together, not any one <span class="math inline">\(t\)</span>. Exact numerical agreement with the collapsed regression also depends on balance and on the weighting, so read it as the same comparison rather than an identity to check to the last digit. We keep the within variation and recover the between answer in one regression.</p>
 <p>The useful way to remember it: collapse freely when every regressor is constant within the group, and never when one is not.</p>
 </section><section id="what-the-long-format-buys" class="level2" data-number="9.6"><h2 data-number="9.6" class="anchored" data-anchor-id="what-the-long-format-buys">
 <span class="header-section-number">9.6</span> What the long format buys</h2>
@@ -455,6 +475,29 @@ Mundlak: xbar          0.850      0.036</code></pre>
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-baltagi-levin-1992" class="csl-entry" role="listitem">
+Baltagi, Badi H., and Dan Levin. 1992. <span>“Cigarette Taxation: Raising Revenues and Reducing Consumption.”</span> <em>Structural Change and Economic Dynamics</em> 3 (2): 321–35. <a href="https://doi.org/10.1016/0954-349x(92)90010-4">https://doi.org/10.1016/0954-349x(92)90010-4</a>.
+</div>
+<div id="ref-donald-lang-2007" class="csl-entry" role="listitem">
+Donald, Stephen G, and Kevin Lang. 2007. <span>“Inference with Difference-in-Differences and Other Panel Data.”</span> <em>Review of Economics and Statistics</em> 89 (2): 221–33. <a href="https://doi.org/10.1162/rest.89.2.221">https://doi.org/10.1162/rest.89.2.221</a>.
+</div>
+<div id="ref-hausman-1978" class="csl-entry" role="listitem">
+Hausman, J. A. 1978. <span>“Specification Tests in Econometrics.”</span> <em>Econometrica</em> 46 (6): 1251–71. <a href="https://doi.org/10.2307/1913827">https://doi.org/10.2307/1913827</a>.
+</div>
+<div id="ref-moulton-1990" class="csl-entry" role="listitem">
+Moulton, Brent R. 1990. <span>“An Illustration of a Pitfall in Estimating the Effects of Aggregate Variables on Micro Units.”</span> <em>Review of Economics and Statistics</em> 72 (2): 334–38. <a href="https://doi.org/10.2307/2109724">https://doi.org/10.2307/2109724</a>.
+</div>
+<div id="ref-mundlak-1978" class="csl-entry" role="listitem">
+Mundlak, Yair. 1978. <span>“On the Pooling of Time Series and Cross Section Data.”</span> <em>Econometrica</em> 46 (1): 69–85. <a href="https://doi.org/10.2307/1913646">https://doi.org/10.2307/1913646</a>.
+</div>
+<div id="ref-swamy-arora-1972" class="csl-entry" role="listitem">
+Swamy, P. A. V. B., and S. S. Arora. 1972. <span>“The Exact Finite Sample Properties of the Estimators of Coefficients in the Error Components Regression Models.”</span> <em>Econometrica</em> 40 (2): 261–75. <a href="https://doi.org/10.2307/1909405">https://doi.org/10.2307/1909405</a>.
+</div>
+<div id="ref-wooldridge-2010-crosssection" class="csl-entry" role="listitem">
+Wooldridge, Jeffrey M. 2010. <em>Econometric Analysis of Cross Section and Panel Data</em>. 2nd ed. MIT Press.
+</div>
+</div>
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -930,7 +973,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>has advantages over cross-sectional models or time-series models.  The</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>major advantage it has over cross-sectional models is: **Controlling for individual heterogeneity**.</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>For example, Baltagi and Levin (1992) studies cigarette demand across</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>For example, @baltagi-levin-1992 studies cigarette demand across</span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>46 states for the years 1963-88.  Consumption is modeled as a function</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>of lagged consumption, price and income.  These variables vary across</span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>states and time.  However, there are other variables that may be</span>
@@ -1018,7 +1061,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a>It is a special case of GLS.  Before calculating $\hat \beta_{RE}$, $\sigma_{c}^2$ and $\sigma_{u}^2$ need to be estimated.  This is</span>
 <span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a>generally done by using residuals from within and between regressions</span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>(the Swamy-Arora method, the default in most software), or from pooled</span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a>(the method of @swamy-arora-1972, the default in most software), or from pooled</span>
 <span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a>OLS.</span>
 <span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fixed Effect Methods</span></span>
@@ -1082,7 +1125,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>Random effects is more efficient (it uses both within and between</span>
 <span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a>variation) but is consistent only if $c_i$ is uncorrelated with</span>
-<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a>${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The Hausman test</span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a>${{\symbf{x}}}_{it}$; fixed effects is consistent either way. The @hausman-1978 test</span>
 <span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a>compares the two estimators:</span>
 <span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a>$$</span>
@@ -1108,7 +1151,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a>$y_{it}={{\symbf{z}}}_i \gamma + c_i + u_{it}$.  With a balanced panel, pooled</span>
 <span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>OLS on the $NT$ rows and OLS on the $N$ unit means give the same</span>
 <span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a>$\hat\gamma$.  Not close --- identical.  Random effects returns the same</span>
-<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>number as well.  Wooldridge (2010) states the reason plainly: because</span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a>number as well.  @wooldridge-2010-crosssection states the reason plainly: because</span>
 <span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a>$c_i$ is there, new observations within a unit carry no information</span>
 <span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a>about $\gamma$ beyond how they move the unit average $\bar y_i$.  In</span>
 <span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a>effect we only have $N$ useful pieces of information.  Averaging</span>
@@ -1116,8 +1159,8 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a>the within variation was never available to $\gamma$ in the first place.</span>
 <span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a>What does differ is the degrees of freedom.  The unit-mean regression</span>
-<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  Moulton</span>
-<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>(1990) is the classic illustration, and Donald and Lang (2007) show that</span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  @moulton-1990</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a>is the classic illustration, and @donald-lang-2007 show that</span>
 <span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>$t_{N-k}$ is the reference distribution that keeps the size right here -- an exact</span>
 <span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a>result resting on the distributional and design assumptions of the group-level</span>
 <span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>regression, not a universal small-sample repair.  With few clusters and</span>
@@ -1151,7 +1194,7 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a>variation that happens to leave the weighting unchanged, can leave particular</span>
 <span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a>coefficients coinciding.  What you lose is the right to count on it.</span>
 <span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a>The reconciliation is Mundlak's device, the same one used above for the</span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a>The reconciliation is Mundlak's <span class="co">[</span><span class="ot">-@mundlak-1978</span><span class="co">]</span> device, the same one used above for the</span>
 <span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a>regression-based Hausman test.  Add the unit means ${{\symbf{\bar x}}}_i$ to</span>
 <span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>the long regression alongside ${{\symbf{x}}}_{it}$, and the within and between</span>
 <span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>variation carry separate coefficients: ${{\symbf{x}}}_{it}$ picks up the</span>

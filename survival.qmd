@@ -133,7 +133,7 @@ However, Weibull distribution does not allow for the possibility
 that the hazard may first increase then decrease over time.
 Log-normal distribution does allow this.
 
-![Various hazard functions from Davidson and MacKinnon](davidson2.png){fig-alt="Six hazard functions h(t) plotted against time t from 0 to 10. The exponential hazard is flat at one. Weibull with shape below one falls steeply from a high value; Weibull with shape above one rises monotonically. A lognormal with small sigma rises to a peak near t equals two and then declines, illustrating a non-monotone hazard; a lognormal with sigma one stays low throughout. Together they show constant, increasing, decreasing and hump-shaped hazard shapes."}
+![Various hazard functions from @davidson-mackinnon-2004](davidson2.png){fig-alt="Six hazard functions h(t) plotted against time t from 0 to 10. The exponential hazard is flat at one. Weibull with shape below one falls steeply from a high value; Weibull with shape above one rises monotonically. A lognormal with small sigma rises to a peak near t equals two and then declines, illustrating a non-monotone hazard; a lognormal with sigma one stays low throughout. Together they show constant, increasing, decreasing and hump-shaped hazard shapes."}
 
 ## Log-likelihood function
 
@@ -164,7 +164,7 @@ $$ {#eq-survival-13}
 ### Model and likelihood
 
 One class of models that is quite widely used is the proportional
-hazard models (based on Cox (1972)).
+hazard models (based on @cox-1972).
 $$
 h(t | {{\symbf{x}}}_i)=h_0(t)\exp ({{\symbf{x}}}'_i \beta),
 $$ {#eq-survival-14}
@@ -196,7 +196,7 @@ grouped data.  For example, we observe case $m$ and $n$ have events at
 the same time $j$.  In that case, in the denominator, whether we include
 case $m$ in the calculation of the likelihood of case $n$ is
 ambiguous.  In that case, special treatment is needed.  The standard
-approximation here is Breslow's:
+approximation here is Breslow's [-@breslow-1974]:
 
 $$
 L_{m \in D(t_j)} \simeq \frac{ \prod_{m \in D(t_j)} \exp(x_m' \beta)} {[\sum_{l \in R(t_j)} \exp(x_l' \beta)]^{d_j}}
@@ -205,7 +205,7 @@ $$ {#eq-survival-16}
 where $D(t_j)$ is the set of cases that die at time $t_j$ and $d_j$
 denotes the number of cases that die at time $t_j$.  This
 approximation works well with small number of ties relative to total
-number of cases at risk.  Peto's approximation is a close relative of it.  Efron's
+number of cases at risk.  Peto's [-@peto-1972] approximation is a close relative of it.  Efron's [-@efron-1977]
 is a finer adjustment that apportions the risk set among the tied cases, and it is
 the more accurate of the two when ties are common.  The defaults differ by
 software: R's `coxph` uses Efron, Stata's `stcox` uses Breslow, so the same data
@@ -305,7 +305,7 @@ either model is misspecified, nothing forces even the signs to match.
 
 ## Discrete-time Survival Models
 
-Cox (1972) is the *continuous-time* proportional hazards model; the
+@cox-1972 is the *continuous-time* proportional hazards model; the
 discrete-time analogue models the odds of an event at time $t_j$ given
 survival up to that point.  This proportional-odds specification for
 the discrete hazard,
@@ -338,8 +338,8 @@ another.  They share covariates and history, and a later row exists only because
 the earlier ones were survived.  The distinction leaves the point estimates
 alone, which is why the trick is standard, but it governs the covariance: cluster
 on the person, or fit a frailty model, when unobserved heterogeneity leaves a
-person's periods dependent given the model (Singer and Willett, 1993, has more
-details).
+person's periods dependent given the model [@singer-willett-1993 has more
+details].
 
 
 ### Do it in Stata

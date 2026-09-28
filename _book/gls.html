@@ -55,7 +55,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -357,7 +377,7 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <ul>
 <li><p><strong>Heteroscedasticity of known form</strong>, e.g.&nbsp;<span class="math inline">\(\omega_t^2 = \exp({{\symbf{z}}}_t' \gamma)\)</span>: regress <span class="math inline">\(\log(\hat u_t^2)\)</span> on <span class="math inline">\({\symbf{z_t}}\)</span> to estimate <span class="math inline">\(\gamma\)</span>, then set <span class="math inline">\(\hat\omega_t^2 = \exp({{\symbf{z}}}_t' \hat\gamma)\)</span> and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because <span class="math inline">\(E[\log(u_t^2/\omega_t^2)] \neq 0\)</span> – it is about <span class="math inline">\(-1.27\)</span> for normal errors. This does not matter for WLS: a constant added to every <span class="math inline">\(\log \hat\omega_t^2\)</span> scales all weights by a common factor, which leaves <span class="math inline">\(\hat\beta\)</span> unchanged. It does matter if the fitted <span class="math inline">\(\hat\omega_t^2\)</span> are wanted as variance estimates in their own right.)</p></li>
 <li><p><strong>AR(1) serial correlation</strong>, <span class="math inline">\(u_t = \rho u_{t-1} + \epsilon_t\)</span>: regress <span class="math inline">\(\hat u_t\)</span> on <span class="math inline">\(\hat u_{t-1}\)</span> to get <span class="math inline">\(\hat\rho\)</span>, then quasi-difference each variable as <span class="math inline">\(\tilde y_t = y_t - \hat\rho y_{t-1}\)</span> for <span class="math inline">\(t = 2, \dots, n\)</span> (and similarly for <span class="math inline">\(X\)</span>), so that the transformed error is approximately i.i.d.</p>
-<p>The first observation is where <strong>Cochrane-Orcutt</strong> and <strong>Prais-Winsten</strong> part company, and the <span class="math inline">\({\symbf{\Psi}}\)</span> framework above says which is right. For AR(1) errors <span class="math inline">\({\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]}}\)</span>, and its Cholesky factor makes the first row of <span class="math inline">\({\symbf{\Psi'}}\)</span> equal to <span class="math inline">\(\sqrt{1-\rho^2}\)</span> times the first unit vector. Full GLS therefore keeps observation 1, rescaled as <span class="math inline">\(\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1\)</span>; that is Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent and asymptotically equivalent, but Cochrane-Orcutt throws away a data point, and how much that costs takes some care. The direct weight on observation 1 is <span class="math inline">\(\sqrt{1-\rho^2}\)</span>, which <em>shrinks</em> as <span class="math inline">\(|\rho| \to 1\)</span>, so that row’s mechanical contribution falls rather than rises. What grows is its relative importance: quasi-differencing strips variation out of the remaining rows as well, and with trending or highly persistent regressors the single untransformed level observation ends up carrying a disproportionate share of the information about the level. So the loss is worth caring about in short samples, and with trending regressors when <span class="math inline">\(\rho\)</span> is near 1 – not because that row is weighted heavily, but because the others are weighted lightly. Prefer Prais-Winsten.</p></li>
+<p>The first observation is where <strong>Cochrane-Orcutt</strong> <span class="citation" data-cites="cochrane-orcutt-1949">(<a href="references.html#ref-cochrane-orcutt-1949" role="doc-biblioref">1949</a>)</span> and <strong>Prais-Winsten</strong> <span class="citation" data-cites="prais-winsten-1954">(<a href="references.html#ref-prais-winsten-1954" role="doc-biblioref">1954</a>)</span> part company, and the <span class="math inline">\({\symbf{\Psi}}\)</span> framework above says which is right. For AR(1) errors <span class="math inline">\({\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]}}\)</span>, and its Cholesky factor makes the first row of <span class="math inline">\({\symbf{\Psi'}}\)</span> equal to <span class="math inline">\(\sqrt{1-\rho^2}\)</span> times the first unit vector. Full GLS therefore keeps observation 1, rescaled as <span class="math inline">\(\tilde y_1 = \sqrt{1-\hat\rho^2}\, y_1\)</span>; that is Prais-Winsten. Cochrane-Orcutt simply drops observation 1. Both are consistent and asymptotically equivalent, but Cochrane-Orcutt throws away a data point, and how much that costs takes some care. The direct weight on observation 1 is <span class="math inline">\(\sqrt{1-\rho^2}\)</span>, which <em>shrinks</em> as <span class="math inline">\(|\rho| \to 1\)</span>, so that row’s mechanical contribution falls rather than rises. What grows is its relative importance: quasi-differencing strips variation out of the remaining rows as well, and with trending or highly persistent regressors the single untransformed level observation ends up carrying a disproportionate share of the information about the level. So the loss is worth caring about in short samples, and with trending regressors when <span class="math inline">\(\rho\)</span> is near 1 – not because that row is weighted heavily, but because the others are weighted lightly. Prefer Prais-Winsten.</p></li>
 </ul>
 <p>Third, run OLS on the transformed (weighted or quasi-differenced) data to get the FGLS estimator <span class="math inline">\(\hat\beta_{FGLS}\)</span>. FGLS is consistent and asymptotically efficient under two requirements, not one: the assumed <em>form</em> of <span class="math inline">\({\symbf{\Omega}}\)</span> must be correct, and <span class="math inline">\(\hat\gamma\)</span> must be consistent for <span class="math inline">\(\gamma\)</span> within that form – alongside the usual exogeneity, rank and moment conditions. A consistent <span class="math inline">\(\hat\gamma\)</span> inside a misspecified covariance model buys nothing. Either way FGLS is generally biased in finite samples, since <span class="math inline">\(\hat\Omega\)</span> depends on the first-stage OLS residuals.</p>
 </section>
@@ -382,7 +402,7 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 </section>
 <section id="gls-versus-ols-with-robust-standard-errors" class="level3" data-number="3.4.2">
 <h3 data-number="3.4.2" class="anchored" data-anchor-id="gls-versus-ols-with-robust-standard-errors"><span class="header-section-number">3.4.2</span> GLS versus OLS with Robust Standard Errors</h3>
-<p>The Gauss-Markov result says GLS is more efficient than OLS when <span class="math inline">\({\symbf{\Omega}}\)</span> is known. In practice <span class="math inline">\({\symbf{\Omega}}\)</span> is never known, and we face a choice: estimate <span class="math inline">\({\symbf{\Omega}}\)</span> and use FGLS, or use OLS with a sandwich variance estimator (White or Newey-West, as in the <a href="./mle.html">MLE chapter</a>) that does not require specifying the form of <span class="math inline">\({\symbf{\Omega}}\)</span>.</p>
+<p>The Gauss-Markov result says GLS is more efficient than OLS when <span class="math inline">\({\symbf{\Omega}}\)</span> is known. In practice <span class="math inline">\({\symbf{\Omega}}\)</span> is never known, and we face a choice: estimate <span class="math inline">\({\symbf{\Omega}}\)</span> and use FGLS, or use OLS with a sandwich variance estimator <span class="citation" data-cites="white-1980 newey-west-1987">(<a href="references.html#ref-white-1980" role="doc-biblioref">White 1980</a>; <a href="references.html#ref-newey-west-1987" role="doc-biblioref">Newey and West 1987</a>)</span>, as in the <a href="./mle.html">MLE chapter</a>, that does not require specifying the form of <span class="math inline">\({\symbf{\Omega}}\)</span>.</p>
 <p>Both approaches give consistent estimates of <span class="math inline">\(\beta\)</span>, since OLS is consistent under the same conditions whether or not errors are heteroscedastic or serially correlated. The difference is efficiency. GLS exploits the structure of <span class="math inline">\({\symbf{\Omega}}\)</span> to weight observations optimally; OLS ignores that structure and compensates afterward with a robust variance estimate.</p>
 <p>The tradeoff turns on how well <span class="math inline">\({\symbf{\Omega}}\)</span> can be modeled:</p>
 <p>When the error structure is well understood — for example, heteroscedasticity that follows a known function of observables, or AR(1) serial correlation whose form is dictated by the data generating process — FGLS can deliver substantial efficiency gains. The efficiency improvement is largest when the heterogeneity in error variances is large, since GLS downweights noisy observations that OLS treats equally.</p>
@@ -392,6 +412,20 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-cochrane-orcutt-1949" class="csl-entry" role="listitem">
+Cochrane, D., and G. H. Orcutt. 1949. <span>“Application of Least Squares Regression to Relationships Containing Auto-Correlated Error Terms.”</span> <em>Journal of the American Statistical Association</em> 44 (245): 32–61. <a href="https://doi.org/10.1080/01621459.1949.10483290">https://doi.org/10.1080/01621459.1949.10483290</a>.
+</div>
+<div id="ref-newey-west-1987" class="csl-entry" role="listitem">
+Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix.”</span> <em>Econometrica</em> 55 (3): 703–8. <a href="https://doi.org/10.2307/1913610">https://doi.org/10.2307/1913610</a>.
+</div>
+<div id="ref-prais-winsten-1954" class="csl-entry" role="listitem">
+Prais, S. J., and C. B. Winsten. 1954. <span>“Trend Estimators and Serial Correlation.”</span> Cowles Commission Discussion Paper 383. Cowles Commission.
+</div>
+<div id="ref-white-1980" class="csl-entry" role="listitem">
+White, Halbert. 1980. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
+</div>
+</div>
 </section>
 </section>
 
@@ -949,7 +983,7 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({{\symbf{z}}}_t' \gamma)$: regress $\log(\hat u_t^2)$ on ${\symbf{z_t}}$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({{\symbf{z}}}_t' \hat\gamma)$ and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because $E<span class="co">[</span><span class="ot">\log(u_t^2/\omega_t^2)</span><span class="co">]</span> \neq 0$ -- it is about $-1.27$ for normal errors. This does not matter for WLS: a constant added to every $\log \hat\omega_t^2$ scales all weights by a common factor, which leaves $\hat\beta$ unchanged. It does matter if the fitted $\hat\omega_t^2$ are wanted as variance estimates in their own right.)</span>
 <span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then quasi-difference each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ for $t = 2, \dots, n$ (and similarly for $X$), so that the transformed error is approximately i.i.d.</span>
 <span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>  The first observation is where **Cochrane-Orcutt** and **Prais-Winsten** part</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>  The first observation is where **Cochrane-Orcutt** [-@cochrane-orcutt-1949] and **Prais-Winsten** <span class="co">[</span><span class="ot">-@prais-winsten-1954</span><span class="co">]</span> part</span>
 <span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>  company, and the ${\symbf{\Psi}}$ framework above says which is right. For AR(1)</span>
 <span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>  errors ${\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left<span class="co">[</span><span class="ot">\rho^{|i-j|}\right</span><span class="co">]</span>}}$,</span>
 <span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>  and its Cholesky factor makes the first row of ${\symbf{\Psi'}}$ equal to</span>
@@ -1009,8 +1043,8 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>The Gauss-Markov result says GLS is more efficient than OLS when</span>
 <span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>${\symbf{\Omega}}$ is known.  In practice ${\symbf{\Omega}}$ is never</span>
 <span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>known, and we face a choice: estimate ${\symbf{\Omega}}$ and use FGLS,</span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>or use OLS with a sandwich variance estimator (White or Newey-West,</span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>as in the <span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span>) that does not require specifying the</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>or use OLS with a sandwich variance estimator <span class="co">[</span><span class="ot">@white-1980; @newey-west-1987</span><span class="co">]</span>, as in the</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">MLE chapter</span><span class="co">](mle.qmd)</span>, that does not require specifying the</span>
 <span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>form of ${\symbf{\Omega}}$.</span>
 <span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>Both approaches give consistent estimates of $\beta$, since OLS is</span>

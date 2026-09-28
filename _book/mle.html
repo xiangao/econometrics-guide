@@ -52,7 +52,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/quarto-nav/headroom.min.js"></script>
@@ -733,7 +753,7 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <span class="header-section-number">2.8.3</span> Newey-West estimator</h3>
 <p>White’s estimator deals with the situation that we have heteroskedasticity (a diagonal <span class="math inline">\(\Omega\)</span>) of unknown form. When we have serial correlation of unknown form (a non-diagonal <span class="math inline">\(\Omega\)</span>), we can estimate the variance-covariance matrix by a heteroskedasticity and autocorrelation consistent, or HAC, estimator. Newey-West estimator is the most popular HAC estimator.</p>
 <p>Given a time series data set, suppose we are interested in estimating the mean vector (suppose we have more than one variable) and its variance. We know that given IID data, we can apply central limit theorem: sample mean is a consistent estimator of the population mean and it’s variance can be calculated since asymptotically the sample mean conforms to a normal distribution and the variance can be estimated, relatively easily. However, in the case of time series data, autocorrelation usually exists. We may be concerned the CLT may not work in this case.</p>
-<p>Fortunately, autocorrelation does not by itself defeat inference, though the conditions need care. Suppose <span class="math inline">\({\symbf{y_t}}\)</span> is covariance-stationary (the covariance is not a function of time) <em>and</em> its autocovariances are absolutely summable, <span class="math inline">\(\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty\)</span>. Then, as in Hamilton (1994), the sample mean satisfies:</p>
+<p>Fortunately, autocorrelation does not by itself defeat inference, though the conditions need care. Suppose <span class="math inline">\({\symbf{y_t}}\)</span> is covariance-stationary (the covariance is not a function of time) <em>and</em> its autocovariances are absolutely summable, <span class="math inline">\(\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty\)</span>. Then, as in <span class="citation" data-cites="hamilton-1994">Hamilton (<a href="references.html#ref-hamilton-1994" role="doc-biblioref">1994</a>)</span>, the sample mean satisfies:</p>
 <p><span id="eq-mle-41"><span class="math display">\[{\symbf{\bar y_T \to \mu , }} \tag{2.46}\]</span></span> <span id="eq-mle-42"><span class="math display">\[ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }} \tag{2.47}\]</span></span> where <span class="math inline">\({\symbf{\Gamma_v}}\)</span> is the variance-covariance matrix for <span class="math inline">\({\symbf{y_t}}\)</span> and <span class="math inline">\({\symbf{y_{t-v}}}\)</span>.</p>
 <p>The first one says the law of large numbers still holds. The second gives the long-run variance used for the standard error, and absolute summability is what makes that sum exist.</p>
 <p>Covariance stationarity on its own is not enough for either statement. It can fail even the law of large numbers. Let <span class="math inline">\(y_t = z + \varepsilon_t\)</span>, where <span class="math inline">\(z\)</span> is drawn once and then held fixed and <span class="math inline">\(\varepsilon_t\)</span> is white noise. Every autocovariance equals <span class="math inline">\(\mathrm{Var}(z)\)</span>, so the process is covariance-stationary, the autocovariances are not summable, and <span class="math inline">\(\bar y_T\)</span> converges to <span class="math inline">\(z\)</span> rather than to <span class="math inline">\(\mu\)</span>. Asymptotic normality asks for more again: a mixing, near-epoch dependence, or martingale-difference condition, together with moment restrictions. Covariance stationarity buys the variance formula, not the central limit theorem.</p>
@@ -743,7 +763,7 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <p><span id="eq-mle-44"><span class="math display">\[ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}} \tag{2.49}\]</span></span></p>
 <p>where <span id="eq-mle-45"><span class="math display">\[ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }} \tag{2.50}\]</span></span></p>
 <p>This gives a consistent estimate of <span class="math inline">\({\symbf{S}}\)</span>; however, it sometimes is not positive semidefinite.</p>
-<p>Newey-West (1987) suggested putting in a weight:</p>
+<p><span class="citation" data-cites="newey-west-1987">Whitney K. Newey and West (<a href="references.html#ref-newey-west-1987" role="doc-biblioref">1987</a>)</span> suggested putting in a weight:</p>
 <p><span id="eq-mle-46"><span class="math display">\[ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }} \tag{2.51}\]</span></span> Here <span class="math inline">\(q\)</span> is a truncation bandwidth, not a true MA order. For an MA(<span class="math inline">\(q\)</span>) process the two coincide, but the Newey-West estimator is used precisely when the dependence has no known finite order: the Bartlett weights <span class="math inline">\(1 - v/(q+1)\)</span> downweight higher lags and keep <span class="math inline">\(\hat S\)</span> positive semidefinite, and consistency comes from letting <span class="math inline">\(q\)</span> grow with <span class="math inline">\(T\)</span>, slowly enough that the poorly estimated high-order autocovariances do not dominate.</p>
 <p>Consider a linear regression model: <span id="eq-mle-47"><span class="math display">\[ y_t={ {\symbf{x_t' \beta}}} + u_t  \tag{2.52}\]</span></span></p>
 <p>Suppose we have the OLS estimator <span class="math inline">\({\symbf{b_T}}\)</span>, then <span id="eq-mle-48"><span class="math display">\[ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t
@@ -754,11 +774,22 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <p>where <span class="math inline">\(Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}[{{\symbf{x_t x_t'}}}]\)</span>, and <span class="math inline">\(S\)</span> can be estimated by <span id="eq-mle-50"><span class="math display">\[ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }} \tag{2.55}\]</span></span> where <span id="eq-mle-51"><span class="math display">\[ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'),  \tag{2.56}\]</span></span> where <span class="math inline">\(\hat u_{t,T}\)</span> is the OLS residual for data <span class="math inline">\(t\)</span> in a sample of size <span class="math inline">\(T\)</span>.</p>
 <p>Overall, the variance of <span class="math inline">\({\symbf{b_T}}\)</span> is approximated by</p>
 <p><span id="eq-mle-52"><span class="math display">\[\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1}  \tag{2.57}\]</span></span></p>
-<p>This estimation obviously depends on the selection of <span class="math inline">\(q\)</span>, the lag length beyond which the autocorrelation of <span class="math inline">\(x_t u_t\)</span> and <span class="math inline">\(x_{t-v} u_{t-v}\)</span> is treated as negligible. One common rule of thumb sets <span class="math inline">\(q = 0.75 \cdot T^{\frac{1}{3}}\)</span>; it is a convention rather than a theorem, and other growth rates are in use. Newey-West (1994) has suggested a way to automatically select the bandwidth <span class="math inline">\(q\)</span>. Here we omitted the discussion. Both Stata and R now also implement Newey-West (1994) estimator, with no need to specify <span class="math inline">\(q\)</span>.</p>
+<p>This estimation obviously depends on the selection of <span class="math inline">\(q\)</span>, the lag length beyond which the autocorrelation of <span class="math inline">\(x_t u_t\)</span> and <span class="math inline">\(x_{t-v} u_{t-v}\)</span> is treated as negligible. One common rule of thumb sets <span class="math inline">\(q = 0.75 \cdot T^{\frac{1}{3}}\)</span>; it is a convention rather than a theorem, and other growth rates are in use. <span class="citation" data-cites="newey-west-1994">W. K. Newey and West (<a href="references.html#ref-newey-west-1994" role="doc-biblioref">1994</a>)</span> has suggested a way to automatically select the bandwidth <span class="math inline">\(q\)</span>. Here we omitted the discussion. Both Stata and R now also implement the <span class="citation" data-cites="newey-west-1994">W. K. Newey and West (<a href="references.html#ref-newey-west-1994" role="doc-biblioref">1994</a>)</span> estimator, with no need to specify <span class="math inline">\(q\)</span>.</p>
 
 
 <!-- -->
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-hamilton-1994" class="csl-entry" role="listitem">
+Hamilton, James D. 1994. <em>Time Series Analysis</em>. Princeton University Press.
+</div>
+<div id="ref-newey-west-1994" class="csl-entry" role="listitem">
+Newey, W. K., and K. D. West. 1994. <span>“Automatic Lag Selection in Covariance Matrix Estimation.”</span> <em>Review of Economic Studies</em> 61 (4): 631–53. <a href="https://doi.org/10.2307/2297912">https://doi.org/10.2307/2297912</a>.
+</div>
+<div id="ref-newey-west-1987" class="csl-entry" role="listitem">
+Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix.”</span> <em>Econometrica</em> 55 (3): 703–8. <a href="https://doi.org/10.2307/1913610">https://doi.org/10.2307/1913610</a>.
+</div>
+</div>
 </section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1851,7 +1882,7 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <span id="cb13-633"><a href="#cb13-633" aria-hidden="true" tabindex="-1"></a>conditions need care.  Suppose ${\symbf{y_t}}$ is covariance-stationary (the</span>
 <span id="cb13-634"><a href="#cb13-634" aria-hidden="true" tabindex="-1"></a>covariance is not a function of time) *and* its autocovariances are absolutely</span>
 <span id="cb13-635"><a href="#cb13-635" aria-hidden="true" tabindex="-1"></a>summable, $\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty$.  Then, as in</span>
-<span id="cb13-636"><a href="#cb13-636" aria-hidden="true" tabindex="-1"></a>Hamilton (1994), the sample mean satisfies:</span>
+<span id="cb13-636"><a href="#cb13-636" aria-hidden="true" tabindex="-1"></a>@hamilton-1994, the sample mean satisfies:</span>
 <span id="cb13-637"><a href="#cb13-637" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-638"><a href="#cb13-638" aria-hidden="true" tabindex="-1"></a>$${\symbf{\bar y_T \to \mu , }}$$ {#eq-mle-41}</span>
 <span id="cb13-639"><a href="#cb13-639" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}</span>
@@ -1884,7 +1915,7 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <span id="cb13-666"><a href="#cb13-666" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is</span>
 <span id="cb13-667"><a href="#cb13-667" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
 <span id="cb13-668"><a href="#cb13-668" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a>Newey-West (1987) suggested putting in a weight:</span>
+<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a>@newey-west-1987 suggested putting in a weight:</span>
 <span id="cb13-670"><a href="#cb13-670" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-671"><a href="#cb13-671" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}</span>
 <span id="cb13-672"><a href="#cb13-672" aria-hidden="true" tabindex="-1"></a>Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two</span>
@@ -1925,9 +1956,9 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <span id="cb13-707"><a href="#cb13-707" aria-hidden="true" tabindex="-1"></a>treated as negligible.  One common rule of thumb sets</span>
 <span id="cb13-708"><a href="#cb13-708" aria-hidden="true" tabindex="-1"></a>$q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and</span>
 <span id="cb13-709"><a href="#cb13-709" aria-hidden="true" tabindex="-1"></a>other growth rates are in use.</span>
-<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>Newey-West (1994) has suggested a way to automatically select the</span>
+<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>@newey-west-1994 has suggested a way to automatically select the</span>
 <span id="cb13-711"><a href="#cb13-711" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
-<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>also implement Newey-West (1994) estimator, with no need to specify</span>
+<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>also implement the @newey-west-1994 estimator, with no need to specify</span>
 <span id="cb13-713"><a href="#cb13-713" aria-hidden="true" tabindex="-1"></a>$q$.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>

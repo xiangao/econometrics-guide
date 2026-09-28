@@ -74,9 +74,9 @@ if we run OLS on the censored sample; we would have "OLS truncated
 sample" if we run OLS on the truncated sample.  It shows that both of
 them are severely biased from the "true" regression line.
 
-Here is a graph to illustrate from Davidson and MacKinnon.
+Here is a graph to illustrate from @davidson-mackinnon-2004.
 
-![Effects of truncation and censoring from Davidson and MacKinnon](davidson.png){fig-alt="Scatterplot of y against x with four fitted lines. Filled circles lie above the zero line and hollow circles below it, marking the observations lost to censoring or truncation. The true regression line and the full-sample OLS fit are steep and nearly coincide; the censored-sample and truncated-sample fits are visibly flatter, attenuated toward zero slope."}
+![Effects of truncation and censoring from @davidson-mackinnon-2004](davidson.png){fig-alt="Scatterplot of y against x with four fitted lines. Filled circles lie above the zero line and hollow circles below it, marking the observations lost to censoring or truncation. The true regression line and the full-sample OLS fit are steep and nearly coincide; the censored-sample and truncated-sample fits are visibly flatter, attenuated toward zero slope."}
 
 ## Truncated Models
 
@@ -216,7 +216,7 @@ $$ {#eq-censored-15}
 
 So this model can be estimated by MLE.
 
-It is also popular to use Heckman's two-step method.
+It is also popular to use Heckman's [-@heckman-1979] two-step method.
 
 Heckman's method is based on the fact that the original latent
 model can be rewritten as

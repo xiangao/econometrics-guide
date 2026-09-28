@@ -88,7 +88,7 @@ A typical FGLS procedure has three steps. First, run OLS and obtain the residual
 - **Heteroscedasticity of known form**, e.g. $\omega_t^2 = \exp({{\symbf{z}}}_t' \gamma)$: regress $\log(\hat u_t^2)$ on ${\symbf{z_t}}$ to estimate $\gamma$, then set $\hat\omega_t^2 = \exp({{\symbf{z}}}_t' \hat\gamma)$ and apply WLS as above. (The intercept of that auxiliary regression is inconsistent, because $E[\log(u_t^2/\omega_t^2)] \neq 0$ -- it is about $-1.27$ for normal errors. This does not matter for WLS: a constant added to every $\log \hat\omega_t^2$ scales all weights by a common factor, which leaves $\hat\beta$ unchanged. It does matter if the fitted $\hat\omega_t^2$ are wanted as variance estimates in their own right.)
 - **AR(1) serial correlation**, $u_t = \rho u_{t-1} + \epsilon_t$: regress $\hat u_t$ on $\hat u_{t-1}$ to get $\hat\rho$, then quasi-difference each variable as $\tilde y_t = y_t - \hat\rho y_{t-1}$ for $t = 2, \dots, n$ (and similarly for $X$), so that the transformed error is approximately i.i.d.
 
-  The first observation is where **Cochrane-Orcutt** and **Prais-Winsten** part
+  The first observation is where **Cochrane-Orcutt** [-@cochrane-orcutt-1949] and **Prais-Winsten** [-@prais-winsten-1954] part
   company, and the ${\symbf{\Psi}}$ framework above says which is right. For AR(1)
   errors ${\symbf{\Omega = \frac{\sigma_\epsilon^2}{1-\rho^2}\left[\rho^{|i-j|}\right]}}$,
   and its Cholesky factor makes the first row of ${\symbf{\Psi'}}$ equal to
@@ -148,8 +148,8 @@ homoscedasticity and no serial correlation.
 The Gauss-Markov result says GLS is more efficient than OLS when
 ${\symbf{\Omega}}$ is known.  In practice ${\symbf{\Omega}}$ is never
 known, and we face a choice: estimate ${\symbf{\Omega}}$ and use FGLS,
-or use OLS with a sandwich variance estimator (White or Newey-West,
-as in the [MLE chapter](mle.qmd)) that does not require specifying the
+or use OLS with a sandwich variance estimator [@white-1980; @newey-west-1987], as in the
+[MLE chapter](mle.qmd), that does not require specifying the
 form of ${\symbf{\Omega}}$.
 
 Both approaches give consistent estimates of $\beta$, since OLS is

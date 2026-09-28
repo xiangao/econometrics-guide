@@ -1123,3 +1123,22 @@ stationary AR(1) does not contain a random walk, since the stationary variance
 diverges as `rho -> 1`.
 
 Rendered clean to HTML and PDF.
+
+## 2026-09-28 — Bibliography: hand-kept list replaced by `references.bib`
+
+The References chapter was a hand-typed list of about 60 works with no link to the
+text. It is now `references.bib` (64 entries) with pandoc citations. Keys shared with
+the three sibling books are reused unchanged; the rest were built from Crossref DOIs,
+with titles and pages taken from the old list (which checked out against Crossref) and
+names from Crossref. Fixed on the way: Andrews-Moreira-Stock (2006) title was missing
+"Similar"; Arellano-Bond (1991) was missing its subtitle; Shinkre and Hazlett (2024)
+was listed and cited as "Hazlett and Shinkre". Baltagi's textbook had no edition; the
+bib uses the 5th (Wiley, 2013).
+
+Gotchas: (1) book-level `nocite: '@*'` appends every entry to *every* chapter's own
+list, and page-level `nocite` on references.qmd is ignored — so uncited works are cited
+where they are introduced (Heckman, Breslow, Sargan, Mundlak, FWL, ...) and the three
+general textbooks in a sentence on the References page. (2) Crossref BibTeX gives the
+online-first year (Li et al. 2017, Chattopadhyay-Zubizarreta 2022); use the print year.
+(3) A markdown link inside a bracketed citation (`[@a; see [x](y.qmd)]`) stops pandoc
+parsing it; keep links outside the brackets. Code chunks verified byte-identical to HEAD.

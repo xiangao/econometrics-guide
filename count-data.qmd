@@ -81,7 +81,7 @@ serial correlation within a unit is a separate issue that requires
 *clustered* standard errors.  Older versions of "xtpoisson" did not
 offer a cluster-robust option, which is why the user-written program
 xtpqml was written to supply the cluster-robust standard errors of
-Wooldridge (1999) after xtpoisson.
+@wooldridge-1999-multiplicative after xtpoisson.
 
 
 ## Fixed-effect Poisson model
@@ -95,8 +95,8 @@ $$ {#eq-count-data-8}
 
 It turns out that for fixed-effect Poisson model, just like in linear
 regression case, there is NO incidental parameter problem.  Poisson
-MLE is the same for conditional and unconditional likelihood.(See
-Cameron and Trivedi, 2005, Page 805).
+MLE is the same for conditional and unconditional likelihood [see
+@cameron-trivedi-2005, p. 805].
 
 What the result does not do is relax the exogeneity requirement.  Consistency of
 $\hat\beta$ needs
@@ -178,7 +178,7 @@ dealing with zero-truncated data.  When data is not truncated,
 coefficients estimated by poisson model is consistent, even if data is
 "overdispersed".  However, if we have zero-truncated sample, then
 "over-dispersion" results in inconsistent coefficient estimation
-(Grogger and Carson, 1991).  Therefore, "over-dispersion" needs to be
+[@grogger-carson-1991].  Therefore, "over-dispersion" needs to be
 tested before using a truncated *Poisson* model: under truncation the
 mean-variance restriction stops being innocuous, and violating it breaks
 consistency of the coefficients rather than only the standard errors.

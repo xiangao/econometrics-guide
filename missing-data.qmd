@@ -96,9 +96,11 @@ problem that sank mean imputation and single regression imputation above.
 
 $V_{\beta}=W + (1+1/M) B$
 
-where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.  The standard error is $\sqrt{V_{\beta}}$.  These formulas (Rubin's rules) are written here for a single scalar coefficient $\beta$; for the full coefficient vector, $W$ is the average of the within-imputation covariance matrices, $B$ is the between-imputation covariance matrix $\frac{1}{M-1}\sum_m (\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})(\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})'$, and $V_{\boldsymbol\beta}=W+(1+1/M)B$ is the total covariance matrix.
+where $W=\frac{1}{M} \sum_{m=1}^M s_m^2$, $B=\frac{1}{M-1} \sum_{m=1}^M (\tilde \beta_m - \tilde \beta)^2$, in other words, the within-imputation and between-imputation variation.  The standard error is $\sqrt{V_{\beta}}$.  These formulas [Rubin's rules, @rubin-1987] are written here for a single scalar coefficient $\beta$; for the full coefficient vector, $W$ is the average of the within-imputation covariance matrices, $B$ is the between-imputation covariance matrix $\frac{1}{M-1}\sum_m (\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})(\tilde{\boldsymbol\beta}_m - \tilde{\boldsymbol\beta})'$, and $V_{\boldsymbol\beta}=W+(1+1/M)B$ is the total covariance matrix.
 
 ### MI through Chained Equations (MICE) (by Buuren)
+
+The standard reference is @van-buuren-2018.
 
 1. Drop an observation only when it carries no usable information: no observed outcome, no auxiliary variable, no weight or design information.  A row holding any of these still contributes, to the imputation model if not to the analysis, and discarding it wastes information and can induce selection.
 

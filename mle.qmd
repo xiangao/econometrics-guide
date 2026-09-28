@@ -629,7 +629,7 @@ Fortunately, autocorrelation does not by itself defeat inference, though the
 conditions need care.  Suppose ${\symbf{y_t}}$ is covariance-stationary (the
 covariance is not a function of time) *and* its autocovariances are absolutely
 summable, $\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert < \infty$.  Then, as in
-Hamilton (1994), the sample mean satisfies:
+@hamilton-1994, the sample mean satisfies:
 
 $${\symbf{\bar y_T \to \mu , }}$$ {#eq-mle-41}
 $$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}
@@ -662,7 +662,7 @@ where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} 
 This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is
 not positive semidefinite.
 
-Newey-West (1987) suggested putting in a weight:
+@newey-west-1987 suggested putting in a weight:
 
 $$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}
 Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two
@@ -703,7 +703,7 @@ length beyond which the autocorrelation of $x_t u_t$ and $x_{t-v} u_{t-v}$ is
 treated as negligible.  One common rule of thumb sets
 $q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and
 other growth rates are in use.
-Newey-West (1994) has suggested a way to automatically select the
+@newey-west-1994 has suggested a way to automatically select the
 bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now
-also implement Newey-West (1994) estimator, with no need to specify
+also implement the @newey-west-1994 estimator, with no need to specify
 $q$.
