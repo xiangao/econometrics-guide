@@ -408,6 +408,12 @@ y=(X'\Omega^{-1} X)^{-1}X'\Omega^{-1} y
 <p>When the error structure is well understood — for example, heteroscedasticity that follows a known function of observables, or AR(1) serial correlation whose form is dictated by the data generating process — FGLS can deliver substantial efficiency gains. The efficiency improvement is largest when the heterogeneity in error variances is large, since GLS downweights noisy observations that OLS treats equally.</p>
 <p>When the error structure is unknown or hard to model correctly, FGLS carries a specification risk. If <span class="math inline">\({\symbf{\hat\Omega}}\)</span> is badly estimated, the FGLS estimator can be less efficient than OLS, and the FGLS standard errors can be misleading because they assume the estimated error structure is correct. OLS with robust standard errors avoids this risk: the point estimates are the same regardless of <span class="math inline">\({\symbf{\Omega}}\)</span>, and the sandwich variance is consistent under unknown heteroscedasticity, and under serial correlation weak enough to satisfy the HAC conditions – summable autocovariances and a bandwidth that grows slowly with the sample. “Robust” is not the same as robust to dependence of any form.</p>
 <p>The modern default in applied work is to report OLS with robust standard errors, reserving GLS for settings where there is strong prior information about the error structure or where the efficiency gain is large enough to justify the specification risk. Panel data models are an important exception: the random effects estimator is a form of FGLS, and there the structure of <span class="math inline">\({\symbf{\Omega}}\)</span> (an equicorrelated block for each unit) is implied by the model rather than estimated freely.</p>
+</section>
+</section>
+<section id="summary" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="summary"><span class="header-section-number">3.5</span> Summary</h2>
+<p>When the error covariance <span class="math inline">\(\Omega\)</span> is not <span class="math inline">\(\sigma^2 I\)</span>, GLS transforms the model so that the transformed errors are spherical, then applies OLS. The result, <span class="math inline">\((X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y\)</span>, is the best linear unbiased estimator when <span class="math inline">\(\Omega\)</span> is known. Weighted least squares is the special case of heteroscedastic, uncorrelated errors. Feasible GLS estimates <span class="math inline">\(\Omega\)</span> from OLS residuals first. For AR(1) errors, Prais-Winsten keeps the first observation that Cochrane-Orcutt drops.</p>
+<p>In practice <span class="math inline">\(\Omega\)</span> is unknown. FGLS is efficient only when the form of <span class="math inline">\(\Omega\)</span> is right. OLS with robust or HAC standard errors stays valid without modelling <span class="math inline">\(\Omega\)</span>, at some cost in efficiency. The modern default is OLS with robust standard errors, keeping GLS for cases where the error structure is well understood, as in the random effects model.</p>
 
 
 <!-- -->
@@ -426,7 +432,6 @@ Prais, S. J., and C. B. Winsten. 1954. <span>“Trend Estimators and Serial Corr
 White, Halbert. 1980. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1083,7 +1088,13 @@ White, Halbert. 1980. <span>“A Heteroskedasticity-Consistent Covariance Matrix
 <span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>models are an important exception: the random effects estimator is</span>
 <span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>a form of FGLS, and there the structure of ${\symbf{\Omega}}$ (an</span>
 <span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>equicorrelated block for each unit) is implied by the model rather</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>than estimated freely.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>than estimated freely.</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>When the error covariance $\Omega$ is not $\sigma^2 I$, GLS transforms the model so that the transformed errors are spherical, then applies OLS. The result, $(X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y$, is the best linear unbiased estimator when $\Omega$ is known. Weighted least squares is the special case of heteroscedastic, uncorrelated errors. Feasible GLS estimates $\Omega$ from OLS residuals first. For AR(1) errors, Prais-Winsten keeps the first observation that Cochrane-Orcutt drops.</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>In practice $\Omega$ is unknown. FGLS is efficient only when the form of $\Omega$ is right. OLS with robust or HAC standard errors stays valid without modelling $\Omega$, at some cost in efficiency. The modern default is OLS with robust standard errors, keeping GLS for cases where the error structure is well understood, as in the random effects model.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

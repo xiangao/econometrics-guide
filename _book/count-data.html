@@ -523,6 +523,12 @@ p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'
 <section id="how-to-calculate-marginal-effects-in-stata" class="level3" data-number="8.9.4">
 <h3 data-number="8.9.4" class="anchored" data-anchor-id="how-to-calculate-marginal-effects-in-stata"><span class="header-section-number">8.9.4</span> How to calculate marginal effects in Stata</h3>
 <p>Stata’s margins command is a powerful command to get the predicted value or marginal effects after an estimation command. Check Stata’s manual for more details.</p>
+</section>
+</section>
+<section id="summary" class="level2" data-number="8.10">
+<h2 data-number="8.10" class="anchored" data-anchor-id="summary"><span class="header-section-number">8.10</span> Summary</h2>
+<p>Poisson regression models the log of the expected count. Its real strength is as a quasi-MLE: it is consistent whenever the conditional mean is right, even with overdispersion or a continuous outcome, as long as the standard errors are robust. Fixed-effects Poisson has no incidental-parameters problem, but it still needs strict exogeneity given the unit effect. Negative binomial adds gamma heterogeneity to allow overdispersion. Hurdle and zero-inflated models treat zeros as coming from a separate process. Zero-truncated models handle samples with no zeros, and there overdispersion breaks a truncated Poisson’s consistency.</p>
+<p>In all these nonlinear models a coefficient is not a marginal effect. The effect of a regressor on the expected outcome or probability depends on where it is evaluated. The average marginal effect, averaged over the observed covariates, is the standard summary. For a dummy regressor it is the average difference in predicted outcomes between its two values.</p>
 
 
 <!-- -->
@@ -538,7 +544,6 @@ Grogger, J. T., and R. T. Carson. 1991. <span>“Models for Truncated Counts.”
 Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonlinear Panel Data Models.”</span> <em>Journal of Econometrics</em> 90 (1): 77–97. <a href="https://doi.org/10.1016/S0304-4076(98)00033-5">https://doi.org/10.1016/S0304-4076(98)00033-5</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1409,7 +1414,13 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
 <span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a><span class="fu">### How to calculate marginal effects in Stata</span></span>
 <span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.</span>
+<span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>Poisson regression models the log of the expected count. Its real strength is as a quasi-MLE: it is consistent whenever the conditional mean is right, even with overdispersion or a continuous outcome, as long as the standard errors are robust. Fixed-effects Poisson has no incidental-parameters problem, but it still needs strict exogeneity given the unit effect. Negative binomial adds gamma heterogeneity to allow overdispersion. Hurdle and zero-inflated models treat zeros as coming from a separate process. Zero-truncated models handle samples with no zeros, and there overdispersion breaks a truncated Poisson's consistency.</span>
+<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>In all these nonlinear models a coefficient is not a marginal effect. The effect of a regressor on the expected outcome or probability depends on where it is evaluated. The average marginal effect, averaged over the observed covariates, is the standard summary. For a dummy regressor it is the average difference in predicted outcomes between its two values.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

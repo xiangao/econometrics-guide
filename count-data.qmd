@@ -403,3 +403,9 @@ if we evaluate $\mu_x$ at predicted value.
 ### How to calculate marginal effects in Stata
 
 Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.
+
+## Summary
+
+Poisson regression models the log of the expected count. Its real strength is as a quasi-MLE: it is consistent whenever the conditional mean is right, even with overdispersion or a continuous outcome, as long as the standard errors are robust. Fixed-effects Poisson has no incidental-parameters problem, but it still needs strict exogeneity given the unit effect. Negative binomial adds gamma heterogeneity to allow overdispersion. Hurdle and zero-inflated models treat zeros as coming from a separate process. Zero-truncated models handle samples with no zeros, and there overdispersion breaks a truncated Poisson's consistency.
+
+In all these nonlinear models a coefficient is not a marginal effect. The effect of a regressor on the expected outcome or probability depends on where it is evaluated. The average marginal effect, averaged over the observed covariates, is the standard summary. For a dummy regressor it is the average difference in predicted outcomes between its two values.

@@ -308,3 +308,9 @@ the time series example, then, the OLS estimator is biased, but can still be
 consistent, if we are willing to assume no contemporaneous correlation.
 
 Note: general linear hypothesis testing, the Chow test for structural change, and heteroskedasticity- and autocorrelation-consistent (HAC) standard errors (White, Newey-West) are all standard OLS extensions, but are covered in the [Maximum Likelihood chapter](mle.qmd) alongside this guide's other estimation-inference material rather than repeated here.
+
+## Summary
+
+OLS chooses the coefficients that minimize the sum of squared residuals, which gives the normal equations and the estimator $(X'X)^{-1}X'y$. Geometrically it projects $y$ onto the column space of $X$. The fitted values are the projection and the residuals are orthogonal to it. In the population, OLS estimates the best linear predictor, the best linear approximation to the conditional expectation function. So its coefficients keep a clear meaning even when the true conditional mean is nonlinear.
+
+The properties depend on what we assume about the error. Strict exogeneity, a zero mean of the error given every regressor in every period, makes OLS unbiased. A lagged dependent variable breaks it. Consistency needs much less, only zero correlation between the regressors and the current error, plus a rank condition and a law of large numbers. So OLS can be biased in a dynamic model and still consistent.

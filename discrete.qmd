@@ -205,3 +205,9 @@ random-coefficients logit, lets $\beta$ vary across individuals; shared taste
 parameters then induce correlation across alternatives and IIA goes away, at the
 cost of simulation-based estimation.  Which one to reach for depends on whether the
 substitution pattern you are worried about can be described by a grouping.
+
+## Summary
+
+A binary outcome's conditional mean is a probability, so probit and logit pass a linear index through a CDF to keep it between 0 and 1. Both are fitted by maximum likelihood with a globally concave log-likelihood. The estimate exists and is finite only with full-rank regressors and no separation. Ordered probit adds thresholds on a latent index, with location and scale fixed by normalization. Multinomial logit lets coefficients vary by alternative for individual characteristics. Conditional logit uses one coefficient vector for characteristics that vary by alternative. In every case the coefficients are not effects on probabilities, and the average marginal effect is the usual summary.
+
+Both logit forms impose independence of irrelevant alternatives: the odds between two choices do not depend on the rest of the menu. The red-bus/blue-bus example shows why that can fail. Nested logit relaxes it across groups of close substitutes, and mixed logit removes it through random coefficients.

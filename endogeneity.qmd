@@ -605,3 +605,9 @@ treatment status is shifted by the instrument --- rather than for the
 full population.  The formal derivation, including the monotonicity
 assumption and the complier/always-taker/never-taker decomposition, is
 in the [Causal Econometrics Guide](https://xiangao.github.io/causal_econometrics_guide/iv-rdd.html).
+
+## Summary
+
+A regressor is endogenous when it is correlated with the error, and then OLS is biased and inconsistent. Instrumental variables use variables that are uncorrelated with the error and predict the regressor. 2SLS projects the regressors onto the instruments and regresses the outcome on the projection. The control function adds the first-stage residual to the regression and gives the same coefficients. Its coefficient on the residual is the Durbin-Wu-Hausman test of exogeneity, which is only as good as the instruments behind it.
+
+Identification needs at least as many excluded instruments as endogenous regressors. With more, the Sargan or Hansen $J$ test checks the overidentifying restrictions jointly. It cannot certify the instruments, because it has no power against a violation they all share. Weak instruments make IV biased toward OLS, with nonstandard distributions. The conditional likelihood-ratio test and Anderson-Rubin intervals stay valid when instruments are weak, and a first-stage $F$ is only a rough screen. With heterogeneous effects, IV identifies a LATE, the effect for the compliers.
