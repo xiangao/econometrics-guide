@@ -326,3 +326,9 @@ $\beta_1$ and $\beta_0$.  For the fuller Roy-type model, Stata users generally r
 for the user-written movestay (endogenous switching regression), and SAS's qlim covers
 a range of limited-dependent and selection specifications.  The default in each case
 is MLE.
+
+## Summary
+
+Truncation drops units outside a threshold. Censoring keeps them but reports only that the outcome lies beyond a known threshold. Sample selection leaves the outcome missing for units chosen by a separate process. In all three, OLS on the observed data is biased and inconsistent, because the error no longer has mean zero given the regressors. Truncated regression and Tobit fix the first two by maximum likelihood under normal errors.
+
+For selection, the Heckman model adds a selection equation whose error is correlated with the outcome error. It can be estimated by MLE, or in two steps with a probit followed by OLS that includes the inverse Mills ratio. The two-step version is less efficient but relies less on the full likelihood. It is fragile when the selection equation has no variable excluded from the outcome equation. When the outcome is observed in both regimes, the problem becomes an endogenous treatment-effects model. Its fuller form, the Roy switching regression, lets every coefficient differ by regime.

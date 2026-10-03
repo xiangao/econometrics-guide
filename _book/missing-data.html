@@ -502,6 +502,12 @@ mi impute chained  (regress) `continuous' , add(10) rseed(1)
 
 mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_tight_ctr gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count, select (has_submitted = c.CulturalDist_KS5D_ctr##c.tight_ctr log_cash_000 gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count ave_numConcurrentContest) vce (cluster user_id) difficult nonrtol</code></pre>
 <p>This is a sample code. In stata, you have to do “mi set”, then “mi register” to register variables you need to impute. Then “mi impute chained” if you have multiple variables to impute. Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise. Then do “mi estimate”.</p>
+</section>
+</section>
+<section id="summary" class="level2" data-number="12.4">
+<h2 data-number="12.4" class="anchored" data-anchor-id="summary"><span class="header-section-number">12.4</span> Summary</h2>
+<p>What missing data cost depends on why the data are missing and on what we estimate. Under MCAR, dropping incomplete rows loses only efficiency. Under MAR, missingness depends only on observed data. That cannot be tested, and ignoring it generally biases the estimates, although complete-case regression stays consistent when missingness depends only on the regressors. Under MNAR no model-free fix exists. Mean imputation and single regression imputation understate the variability of the imputed values and so understate standard errors.</p>
+<p>Multiple imputation draws the imputation model’s parameters and a residual for each of <span class="math inline">\(M\)</span> imputed data sets, then combines the estimates with Rubin’s rules, adding the within- and between-imputation variance. MICE imputes one variable at a time in a chain. Predictive mean matching is the usual default. Bayesian data augmentation and FIML handle the missing values inside the model. These last two need ignorability, which is MAR plus parameters of the missingness mechanism that are separate from the model’s.</p>
 
 
 <!-- -->
@@ -514,7 +520,6 @@ Buuren, Stef van. 2018. <em>Flexible Imputation of Missing Data</em>. 2nd ed. CR
 Rubin, Donald B. 1987. <em>Multiple Imputation for Nonresponse in Surveys</em>. Wiley. <a href="https://doi.org/10.1002/9780470316696">https://doi.org/10.1002/9780470316696</a>.
 </div>
 </div>
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1179,7 +1184,13 @@ Rubin, Donald B. 1987. <em>Multiple Imputation for Nonresponse in Surveys</em>. 
 <span id="cb2-196"><a href="#cb2-196" aria-hidden="true" tabindex="-1"></a><span class="in">    mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_tight_ctr gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count, select (has_submitted = c.CulturalDist_KS5D_ctr##c.tight_ctr log_cash_000 gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count ave_numConcurrentContest) vce (cluster user_id) difficult nonrtol</span></span>
 <span id="cb2-197"><a href="#cb2-197" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-198"><a href="#cb2-198" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a>This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb2-199"><a href="#cb2-199" aria-hidden="true" tabindex="-1"></a>This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".</span>
+<span id="cb2-200"><a href="#cb2-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-201"><a href="#cb2-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb2-202"><a href="#cb2-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-203"><a href="#cb2-203" aria-hidden="true" tabindex="-1"></a>What missing data cost depends on why the data are missing and on what we estimate. Under MCAR, dropping incomplete rows loses only efficiency. Under MAR, missingness depends only on observed data. That cannot be tested, and ignoring it generally biases the estimates, although complete-case regression stays consistent when missingness depends only on the regressors. Under MNAR no model-free fix exists. Mean imputation and single regression imputation understate the variability of the imputed values and so understate standard errors.</span>
+<span id="cb2-204"><a href="#cb2-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-205"><a href="#cb2-205" aria-hidden="true" tabindex="-1"></a>Multiple imputation draws the imputation model's parameters and a residual for each of $M$ imputed data sets, then combines the estimates with Rubin's rules, adding the within- and between-imputation variance. MICE imputes one variable at a time in a chain. Predictive mean matching is the usual default. Bayesian data augmentation and FIML handle the missing values inside the model. These last two need ignorability, which is MAR plus parameters of the missingness mechanism that are separate from the model's.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

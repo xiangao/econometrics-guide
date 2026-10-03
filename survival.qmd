@@ -360,3 +360,9 @@ time-varying explanatory variable) or a single-record-per-person data
 set.  Stata has built-in command $stset$ to set up a survival analysis
 structure.  Then you can run $stcox$ for Cox's proportional hazard
 model.
+
+## Summary
+
+Survival analysis models the time until an event when some spells are censored. Censoring must be noninformative. Kaplan-Meier needs that marginally, while the Cox model needs it only given its covariates. Nothing in the data can check this assumption. Kaplan-Meier estimates the survival curve as a product of conditional survival probabilities. The hazard function gives the instantaneous risk of the event among units still at risk. Parametric families such as the exponential, Weibull and log-normal impose shapes on it, and each censored unit contributes its survival probability to the likelihood.
+
+The Cox model writes the hazard as a baseline times $\exp(x'\beta)$. It estimates $\beta$ by partial likelihood without specifying the baseline, and $\exp(\beta_j)$ is the proportional change in the hazard per unit of $x_j$. Parametric `survreg` fits are accelerated failure time models, so their coefficients carry the opposite sign. Discrete-time hazards can be fitted as a logit on person-period data, clustered by person.

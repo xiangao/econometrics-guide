@@ -350,3 +350,9 @@ case, and they get their own chapter,
 The rule behind that $T_i$, and behind the variance weighting in the
 between-versus-within comparison, is not specific to panels.  It is set
 out in [Interpreting OLS: Effect Weights](interpreting-ols.qmd) and its companion, [Outcome Weights](outcome-weights.qmd).
+
+## Summary
+
+Panel data let us control for a unit effect that is fixed over time. Random effects puts it in the error and estimates by feasible GLS. That is efficient, but it is consistent only if the unit effect is uncorrelated with the regressors. Fixed effects removes the unit effect by demeaning within units. It is consistent when the unit effect is correlated with the regressors, but it still needs strict exogeneity of the remaining error, and it cannot estimate time-invariant regressors. The Hausman test compares the two. Its regression form, via the Mundlak device, stays valid with robust standard errors.
+
+Collapsing to unit means loses nothing when every regressor is constant within units in a balanced panel, apart from the degrees of freedom, which should be $N-k$. With a time-varying regressor, collapsing leaves only the between estimator. In the simulation it returns about 1.85 against a true 1, pooled OLS about 1.48, and fixed effects about 0.99. The Mundlak regression recovers the within and between estimates in one fit.

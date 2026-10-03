@@ -471,6 +471,10 @@ Mundlak: xbar          0.850      0.036</code></pre>
 <p>Mundlak’s device is more than a test: it is an estimator in its own right. Wooldridge’s correlated random effects (CRE) framework generalizes the idea, allowing unit-level heterogeneity to depend on the time-averages of the regressors while retaining the RE structure. The full CRE treatment, including extensions to nonlinear models, is in the <a href="https://xiangao.github.io/blog_book/correlated-random-effect.html">Blog Book</a>.</p>
 <p>So the argument for the long format is not precision. It is that demeaning, the Hausman comparison, unit-specific slopes, lagged dependent variables and anything else built on within variation stop existing once the panel is collapsed. Dynamic models are the extreme case, and they get their own chapter, <a href="./dynamic-panel.html">Dynamic Panel Data</a>.</p>
 <p>The rule behind that <span class="math inline">\(T_i\)</span>, and behind the variance weighting in the between-versus-within comparison, is not specific to panels. It is set out in <a href="./interpreting-ols.html">Interpreting OLS: Effect Weights</a> and its companion, <a href="./outcome-weights.html">Outcome Weights</a>.</p>
+</section></section><section id="summary" class="level2" data-number="9.7"><h2 data-number="9.7" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">9.7</span> Summary</h2>
+<p>Panel data let us control for a unit effect that is fixed over time. Random effects puts it in the error and estimates by feasible GLS. That is efficient, but it is consistent only if the unit effect is uncorrelated with the regressors. Fixed effects removes the unit effect by demeaning within units. It is consistent when the unit effect is correlated with the regressors, but it still needs strict exogeneity of the remaining error, and it cannot estimate time-invariant regressors. The Hausman test compares the two. Its regression form, via the Mundlak device, stays valid with robust standard errors.</p>
+<p>Collapsing to unit means loses nothing when every regressor is constant within units in a balanced panel, apart from the degrees of freedom, which should be <span class="math inline">\(N-k\)</span>. With a time-varying regressor, collapsing leaves only the between estimator. In the simulation it returns about 1.85 against a true 1, pooled OLS about 1.48, and fixed effects about 0.99. The Mundlak regression recovers the within and between estimates in one fit.</p>
 
 
 <!-- -->
@@ -498,7 +502,7 @@ Swamy, P. A. V. B., and S. S. Arora. 1972. <span>“The Exact Finite Sample Prop
 Wooldridge, Jeffrey M. 2010. <em>Econometric Analysis of Cross Section and Panel Data</em>. 2nd ed. MIT Press.
 </div>
 </div>
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -1311,6 +1315,12 @@ Wooldridge, Jeffrey M. 2010. <em>Econometric Analysis of Cross Section and Panel
 <span id="cb7-358"><a href="#cb7-358" aria-hidden="true" tabindex="-1"></a>The rule behind that $T_i$, and behind the variance weighting in the</span>
 <span id="cb7-359"><a href="#cb7-359" aria-hidden="true" tabindex="-1"></a>between-versus-within comparison, is not specific to panels.  It is set</span>
 <span id="cb7-360"><a href="#cb7-360" aria-hidden="true" tabindex="-1"></a>out in <span class="co">[</span><span class="ot">Interpreting OLS: Effect Weights</span><span class="co">](interpreting-ols.qmd)</span> and its companion, <span class="co">[</span><span class="ot">Outcome Weights</span><span class="co">](outcome-weights.qmd)</span>.</span>
+<span id="cb7-361"><a href="#cb7-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-362"><a href="#cb7-362" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb7-363"><a href="#cb7-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-364"><a href="#cb7-364" aria-hidden="true" tabindex="-1"></a>Panel data let us control for a unit effect that is fixed over time. Random effects puts it in the error and estimates by feasible GLS. That is efficient, but it is consistent only if the unit effect is uncorrelated with the regressors. Fixed effects removes the unit effect by demeaning within units. It is consistent when the unit effect is correlated with the regressors, but it still needs strict exogeneity of the remaining error, and it cannot estimate time-invariant regressors. The Hausman test compares the two. Its regression form, via the Mundlak device, stays valid with robust standard errors.</span>
+<span id="cb7-365"><a href="#cb7-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-366"><a href="#cb7-366" aria-hidden="true" tabindex="-1"></a>Collapsing to unit means loses nothing when every regressor is constant within units in a balanced panel, apart from the degrees of freedom, which should be $N-k$. With a time-varying regressor, collapsing leaves only the between estimator. In the simulation it returns about 1.85 against a true 1, pooled OLS about 1.48, and fixed effects about 0.99. The Mundlak regression recovers the within and between estimates in one fit.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

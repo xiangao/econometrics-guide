@@ -199,3 +199,9 @@ of freedom, the instrument count next to the number of groups, and the estimate
 under at least one narrower instrument set.  The last of those does most of the
 work, because it is the one thing in the list that a flexible instrument set cannot
 make look good.
+
+## Summary
+
+A lagged dependent variable is correlated with the unit effect, so pooled OLS and random effects are inconsistent. Fixed effects is inconsistent too when $T$ is small, because the demeaned lag is correlated with the demeaned error. This is the Nickell bias, roughly $-(1+\gamma)/(T-1)$. Anderson-Hsiao first-differences the model and instruments the lagged difference with earlier levels. Arellano-Bond difference GMM uses all available lags as instruments. Blundell-Bond system GMM adds moments in levels, which helps when the series is persistent but needs an initial-condition restriction.
+
+On Arellano and Bond's UK firm data, every diagnostic passes for all three instrument sets. Capping the instruments at three lags moves the employment coefficient from about 0.65 to 0.44 and nearly doubles its standard error. System GMM returns a coefficient above 1 with a small standard error, which implies an explosive process and is not credible. Report the AR(2) test, the Sargan or Hansen statistic with its degrees of freedom, and the instrument count against the number of groups. Also report the estimate under a narrower instrument set.

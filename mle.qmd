@@ -707,3 +707,9 @@ other growth rates are in use.
 bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now
 also implement the @newey-west-1994 estimator, with no need to specify
 $q$.
+
+## Summary
+
+Maximum likelihood picks the parameters that make the observed sample most likely under the assumed model. With normal errors in a linear model it gives the OLS coefficients. Under correct specification the MLE is consistent, asymptotically normal with variance equal to the inverse information, efficient among regular estimators, and invariant to reparameterization. When the model is wrong, the MLE converges to the pseudo-true value closest to the truth in Kullback-Leibler divergence, and the variance becomes a sandwich. Poisson QMLE is the leading case: it is consistent whenever the conditional mean is right. OLS, MLE, QMLE and GMM are all M-estimators with the same sandwich variance.
+
+The rest of the chapter is about testing. The $F$ test handles linear restrictions under normal errors. The likelihood-ratio, Wald and LM tests do the same in general and agree asymptotically. The Chow test checks for a structural break. White and Newey-West standard errors keep inference valid under heteroskedasticity and autocorrelation.

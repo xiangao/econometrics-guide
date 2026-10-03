@@ -189,3 +189,9 @@ models are an important exception: the random effects estimator is
 a form of FGLS, and there the structure of ${\symbf{\Omega}}$ (an
 equicorrelated block for each unit) is implied by the model rather
 than estimated freely.
+
+## Summary
+
+When the error covariance $\Omega$ is not $\sigma^2 I$, GLS transforms the model so that the transformed errors are spherical, then applies OLS. The result, $(X'\Omega^{-1}X)^{-1}X'\Omega^{-1}y$, is the best linear unbiased estimator when $\Omega$ is known. Weighted least squares is the special case of heteroscedastic, uncorrelated errors. Feasible GLS estimates $\Omega$ from OLS residuals first. For AR(1) errors, Prais-Winsten keeps the first observation that Cochrane-Orcutt drops.
+
+In practice $\Omega$ is unknown. FGLS is efficient only when the form of $\Omega$ is right. OLS with robust or HAC standard errors stays valid without modelling $\Omega$, at some cost in efficiency. The modern default is OLS with robust standard errors, keeping GLS for cases where the error structure is well understood, as in the random effects model.

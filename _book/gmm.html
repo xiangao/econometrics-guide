@@ -639,11 +639,15 @@ E[X_i(Y_i-\beta_0-\beta_1X_i)]=0
 <p>These are just normal equations for OLS.</p>
 <p>A characteristic of GMM: the specification of the model generates the estimator. i.e.&nbsp;only <span class="math inline">\(E[Y_i|X_i]=\beta_0+\beta_1 X_i\)</span> is assumed.</p>
 <p>Note there are no assumptions that <span class="math inline">\(u_i\)</span> is homoscedastic, not autocorrelated or normally distributed. These properties affect the statistical properties of the GMM estimator, not its definition.</p>
+</section></section><section id="summary" class="level2" data-number="5.7"><h2 data-number="5.7" class="anchored" data-anchor-id="summary">
+<span class="header-section-number">5.7</span> Summary</h2>
+<p>The method of moments sets sample moments equal to their population counterparts. OLS solves the moment condition that the regressors are uncorrelated with the error, and IV solves the same condition with instruments. GMM generalizes this to more moment conditions than parameters, minimizing a weighted quadratic form in the sample moments. The efficient weight is the inverse of the moments’ variance, estimated in two steps. 2SLS is the special case that is efficient only under homoskedasticity. GMM asks less than MLE. It needs correct moment conditions and makes no assumption about the full distribution.</p>
+<p>In the just-identified example, GMM and 2SLS coincide and the weighting does not matter. With two instruments and heteroskedastic errors, two-step GMM gives 0.989 against a true 1, with a slightly smaller standard error than robust 2SLS. The <span class="math inline">\(J\)</span> test then has content. It is 1.65 (<span class="math inline">\(p = 0.20\)</span>) with valid instruments and 143 when one instrument is made invalid. It cannot say which instrument is at fault, and it has no power when all instruments share the same violation.</p>
 
 
 <!-- -->
 
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
     const anchorJS = new window.AnchorJS();
@@ -1579,6 +1583,12 @@ E[X_i(Y_i-\beta_0-\beta_1X_i)]=0
 <span id="cb19-483"><a href="#cb19-483" aria-hidden="true" tabindex="-1"></a>autocorrelated or normally distributed.  These properties affect</span>
 <span id="cb19-484"><a href="#cb19-484" aria-hidden="true" tabindex="-1"></a>the statistical properties of the GMM estimator, not its</span>
 <span id="cb19-485"><a href="#cb19-485" aria-hidden="true" tabindex="-1"></a>definition.</span>
+<span id="cb19-486"><a href="#cb19-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-487"><a href="#cb19-487" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb19-488"><a href="#cb19-488" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-489"><a href="#cb19-489" aria-hidden="true" tabindex="-1"></a>The method of moments sets sample moments equal to their population counterparts. OLS solves the moment condition that the regressors are uncorrelated with the error, and IV solves the same condition with instruments. GMM generalizes this to more moment conditions than parameters, minimizing a weighted quadratic form in the sample moments. The efficient weight is the inverse of the moments' variance, estimated in two steps. 2SLS is the special case that is efficient only under homoskedasticity. GMM asks less than MLE. It needs correct moment conditions and makes no assumption about the full distribution.</span>
+<span id="cb19-490"><a href="#cb19-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-491"><a href="#cb19-491" aria-hidden="true" tabindex="-1"></a>In the just-identified example, GMM and 2SLS coincide and the weighting does not matter. With two instruments and heteroskedastic errors, two-step GMM gives 0.989 against a true 1, with a slightly smaller standard error than robust 2SLS. The $J$ test then has content. It is 1.65 ($p = 0.20$) with valid instruments and 143 when one instrument is made invalid. It cannot say which instrument is at fault, and it has no power when all instruments share the same violation.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

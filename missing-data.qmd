@@ -197,3 +197,9 @@ sufficient here either.
 
 
 This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".
+
+## Summary
+
+What missing data cost depends on why the data are missing and on what we estimate. Under MCAR, dropping incomplete rows loses only efficiency. Under MAR, missingness depends only on observed data. That cannot be tested, and ignoring it generally biases the estimates, although complete-case regression stays consistent when missingness depends only on the regressors. Under MNAR no model-free fix exists. Mean imputation and single regression imputation understate the variability of the imputed values and so understate standard errors.
+
+Multiple imputation draws the imputation model's parameters and a residual for each of $M$ imputed data sets, then combines the estimates with Rubin's rules, adding the within- and between-imputation variance. MICE imputes one variable at a time in a chain. Predictive mean matching is the usual default. Bayesian data augmentation and FIML handle the missing values inside the model. These last two need ignorability, which is MAR plus parameters of the missingness mechanism that are separate from the model's.
