@@ -151,9 +151,7 @@ Consistency still asks for the rest of the usual package: strict exogeneity of t
 idiosyncratic error conditional on the unit effect,
 $E[u_{it} \mid c_i, {{\symbf{x}}}_{i1}, \dots, {{\symbf{x}}}_{iT}]=0$, enough
 within-unit variation for the demeaned cross-product to have full rank, and an
-asymptotic scheme -- usually $N \to \infty$ with $T$ fixed.  What FE buys is freedom
-from correlation between $c_i$ and the regressors.  It buys nothing at all against
-correlation between $u_{it}$ and them.
+asymptotic scheme -- usually $N \to \infty$ with $T$ fixed.  FE allows correlation between $c_i$ and the regressors. It does not allow correlation between $u_{it}$ and them.
 The price is that any time-invariant regressor (the $z_i$ above) is also
 swept out by the demeaning and cannot be estimated. The usual variance
 estimator is $\hat V(\hat\beta_{FE})=\hat\sigma_u^2(\sum_i\sum_t \ddot{{\symbf{x}}}_{it}'\ddot{{\symbf{x}}}_{it})^{-1}$
@@ -250,7 +248,7 @@ variation and recover the between answer in one regression.
 The useful way to remember it: collapse freely when every regressor is
 constant within the group, and never when one is not.
 
-## What the long format buys
+## What the long format adds
 
 The section above is mostly a warning.  The other side is worth seeing
 directly, so we simulate panels where we know the truth.  We use

@@ -328,7 +328,7 @@ window.Quarto = {
 <p><span id="eq-mle-3"><span class="math display">\[ f({{\symbf{y}}} \mid {{\symbf{X}}}, \beta, \sigma) = (2 \pi \sigma^2)^{-n/2} \exp\left(-  \frac{({{\symbf{y- X \beta}}})'({{\symbf{y- X \beta}}})}{2 \sigma^2}\right) \tag{2.3}\]</span></span></p>
 <p>The log-likelihood function is</p>
 <p><span id="eq-mle-4"><span class="math display">\[ l({{\symbf{y, \beta, \sigma}}}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} {\symbf{(y-X \beta)'(y-X \beta) }} \tag{2.4}\]</span></span></p>
-<p>Maximizing this function gives exactly the OLS estimator for <span class="math inline">\({\symbf{\beta}}\)</span>. That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other. For <span class="math inline">\(\sigma^2\)</span> the MLE divides by <span class="math inline">\(n\)</span> rather than <span class="math inline">\(n-k\)</span>, so it differs in finite samples and agrees asymptotically. What normality buys is not the formula but its standing. Under normality the OLS estimator <em>is</em> the maximum likelihood estimator and the model-based variance is valid. Without normality the same formula is a quasi-MLE: still consistent for <span class="math inline">\({\symbf{\beta}}\)</span> under the usual conditions, but its variance needs the sandwich correction discussed below.</p>
+<p>Maximizing this function gives exactly the OLS estimator for <span class="math inline">\({\symbf{\beta}}\)</span>. That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other. For <span class="math inline">\(\sigma^2\)</span> the MLE divides by <span class="math inline">\(n\)</span> rather than <span class="math inline">\(n-k\)</span>, so it differs in finite samples and agrees asymptotically. What normality adds is not the formula but its standing. Under normality the OLS estimator <em>is</em> the maximum likelihood estimator and the model-based variance is valid. Without normality the same formula is a quasi-MLE: still consistent for <span class="math inline">\({\symbf{\beta}}\)</span> under the usual conditions, but its variance needs the sandwich correction discussed below.</p>
 </section><section id="asymptotic-properties-of-mle" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="asymptotic-properties-of-mle">
 <span class="header-section-number">2.3</span> Asymptotic Properties of MLE</h2>
 <ol type="1">
@@ -756,7 +756,7 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 <p>Fortunately, autocorrelation does not by itself defeat inference, though the conditions need care. Suppose <span class="math inline">\({\symbf{y_t}}\)</span> is covariance-stationary (the covariance is not a function of time) <em>and</em> its autocovariances are absolutely summable, <span class="math inline">\(\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty\)</span>. Then, as in <span class="citation" data-cites="hamilton-1994">Hamilton (<a href="references.html#ref-hamilton-1994" role="doc-biblioref">1994</a>)</span>, the sample mean satisfies:</p>
 <p><span id="eq-mle-41"><span class="math display">\[{\symbf{\bar y_T \to \mu , }} \tag{2.46}\]</span></span> <span id="eq-mle-42"><span class="math display">\[ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }} \tag{2.47}\]</span></span> where <span class="math inline">\({\symbf{\Gamma_v}}\)</span> is the variance-covariance matrix for <span class="math inline">\({\symbf{y_t}}\)</span> and <span class="math inline">\({\symbf{y_{t-v}}}\)</span>.</p>
 <p>The first one says the law of large numbers still holds. The second gives the long-run variance used for the standard error, and absolute summability is what makes that sum exist.</p>
-<p>Covariance stationarity on its own is not enough for either statement. It can fail even the law of large numbers. Let <span class="math inline">\(y_t = z + \varepsilon_t\)</span>, where <span class="math inline">\(z\)</span> is drawn once and then held fixed and <span class="math inline">\(\varepsilon_t\)</span> is white noise. Every autocovariance equals <span class="math inline">\(\mathrm{Var}(z)\)</span>, so the process is covariance-stationary, the autocovariances are not summable, and <span class="math inline">\(\bar y_T\)</span> converges to <span class="math inline">\(z\)</span> rather than to <span class="math inline">\(\mu\)</span>. Asymptotic normality asks for more again: a mixing, near-epoch dependence, or martingale-difference condition, together with moment restrictions. Covariance stationarity buys the variance formula, not the central limit theorem.</p>
+<p>Covariance stationarity on its own is not enough for either statement. It can fail even the law of large numbers. Let <span class="math inline">\(y_t = z + \varepsilon_t\)</span>, where <span class="math inline">\(z\)</span> is drawn once and then held fixed and <span class="math inline">\(\varepsilon_t\)</span> is white noise. Every autocovariance equals <span class="math inline">\(\mathrm{Var}(z)\)</span>, so the process is covariance-stationary, the autocovariances are not summable, and <span class="math inline">\(\bar y_T\)</span> converges to <span class="math inline">\(z\)</span> rather than to <span class="math inline">\(\mu\)</span>. Asymptotic normality asks for more again: a mixing, near-epoch dependence, or martingale-difference condition, together with moment restrictions. Covariance stationarity gives the variance formula, not the central limit theorem.</p>
 <p>If the data were generated by a vector MA(q) process, then</p>
 <p><span id="eq-mle-43"><span class="math display">\[ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v .  \tag{2.48}\]</span></span></p>
 <p>A natural estimate is</p>
@@ -1299,7 +1299,7 @@ Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-D
 <span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>$$ l({{\symbf{y, \beta, \sigma}}}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} {\symbf{(y-X \beta)'(y-X \beta) }}$$ {#eq-mle-4}</span>
 <span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>Maximizing this function gives exactly the OLS estimator for ${\symbf{\beta}}$.  That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other.  For $\sigma^2$ the MLE divides by $n$ rather than $n-k$, so it differs in finite samples and agrees asymptotically.  What normality buys is not the formula but its standing.  Under normality the OLS estimator *is* the maximum likelihood estimator and the model-based variance is valid.  Without normality the same formula is a quasi-MLE: still consistent for ${\symbf{\beta}}$ under the usual conditions, but its variance needs the sandwich correction discussed below.</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>Maximizing this function gives exactly the OLS estimator for ${\symbf{\beta}}$.  That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other.  For $\sigma^2$ the MLE divides by $n$ rather than $n-k$, so it differs in finite samples and agrees asymptotically.  What normality adds is not the formula but its standing.  Under normality the OLS estimator *is* the maximum likelihood estimator and the model-based variance is valid.  Without normality the same formula is a quasi-MLE: still consistent for ${\symbf{\beta}}$ under the usual conditions, but its variance needs the sandwich correction discussed below.</span>
 <span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Asymptotic Properties of MLE</span></span>
@@ -1903,73 +1903,72 @@ Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-D
 <span id="cb13-650"><a href="#cb13-650" aria-hidden="true" tabindex="-1"></a>the autocovariances are not summable, and $\bar y_T$ converges to $z$ rather than</span>
 <span id="cb13-651"><a href="#cb13-651" aria-hidden="true" tabindex="-1"></a>to $\mu$.  Asymptotic normality asks for more again: a mixing, near-epoch</span>
 <span id="cb13-652"><a href="#cb13-652" aria-hidden="true" tabindex="-1"></a>dependence, or martingale-difference condition, together with moment</span>
-<span id="cb13-653"><a href="#cb13-653" aria-hidden="true" tabindex="-1"></a>restrictions.  Covariance stationarity buys the variance formula, not the</span>
-<span id="cb13-654"><a href="#cb13-654" aria-hidden="true" tabindex="-1"></a>central limit theorem.</span>
-<span id="cb13-655"><a href="#cb13-655" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-656"><a href="#cb13-656" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
-<span id="cb13-657"><a href="#cb13-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-658"><a href="#cb13-658" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v . $$ {#eq-mle-43}</span>
-<span id="cb13-659"><a href="#cb13-659" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-660"><a href="#cb13-660" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
-<span id="cb13-661"><a href="#cb13-661" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-662"><a href="#cb13-662" aria-hidden="true" tabindex="-1"></a>$$ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}}$$ {#eq-mle-44}</span>
-<span id="cb13-663"><a href="#cb13-663" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-664"><a href="#cb13-664" aria-hidden="true" tabindex="-1"></a>where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }}$$ {#eq-mle-45}</span>
-<span id="cb13-665"><a href="#cb13-665" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-666"><a href="#cb13-666" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is</span>
-<span id="cb13-667"><a href="#cb13-667" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
-<span id="cb13-668"><a href="#cb13-668" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a>@newey-west-1987 suggested putting in a weight:</span>
-<span id="cb13-670"><a href="#cb13-670" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-671"><a href="#cb13-671" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}</span>
-<span id="cb13-672"><a href="#cb13-672" aria-hidden="true" tabindex="-1"></a>Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two</span>
-<span id="cb13-673"><a href="#cb13-673" aria-hidden="true" tabindex="-1"></a>coincide, but the Newey-West estimator is used precisely when the dependence has no known</span>
-<span id="cb13-674"><a href="#cb13-674" aria-hidden="true" tabindex="-1"></a>finite order: the Bartlett weights $1 - v/(q+1)$ downweight higher lags and keep</span>
-<span id="cb13-675"><a href="#cb13-675" aria-hidden="true" tabindex="-1"></a>$\hat S$ positive semidefinite, and consistency comes from letting $q$ grow with $T$,</span>
-<span id="cb13-676"><a href="#cb13-676" aria-hidden="true" tabindex="-1"></a>slowly enough that the poorly estimated high-order autocovariances do not dominate.</span>
+<span id="cb13-653"><a href="#cb13-653" aria-hidden="true" tabindex="-1"></a>restrictions.  Covariance stationarity gives the variance formula, not the central limit theorem.</span>
+<span id="cb13-654"><a href="#cb13-654" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-655"><a href="#cb13-655" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
+<span id="cb13-656"><a href="#cb13-656" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-657"><a href="#cb13-657" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v . $$ {#eq-mle-43}</span>
+<span id="cb13-658"><a href="#cb13-658" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-659"><a href="#cb13-659" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
+<span id="cb13-660"><a href="#cb13-660" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-661"><a href="#cb13-661" aria-hidden="true" tabindex="-1"></a>$$ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}}$$ {#eq-mle-44}</span>
+<span id="cb13-662"><a href="#cb13-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-663"><a href="#cb13-663" aria-hidden="true" tabindex="-1"></a>where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }}$$ {#eq-mle-45}</span>
+<span id="cb13-664"><a href="#cb13-664" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-665"><a href="#cb13-665" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is</span>
+<span id="cb13-666"><a href="#cb13-666" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
+<span id="cb13-667"><a href="#cb13-667" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-668"><a href="#cb13-668" aria-hidden="true" tabindex="-1"></a>@newey-west-1987 suggested putting in a weight:</span>
+<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-670"><a href="#cb13-670" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}</span>
+<span id="cb13-671"><a href="#cb13-671" aria-hidden="true" tabindex="-1"></a>Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two</span>
+<span id="cb13-672"><a href="#cb13-672" aria-hidden="true" tabindex="-1"></a>coincide, but the Newey-West estimator is used precisely when the dependence has no known</span>
+<span id="cb13-673"><a href="#cb13-673" aria-hidden="true" tabindex="-1"></a>finite order: the Bartlett weights $1 - v/(q+1)$ downweight higher lags and keep</span>
+<span id="cb13-674"><a href="#cb13-674" aria-hidden="true" tabindex="-1"></a>$\hat S$ positive semidefinite, and consistency comes from letting $q$ grow with $T$,</span>
+<span id="cb13-675"><a href="#cb13-675" aria-hidden="true" tabindex="-1"></a>slowly enough that the poorly estimated high-order autocovariances do not dominate.</span>
+<span id="cb13-676"><a href="#cb13-676" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-677"><a href="#cb13-677" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-678"><a href="#cb13-678" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-679"><a href="#cb13-679" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
-<span id="cb13-680"><a href="#cb13-680" aria-hidden="true" tabindex="-1"></a>$$ y_t={ {\symbf{x_t' \beta}}} + u_t $$ {#eq-mle-47}</span>
-<span id="cb13-681"><a href="#cb13-681" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-682"><a href="#cb13-682" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator ${\symbf{b_T}}$, then</span>
-<span id="cb13-683"><a href="#cb13-683" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t</span>
-<span id="cb13-684"><a href="#cb13-684" aria-hidden="true" tabindex="-1"></a>  x_t'}}}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}</span><span class="co">]</span> $$ {#eq-mle-48}</span>
-<span id="cb13-685"><a href="#cb13-685" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-686"><a href="#cb13-686" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
-<span id="cb13-687"><a href="#cb13-687" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector ${\symbf{x_t u_t}}$,</span>
-<span id="cb13-688"><a href="#cb13-688" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
-<span id="cb13-689"><a href="#cb13-689" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-690"><a href="#cb13-690" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
-<span id="cb13-691"><a href="#cb13-691" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-692"><a href="#cb13-692" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$ {#eq-mle-49}</span>
-<span id="cb13-693"><a href="#cb13-693" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-694"><a href="#cb13-694" aria-hidden="true" tabindex="-1"></a>where $Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}<span class="co">[</span><span class="ot">{{\symbf{x_t x_t'}}}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
-<span id="cb13-695"><a href="#cb13-695" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }}$$ {#eq-mle-50}</span>
-<span id="cb13-696"><a href="#cb13-696" aria-hidden="true" tabindex="-1"></a>where</span>
-<span id="cb13-697"><a href="#cb13-697" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$ {#eq-mle-51}</span>
-<span id="cb13-698"><a href="#cb13-698" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
-<span id="cb13-699"><a href="#cb13-699" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-700"><a href="#cb13-700" aria-hidden="true" tabindex="-1"></a>Overall, the variance of ${\symbf{b_T}}$ is approximated by</span>
-<span id="cb13-701"><a href="#cb13-701" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-702"><a href="#cb13-702" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$ {#eq-mle-52}</span>
+<span id="cb13-678"><a href="#cb13-678" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
+<span id="cb13-679"><a href="#cb13-679" aria-hidden="true" tabindex="-1"></a>$$ y_t={ {\symbf{x_t' \beta}}} + u_t $$ {#eq-mle-47}</span>
+<span id="cb13-680"><a href="#cb13-680" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-681"><a href="#cb13-681" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator ${\symbf{b_T}}$, then</span>
+<span id="cb13-682"><a href="#cb13-682" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t</span>
+<span id="cb13-683"><a href="#cb13-683" aria-hidden="true" tabindex="-1"></a>  x_t'}}}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}</span><span class="co">]</span> $$ {#eq-mle-48}</span>
+<span id="cb13-684"><a href="#cb13-684" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-685"><a href="#cb13-685" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
+<span id="cb13-686"><a href="#cb13-686" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector ${\symbf{x_t u_t}}$,</span>
+<span id="cb13-687"><a href="#cb13-687" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
+<span id="cb13-688"><a href="#cb13-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-689"><a href="#cb13-689" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
+<span id="cb13-690"><a href="#cb13-690" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-691"><a href="#cb13-691" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$ {#eq-mle-49}</span>
+<span id="cb13-692"><a href="#cb13-692" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-693"><a href="#cb13-693" aria-hidden="true" tabindex="-1"></a>where $Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}<span class="co">[</span><span class="ot">{{\symbf{x_t x_t'}}}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
+<span id="cb13-694"><a href="#cb13-694" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }}$$ {#eq-mle-50}</span>
+<span id="cb13-695"><a href="#cb13-695" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb13-696"><a href="#cb13-696" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$ {#eq-mle-51}</span>
+<span id="cb13-697"><a href="#cb13-697" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
+<span id="cb13-698"><a href="#cb13-698" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-699"><a href="#cb13-699" aria-hidden="true" tabindex="-1"></a>Overall, the variance of ${\symbf{b_T}}$ is approximated by</span>
+<span id="cb13-700"><a href="#cb13-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-701"><a href="#cb13-701" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$ {#eq-mle-52}</span>
+<span id="cb13-702"><a href="#cb13-702" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-703"><a href="#cb13-703" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-704"><a href="#cb13-704" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-705"><a href="#cb13-705" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
-<span id="cb13-706"><a href="#cb13-706" aria-hidden="true" tabindex="-1"></a>length beyond which the autocorrelation of $x_t u_t$ and $x_{t-v} u_{t-v}$ is</span>
-<span id="cb13-707"><a href="#cb13-707" aria-hidden="true" tabindex="-1"></a>treated as negligible.  One common rule of thumb sets</span>
-<span id="cb13-708"><a href="#cb13-708" aria-hidden="true" tabindex="-1"></a>$q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and</span>
-<span id="cb13-709"><a href="#cb13-709" aria-hidden="true" tabindex="-1"></a>other growth rates are in use.</span>
-<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>@newey-west-1994 has suggested a way to automatically select the</span>
-<span id="cb13-711"><a href="#cb13-711" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
-<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>also implement the @newey-west-1994 estimator, with no need to specify</span>
-<span id="cb13-713"><a href="#cb13-713" aria-hidden="true" tabindex="-1"></a>$q$.</span>
-<span id="cb13-714"><a href="#cb13-714" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-715"><a href="#cb13-715" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb13-716"><a href="#cb13-716" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-717"><a href="#cb13-717" aria-hidden="true" tabindex="-1"></a>Maximum likelihood picks the parameters that make the observed sample most likely under the assumed model. With normal errors in a linear model it gives the OLS coefficients. Under correct specification the MLE is consistent, asymptotically normal with variance equal to the inverse information, efficient among regular estimators, and invariant to reparameterization. When the model is wrong, the MLE converges to the pseudo-true value closest to the truth in Kullback-Leibler divergence, and the variance becomes a sandwich. Poisson QMLE is the leading case: it is consistent whenever the conditional mean is right. OLS, MLE, QMLE and GMM are all M-estimators with the same sandwich variance.</span>
-<span id="cb13-718"><a href="#cb13-718" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-719"><a href="#cb13-719" aria-hidden="true" tabindex="-1"></a>The rest of the chapter is about testing. The $F$ test handles linear restrictions under normal errors. The likelihood-ratio, Wald and LM tests do the same in general and agree asymptotically. The Chow test checks for a structural break. White and Newey-West standard errors keep inference valid under heteroskedasticity and autocorrelation.</span>
+<span id="cb13-704"><a href="#cb13-704" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
+<span id="cb13-705"><a href="#cb13-705" aria-hidden="true" tabindex="-1"></a>length beyond which the autocorrelation of $x_t u_t$ and $x_{t-v} u_{t-v}$ is</span>
+<span id="cb13-706"><a href="#cb13-706" aria-hidden="true" tabindex="-1"></a>treated as negligible.  One common rule of thumb sets</span>
+<span id="cb13-707"><a href="#cb13-707" aria-hidden="true" tabindex="-1"></a>$q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and</span>
+<span id="cb13-708"><a href="#cb13-708" aria-hidden="true" tabindex="-1"></a>other growth rates are in use.</span>
+<span id="cb13-709"><a href="#cb13-709" aria-hidden="true" tabindex="-1"></a>@newey-west-1994 has suggested a way to automatically select the</span>
+<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
+<span id="cb13-711"><a href="#cb13-711" aria-hidden="true" tabindex="-1"></a>also implement the @newey-west-1994 estimator, with no need to specify</span>
+<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>$q$.</span>
+<span id="cb13-713"><a href="#cb13-713" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-714"><a href="#cb13-714" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb13-715"><a href="#cb13-715" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-716"><a href="#cb13-716" aria-hidden="true" tabindex="-1"></a>Maximum likelihood picks the parameters that make the observed sample most likely under the assumed model. With normal errors in a linear model it gives the OLS coefficients. Under correct specification the MLE is consistent, asymptotically normal with variance equal to the inverse information, efficient among regular estimators, and invariant to reparameterization. When the model is wrong, the MLE converges to the pseudo-true value closest to the truth in Kullback-Leibler divergence, and the variance becomes a sandwich. Poisson QMLE is the leading case: it is consistent whenever the conditional mean is right. OLS, MLE, QMLE and GMM are all M-estimators with the same sandwich variance.</span>
+<span id="cb13-717"><a href="#cb13-717" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-718"><a href="#cb13-718" aria-hidden="true" tabindex="-1"></a>The rest of the chapter is about testing. The $F$ test handles linear restrictions under normal errors. The likelihood-ratio, Wald and LM tests do the same in general and agree asymptotically. The Chow test checks for a structural break. White and Newey-West standard errors keep inference valid under heteroskedasticity and autocorrelation.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
