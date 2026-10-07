@@ -357,7 +357,7 @@ specTest(fit_bad)
 ```
 
 The coefficient moves to $1.60$ and the $J$ statistic goes to $143$, with a
-$p$-value of $5 \times 10^{-33}$.  This is what overidentification buys.  With one
+$p$-value of $5 \times 10^{-33}$.  This is what overidentification adds.  With one
 instrument there is no way to notice that it is invalid, because a single moment
 condition can always be satisfied exactly.  With two, the instruments have to
 agree about $\beta$, and when one of them is contaminated they do not.  Two limits

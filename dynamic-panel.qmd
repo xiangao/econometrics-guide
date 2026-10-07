@@ -187,7 +187,7 @@ almost anything.
 The coefficients show what that costs.  Capping the instruments at three lags cuts
 the moment conditions from 40 to 30, moves the coefficient on lagged log employment
 from about $0.65$ to about $0.44$, and nearly doubles its standard error.  That is
-the honest trade: fewer, better-behaved instruments buy less precision.  System GMM
+the honest trade: fewer, better-behaved instruments give less precision.  System GMM
 goes the other way and returns a coefficient above $1$ with a standard error near
 $0.05$, which should stop the reader rather than reassure them.  A persistence
 parameter above one implies an explosive employment process, and the tight interval
