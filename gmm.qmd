@@ -1,7 +1,7 @@
 # Generalized Method of Moments (GMM)
 
 ```{r}
-#| include: false
+# Packages used in this chapter
 library(MASS)
 library(ivreg)
 library(gmm)
@@ -29,7 +29,7 @@ $$
 {\symbf{y=X\beta+u, \quad u \sim IID(0, \sigma^2).
 }}$$ {#eq-gmm-3}
 
-If the model is correctly specified, then
+If the regressors are exogenous, uncorrelated with the error term, then
 $$
 {\symbf{E (X'u)=0.
 }}$$ {#eq-gmm-4}
@@ -402,16 +402,15 @@ $$
 Cov[g(X),h(Y)]=0
 $$ {#eq-gmm-23}
 
-$X$, $Y$ uncorrelated:
-$$
-Cov[X,Y]=0
-$$ {#eq-gmm-24}
-
-
-$E[Y|X]=0$:
+$Y$ mean independent of $X$, $E[Y|X]=E[Y]$ (for a mean-zero disturbance $u$, $E[u|X]=0$):
 
 $$
 Cov[g(X),Y]=0
+$$ {#eq-gmm-24}
+
+$X$, $Y$ uncorrelated:
+$$
+Cov[X,Y]=0
 $$ {#eq-gmm-25}
 
 These are listed in decreasing strength, and the implications run one way only:

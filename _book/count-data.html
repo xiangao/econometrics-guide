@@ -387,7 +387,7 @@ E[y_{it} | \alpha_i, X_{it}]= \alpha_i \exp(X'_{it} \beta) =
 <p>It turns out that for fixed-effect Poisson model, just like in linear regression case, there is NO incidental parameter problem. Poisson MLE is the same for conditional and unconditional likelihood <span class="citation" data-cites="cameron-trivedi-2005">(see <a href="references.html#ref-cameron-trivedi-2005" role="doc-biblioref">Cameron and Trivedi 2005, 805</a>)</span>.</p>
 <p>What the result does not do is relax the exogeneity requirement. Consistency of <span class="math inline">\(\hat\beta\)</span> needs <span class="math inline">\(E[y_{it} \mid \alpha_i, X_{i1}, \dots, X_{iT}] = \alpha_i \exp(X'_{it}\beta)\)</span> – strict exogeneity conditional on the unit effect, which rules out feedback from past outcomes to later regressors. The absence of an incidental-parameter problem is a statement about estimating <span class="math inline">\(\beta\)</span> alongside the <span class="math inline">\(\alpha_i\)</span>, not a licence to ignore what the conditional mean assumes.</p>
 <p>Therefore, the coefficient estimates are the same for conditional or unconditional fixed-effect Poisson model. That is, in Stata, “xtpoisson, fe” will return the same results as “xi: poisson i.group”, is the same as “xtpqml, fe”. The only difference is that “xtpqml, fe” returns “correct” standard errors for QMLE Poisson. You can also calculate standard errors with the other commands, using clustered standard errors, or bootstrapped standard errors.</p>
-<p>Conditional fixed effect negative binomial model is also possible to be consistent for some specifications. But Poisson fixed effect is more popular since it is QMLE.</p>
+<p>A conditional fixed-effects negative binomial model also exists, from <span class="citation" data-cites="hausman-hall-griliches-1984">Hausman, Hall, and Griliches (<a href="references.html#ref-hausman-hall-griliches-1984" role="doc-biblioref">1984</a>)</span> and implemented as <code>xtnbreg, fe</code> in Stata. It is not the negative binomial analogue of fixed-effects Poisson. It puts the unit effect in the dispersion parameter, not in the conditional mean, so it does not condition out an arbitrary multiplicative effect on the mean, and time-invariant regressors stay identified, which a true fixed-effects model would not allow <span class="citation" data-cites="allison-waterman-2002 guimaraes-2008">(<a href="references.html#ref-allison-waterman-2002" role="doc-biblioref">Allison and Waterman 2002</a>; <a href="references.html#ref-guimaraes-2008" role="doc-biblioref">Guimarães 2008</a>)</span>. Fixed-effects Poisson needs only the conditional mean to be right, since it is a QMLE, which is why it is preferred.</p>
 </section>
 <section id="negative-binomial-model" class="level2" data-number="8.4">
 <h2 data-number="8.4" class="anchored" data-anchor-id="negative-binomial-model"><span class="header-section-number">8.4</span> Negative Binomial model</h2>
@@ -432,7 +432,7 @@ E[y_{it} | \alpha_i, X_{it}]= \alpha_i \exp(X'_{it} \beta) =
 {{\mathrm{E}}} (y | X) = [\pi \times 0 ] + {(1-\pi) \times {{\mathrm{E}}} (y | y&gt;0,
   X) } = (1- \pi) \times {{\mathrm{E}}} (y | y&gt;0 , X)
 \tag{8.14}\]</span></span></p>
-<p>In stata, there are commands such as “hplogit”, which is a hurdle model with first equation logit, and second equation truncated poisson. It is the same as two separate estimations; namely “logit” first, then “ztp” on positive counts.</p>
+<p>In stata, there are commands such as “hplogit”, which is a hurdle model with first equation logit, and second equation truncated poisson. It is the same as two separate estimations; namely “logit” first, then “ztp” on positive counts. Mind the direction of the first step. <a href="#eq-count-data-13" class="quarto-xref">Equation&nbsp;<span>8.13</span></a> models the probability of a zero, <span class="math inline">\(\pi\)</span>. A <code>logit</code> on the indicator <span class="math inline">\(1(y &gt; 0)\)</span> models the probability of crossing the hurdle, <span class="math inline">\(1 - \pi\)</span>, and its coefficients are <span class="math inline">\(-\gamma\)</span>. Before plugging fitted probabilities into <a href="#eq-count-data-14" class="quarto-xref">Equation&nbsp;<span>8.14</span></a>, check which outcome the first step models.</p>
 <p>The difference between a hurdle model and a Heckman selection model is that in a Heckman model the two equations are jointly estimated and the outcome equation must account for selection bias. An exclusion restriction – a variable that affects selection but not the outcome – is strongly recommended for the selection equation. Strictly speaking, under joint normality the model is identified by the nonlinearity of the inverse Mills ratio even without an excluded variable, but identification then rests entirely on functional form and is fragile, so an exclusion restriction is recommended in practice. On the other hand, a hurdle model assumes the two processes are separate; there is no selection.</p>
 </section>
 <section id="zero-inflated-count-models" class="level2" data-number="8.7">
@@ -534,11 +534,20 @@ p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'
 <!-- -->
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-allison-waterman-2002" class="csl-entry" role="listitem">
+Allison, Paul D., and Richard P. Waterman. 2002. <span>“Fixed-Effects Negative Binomial Regression Models.”</span> <em>Sociological Methodology</em> 32 (1): 247–65. <a href="https://doi.org/10.1111/1467-9531.00117">https://doi.org/10.1111/1467-9531.00117</a>.
+</div>
 <div id="ref-cameron-trivedi-2005" class="csl-entry" role="listitem">
 Cameron, A. Colin, and Pravin K. Trivedi. 2005. <em>Microeconometrics: Methods and Applications</em>. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511811241">https://doi.org/10.1017/CBO9780511811241</a>.
 </div>
 <div id="ref-grogger-carson-1991" class="csl-entry" role="listitem">
 Grogger, J. T., and R. T. Carson. 1991. <span>“Models for Truncated Counts.”</span> <em>Journal of Applied Econometrics</em> 6 (3): 225–38. <a href="https://doi.org/10.1002/jae.3950060302">https://doi.org/10.1002/jae.3950060302</a>.
+</div>
+<div id="ref-guimaraes-2008" class="csl-entry" role="listitem">
+Guimarães, Paulo. 2008. <span>“The Fixed Effects Negative Binomial Model Revisited.”</span> <em>Economics Letters</em> 99 (1): 63–66. <a href="https://doi.org/10.1016/j.econlet.2007.05.030">https://doi.org/10.1016/j.econlet.2007.05.030</a>.
+</div>
+<div id="ref-hausman-hall-griliches-1984" class="csl-entry" role="listitem">
+Hausman, Jerry, Bronwyn H. Hall, and Zvi Griliches. 1984. <span>“Econometric Models for Count Data with an Application to the Patents-<span>R</span>&amp;<span>D</span> Relationship.”</span> <em>Econometrica</em> 52 (4): 909–38. <a href="https://doi.org/10.2307/1911191">https://doi.org/10.2307/1911191</a>.
 </div>
 <div id="ref-wooldridge-1999-multiplicative" class="csl-entry" role="listitem">
 Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonlinear Panel Data Models.”</span> <em>Journal of Econometrics</em> 90 (1): 77–97. <a href="https://doi.org/10.1016/S0304-4076(98)00033-5">https://doi.org/10.1016/S0304-4076(98)00033-5</a>.
@@ -1127,300 +1136,309 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
 <span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a>clustered standard errors, or bootstrapped standard errors.</span>
 <span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>Conditional fixed effect negative binomial model is also possible to</span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>be consistent for some specifications.  But Poisson fixed effect is</span>
-<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>more popular since it is QMLE.</span>
-<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="fu">## Negative Binomial model</span></span>
-<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>The Poisson model has a restrictive property that the conditional</span>
-<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>variance equals the conditional mean.  Often we'll see</span>
-<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>"overdispersion", that is, the variance exceeds the mean, in real</span>
-<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>data.  The negative binomial model is a generalization of poisson</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>model which allows for overdispersion by introducing an unobserved</span>
-<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>heterogeneity term.  In a negative binomial model,</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} <span class="co">[</span><span class="ot">Y | X, \tau</span><span class="co">]</span>=\mu \tau = e^{X' \beta} \cdot \tau</span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-9}</span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>This extra $\tau$ term follows a $Gamma(\theta, \theta)$</span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>distribution, with $E(\tau)=1$ and $Var (\tau)=1/\theta$.</span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ and $\tau$, the distribution of $Y$ is still poisson:</span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | X, \tau</span><span class="co">]</span>=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }</span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-10}</span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>A conditional fixed-effects negative binomial model also exists, from</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>@hausman-hall-griliches-1984 and implemented as <span class="in">`xtnbreg, fe`</span> in Stata. It is</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>not the negative binomial analogue of fixed-effects Poisson. It puts the unit</span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>effect in the dispersion parameter, not in the conditional mean, so it does not</span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>condition out an arbitrary multiplicative effect on the mean, and time-invariant</span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>regressors stay identified, which a true fixed-effects model would not allow</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">@allison-waterman-2002; @guimaraes-2008</span><span class="co">]</span>. Fixed-effects Poisson needs only the</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>conditional mean to be right, since it is a QMLE, which is why it is preferred.</span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a><span class="fu">## Negative Binomial model</span></span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>The Poisson model has a restrictive property that the conditional</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>variance equals the conditional mean.  Often we'll see</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>"overdispersion", that is, the variance exceeds the mean, in real</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>data.  The negative binomial model is a generalization of poisson</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>model which allows for overdispersion by introducing an unobserved</span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>heterogeneity term.  In a negative binomial model,</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} <span class="co">[</span><span class="ot">Y | X, \tau</span><span class="co">]</span>=\mu \tau = e^{X' \beta} \cdot \tau</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-9}</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>This extra $\tau$ term follows a $Gamma(\theta, \theta)$</span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a>distribution, with $E(\tau)=1$ and $Var (\tau)=1/\theta$.</span>
 <span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ only, the distribution of $Y$ is negative binomial:</span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ and $\tau$, the distribution of $Y$ is still poisson:</span>
 <span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | X</span><span class="co">]</span>=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{</span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>  \Gamma(y+1) \Gamma(\theta) (\mu + \theta)^{\theta+y}}</span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-11}</span>
-<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>This distribution still has conditional mean of $\mu$, but variance is</span>
-<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>$\mu (1+(1/\theta) \mu)$.</span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>When $\alpha=1/\theta$ approaches zero, the negative binomial model</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>converges to poisson model.</span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models for truncated counts</span></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | X, \tau</span><span class="co">]</span>=\frac{e^{-\mu \tau} (\mu \tau)^y}{y! }</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-10}</span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>Conditional on $X$ only, the distribution of $Y$ is negative binomial:</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | X</span><span class="co">]</span>=\frac{\theta^{\theta} \mu^y \Gamma(\theta + y)}{</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>  \Gamma(y+1) \Gamma(\theta) (\mu + \theta)^{\theta+y}}</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-11}</span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>This distribution still has conditional mean of $\mu$, but variance is</span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>$\mu (1+(1/\theta) \mu)$.</span>
 <span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>In some situations, all we observe are non-zero counts, because of the</span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>way data was collected.  For example, we only observe people's visits</span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>to a park, only if they visit.  To model how many times they visit,</span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>based on this kind of data set, we need to use zero-truncated count</span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>models.</span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | y&gt;0, X</span><span class="co">]</span>=\frac{{{\mathrm{Pr}}} (y | X) }{{{\mathrm{Pr}}} (y&gt;0 | X)}=</span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>\frac{{{\mathrm{Pr}}} (y | X)}{1- \exp (- \mu)}</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-12}</span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>When $\alpha=1/\theta$ approaches zero, the negative binomial model</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>converges to poisson model.</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models for truncated counts</span></span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>In some situations, all we observe are non-zero counts, because of the</span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>way data was collected.  For example, we only observe people's visits</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>to a park, only if they visit.  To model how many times they visit,</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>based on this kind of data set, we need to use zero-truncated count</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>models.</span>
 <span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>where the last equality holds for the Poisson case, since ${{\mathrm{Pr}}}</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>(y=0|X)=e^{-\mu}$; for the negative binomial, ${{\mathrm{Pr}}} (y=0|X)=</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>(\theta/(\theta+\mu))^{\theta}$, so the truncation factor is $1-</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>(\theta/(\theta+\mu))^{\theta}$ instead.  Thus we are modeling the</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>counts given that we have a positive outcome.  Both zero-truncated poisson ("ztp" in Stata) and</span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>zero-truncated negative binomial ("ztnb" in Stata) are estimated by</span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>Maximum-likelihood method.</span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>We need to pay extra attention to the "over-dispersion" problem when</span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>dealing with zero-truncated data.  When data is not truncated,</span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>coefficients estimated by poisson model is consistent, even if data is</span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>"overdispersed".  However, if we have zero-truncated sample, then</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>"over-dispersion" results in inconsistent coefficient estimation</span>
-<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">@grogger-carson-1991</span><span class="co">]</span>.  Therefore, "over-dispersion" needs to be</span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>tested before using a truncated *Poisson* model: under truncation the</span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>mean-variance restriction stops being innocuous, and violating it breaks</span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>consistency of the coefficients rather than only the standard errors.</span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>Overdispersion is not an argument against the truncated negative binomial,</span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>though -- that model exists precisely to accommodate it.  What it does require is</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>that the *form* of the overdispersion match the model.  NB2 comes from a</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>particular gamma-mixed Poisson, so overdispersion arising some other way leaves</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>the truncated negative binomial misspecified in its turn.  A test tells you that</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>equidispersion fails; it does not tell you that the NB2 mixing story is the right</span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>replacement.</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a><span class="fu">## The hurdle regression model</span></span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>Although negative binomial model relaxes the assumption of equal mean</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>and variance, some researchers prefer modeling the process of</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>generating zeros differently from the process of generating other</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>values.  Suppose zero counts are generated by a binary process:</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">Y=y | y&gt;0, X</span><span class="co">]</span>=\frac{{{\mathrm{Pr}}} (y | X) }{{{\mathrm{Pr}}} (y&gt;0 | X)}=</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>\frac{{{\mathrm{Pr}}} (y | X)}{1- \exp (- \mu)}</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-12}</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>where the last equality holds for the Poisson case, since ${{\mathrm{Pr}}}</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a>(y=0|X)=e^{-\mu}$; for the negative binomial, ${{\mathrm{Pr}}} (y=0|X)=</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>(\theta/(\theta+\mu))^{\theta}$, so the truncation factor is $1-</span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>(\theta/(\theta+\mu))^{\theta}$ instead.  Thus we are modeling the</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a>counts given that we have a positive outcome.  Both zero-truncated poisson ("ztp" in Stata) and</span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>zero-truncated negative binomial ("ztnb" in Stata) are estimated by</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>Maximum-likelihood method.</span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a>We need to pay extra attention to the "over-dispersion" problem when</span>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>dealing with zero-truncated data.  When data is not truncated,</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>coefficients estimated by poisson model is consistent, even if data is</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>"overdispersed".  However, if we have zero-truncated sample, then</span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>"over-dispersion" results in inconsistent coefficient estimation</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">@grogger-carson-1991</span><span class="co">]</span>.  Therefore, "over-dispersion" needs to be</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>tested before using a truncated *Poisson* model: under truncation the</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>mean-variance restriction stops being innocuous, and violating it breaks</span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>consistency of the coefficients rather than only the standard errors.</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>Overdispersion is not an argument against the truncated negative binomial,</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>though -- that model exists precisely to accommodate it.  What it does require is</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>that the *form* of the overdispersion match the model.  NB2 comes from a</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>particular gamma-mixed Poisson, so overdispersion arising some other way leaves</span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>the truncated negative binomial misspecified in its turn.  A test tells you that</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>equidispersion fails; it does not tell you that the NB2 mixing story is the right</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>replacement.</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a><span class="fu">## The hurdle regression model</span></span>
 <span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">y=0 |  X</span><span class="co">]</span>=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi</span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-13}</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>Although negative binomial model relaxes the assumption of equal mean</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>and variance, some researchers prefer modeling the process of</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>generating zeros differently from the process of generating other</span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>values.  Suppose zero counts are generated by a binary process:</span>
 <span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>Positive counts are generated by a truncated count process.</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>In this model, zero is a "hurdle" to get past before reaching</span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>positive counts.  The hurdle model is estimated by two separate</span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>equations.  It is easy to estimate.  However, the marginal effect is</span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>tricky to calculate, since an independent variable, if appearing in</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a>both equations, will have effect through both equations.</span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (y | X) = <span class="co">[</span><span class="ot">\pi \times 0 </span><span class="co">]</span> + {(1-\pi) \times {{\mathrm{E}}} (y | y&gt;0,</span>
-<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>  X) } = (1- \pi) \times {{\mathrm{E}}} (y | y&gt;0 , X)</span>
-<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-14}</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Pr}}} <span class="co">[</span><span class="ot">y=0 |  X</span><span class="co">]</span>=\frac{\exp(X \gamma)}{1 + \exp(X \gamma)} = \pi</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-13}</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>Positive counts are generated by a truncated count process.</span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>In this model, zero is a "hurdle" to get past before reaching</span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>positive counts.  The hurdle model is estimated by two separate</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a>equations.  It is easy to estimate.  However, the marginal effect is</span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>tricky to calculate, since an independent variable, if appearing in</span>
+<span id="cb1-217"><a href="#cb1-217" aria-hidden="true" tabindex="-1"></a>both equations, will have effect through both equations.</span>
 <span id="cb1-218"><a href="#cb1-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>In stata, there are commands such as "hplogit", which is a hurdle</span>
-<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>model with first equation logit, and second equation truncated</span>
-<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>poisson.  It is the same as two separate estimations; namely "logit"</span>
-<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a>first, then "ztp" on positive counts.</span>
+<span id="cb1-219"><a href="#cb1-219" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-220"><a href="#cb1-220" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} (y | X) = <span class="co">[</span><span class="ot">\pi \times 0 </span><span class="co">]</span> + {(1-\pi) \times {{\mathrm{E}}} (y | y&gt;0,</span>
+<span id="cb1-221"><a href="#cb1-221" aria-hidden="true" tabindex="-1"></a>  X) } = (1- \pi) \times {{\mathrm{E}}} (y | y&gt;0 , X)</span>
+<span id="cb1-222"><a href="#cb1-222" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-14}</span>
+<span id="cb1-223"><a href="#cb1-223" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-224"><a href="#cb1-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>The difference between a hurdle model and a Heckman selection model is</span>
-<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>that in a Heckman model the two equations are jointly estimated and</span>
-<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>the outcome equation must account for selection bias.  An exclusion</span>
-<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>restriction -- a variable that affects selection but not the outcome</span>
-<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>-- is strongly recommended for the selection equation.  Strictly</span>
-<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>speaking, under joint normality the model is identified by the</span>
-<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>nonlinearity of the inverse Mills ratio even without an excluded</span>
-<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>variable, but identification then rests entirely on functional form</span>
-<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a>and is fragile, so an exclusion restriction is recommended in</span>
-<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>practice.  On the other hand, a hurdle model assumes the two processes</span>
-<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>are separate; there is no selection.</span>
-<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a><span class="fu">## Zero-inflated count models</span></span>
-<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>A zero-inflated count model also models two different processes.  One</span>
-<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>is a binary process: generating zero or non-zeros.  The second one is</span>
-<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>a count model.  Note there is a different between zero-inflated and</span>
-<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>hurdle model:  In hurdle model, the second process is a truncated</span>
-<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>count model (positive counts).  In a zero-inflated model, a zero can</span>
-<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>come from either the binary process, or from the count process.</span>
+<span id="cb1-225"><a href="#cb1-225" aria-hidden="true" tabindex="-1"></a>In stata, there are commands such as "hplogit", which is a hurdle</span>
+<span id="cb1-226"><a href="#cb1-226" aria-hidden="true" tabindex="-1"></a>model with first equation logit, and second equation truncated</span>
+<span id="cb1-227"><a href="#cb1-227" aria-hidden="true" tabindex="-1"></a>poisson.  It is the same as two separate estimations; namely "logit"</span>
+<span id="cb1-228"><a href="#cb1-228" aria-hidden="true" tabindex="-1"></a>first, then "ztp" on positive counts.  Mind the direction of the first step.</span>
+<span id="cb1-229"><a href="#cb1-229" aria-hidden="true" tabindex="-1"></a>@eq-count-data-13 models the probability of a zero, $\pi$. A <span class="in">`logit`</span> on the</span>
+<span id="cb1-230"><a href="#cb1-230" aria-hidden="true" tabindex="-1"></a>indicator $1(y &gt; 0)$ models the probability of crossing the hurdle, $1 - \pi$,</span>
+<span id="cb1-231"><a href="#cb1-231" aria-hidden="true" tabindex="-1"></a>and its coefficients are $-\gamma$. Before plugging fitted probabilities into</span>
+<span id="cb1-232"><a href="#cb1-232" aria-hidden="true" tabindex="-1"></a>@eq-count-data-14, check which outcome the first step models.</span>
+<span id="cb1-233"><a href="#cb1-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-234"><a href="#cb1-234" aria-hidden="true" tabindex="-1"></a>The difference between a hurdle model and a Heckman selection model is</span>
+<span id="cb1-235"><a href="#cb1-235" aria-hidden="true" tabindex="-1"></a>that in a Heckman model the two equations are jointly estimated and</span>
+<span id="cb1-236"><a href="#cb1-236" aria-hidden="true" tabindex="-1"></a>the outcome equation must account for selection bias.  An exclusion</span>
+<span id="cb1-237"><a href="#cb1-237" aria-hidden="true" tabindex="-1"></a>restriction -- a variable that affects selection but not the outcome</span>
+<span id="cb1-238"><a href="#cb1-238" aria-hidden="true" tabindex="-1"></a>-- is strongly recommended for the selection equation.  Strictly</span>
+<span id="cb1-239"><a href="#cb1-239" aria-hidden="true" tabindex="-1"></a>speaking, under joint normality the model is identified by the</span>
+<span id="cb1-240"><a href="#cb1-240" aria-hidden="true" tabindex="-1"></a>nonlinearity of the inverse Mills ratio even without an excluded</span>
+<span id="cb1-241"><a href="#cb1-241" aria-hidden="true" tabindex="-1"></a>variable, but identification then rests entirely on functional form</span>
+<span id="cb1-242"><a href="#cb1-242" aria-hidden="true" tabindex="-1"></a>and is fragile, so an exclusion restriction is recommended in</span>
+<span id="cb1-243"><a href="#cb1-243" aria-hidden="true" tabindex="-1"></a>practice.  On the other hand, a hurdle model assumes the two processes</span>
+<span id="cb1-244"><a href="#cb1-244" aria-hidden="true" tabindex="-1"></a>are separate; there is no selection.</span>
 <span id="cb1-245"><a href="#cb1-245" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a>A second difference is that the estimation of zero-inflated model is a</span>
-<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a>joint estimation of the two processes.</span>
-<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>y_i \sim \left<span class="sc">\{</span></span>
-<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
-<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>0 \  \mbox{with probability} \ \psi <span class="sc">\\</span>    g(y_i | X_i)   \mbox{with</span>
-<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>  probability} \ 1- \psi</span>
-<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a> \end{array} \right.</span>
-<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-15}</span>
-<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a>Then</span>
-<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a>P(Y_i=y_i | X_i, Z_i) = \left<span class="sc">\{</span></span>
-<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
-<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>\psi(\gamma' Z_i) + (1- \psi(\gamma' Z_i) ) g(0 | X_i)  \  \mbox{if} \ y_i=0 <span class="sc">\\</span>  (1- \psi(\gamma' Z_i) ) g(y_i | X_i)  \  \mbox{if} \ y_i&gt;0</span>
+<span id="cb1-246"><a href="#cb1-246" aria-hidden="true" tabindex="-1"></a><span class="fu">## Zero-inflated count models</span></span>
+<span id="cb1-247"><a href="#cb1-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-248"><a href="#cb1-248" aria-hidden="true" tabindex="-1"></a>A zero-inflated count model also models two different processes.  One</span>
+<span id="cb1-249"><a href="#cb1-249" aria-hidden="true" tabindex="-1"></a>is a binary process: generating zero or non-zeros.  The second one is</span>
+<span id="cb1-250"><a href="#cb1-250" aria-hidden="true" tabindex="-1"></a>a count model.  Note there is a different between zero-inflated and</span>
+<span id="cb1-251"><a href="#cb1-251" aria-hidden="true" tabindex="-1"></a>hurdle model:  In hurdle model, the second process is a truncated</span>
+<span id="cb1-252"><a href="#cb1-252" aria-hidden="true" tabindex="-1"></a>count model (positive counts).  In a zero-inflated model, a zero can</span>
+<span id="cb1-253"><a href="#cb1-253" aria-hidden="true" tabindex="-1"></a>come from either the binary process, or from the count process.</span>
+<span id="cb1-254"><a href="#cb1-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-255"><a href="#cb1-255" aria-hidden="true" tabindex="-1"></a>A second difference is that the estimation of zero-inflated model is a</span>
+<span id="cb1-256"><a href="#cb1-256" aria-hidden="true" tabindex="-1"></a>joint estimation of the two processes.</span>
+<span id="cb1-257"><a href="#cb1-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-258"><a href="#cb1-258" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-259"><a href="#cb1-259" aria-hidden="true" tabindex="-1"></a>y_i \sim \left<span class="sc">\{</span></span>
+<span id="cb1-260"><a href="#cb1-260" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
+<span id="cb1-261"><a href="#cb1-261" aria-hidden="true" tabindex="-1"></a>0 \  \mbox{with probability} \ \psi <span class="sc">\\</span>    g(y_i | X_i)   \mbox{with</span>
+<span id="cb1-262"><a href="#cb1-262" aria-hidden="true" tabindex="-1"></a>  probability} \ 1- \psi</span>
 <span id="cb1-263"><a href="#cb1-263" aria-hidden="true" tabindex="-1"></a> \end{array} \right.</span>
-<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-16}</span>
+<span id="cb1-264"><a href="#cb1-264" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-15}</span>
 <span id="cb1-265"><a href="#cb1-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>This says that every non-zero observation follows a count process</span>
-<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a>$g(y_i|X_i)$. Every zero observation has two possible sources: from a</span>
-<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>binary process (with probability $\psi(\gamma' Z_i)$) and from a count</span>
-<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>process (with probability $1- \psi(\gamma' Z_i)$ into the count</span>
-<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a>process and then with probability of $g(0|X_i)$ to be a zero).  The</span>
-<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>count process can be a Poisson process ("zip" in Stata) or a</span>
-<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a>Negative Binomial process ("zinb" in Stata).</span>
-<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a><span class="fu">## An example of extra-zero count data model comparison</span></span>
-<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>A companion simulation study (see the detailed write-up in this guide's companion <span class="in">`blog_book`</span>, chapter "Which count data model to use") compares plain Poisson, Negative Binomial, zero-inflated Poisson (ZIP, both with a correctly and an incorrectly specified zero-process), and hurdle models across sample sizes and zero-inflation levels. The main findings: with large samples, plain Poisson QMLE is consistent even with unmodeled excess zeros, provided the *observed* conditional mean is correctly specified.  That proviso is worth spelling out.  Under zero inflation the observed mean is $E[Y \mid X] = (1-\pi(X))\,\mu(X)$, so fitting $\exp({\symbf{X}}\beta)$ recovers the slopes of $\mu$ only when $\pi$ does not depend on $X$: constant inflation shifts the intercept by $\log(1-\pi)$ and leaves the slopes alone.  If $\pi$ varies with $X$, the term $\log(1-\pi(X))$ enters the mean function and the slopes are contaminated -- independence of the latent zero and count *draws* does not rescue them.  Where the inflation is constant, the excess zeros only inflate the standard errors (via overdispersion), not the point estimates, so robust/sandwich standard errors should be used rather than switching models. Zero-inflated Poisson with a correctly specified zero process performs best when that specification is available; hurdle and misspecified-zero-process ZIP perform similarly to plain Poisson; log-linear regression on $\log(y+1)$ is consistently the worst performer, since it targets a different (log-scale) conditional expectation than the models above.</span>
-<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpreting Coefficients and Marginal Effects in Nonlinear Models</span></span>
-<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>This section is broader than count data: it covers how to read</span>
-<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a>coefficients and compute marginal effects in nonlinear models</span>
-<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a>generally, including the binary discrete-choice models of the</span>
-<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Discrete and Limited Dependent Variables</span><span class="co">](discrete.qmd)</span> chapter as</span>
-<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>well as the count models above.</span>
+<span id="cb1-266"><a href="#cb1-266" aria-hidden="true" tabindex="-1"></a>Then</span>
+<span id="cb1-267"><a href="#cb1-267" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-268"><a href="#cb1-268" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-269"><a href="#cb1-269" aria-hidden="true" tabindex="-1"></a>P(Y_i=y_i | X_i, Z_i) = \left<span class="sc">\{</span></span>
+<span id="cb1-270"><a href="#cb1-270" aria-hidden="true" tabindex="-1"></a> \begin{array}{c}</span>
+<span id="cb1-271"><a href="#cb1-271" aria-hidden="true" tabindex="-1"></a>\psi(\gamma' Z_i) + (1- \psi(\gamma' Z_i) ) g(0 | X_i)  \  \mbox{if} \ y_i=0 <span class="sc">\\</span>  (1- \psi(\gamma' Z_i) ) g(y_i | X_i)  \  \mbox{if} \ y_i&gt;0</span>
+<span id="cb1-272"><a href="#cb1-272" aria-hidden="true" tabindex="-1"></a> \end{array} \right.</span>
+<span id="cb1-273"><a href="#cb1-273" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-16}</span>
+<span id="cb1-274"><a href="#cb1-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-275"><a href="#cb1-275" aria-hidden="true" tabindex="-1"></a>This says that every non-zero observation follows a count process</span>
+<span id="cb1-276"><a href="#cb1-276" aria-hidden="true" tabindex="-1"></a>$g(y_i|X_i)$. Every zero observation has two possible sources: from a</span>
+<span id="cb1-277"><a href="#cb1-277" aria-hidden="true" tabindex="-1"></a>binary process (with probability $\psi(\gamma' Z_i)$) and from a count</span>
+<span id="cb1-278"><a href="#cb1-278" aria-hidden="true" tabindex="-1"></a>process (with probability $1- \psi(\gamma' Z_i)$ into the count</span>
+<span id="cb1-279"><a href="#cb1-279" aria-hidden="true" tabindex="-1"></a>process and then with probability of $g(0|X_i)$ to be a zero).  The</span>
+<span id="cb1-280"><a href="#cb1-280" aria-hidden="true" tabindex="-1"></a>count process can be a Poisson process ("zip" in Stata) or a</span>
+<span id="cb1-281"><a href="#cb1-281" aria-hidden="true" tabindex="-1"></a>Negative Binomial process ("zinb" in Stata).</span>
+<span id="cb1-282"><a href="#cb1-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-283"><a href="#cb1-283" aria-hidden="true" tabindex="-1"></a><span class="fu">## An example of extra-zero count data model comparison</span></span>
+<span id="cb1-284"><a href="#cb1-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-285"><a href="#cb1-285" aria-hidden="true" tabindex="-1"></a>A companion simulation study (see the detailed write-up in this guide's companion <span class="in">`blog_book`</span>, chapter "Which count data model to use") compares plain Poisson, Negative Binomial, zero-inflated Poisson (ZIP, both with a correctly and an incorrectly specified zero-process), and hurdle models across sample sizes and zero-inflation levels. The main findings: with large samples, plain Poisson QMLE is consistent even with unmodeled excess zeros, provided the *observed* conditional mean is correctly specified.  That proviso is worth spelling out.  Under zero inflation the observed mean is $E[Y \mid X] = (1-\pi(X))\,\mu(X)$, so fitting $\exp({\symbf{X}}\beta)$ recovers the slopes of $\mu$ only when $\pi$ does not depend on $X$: constant inflation shifts the intercept by $\log(1-\pi)$ and leaves the slopes alone.  If $\pi$ varies with $X$, the term $\log(1-\pi(X))$ enters the mean function and the slopes are contaminated -- independence of the latent zero and count *draws* does not rescue them.  Where the inflation is constant, the excess zeros only inflate the standard errors (via overdispersion), not the point estimates, so robust/sandwich standard errors should be used rather than switching models. Zero-inflated Poisson with a correctly specified zero process performs best when that specification is available; hurdle and misspecified-zero-process ZIP perform similarly to plain Poisson; log-linear regression on $\log(y+1)$ is consistently the worst performer, since it targets a different (log-scale) conditional expectation than the models above.</span>
 <span id="cb1-286"><a href="#cb1-286" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a><span class="fu">### Binary Response Models</span></span>
-<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-287"><a href="#cb1-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-288"><a href="#cb1-288" aria-hidden="true" tabindex="-1"></a><span class="fu">## Interpreting Coefficients and Marginal Effects in Nonlinear Models</span></span>
 <span id="cb1-289"><a href="#cb1-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>In a linear model</span>
-<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>$$ y_i= X_i' \beta + \epsilon, $$ {#eq-count-data-17}</span>
-<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>$$E(y_i) = X_i' \beta $$ {#eq-count-data-18}</span>
-<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a> When $y_i$ is binary (meaning it takes two values, 1 or 0), We can also do an OLS regression on it, but a more popular way is to use a non-linear model.  The most popular choices for modeling binary response are logit model and probit model.  Both of them use the same idea: use a link function to map the binary variable into a continuous variable which is a linear function of the predictors.</span>
-<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a>Suppose $p_i$ is the probability that $y_i=1$.  Then</span>
-<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a>$$p_i=E(y_i) = g^{-1}(X_i' \beta), $$ {#eq-count-data-19}</span>
-<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>where $g^{-1}()$ is a function that maps from the linear predictor to $y_i$, which is often called index function or inverse link function.</span>
-<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>This says that the expectation of $y_i$ (equivalently, $p_i$) is not a linear function of $x_i$'s, but by using the link function, we are still able to model a transformed $p_i$ as a linear function of $x_i$'s:</span>
-<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a>$$g(p_i) = X_i' \beta. $$ {#eq-count-data-20}</span>
+<span id="cb1-290"><a href="#cb1-290" aria-hidden="true" tabindex="-1"></a>This section is broader than count data: it covers how to read</span>
+<span id="cb1-291"><a href="#cb1-291" aria-hidden="true" tabindex="-1"></a>coefficients and compute marginal effects in nonlinear models</span>
+<span id="cb1-292"><a href="#cb1-292" aria-hidden="true" tabindex="-1"></a>generally, including the binary discrete-choice models of the</span>
+<span id="cb1-293"><a href="#cb1-293" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Discrete and Limited Dependent Variables</span><span class="co">](discrete.qmd)</span> chapter as</span>
+<span id="cb1-294"><a href="#cb1-294" aria-hidden="true" tabindex="-1"></a>well as the count models above.</span>
+<span id="cb1-295"><a href="#cb1-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-296"><a href="#cb1-296" aria-hidden="true" tabindex="-1"></a><span class="fu">### Binary Response Models</span></span>
+<span id="cb1-297"><a href="#cb1-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-298"><a href="#cb1-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-299"><a href="#cb1-299" aria-hidden="true" tabindex="-1"></a>In a linear model</span>
+<span id="cb1-300"><a href="#cb1-300" aria-hidden="true" tabindex="-1"></a>$$ y_i= X_i' \beta + \epsilon, $$ {#eq-count-data-17}</span>
+<span id="cb1-301"><a href="#cb1-301" aria-hidden="true" tabindex="-1"></a>$$E(y_i) = X_i' \beta $$ {#eq-count-data-18}</span>
+<span id="cb1-302"><a href="#cb1-302" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-303"><a href="#cb1-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a>$g^{-1}()$ can be a normal CDF then we have a probit model:</span>
-<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {{\mathrm{exp}}} <span class="co">[</span><span class="ot">-(t^2/2)</span><span class="co">]</span> dt, $$ {#eq-count-data-21}</span>
-<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>or it can be a logit:</span>
-<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$ {#eq-count-data-22}</span>
-<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-304"><a href="#cb1-304" aria-hidden="true" tabindex="-1"></a> When $y_i$ is binary (meaning it takes two values, 1 or 0), We can also do an OLS regression on it, but a more popular way is to use a non-linear model.  The most popular choices for modeling binary response are logit model and probit model.  Both of them use the same idea: use a link function to map the binary variable into a continuous variable which is a linear function of the predictors.</span>
+<span id="cb1-305"><a href="#cb1-305" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-306"><a href="#cb1-306" aria-hidden="true" tabindex="-1"></a>Suppose $p_i$ is the probability that $y_i=1$.  Then</span>
+<span id="cb1-307"><a href="#cb1-307" aria-hidden="true" tabindex="-1"></a>$$p_i=E(y_i) = g^{-1}(X_i' \beta), $$ {#eq-count-data-19}</span>
+<span id="cb1-308"><a href="#cb1-308" aria-hidden="true" tabindex="-1"></a>where $g^{-1}()$ is a function that maps from the linear predictor to $y_i$, which is often called index function or inverse link function.</span>
+<span id="cb1-309"><a href="#cb1-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-310"><a href="#cb1-310" aria-hidden="true" tabindex="-1"></a>This says that the expectation of $y_i$ (equivalently, $p_i$) is not a linear function of $x_i$'s, but by using the link function, we are still able to model a transformed $p_i$ as a linear function of $x_i$'s:</span>
+<span id="cb1-311"><a href="#cb1-311" aria-hidden="true" tabindex="-1"></a>$$g(p_i) = X_i' \beta. $$ {#eq-count-data-20}</span>
 <span id="cb1-312"><a href="#cb1-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a><span class="fu">### Marginal Effects</span></span>
-<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a>Often times we are interested in the marginal effects of the predictors.  In a linear model, it's easy: the coefficient on $x_1$ means when $x_1$ increase by one unit, how much will $y$ increase.</span>
-<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a>In a binary response model,</span>
-<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}$$ {#eq-count-data-23}</span>
+<span id="cb1-313"><a href="#cb1-313" aria-hidden="true" tabindex="-1"></a>$g^{-1}()$ can be a normal CDF then we have a probit model:</span>
+<span id="cb1-314"><a href="#cb1-314" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Phi (z) = \int_{- \infty}^z \frac{1}{\sqrt{2 \pi}} {{\mathrm{exp}}} <span class="co">[</span><span class="ot">-(t^2/2)</span><span class="co">]</span> dt, $$ {#eq-count-data-21}</span>
+<span id="cb1-315"><a href="#cb1-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-316"><a href="#cb1-316" aria-hidden="true" tabindex="-1"></a>or it can be a logit:</span>
+<span id="cb1-317"><a href="#cb1-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-318"><a href="#cb1-318" aria-hidden="true" tabindex="-1"></a>$$ g^{-1}(z) = \Lambda (z) =  e^z/(1+e^z). $$ {#eq-count-data-22}</span>
 <span id="cb1-319"><a href="#cb1-319" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a>In the case of probit:</span>
+<span id="cb1-320"><a href="#cb1-320" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-321"><a href="#cb1-321" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial x} = \frac{\partial \Phi (X_i'</span>
-<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a>  \beta)}{\partial x} = \phi(X_i' \beta) \beta, $$ {#eq-count-data-24}</span>
-<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a>where $\phi()$ is the density function of normal distribution.</span>
-<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>In the case of logit:</span>
+<span id="cb1-322"><a href="#cb1-322" aria-hidden="true" tabindex="-1"></a><span class="fu">### Marginal Effects</span></span>
+<span id="cb1-323"><a href="#cb1-323" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-324"><a href="#cb1-324" aria-hidden="true" tabindex="-1"></a>Often times we are interested in the marginal effects of the predictors.  In a linear model, it's easy: the coefficient on $x_1$ means when $x_1$ increase by one unit, how much will $y$ increase.</span>
+<span id="cb1-325"><a href="#cb1-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-326"><a href="#cb1-326" aria-hidden="true" tabindex="-1"></a>In a binary response model,</span>
+<span id="cb1-327"><a href="#cb1-327" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  g^{-1}(X_i' \beta)}{\partial  x}$$ {#eq-count-data-23}</span>
 <span id="cb1-328"><a href="#cb1-328" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, $$ {#eq-count-data-25}</span>
-<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a>where $\gamma()$ is the density function for logistic distribution:</span>
-<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>$$\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).$$ {#eq-count-data-26}</span>
-<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a>Therefore for logit, a quick approximation of the marginal effect is</span>
-<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>to plug in the sample proportion $\bar p$ and coefficient estimate</span>
-<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a>$\hat \beta$:</span>
-<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a>$$ \hat{ \frac{\partial p}{\partial x}} \approx \bar p (1- \bar p) \hat \beta $$ {#eq-count-data-27}</span>
-<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a>This evaluates the effect at the mean probability; it is a rough rule</span>
-<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a>of thumb, not the average marginal effect $\frac{1}{n}\sum_i \hat</span>
-<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a>p_i(1-\hat p_i)\hat\beta$, which is what software reports.</span>
-<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a>The logit model can also be formulated as</span>
-<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a>\log (\frac{p}{1-p})={\symbf{X_i' \beta</span>
-<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-count-data-28}</span>
-<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a>which says the logarithm of the odds (the ratio of the two</span>
-<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>probabilities) is equal to ${\symbf{X_i' \beta}}$.  Therefore,</span>
-<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'</span>
-<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a>\beta)}=\Lambda( X_i' \beta)</span>
-<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-29}</span>
-<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  Write $x_{1i}$ for the dummy and $\beta_1$ for its coefficient, $X_{-1,i}$ for unit $i$'s other covariates and $\beta_{-1}$ for their coefficients, with the intercept included in $X_{-1,i}$.  The average discrete change sets the dummy to 1 and then to 0 for every unit, holding the other covariates at their observed values, and averages the difference over the $n$ units:</span>
-<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>$$ \frac{1}{n}\sum_{i=1}^n \left<span class="co">[</span><span class="ot"> \Lambda(\beta_1 + X_{-1,i}'\beta_{-1}) - \Lambda(X_{-1,i}'\beta_{-1}) \right</span><span class="co">]</span>. $$ {#eq-count-data-30}</span>
-<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>This is what software computes when it predicts with $x_1$ set to 1, then to 0, and takes the mean difference.  It is not the group comparison $E(p \mid x_1=1) - E(p \mid x_1=0)$, which averages over two different covariate distributions.</span>
-<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-329"><a href="#cb1-329" aria-hidden="true" tabindex="-1"></a>In the case of probit:</span>
+<span id="cb1-330"><a href="#cb1-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-331"><a href="#cb1-331" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial x} = \frac{\partial \Phi (X_i'</span>
+<span id="cb1-332"><a href="#cb1-332" aria-hidden="true" tabindex="-1"></a>  \beta)}{\partial x} = \phi(X_i' \beta) \beta, $$ {#eq-count-data-24}</span>
+<span id="cb1-333"><a href="#cb1-333" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-334"><a href="#cb1-334" aria-hidden="true" tabindex="-1"></a>where $\phi()$ is the density function of normal distribution.</span>
+<span id="cb1-335"><a href="#cb1-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-336"><a href="#cb1-336" aria-hidden="true" tabindex="-1"></a>In the case of logit:</span>
+<span id="cb1-337"><a href="#cb1-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-338"><a href="#cb1-338" aria-hidden="true" tabindex="-1"></a>$$\frac{\partial p}{\partial  x} = \frac{\partial  \Lambda (X_i' \beta)}{\partial  x} = \gamma(X_i' \beta) \beta, $$ {#eq-count-data-25}</span>
+<span id="cb1-339"><a href="#cb1-339" aria-hidden="true" tabindex="-1"></a>where $\gamma()$ is the density function for logistic distribution:</span>
+<span id="cb1-340"><a href="#cb1-340" aria-hidden="true" tabindex="-1"></a>$$\gamma(X_i' \beta) = \Lambda(X_i' \beta) (1- \Lambda(X_i' \beta)) = p(1-p).$$ {#eq-count-data-26}</span>
+<span id="cb1-341"><a href="#cb1-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-342"><a href="#cb1-342" aria-hidden="true" tabindex="-1"></a>Therefore for logit, a quick approximation of the marginal effect is</span>
+<span id="cb1-343"><a href="#cb1-343" aria-hidden="true" tabindex="-1"></a>to plug in the sample proportion $\bar p$ and coefficient estimate</span>
+<span id="cb1-344"><a href="#cb1-344" aria-hidden="true" tabindex="-1"></a>$\hat \beta$:</span>
+<span id="cb1-345"><a href="#cb1-345" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-346"><a href="#cb1-346" aria-hidden="true" tabindex="-1"></a>$$ \hat{ \frac{\partial p}{\partial x}} \approx \bar p (1- \bar p) \hat \beta $$ {#eq-count-data-27}</span>
+<span id="cb1-347"><a href="#cb1-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-348"><a href="#cb1-348" aria-hidden="true" tabindex="-1"></a>This evaluates the effect at the mean probability; it is a rough rule</span>
+<span id="cb1-349"><a href="#cb1-349" aria-hidden="true" tabindex="-1"></a>of thumb, not the average marginal effect $\frac{1}{n}\sum_i \hat</span>
+<span id="cb1-350"><a href="#cb1-350" aria-hidden="true" tabindex="-1"></a>p_i(1-\hat p_i)\hat\beta$, which is what software reports.</span>
+<span id="cb1-351"><a href="#cb1-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-352"><a href="#cb1-352" aria-hidden="true" tabindex="-1"></a>The logit model can also be formulated as</span>
+<span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a>\log (\frac{p}{1-p})={\symbf{X_i' \beta</span>
+<span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-count-data-28}</span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>which says the logarithm of the odds (the ratio of the two</span>
+<span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a>probabilities) is equal to ${\symbf{X_i' \beta}}$.  Therefore,</span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a>p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'</span>
+<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>\beta)}=\Lambda( X_i' \beta)</span>
+<span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-29}</span>
 <span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a><span class="fu">### Count Data Models</span></span>
+<span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-364"><a href="#cb1-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a>In a count data model such as Poisson regression model or Negative Binomial model, we are modeling log of the expected counts:</span>
+<span id="cb1-365"><a href="#cb1-365" aria-hidden="true" tabindex="-1"></a>Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  Write $x_{1i}$ for the dummy and $\beta_1$ for its coefficient, $X_{-1,i}$ for unit $i$'s other covariates and $\beta_{-1}$ for their coefficients, with the intercept included in $X_{-1,i}$.  The average discrete change sets the dummy to 1 and then to 0 for every unit, holding the other covariates at their observed values, and averages the difference over the $n$ units:</span>
 <span id="cb1-366"><a href="#cb1-366" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a>\log ({{\mathrm{E}}}( y) )={\symbf{X_i' \beta</span>
-<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-count-data-31}</span>
-<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a>Therefore the marginal effect of $x_1$, for example, on ${{\mathrm{E}}} (y)$ is</span>
+<span id="cb1-367"><a href="#cb1-367" aria-hidden="true" tabindex="-1"></a>$$ \frac{1}{n}\sum_{i=1}^n \left<span class="co">[</span><span class="ot"> \Lambda(\beta_1 + X_{-1,i}'\beta_{-1}) - \Lambda(X_{-1,i}'\beta_{-1}) \right</span><span class="co">]</span>. $$ {#eq-count-data-30}</span>
+<span id="cb1-368"><a href="#cb1-368" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-369"><a href="#cb1-369" aria-hidden="true" tabindex="-1"></a>This is what software computes when it predicts with $x_1$ set to 1, then to 0, and takes the mean difference.  It is not the group comparison $E(p \mid x_1=1) - E(p \mid x_1=0)$, which averages over two different covariate distributions.</span>
+<span id="cb1-370"><a href="#cb1-370" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-371"><a href="#cb1-371" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-372"><a href="#cb1-372" aria-hidden="true" tabindex="-1"></a>$$ { \frac{\partial \log {{\mathrm{E}}} (y) }{\partial x}} = \hat \beta , $$ {#eq-count-data-32}</span>
+<span id="cb1-372"><a href="#cb1-372" aria-hidden="true" tabindex="-1"></a><span class="fu">### Count Data Models</span></span>
 <span id="cb1-373"><a href="#cb1-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>which means $\beta$ is the marginal effect of $x$ on $\log$ of the expected counts. Suppose the expected counts at $x$ is $\mu_{x}$, then</span>
+<span id="cb1-374"><a href="#cb1-374" aria-hidden="true" tabindex="-1"></a>In a count data model such as Poisson regression model or Negative Binomial model, we are modeling log of the expected counts:</span>
 <span id="cb1-375"><a href="#cb1-375" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a>$$ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , $$ {#eq-count-data-33}</span>
-<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>which says that $\beta$ represents the marginal effect of percentage change in $\mu_x$ with respect to $x$.</span>
-<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a>Another way to formulate this is to use the Incidence Rate Ratio Interpretation.  Suppose the expected counts at $x$ is $\mu_{x}$, and expected counts at $x+1$ is $\mu_{x+1}$.</span>
-<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a>$$  \log (\mu_x) = x' \beta. $$ {#eq-count-data-34}</span>
-<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
-<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>\mu_{x} = \exp (x' \beta),</span>
-<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-35}</span>
-<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a>and</span>
-<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>\frac{\mu_{x+1}}{\mu_{x}} = \exp ( \beta).</span>
-<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-36}</span>
-<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>This says that the exponentiated $\beta$ is the incidence rate ratio of the expected counts, if $x$ increases by $1$.</span>
-<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a>To calculate the marginal effect of $x$ on $y$ (or ${{\mathrm{E}}} (y)$), we need to calculate</span>
-<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a>$$\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , $$ {#eq-count-data-37}</span>
-<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a>if we evaluate $\mu_x$ at predicted value.</span>
-<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a><span class="fu">### How to calculate marginal effects in Stata</span></span>
+<span id="cb1-376"><a href="#cb1-376" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-377"><a href="#cb1-377" aria-hidden="true" tabindex="-1"></a>\log ({{\mathrm{E}}}( y) )={\symbf{X_i' \beta</span>
+<span id="cb1-378"><a href="#cb1-378" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-count-data-31}</span>
+<span id="cb1-379"><a href="#cb1-379" aria-hidden="true" tabindex="-1"></a>Therefore the marginal effect of $x_1$, for example, on ${{\mathrm{E}}} (y)$ is</span>
+<span id="cb1-380"><a href="#cb1-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-381"><a href="#cb1-381" aria-hidden="true" tabindex="-1"></a>$$ { \frac{\partial \log {{\mathrm{E}}} (y) }{\partial x}} = \hat \beta , $$ {#eq-count-data-32}</span>
+<span id="cb1-382"><a href="#cb1-382" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-383"><a href="#cb1-383" aria-hidden="true" tabindex="-1"></a>which means $\beta$ is the marginal effect of $x$ on $\log$ of the expected counts. Suppose the expected counts at $x$ is $\mu_{x}$, then</span>
+<span id="cb1-384"><a href="#cb1-384" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-385"><a href="#cb1-385" aria-hidden="true" tabindex="-1"></a>$$ { \frac{(\partial \mu_x) / \mu_x }{\partial x}} = \hat \beta , $$ {#eq-count-data-33}</span>
+<span id="cb1-386"><a href="#cb1-386" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-387"><a href="#cb1-387" aria-hidden="true" tabindex="-1"></a>which says that $\beta$ represents the marginal effect of percentage change in $\mu_x$ with respect to $x$.</span>
+<span id="cb1-388"><a href="#cb1-388" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-389"><a href="#cb1-389" aria-hidden="true" tabindex="-1"></a>Another way to formulate this is to use the Incidence Rate Ratio Interpretation.  Suppose the expected counts at $x$ is $\mu_{x}$, and expected counts at $x+1$ is $\mu_{x+1}$.</span>
+<span id="cb1-390"><a href="#cb1-390" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-391"><a href="#cb1-391" aria-hidden="true" tabindex="-1"></a>$$  \log (\mu_x) = x' \beta. $$ {#eq-count-data-34}</span>
+<span id="cb1-392"><a href="#cb1-392" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-393"><a href="#cb1-393" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb1-394"><a href="#cb1-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-395"><a href="#cb1-395" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-396"><a href="#cb1-396" aria-hidden="true" tabindex="-1"></a>\mu_{x} = \exp (x' \beta),</span>
+<span id="cb1-397"><a href="#cb1-397" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-35}</span>
+<span id="cb1-398"><a href="#cb1-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-399"><a href="#cb1-399" aria-hidden="true" tabindex="-1"></a>and</span>
+<span id="cb1-400"><a href="#cb1-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-401"><a href="#cb1-401" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-402"><a href="#cb1-402" aria-hidden="true" tabindex="-1"></a>\frac{\mu_{x+1}}{\mu_{x}} = \exp ( \beta).</span>
+<span id="cb1-403"><a href="#cb1-403" aria-hidden="true" tabindex="-1"></a>$$ {#eq-count-data-36}</span>
 <span id="cb1-404"><a href="#cb1-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.</span>
+<span id="cb1-405"><a href="#cb1-405" aria-hidden="true" tabindex="-1"></a>This says that the exponentiated $\beta$ is the incidence rate ratio of the expected counts, if $x$ increases by $1$.</span>
 <span id="cb1-406"><a href="#cb1-406" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-407"><a href="#cb1-407" aria-hidden="true" tabindex="-1"></a>To calculate the marginal effect of $x$ on $y$ (or ${{\mathrm{E}}} (y)$), we need to calculate</span>
 <span id="cb1-408"><a href="#cb1-408" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>Poisson regression models the log of the expected count. Its real strength is as a quasi-MLE: it is consistent whenever the conditional mean is right, even with overdispersion or a continuous outcome, as long as the standard errors are robust. Fixed-effects Poisson has no incidental-parameters problem, but it still needs strict exogeneity given the unit effect. Negative binomial adds gamma heterogeneity to allow overdispersion. Hurdle and zero-inflated models treat zeros as coming from a separate process. Zero-truncated models handle samples with no zeros, and there overdispersion breaks a truncated Poisson's consistency.</span>
-<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a>In all these nonlinear models a coefficient is not a marginal effect. The effect of a regressor on the expected outcome or probability depends on where it is evaluated. The average marginal effect, averaged over the observed covariates, is the standard summary. For a dummy regressor it is the average difference in predicted outcomes between its two values.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-409"><a href="#cb1-409" aria-hidden="true" tabindex="-1"></a>$$\frac{ \partial \mu_x} {\partial x} = \hat \beta \mu_x = \hat \beta \exp(X_i' \hat \beta) , $$ {#eq-count-data-37}</span>
+<span id="cb1-410"><a href="#cb1-410" aria-hidden="true" tabindex="-1"></a>if we evaluate $\mu_x$ at predicted value.</span>
+<span id="cb1-411"><a href="#cb1-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-412"><a href="#cb1-412" aria-hidden="true" tabindex="-1"></a><span class="fu">### How to calculate marginal effects in Stata</span></span>
+<span id="cb1-413"><a href="#cb1-413" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-414"><a href="#cb1-414" aria-hidden="true" tabindex="-1"></a>Stata's margins command is a powerful command to get the predicted value or marginal effects after an estimation command.  Check Stata's manual for more details.</span>
+<span id="cb1-415"><a href="#cb1-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-416"><a href="#cb1-416" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-417"><a href="#cb1-417" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-418"><a href="#cb1-418" aria-hidden="true" tabindex="-1"></a>Poisson regression models the log of the expected count. Its real strength is as a quasi-MLE: it is consistent whenever the conditional mean is right, even with overdispersion or a continuous outcome, as long as the standard errors are robust. Fixed-effects Poisson has no incidental-parameters problem, but it still needs strict exogeneity given the unit effect. Negative binomial adds gamma heterogeneity to allow overdispersion. Hurdle and zero-inflated models treat zeros as coming from a separate process. Zero-truncated models handle samples with no zeros, and there overdispersion breaks a truncated Poisson's consistency.</span>
+<span id="cb1-419"><a href="#cb1-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-420"><a href="#cb1-420" aria-hidden="true" tabindex="-1"></a>In all these nonlinear models a coefficient is not a marginal effect. The effect of a regressor on the expected outcome or probability depends on where it is evaluated. The average marginal effect, averaged over the observed covariates, is the standard summary. For a dummy regressor it is the average difference in predicted outcomes between its two values.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

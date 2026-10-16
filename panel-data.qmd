@@ -1,7 +1,8 @@
 # Panel Data Models
 
 ```{r}
-#| include: false
+#| code-fold: show
+# Packages used in this chapter
 library(fixest)
 ```
 

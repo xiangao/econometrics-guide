@@ -1,7 +1,7 @@
 # Endogeneity
 
 ```{r}
-#| include: false
+# Packages used in this chapter
 library(MASS)
 library(ivreg)
 ```
@@ -177,10 +177,12 @@ summary(tsls.model)
 
 ## Control Function Approach
 
-A second way to do an IV regression is also two-step approach: Regress
-${\symbf{X}}$ (endogenous) on ${\symbf{Z}}$, get the residual: ${\symbf{\hat
-v=X-Z(Z'Z)^{-1}Z'X}}$, then regress $y$ on ${\symbf{X}}$ and $\hat v$ to get
-$\hat \beta_{IV}$.
+A second way to do an IV regression is also two-step approach. Write
+${\symbf{X}}_{en}$ for the endogenous columns of ${\symbf{X}}$. Regress them on
+${\symbf{Z}}$ and keep the residual: ${\symbf{\hat
+v=X_{en}-Z(Z'Z)^{-1}Z'X_{en}}}$. Then regress $y$ on all of ${\symbf{X}}$ and $\hat v$ to get
+$\hat \beta_{IV}$. The exogenous columns of ${\symbf{X}}$ are already in ${\symbf{Z}}$, so
+their first-stage residuals would be zero and add nothing.
 
 The difference between this approach and the 2sls approach is that in
 2sls we regress $y$ on ${\symbf{\hat X}}$; in the control function approach,
@@ -202,6 +204,13 @@ summary(tsls.manual)
 tsls.control <- lm(data$y ~ data$x + lm2$residuals)
 summary(tsls.control)
 ```
+
+The coefficient on `data$x` is the 2SLS estimate, but its default OLS
+standard error is not the 2SLS standard error. It takes the residual variance
+from $y - X\hat\beta - \hat v\hat\gamma$, which is smaller than the structural
+residual variance, and it ignores that $\hat v$ is estimated. Here it reports
+0.026 against the 2SLS standard error of 0.030. For inference on $\beta$, use
+the 2SLS standard error or bootstrap both stages.
 
 This approach can be used to do a simple endogeneity test.  First, you
 can do a simple test of endogeneity of ${\symbf{X}}$.  For example:
@@ -495,10 +504,12 @@ to control the size of bias, the other one is to control the size of a
 Wald test of $\beta=\beta_0$.  Bias method is more frequently used.
 In the case of multiple endogenous variables, the Cragg-Donald
 statistics is used to compare with the critical values.  It is
-implemented in Stata as part of the *ivreg2* command, but it's
-only available for the situation there are at least two excluded
-variables (meaning the number of instruments minus the number of
-endogenous variables).
+implemented in Stata as part of the *ivreg2* command. The two tables
+have different coverage. The 2SLS relative-bias critical values exist only
+when there are at least two overidentifying restrictions, $l_e - k_e \geq 2$
+(three excluded instruments for one endogenous regressor), because the
+finite-sample mean of 2SLS exists only at that degree of overidentification.
+The size critical values start from exact identification, $l_e = k_e$.
 
 3.   Anderson-Rubin confidence intervals.
 

@@ -5,7 +5,8 @@ code-fold: true
 # Interpreting OLS: Effect Weights
 
 ```{r}
-#| include: false
+#| code-fold: show
+# Setup used throughout this chapter: packages, panel size, table helpers
 library(fixest)
 N <- 1000; T <- 6
 vtab <- function(x, d = 3) knitr::kable(data.frame(value = round(x, d)), col.names = "value")
@@ -45,6 +46,8 @@ The denominator is a sum of squares. Split $V_i = \hat V_i + \tilde V_i$; the cr
 $$\sum_{i=1}^n \tilde V_i V_i = \sum_{i=1}^n \tilde V_i^2$$ {#eq-square}
 
 and $\sum_i w_i \ge 0$ always. A single $w_i$ is under no such constraint — it is negative whenever $\tilde V_i$ and $V_i$ have opposite signs. Non-negativity of the total says nothing about the terms.
+
+The same split works weight by weight: $w_i = \tilde V_i^2 + \tilde V_i \hat V_i$. The first piece is never negative; it is the identifying variation. The second sums to zero over the sample, so it only moves weight between observations, and it is where negative weights come from. It also drops out of the weighted average whenever $\hat V_i \beta_i$ lies in the column space of $X$, because $\tilde V$ is orthogonal to that space. Two cases matter below. With saturated strata as controls and an effect that is constant within a stratum, $\hat V_i \beta_i$ is a function of the stratum. With unit fixed effects and a slope $\beta_i$ that is constant over time within a unit, $\hat V_{it} = \bar V_i$, and $\sum_t \tilde V_{it} \bar V_i \beta_i = \bar V_i \beta_i \sum_t \tilde V_{it} = 0$. In both, only the non-negative $\tilde V_i^2$ remain.
 
 The individual weights also depend on where $V$ has its zero. Replace $V_i$ by $V_i + c$. The controls carry an intercept, so $\tilde V_i$ does not move and neither does the total $\sum_i \tilde V_i^2$; each weight becomes $\tilde V_i V_i + c\,\tilde V_i$. So a reported share of negative weights is partly a choice of origin rather than a fact about the design, and it should be quoted with the scale of $V$ stated.
 
@@ -149,7 +152,11 @@ A single observation with a binary regressor has no slope of its own: forming a 
 
 A word on the labels before going further. $\hat\delta_x$ is a difference in *observed* means within a stratum. Calling the aggregate an ATT or an ATE needs the usual identification conditions: conditional exchangeability, so that treatment is as good as randomly assigned within a stratum, and overlap, so that each stratum holds both treated and control units. Saturation delivers the algebra, not the interpretation. Without those conditions the formulas below still hold exactly, but they describe weighted averages of observed contrasts rather than causal effects. The weighting is what OLS does; whether the thing being weighted is an effect is settled outside the regression.
 
-Let $\hat\delta_x$ be the stratum difference-in-means. Substituting @eq-angrist-w into @eq-weff,
+Let $\hat\delta_x = \bar y_{1x} - \bar y_{0x}$ be the stratum difference-in-means. The decomposition follows exactly, with no remainder, from @eq-fwl. Within stratum $x$, a treated unit has $\tilde D_i = 1 - \hat D(x)$ and a control has $\tilde D_i = -\hat D(x)$, so the numerator of @eq-fwl is
+
+$$\sum_{i \in x} \tilde D_i y_i = (1 - \hat D(x))\, n_x \hat D(x)\, \bar y_{1x} - \hat D(x)\, n_x (1 - \hat D(x))\, \bar y_{0x} = w_x\, \hat\delta_x,$$
+
+and by @eq-square the denominator is $\sum_x w_x$. Hence
 
 $$\hat\beta_{OLS} = \frac{\sum_{x=1}^K n_x \hat D(x)(1 - \hat D(x))\, \hat\delta_x}{\sum_{x=1}^K n_x \hat D(x)(1 - \hat D(x))}$$ {#eq-angrist}
 
@@ -170,11 +177,13 @@ In the finite-sample, stratum-weighted version the same decomposition holds beca
 
 $$\text{ATE} = \rho\, \text{ATT} + (1 - \rho)\, \text{ATU}$$ {#eq-ate}
 
+A reader may wonder how a control-group average can get any weight at all, since the observation-level weights of @eq-weff give every control $w_i = \tilde D_i D_i = 0$. A control's own effect never reaches its outcome, so it cannot enter. The ATU gets weight through the strata instead. Under conditional exchangeability the treated units of stratum $x$ have the same average effect as its controls, $\tau(x)$, so the weighted average of treated effects in @eq-weff equals $\sum_x w_x \tau(x) / \sum_x w_x$, an average over strata. Słoczyński's result regroups those stratum weights into the shares that define the ATT and the ATU.
+
 The OLS weights of @eq-angrist go as the propensity *variance* $\hat D(x)(1 - \hat D(x))$; the group weights of @eq-attatu go as the propensity itself or its complement. The relation between the two is Słoczyński's result. Write $p = \hat D(X)$ for the cell propensity. Because the design is saturated — the controls are a full set of stratum dummies — residualising $D$ on the strata leaves exactly $\tilde D = D - p$, so the coefficient is $E[\tilde D\, Y]/E[p(1-p)]$. Since $p$ is constant within a stratum, $Y$ enters only through the group means $m_j(p) = E[Y \mid p, D = j]$, and, using $\tilde D = 1 - p$ for treated and $-p$ for untreated units,
 
 $$\beta_{OLS} = \frac{\rho\, E[(1 - p)\, m_1(p) \mid D = 1] - (1 - \rho)\, E[p\, m_0(p) \mid D = 0]}{E[p(1 - p)]}$$ {#eq-sloc1}
 
-Substitute the within-group linear projections $m_j(p) = \alpha_j + \gamma_j p + \varepsilon_j(p)$. The residual term $E[p(1-p)(\varepsilon_1 - \varepsilon_0)]/E[p(1-p)]$ vanishes when the group means are linear in $p$, leaving
+Substitute the within-group linear projections $m_j(p) = \alpha_j + \gamma_j p + \varepsilon_j(p)$, where $\varepsilon_j(p)$ is the projection residual within group $D = j$. The residual terms $\rho\, E[(1-p)\,\varepsilon_1 \mid D = 1]$ and $(1-\rho)\, E[p\, \varepsilon_0 \mid D = 0]$ vanish identically: a projection residual is orthogonal to $1$ and to $p$ within its group, and so to any linear function of $p$. Linearity of $m_j(p)$ is not needed here; it is needed in the next step, to read the projection contrasts as the ATT and the ATU. What remains is
 
 $$\beta_{OLS} = (\alpha_1 - \alpha_0) + (\gamma_1 - \gamma_0)\, \frac{E[p^2(1 - p)]}{E[p(1 - p)]}$$ {#eq-sloc2}
 
@@ -224,7 +233,7 @@ res <- cbind(`$\\rho \\approx 0.5$`  = compare(c(.08, .20, .50, .75, .93)),
 mtab(res, 4)
 ```
 
-The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the `$\\max\\lvert\\text{weight diff}\\rvert$` row, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal shares are where the *grouping by treatment status* does least — the reversed-share gap is $(1 - 2\rho)(\text{ATT} - \text{ATU})$, identically zero at $\rho = 0.5$. That is not a general immunity. The stratum weighting of @eq-angrist survives it, and at any $\rho$ the coefficient still departs from the ATE when the effects line up with $\hat D(x)(1 - \hat D(x))$. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. The effects did not change. The propensity schedule did, and with it both the treated share and the distribution of $\hat D(x)(1 - \hat D(x))$ across strata, which is what the Angrist weights use.
+The two weight vectors — the stratum sums $\sum \tilde D_i D_i$ and Angrist's $n_x \hat D(x)(1 - \hat D(x))$ — are the same, below $10^{-9}$ (the row for the largest absolute weight difference, $0$ to four decimals), and the Angrist-weighted average reproduces the OLS coefficient exactly. With $\rho \approx 0.5$ the coefficient is $2.012$ against an ATE of $1.998$: close, because near-equal shares are where the *grouping by treatment status* does least — the reversed-share gap is $(1 - 2\rho)(\text{ATT} - \text{ATU})$, identically zero at $\rho = 0.5$. That is not a general immunity. The stratum weighting of @eq-angrist survives it, and at any $\rho$ the coefficient still departs from the ATE when the effects line up with $\hat D(x)(1 - \hat D(x))$. Push the treated share to $\rho \approx 0.09$ and the coefficient jumps to $2.874$; push it the other way to $\rho \approx 0.91$ and it falls. The two extremes are symmetric: at $\rho = 0.09$ OLS overweights ATT, at $\rho = 0.91$ it overweights ATU. The effects did not change. The propensity schedule did, and with it both the treated share and the distribution of $\hat D(x)(1 - \hat D(x))$ across strata, which is what the Angrist weights use.
 
 Why does OLS overweight the treated when they are few? The FWL residual is $\tilde D_i = D_i - \hat D(x)$. When $\rho$ is small, $\hat D(x)$ is small in most strata: a treated unit has $\tilde D_i = 1 - \hat D(x) \approx 1$, a control unit has $\tilde D_i = -\hat D(x) \approx 0$. Treated units are the unusual ones — they sit far from the stratum mean of $D$ — so they carry most of the leverage, the same way a point far from $\bar x$ dominates the simple regression. At $\rho = 0.09$ the reversed-share approximation puts weight $1 - \rho = 0.91$ on ATT and only $0.09$ on ATU, while the ATE puts $0.09$ on ATT and $0.91$ on ATU. In observational data where the treated group is small — a common setting — the OLS coefficient can be far from the population average effect even under unconfoundedness, purely because of the weighting.
 
@@ -347,10 +356,13 @@ a <- draw(0,   expression(Delta*mu == 0))
 b <- draw(10,  expression(Delta*mu == 10))
 c_ <- draw(100, expression(Delta*mu == 100))
 par(op)
+```
+
+```{r}
 mtab(cbind(`$\\Delta\\mu = 0$` = a, `$\\Delta\\mu = 10$` = b, `$\\Delta\\mu = 100$` = c_), 3)
 ```
 
-Read across the three columns. The within slopes barely change — about $2$ for the movers, indistinguishable from zero for the steady strip. What changes is the between weight: $0.03\%$ when the centres coincide, $85\%$ at $\Delta\mu = 10$, and $99.6\%$ at $\Delta\mu = 100$. So the OLS fit falls from $2.01$ to $0.29$ to $0.02$ on identical true slopes.
+Read across the three columns. The within slopes barely change — about $2$ for the movers, indistinguishable from zero for the steady strip. What changes is the between weight: $0.03\%$ when the centres coincide, $85\%$ at $\Delta\mu = 10$, and $99.8\%$ at $\Delta\mu = 100$. So the OLS fit falls from $2.01$ to $0.29$ to $-0.002$ on identical true slopes.
 
 The between slope reported in the first column is meaningless — and harmlessly so: with the centres nearly on top of each other $\Delta\mu \approx 0$, an unstable ratio is multiplied by a vanishing weight and contributes nothing.
 

@@ -62,6 +62,13 @@ format:
       - margin=1in
     fontsize: 11pt
     code-overflow: wrap
+    # code-overflow only affects HTML; in the PDF, long code and output lines
+    # were clipped at the margin. fvextra breaks them instead (marked with an arrow).
+    include-in-header:
+      text: |
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
+        \renewenvironment{verbatim}{\VerbatimEnvironment\begin{Verbatim}[breaklines,breakanywhere]}{\end{Verbatim}}
     colorlinks: true
     toc: true
     toc-depth: 2
