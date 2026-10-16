@@ -42,7 +42,7 @@ The log-likelihood function is
 
 $$ l({{\symbf{y, \beta, \sigma}}}) = -\frac{n}{2} \log(2 \pi) - \frac{n}{2} \log(\sigma^2) - \frac{1}{2 \sigma^2} {\symbf{(y-X \beta)'(y-X \beta) }}$$ {#eq-mle-4}
 
-Maximizing this function gives exactly the OLS estimator for ${\symbf{\beta}}$.  That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other.  For $\sigma^2$ the MLE divides by $n$ rather than $n-k$, so it differs in finite samples and agrees asymptotically.  What normality adds is not the formula but its standing.  Under normality the OLS estimator *is* the maximum likelihood estimator and the model-based variance is valid.  Without normality the same formula is a quasi-MLE: still consistent for ${\symbf{\beta}}$ under the usual conditions, but its variance needs the sandwich correction discussed below.
+Maximizing this function gives exactly the OLS estimator for ${\symbf{\beta}}$.  That is algebra, and it holds whatever the true error distribution happens to be: the Gaussian log-likelihood is a decreasing function of the sum of squared residuals, so whatever minimizes one maximizes the other.  For $\sigma^2$ the MLE divides by $n$ rather than $n-k$, so it differs in finite samples and agrees asymptotically.  What normality adds is not the formula but its standing.  Under normality the OLS estimator *is* the maximum likelihood estimator, and the usual $t$ and $F$ statistics have exact finite-sample distributions.  Without normality the same formula is a quasi-MLE: still consistent for ${\symbf{\beta}}$ under the usual conditions.  Its model-based variance $\sigma^2({\symbf{X'X}})^{-1}$ remains asymptotically valid as long as the errors are homoskedastic and serially uncorrelated.  Heteroskedasticity or dependence, not nonnormality, is what calls for the sandwich correction discussed below.
 
 
 ## Asymptotic Properties of MLE
@@ -291,7 +291,7 @@ $$
 {\symbf{u \sim N(0, \sigma^2 I)
 }}$$ {#eq-mle-11}
 
-Even if this assumption does not hold, we still have asymptotic normality for ${\symbf{\hat \beta}}$, so the tests below remain valid asymptotically -- provided the covariance estimator is valid for whatever heteroskedasticity or dependence is actually present.  The model-based $\sigma^2 ({\symbf{X'X}})^{-1}$ is not: it encodes the homoskedastic, serially uncorrelated structure of @eq-mle-11.  Drop normality, keep that formula, and the tests are no longer asymptotically valid.  Use a sandwich estimator under heteroskedasticity and a HAC estimator under serial correlation.
+Even if this assumption does not hold, we still have asymptotic normality for ${\symbf{\hat \beta}}$, so the tests below remain valid asymptotically -- provided the covariance estimator is valid for whatever heteroskedasticity or dependence is actually present.  The model-based $\sigma^2 ({\symbf{X'X}})^{-1}$ is not: it encodes the homoskedastic, serially uncorrelated structure of @eq-mle-11.  Dropping normality alone does not invalidate it: under homoskedastic, serially uncorrelated errors the tests remain asymptotically valid with that formula.  Heteroskedasticity or serial correlation does invalidate it.  Use a sandwich estimator under heteroskedasticity and a HAC estimator under serial correlation.
 
 Since linear combination of normal variables are also normally
 distributed,

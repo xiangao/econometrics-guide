@@ -62,9 +62,12 @@ Suppose that censorship or truncation occurs whenever $y_t^0$ is less
 than 0.  Clearly, the larger the error term $u_t$, the larger is
 $y_t^0$ and thus the greater must be the probability that $y_t^0 \geq
 0$.  This probability also depends on $x_t$.  So for the sample we
-observe, $u_t$ does not have conditional mean 0 and is not
-uncorrelated with $x_t$.  OLS using truncated or censored samples (OLS
-of $y_t$ on $x_t$) yields biased and inconsistent estimators.
+observe, $E(y_t \mid x_t)$ is no longer $x_t\beta$: censoring or truncation
+changes the observed conditional mean, so the gap between $y_t$ and $x_t\beta$
+does not have conditional mean 0.  The latent error $u_t$ itself need not be
+endogenous.  OLS of $y_t$ on $x_t$ in truncated or censored samples is therefore
+biased and inconsistent for the latent slope $\beta$.  Selection on $x_t$ alone
+would not do this.
 Normally we would like to draw inference on the population which is
 represented by the full sample.  Shown in the figure below, ideally we would
 have the OLS regression line (if we had the full sample), which is

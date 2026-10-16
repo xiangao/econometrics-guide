@@ -334,8 +334,12 @@ window.Quarto = {
 <p><span id="eq-dynamic-panel-5"><span class="math display">\[ y_{i,t} - y_{i,t-1} = (X_{i,t} - X_{i,t-1})' \beta + \gamma (y_{i,t-1} - y_{i,t-2}) + (\epsilon_{i,t} - \epsilon_{i,t-1})  \tag{11.6}\]</span></span></p>
 <p>or</p>
 <p><span id="eq-dynamic-panel-6"><span class="math display">\[ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t}  \tag{11.7}\]</span></span></p>
-<p>This does not solve the endogeneity problem, since <span class="math inline">\(\Delta y_{i,t-1}\)</span> is still correlated with the error term. AH’s idea is to instrument <span class="math inline">\(\Delta y_{i,t-1}\)</span> with the past level <span class="math inline">\(y_{i,t-2}\)</span>, or past difference <span class="math inline">\(y_{i,t-2}-y_{i,t-3}\)</span>. This estimator is consistent, since neither of these instruments is correlated with <span class="math inline">\(\Delta \epsilon_{i,t}\)</span> – provided the idiosyncratic error is serially uncorrelated. That proviso carries the argument. If <span class="math inline">\(\epsilon_{i,t}\)</span> is itself AR(1), then <span class="math inline">\(y_{i,t-2}\)</span> is correlated with <span class="math inline">\(\Delta \epsilon_{i,t}\)</span>, the instrument fails, and one has to reach further back.</p>
-<p>One implication of the assumption is testable, which is the point of the Arellano-Bond test for serial correlation in the differenced residuals. First-order correlation is expected by construction, since <span class="math inline">\(\Delta \epsilon_{i,t}\)</span> and <span class="math inline">\(\Delta \epsilon_{i,t-1}\)</span> share <span class="math inline">\(\epsilon_{i,t-1}\)</span>; it is the <em>second</em>-order test that carries information. Rejecting AR(2) says the lag being used as an instrument does not sit far enough back.</p>
+<p>This does not solve the endogeneity problem, since <span class="math inline">\(\Delta y_{i,t-1}\)</span> is still correlated with the error term. AH’s idea is to instrument <span class="math inline">\(\Delta y_{i,t-1}\)</span> with the past level <span class="math inline">\(y_{i,t-2}\)</span>, or past difference <span class="math inline">\(y_{i,t-2}-y_{i,t-3}\)</span>. This estimator is consistent, since neither of these instruments is correlated with <span class="math inline">\(\Delta \epsilon_{i,t}\)</span> – provided the idiosyncratic error is serially uncorrelated. That proviso carries the argument. If <span class="math inline">\(\epsilon_{i,t}\)</span> follows a moving average of order <span class="math inline">\(q\)</span>, the levels <span class="math inline">\(y_{i,t-2-q}\)</span> and older remain valid, so we can reach further back. If instead <span class="math inline">\(\epsilon_{i,t}\)</span> is AR(1), <span class="math inline">\(\epsilon_{i,t} = \rho \epsilon_{i,t-1} + \nu_{i,t}\)</span> with <span class="math inline">\(|\rho|&lt;1\)</span>, no finite lag works. For a stationary series with <span class="math inline">\(y_{i,t} = \gamma y_{i,t-1} + \epsilon_{i,t}\)</span>, writing <span class="math inline">\(\sigma^2_\epsilon\)</span> for the variance of <span class="math inline">\(\epsilon_{i,t}\)</span>, the covariance between the level <span class="math inline">\(s \geq 1\)</span> periods back and the differenced error is</p>
+<p><span id="eq-dynamic-panel-ar-cov"><span class="math display">\[
+\operatorname{Cov}(y_{i,t-s}, \Delta\epsilon_{i,t}) = \frac{(\rho-1)\rho^{s-1}\sigma^2_\epsilon}{1-\gamma\rho}.
+\tag{11.8}\]</span></span></p>
+<p>To derive it, write <span class="math inline">\(y_{i,t-s} = \sum_{k \geq 0} \gamma^k \epsilon_{i,t-s-k}\)</span> and use <span class="math inline">\(\operatorname{Cov}(\epsilon_{i,t-j}, \epsilon_{i,t}) = \rho^j \sigma^2_\epsilon\)</span>. The covariance shrinks with <span class="math inline">\(s\)</span> but is never zero. Older lags are weaker violations, not valid instruments. Under AR errors we need an explicit model of the error process, different moment restrictions, or external instruments.</p>
+<p>One implication of the assumption is testable, which is the point of the Arellano-Bond test for serial correlation in the differenced residuals. First-order correlation is expected by construction, since <span class="math inline">\(\Delta \epsilon_{i,t}\)</span> and <span class="math inline">\(\Delta \epsilon_{i,t-1}\)</span> share <span class="math inline">\(\epsilon_{i,t-1}\)</span>; it is the <em>second</em>-order test that carries information. Rejecting AR(2) says <span class="math inline">\(\epsilon_{i,t}\)</span> is serially correlated, so <span class="math inline">\(y_{i,t-2}\)</span> is not a valid instrument. If the correlation is a short moving average, deeper lags restore validity; if it is autoregressive, they do not.</p>
 <p>The other regressors need classifying too, because that is what decides how they are instrumented. Strictly exogenous <span class="math inline">\(X\)</span> can serve as its own instrument. Predetermined <span class="math inline">\(X\)</span> – correlated with past shocks but not with current or future ones – is instrumented by its own lags from <span class="math inline">\(t-1\)</span> backwards. Endogenous <span class="math inline">\(X\)</span> is treated like the lagged dependent variable, with lags from <span class="math inline">\(t-2\)</span> backwards. Misclassifying a regressor here is one of the commoner ways a difference-GMM specification goes quietly invalid.</p>
 </section><section id="arellano-bond-estimator" class="level2" data-number="11.4"><h2 data-number="11.4" class="anchored" data-anchor-id="arellano-bond-estimator">
 <span class="header-section-number">11.4</span> Arellano-Bond estimator</h2>
@@ -347,7 +351,7 @@ y_{i,1} &amp; \  0 &amp; \ 0 &amp; \ 0
 \ 0 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 \\  0 &amp; \ 0 &amp; \  0 &amp; \
 y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0  \\   \vdots  &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \ddots  &amp; \ \cdots &amp; \ \vdots &amp; \  \vdots &amp; \ \vdots \\ 0 &amp; \  0 &amp; \  0 &amp; \ 0 &amp; \ 0 &amp; \ \cdots  &amp; \ 0 &amp; \ y_{i,1} &amp; \  \cdots &amp; \ y_{i,T-2}
 \end{bmatrix}
-\tag{11.8}\]</span></span></p>
+\tag{11.9}\]</span></span></p>
 <p>This is the so called difference GMM estimator.</p>
 </section><section id="blundell-and-bond-estimator" class="level2" data-number="11.5"><h2 data-number="11.5" class="anchored" data-anchor-id="blundell-and-bond-estimator">
 <span class="header-section-number">11.5</span> Blundell and Bond estimator</h2>
@@ -959,164 +963,170 @@ Nickell, Stephen. 1981. <span>“Biases in Dynamic Models with Fixed Effects.”
 <span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>$$ \Delta y_{i,t}= \Delta X_{i,t} \beta + \gamma \Delta y_{i,t-1} + \Delta \epsilon_{i,t} $$ {#eq-dynamic-panel-6}</span>
 <span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$ -- provided the idiosyncratic error is serially uncorrelated.  That proviso carries the argument.  If $\epsilon_{i,t}$ is itself AR(1), then $y_{i,t-2}$ is correlated with $\Delta \epsilon_{i,t}$, the instrument fails, and one has to reach further back.</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>This does not solve the endogeneity problem, since $\Delta y_{i,t-1}$ is still correlated with the error term.  AH's idea is to instrument $\Delta y_{i,t-1}$ with the past level $y_{i,t-2}$, or past difference $y_{i,t-2}-y_{i,t-3}$.  This estimator is consistent, since neither of these instruments is correlated with $\Delta \epsilon_{i,t}$ -- provided the idiosyncratic error is serially uncorrelated.  That proviso carries the argument.  If $\epsilon_{i,t}$ follows a moving average of order $q$, the levels $y_{i,t-2-q}$ and older remain valid, so we can reach further back.  If instead $\epsilon_{i,t}$ is AR(1), $\epsilon_{i,t} = \rho \epsilon_{i,t-1} + \nu_{i,t}$ with $|\rho|&lt;1$, no finite lag works.  For a stationary series with $y_{i,t} = \gamma y_{i,t-1} + \epsilon_{i,t}$, writing $\sigma^2_\epsilon$ for the variance of $\epsilon_{i,t}$, the covariance between the level $s \geq 1$ periods back and the differenced error is</span>
 <span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>One implication of the assumption is testable, which is the point of the Arellano-Bond test for serial correlation in the differenced residuals.  First-order correlation is expected by construction, since $\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ share $\epsilon_{i,t-1}$; it is the *second*-order test that carries information.  Rejecting AR(2) says the lag being used as an instrument does not sit far enough back.</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>The other regressors need classifying too, because that is what decides how they are instrumented.  Strictly exogenous $X$ can serve as its own instrument.  Predetermined $X$ -- correlated with past shocks but not with current or future ones -- is instrumented by its own lags from $t-1$ backwards.  Endogenous $X$ is treated like the lagged dependent variable, with lags from $t-2$ backwards.  Misclassifying a regressor here is one of the commoner ways a difference-GMM specification goes quietly invalid.</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>\operatorname{Cov}(y_{i,t-s}, \Delta\epsilon_{i,t}) = \frac{(\rho-1)\rho^{s-1}\sigma^2_\epsilon}{1-\gamma\rho}.</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dynamic-panel-ar-cov}</span>
 <span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Arellano-Bond estimator</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>@arellano-bond-1991 expanded the idea by using additional lags of the dependent variable as instruments.  For example, both $y_{i,t-2}$ and $y_{i,t-3}$ can be used as instruments.  In fact, as $t$ increases, the number of instruments available also increases.  In period 3 only $y_{i,1}$ is available.  In period 4 $y_{i,1}$ and $y_{i,2}$ are available.  In period 5  $y_{i,1}$ and $y_{i,2}$ and  $y_{i,3}$ are available, and so on.  In other words, we'll have an instrument matrix with one row for each time period that we are instrumenting:</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>To derive it, write $y_{i,t-s} = \sum_{k \geq 0} \gamma^k \epsilon_{i,t-s-k}$ and use $\operatorname{Cov}(\epsilon_{i,t-j}, \epsilon_{i,t}) = \rho^j \sigma^2_\epsilon$.  The covariance shrinks with $s$ but is never zero.  Older lags are weaker violations, not valid instruments.  Under AR errors we need an explicit model of the error process, different moment restrictions, or external instruments.</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>One implication of the assumption is testable, which is the point of the Arellano-Bond test for serial correlation in the differenced residuals.  First-order correlation is expected by construction, since $\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ share $\epsilon_{i,t-1}$; it is the *second*-order test that carries information.  Rejecting AR(2) says $\epsilon_{i,t}$ is serially correlated, so $y_{i,t-2}$ is not a valid instrument.  If the correlation is a short moving average, deeper lags restore validity; if it is autoregressive, they do not.</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>The other regressors need classifying too, because that is what decides how they are instrumented.  Strictly exogenous $X$ can serve as its own instrument.  Predetermined $X$ -- correlated with past shocks but not with current or future ones -- is instrumented by its own lags from $t-1$ backwards.  Endogenous $X$ is treated like the lagged dependent variable, with lags from $t-2$ backwards.  Misclassifying a regressor here is one of the commoner ways a difference-GMM specification goes quietly invalid.</span>
 <span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>$$Z_i =</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>y_{i,1} &amp; \  0 &amp; \ 0 &amp; \ 0</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>&amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 <span class="sc">\\</span>  0 &amp; \  y_{i,1} &amp; \ y_{i,2} &amp;</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>\ 0 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 <span class="sc">\\</span>  0 &amp; \ 0 &amp; \  0 &amp; \</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0  <span class="sc">\\</span>   \vdots  &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \ddots  &amp; \ \cdots &amp; \ \vdots &amp; \  \vdots &amp; \ \vdots <span class="sc">\\</span> 0 &amp; \  0 &amp; \  0 &amp; \ 0 &amp; \ 0 &amp; \ \cdots  &amp; \ 0 &amp; \ y_{i,1} &amp; \  \cdots &amp; \ y_{i,T-2}</span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dynamic-panel-7}</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>This is the so called difference GMM estimator.</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blundell and Bond estimator</span></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>AB model has a problem:  when the instruments are weak, the estimator is not good.  That will happen when $y$ follows random walk or near random walk.  In that case the past levels won't be a good predictor of the future changes.</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Arellano-Bond estimator</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>@arellano-bond-1991 expanded the idea by using additional lags of the dependent variable as instruments.  For example, both $y_{i,t-2}$ and $y_{i,t-3}$ can be used as instruments.  In fact, as $t$ increases, the number of instruments available also increases.  In period 3 only $y_{i,1}$ is available.  In period 4 $y_{i,1}$ and $y_{i,2}$ are available.  In period 5  $y_{i,1}$ and $y_{i,2}$ and  $y_{i,3}$ are available, and so on.  In other words, we'll have an instrument matrix with one row for each time period that we are instrumenting:</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a>$$Z_i =</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>\begin{bmatrix}</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>y_{i,1} &amp; \  0 &amp; \ 0 &amp; \ 0</span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>&amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 <span class="sc">\\</span>  0 &amp; \  y_{i,1} &amp; \ y_{i,2} &amp;</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>\ 0 &amp; \  0 &amp; \ 0 &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0 <span class="sc">\\</span>  0 &amp; \ 0 &amp; \  0 &amp; \</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>y_{i,1} &amp; \ y_{i,2} &amp; \ y_{i,3}  &amp; \ \cdots &amp; \ 0 &amp; \  0 &amp; \ 0  <span class="sc">\\</span>   \vdots  &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \vdots &amp; \  \ddots  &amp; \ \cdots &amp; \ \vdots &amp; \  \vdots &amp; \ \vdots <span class="sc">\\</span> 0 &amp; \  0 &amp; \  0 &amp; \ 0 &amp; \ 0 &amp; \ \cdots  &amp; \ 0 &amp; \ y_{i,1} &amp; \  \cdots &amp; \ y_{i,T-2}</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>\end{bmatrix}</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>$$ {#eq-dynamic-panel-7}</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>@blundell-bond-1998 add a second set of moment conditions in *levels*.  The basic idea</span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>is that lagged differences $\Delta y_{i,t-1}$ are uncorrelated with the</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a>composite error $C_i + \epsilon_{i,t}$ under an additional</span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>initial-condition/stationarity restriction, so they can instrument the</span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>level equation.</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>This is the so called difference GMM estimator.</span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="fu">## Blundell and Bond estimator</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>AB model has a problem:  when the instruments are weak, the estimator is not good.  That will happen when $y$ follows random walk or near random walk.  In that case the past levels won't be a good predictor of the future changes.</span>
 <span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>This is implemented by so-called *system GMM*, which stacks two</span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>equations and estimates them jointly:</span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the **differenced equation** ($\Delta y_{i,t}$), instrumented by</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>  lagged *levels* $y_{i,t-2}, y_{i,t-3}, \dots$ (the Arellano--Bond</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>  moments); and</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the **level equation** ($y_{i,t}$ in levels, keeping $C_i$),</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>  instrumented by lagged *differences* $\Delta y_{i,t-1}$.</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>@blundell-bond-1998 add a second set of moment conditions in *levels*.  The basic idea</span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>is that lagged differences $\Delta y_{i,t-1}$ are uncorrelated with the</span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>composite error $C_i + \epsilon_{i,t}$ under an additional</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>initial-condition/stationarity restriction, so they can instrument the</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>level equation.</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>This is implemented by so-called *system GMM*, which stacks two</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>equations and estimates them jointly:</span>
 <span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>The level-equation moments are valid only under the extra assumption</span>
-<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>that the initial deviations from the long-run mean are uncorrelated</span>
-<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>with $C_i$ (mean stationarity of the process).  System GMM is more</span>
-<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>efficient than difference GMM when $y$ is persistent (near a random</span>
-<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>walk), and the level equation lets time-invariant regressors enter, which</span>
-<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>differencing removes altogether.  That they appear is not the same as their</span>
-<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>coefficients being identified.  A time-invariant regressor has no within</span>
-<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>variation, so its own lagged differences cannot instrument it.  Identification</span>
-<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>comes from the level moments, and it requires the regressor to be uncorrelated</span>
-<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>with the unit effect $C_i$, or an external instrument for it.  For a</span>
-<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>time-invariant regressor correlated with $C_i$ and lacking such an instrument,</span>
-<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>system GMM reports a coefficient that is not identified.  A practical warning:</span>
-<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>the instrument count grows with $T^2$, so *instrument proliferation*</span>
-<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>can overfit the endogenous regressors and weaken the Hansen $J$ test;</span>
-<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>lags should be collapsed or capped in practice.</span>
-<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="fu">## Diagnostics in practice</span></span>
-<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>The warning about instrument proliferation is easy to state and easy to ignore.  It</span>
-<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>is worth seeing what it does to real estimates, and what the standard diagnostics</span>
-<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>look like when they are working.</span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the **differenced equation** ($\Delta y_{i,t}$), instrumented by</span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>  lagged *levels* $y_{i,t-2}, y_{i,t-3}, \dots$ (the Arellano--Bond</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>  moments); and</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>the **level equation** ($y_{i,t}$ in levels, keeping $C_i$),</span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a>  instrumented by lagged *differences* $\Delta y_{i,t-1}$.</span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a>The level-equation moments are valid only under the extra assumption</span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a>that the initial deviations from the long-run mean are uncorrelated</span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a>with $C_i$ (mean stationarity of the process).  System GMM is more</span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a>efficient than difference GMM when $y$ is persistent (near a random</span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>walk), and the level equation lets time-invariant regressors enter, which</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a>differencing removes altogether.  That they appear is not the same as their</span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a>coefficients being identified.  A time-invariant regressor has no within</span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a>variation, so its own lagged differences cannot instrument it.  Identification</span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>comes from the level moments, and it requires the regressor to be uncorrelated</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a>with the unit effect $C_i$, or an external instrument for it.  For a</span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a>time-invariant regressor correlated with $C_i$ and lacking such an instrument,</span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a>system GMM reports a coefficient that is not identified.  A practical warning:</span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a>the instrument count grows with $T^2$, so *instrument proliferation*</span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>can overfit the endogenous regressors and weaken the Hansen $J$ test;</span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a>lags should be collapsed or capped in practice.</span>
 <span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a>The data are Arellano and Bond's own: an unbalanced panel of 140 UK firms observed</span>
-<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>between 1976 and 1984, shipped with <span class="in">`plm`</span> as <span class="in">`EmplUK`</span>.  The specification is theirs</span>
-<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>too -- log employment on its own first two lags, current and lagged log wages, three</span>
-<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>lags of log capital, current and lagged log output, with firm and year effects</span>
-<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>removed and two-step weighting.  Only the instrument set changes across the three</span>
-<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a>fits: every available lag of log employment from $t-2$ back, the same capped at</span>
-<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>three lags, and then the system-GMM version that adds the level-equation moments.</span>
-<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dynpanel-diagnostics</span></span>
-<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
-<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"EmplUK"</span>, <span class="at">package =</span> <span class="st">"plm"</span>)</span>
-<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a>dif_full <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
-<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>),</span>
-<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>)</span>
-<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a>dif_cap  <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
-<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>),</span>
-<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>)</span>
-<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a>sys      <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
-<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>),</span>
-<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>,</span>
-<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>                 <span class="at">transformation =</span> <span class="st">"ld"</span>)</span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## Diagnostics in practice</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a>The warning about instrument proliferation is easy to state and easy to ignore.  It</span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a>is worth seeing what it does to real estimates, and what the standard diagnostics</span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a>look like when they are working.</span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a>The data are Arellano and Bond's own: an unbalanced panel of 140 UK firms observed</span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>between 1976 and 1984, shipped with <span class="in">`plm`</span> as <span class="in">`EmplUK`</span>.  The specification is theirs</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a>too -- log employment on its own first two lags, current and lagged log wages, three</span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>lags of log capital, current and lagged log output, with firm and year effects</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>removed and two-step weighting.  Only the instrument set changes across the three</span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a>fits: every available lag of log employment from $t-2$ back, the same capped at</span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>three lags, and then the system-GMM version that adds the level-equation moments.</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dynpanel-diagnostics</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"EmplUK"</span>, <span class="at">package =</span> <span class="st">"plm"</span>)</span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a>dif_full <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>),</span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>)</span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>dif_cap  <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>),</span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>)</span>
 <span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>diag_row <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, label) {</span>
-<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>  co <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit, <span class="at">robust =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>coefficients</span>
-<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>  sg <span class="ot">&lt;-</span> <span class="fu">sargan</span>(fit)</span>
-<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">specification =</span> label,</span>
-<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>             <span class="at">moments  =</span> <span class="fu">ncol</span>(fit<span class="sc">$</span>W[[<span class="dv">1</span>]]),</span>
-<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>             <span class="at">lag1     =</span> <span class="fu">round</span>(co[<span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">3</span>),</span>
-<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>             <span class="at">se       =</span> <span class="fu">round</span>(co[<span class="dv">1</span>, <span class="dv">2</span>], <span class="dv">3</span>),</span>
-<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>             <span class="at">lag2     =</span> <span class="fu">round</span>(co[<span class="dv">2</span>, <span class="dv">1</span>], <span class="dv">3</span>),</span>
-<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>             <span class="at">max_root =</span> <span class="fu">round</span>(<span class="fu">max</span>(<span class="fu">Mod</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="sc">-</span>co[<span class="dv">2</span>, <span class="dv">1</span>], <span class="sc">-</span>co[<span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">1</span>)))), <span class="dv">3</span>),</span>
-<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>             <span class="at">sargan_p =</span> <span class="fu">round</span>(sg<span class="sc">$</span>p.value, <span class="dv">3</span>),</span>
-<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>             <span class="at">AR1_p    =</span> <span class="fu">round</span>(<span class="fu">mtest</span>(fit, <span class="at">order =</span> <span class="dv">1</span>)<span class="sc">$</span>p.value, <span class="dv">3</span>),</span>
-<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>             <span class="at">AR2_p    =</span> <span class="fu">round</span>(<span class="fu">mtest</span>(fit, <span class="at">order =</span> <span class="dv">2</span>)<span class="sc">$</span>p.value, <span class="dv">3</span>))</span>
-<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">diag_row</span>(dif_full, <span class="st">"difference GMM, lags 2+"</span>),</span>
-<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>      <span class="fu">diag_row</span>(dif_cap,  <span class="st">"difference GMM, lags 2-4"</span>),</span>
-<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>      <span class="fu">diag_row</span>(sys,      <span class="st">"system GMM"</span>))</span>
-<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a>Read the AR columns first, because they are the ones that can invalidate everything</span>
-<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>else.  First-order serial correlation in the differenced residuals is expected:</span>
-<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>$\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ both contain</span>
-<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>$\epsilon_{i,t-1}$, so a small AR(1) $p$-value is the normal state of affairs and</span>
-<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>says nothing against the specification.  The AR(2) test is the informative one, and</span>
-<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>none of the three fits shows evidence that the instrumenting lag sits too close.</span>
-<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>The Sargan column passes in all three cases, which is exactly where the</span>
-<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>instrument-count warning earns its keep.  The full difference-GMM fit imposes 40</span>
-<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>moment conditions on 15 parameters across 140 firms; the system-GMM fit imposes 55.</span>
-<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>A Sargan or Hansen test with many moments and few groups has little power, so a</span>
-<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>comfortable $p$-value is weak reassurance rather than strong evidence.  The test is</span>
-<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>being asked to detect a violation using an instrument set flexible enough to fit</span>
-<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>almost anything.</span>
-<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>The coefficients show what that costs.  Capping the instruments at three lags cuts</span>
-<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>the moment conditions from 40 to 30, moves the coefficient on lagged log employment</span>
-<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>from about $0.65$ to about $0.44$, and nearly doubles its standard error.  That is</span>
-<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>the honest trade: fewer, better-behaved instruments give less precision.  System GMM</span>
-<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>goes the other way and returns a first-lag coefficient above $1$ with a standard</span>
-<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a>error near $0.05$, which should stop the reader rather than reassure them.  With two</span>
-<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>lags, the first coefficient alone does not decide whether the process is stable.</span>
-<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>Write $\gamma_1$ and $\gamma_2$ for the coefficients on the first and second lags of</span>
-<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>log employment.  The process is stable when both roots $z$ of</span>
-<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>$z^2 - \gamma_1 z - \gamma_2 = 0$ have modulus below one, and <span class="in">`max_root`</span> reports the</span>
-<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>larger modulus.  A first-lag coefficient of 1.1 with a second-lag coefficient of</span>
-<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>$-0.3$, for example, gives roots 0.6 and 0.5, which is stable.  For system GMM the</span>
-<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>coefficients are 1.114 and $-0.099$ and the larger root is 1.017, so the point</span>
-<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>estimate implies an explosive employment process.  The tight interval around it</span>
-<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>comes from 55 moment conditions on 140 firms.  Every diagnostic in the</span>
-<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>table passes.  The estimate is still not credible.</span>
-<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>So what to report: the AR(2) test, the Sargan or Hansen statistic with its degrees</span>
-<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>of freedom, the instrument count next to the number of groups, and the estimate</span>
-<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>under at least one narrower instrument set.  The last of those does most of the</span>
-<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>work, because it is the one thing in the list that a flexible instrument set cannot</span>
-<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>make look good.</span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a>sys      <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(<span class="fu">log</span>(emp) <span class="sc">~</span> <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(wage), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(capital), <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(<span class="fu">log</span>(output), <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>) <span class="sc">|</span></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">lag</span>(<span class="fu">log</span>(emp), <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>),</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data =</span> EmplUK, <span class="at">effect =</span> <span class="st">"twoways"</span>, <span class="at">model =</span> <span class="st">"twosteps"</span>,</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>                 <span class="at">transformation =</span> <span class="st">"ld"</span>)</span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>diag_row <span class="ot">&lt;-</span> <span class="cf">function</span>(fit, label) {</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>  co <span class="ot">&lt;-</span> <span class="fu">summary</span>(fit, <span class="at">robust =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>coefficients</span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>  sg <span class="ot">&lt;-</span> <span class="fu">sargan</span>(fit)</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">specification =</span> label,</span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>             <span class="at">moments  =</span> <span class="fu">ncol</span>(fit<span class="sc">$</span>W[[<span class="dv">1</span>]]),</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>             <span class="at">lag1     =</span> <span class="fu">round</span>(co[<span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">3</span>),</span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a>             <span class="at">se       =</span> <span class="fu">round</span>(co[<span class="dv">1</span>, <span class="dv">2</span>], <span class="dv">3</span>),</span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>             <span class="at">lag2     =</span> <span class="fu">round</span>(co[<span class="dv">2</span>, <span class="dv">1</span>], <span class="dv">3</span>),</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>             <span class="at">max_root =</span> <span class="fu">round</span>(<span class="fu">max</span>(<span class="fu">Mod</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="sc">-</span>co[<span class="dv">2</span>, <span class="dv">1</span>], <span class="sc">-</span>co[<span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">1</span>)))), <span class="dv">3</span>),</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>             <span class="at">sargan_p =</span> <span class="fu">round</span>(sg<span class="sc">$</span>p.value, <span class="dv">3</span>),</span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>             <span class="at">AR1_p    =</span> <span class="fu">round</span>(<span class="fu">mtest</span>(fit, <span class="at">order =</span> <span class="dv">1</span>)<span class="sc">$</span>p.value, <span class="dv">3</span>),</span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>             <span class="at">AR2_p    =</span> <span class="fu">round</span>(<span class="fu">mtest</span>(fit, <span class="at">order =</span> <span class="dv">2</span>)<span class="sc">$</span>p.value, <span class="dv">3</span>))</span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="fu">diag_row</span>(dif_full, <span class="st">"difference GMM, lags 2+"</span>),</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>      <span class="fu">diag_row</span>(dif_cap,  <span class="st">"difference GMM, lags 2-4"</span>),</span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>      <span class="fu">diag_row</span>(sys,      <span class="st">"system GMM"</span>))</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>Read the AR columns first, because they are the ones that can invalidate everything</span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>else.  First-order serial correlation in the differenced residuals is expected:</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>$\Delta \epsilon_{i,t}$ and $\Delta \epsilon_{i,t-1}$ both contain</span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>$\epsilon_{i,t-1}$, so a small AR(1) $p$-value is the normal state of affairs and</span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>says nothing against the specification.  The AR(2) test is the informative one, and</span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>none of the three fits shows evidence that the instrumenting lag sits too close.</span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>The Sargan column passes in all three cases, which is exactly where the</span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>instrument-count warning earns its keep.  The full difference-GMM fit imposes 40</span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>moment conditions on 15 parameters across 140 firms; the system-GMM fit imposes 55.</span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>A Sargan or Hansen test with many moments and few groups has little power, so a</span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>comfortable $p$-value is weak reassurance rather than strong evidence.  The test is</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>being asked to detect a violation using an instrument set flexible enough to fit</span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>almost anything.</span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a>The coefficients show what that costs.  Capping the instruments at three lags cuts</span>
+<span id="cb3-198"><a href="#cb3-198" aria-hidden="true" tabindex="-1"></a>the moment conditions from 40 to 30, moves the coefficient on lagged log employment</span>
+<span id="cb3-199"><a href="#cb3-199" aria-hidden="true" tabindex="-1"></a>from about $0.65$ to about $0.44$, and nearly doubles its standard error.  That is</span>
+<span id="cb3-200"><a href="#cb3-200" aria-hidden="true" tabindex="-1"></a>the honest trade: fewer, better-behaved instruments give less precision.  System GMM</span>
+<span id="cb3-201"><a href="#cb3-201" aria-hidden="true" tabindex="-1"></a>goes the other way and returns a first-lag coefficient above $1$ with a standard</span>
+<span id="cb3-202"><a href="#cb3-202" aria-hidden="true" tabindex="-1"></a>error near $0.05$, which should stop the reader rather than reassure them.  With two</span>
+<span id="cb3-203"><a href="#cb3-203" aria-hidden="true" tabindex="-1"></a>lags, the first coefficient alone does not decide whether the process is stable.</span>
+<span id="cb3-204"><a href="#cb3-204" aria-hidden="true" tabindex="-1"></a>Write $\gamma_1$ and $\gamma_2$ for the coefficients on the first and second lags of</span>
+<span id="cb3-205"><a href="#cb3-205" aria-hidden="true" tabindex="-1"></a>log employment.  The process is stable when both roots $z$ of</span>
+<span id="cb3-206"><a href="#cb3-206" aria-hidden="true" tabindex="-1"></a>$z^2 - \gamma_1 z - \gamma_2 = 0$ have modulus below one, and <span class="in">`max_root`</span> reports the</span>
+<span id="cb3-207"><a href="#cb3-207" aria-hidden="true" tabindex="-1"></a>larger modulus.  A first-lag coefficient of 1.1 with a second-lag coefficient of</span>
+<span id="cb3-208"><a href="#cb3-208" aria-hidden="true" tabindex="-1"></a>$-0.3$, for example, gives roots 0.6 and 0.5, which is stable.  For system GMM the</span>
+<span id="cb3-209"><a href="#cb3-209" aria-hidden="true" tabindex="-1"></a>coefficients are 1.114 and $-0.099$ and the larger root is 1.017, so the point</span>
+<span id="cb3-210"><a href="#cb3-210" aria-hidden="true" tabindex="-1"></a>estimate implies an explosive employment process.  The tight interval around it</span>
+<span id="cb3-211"><a href="#cb3-211" aria-hidden="true" tabindex="-1"></a>comes from 55 moment conditions on 140 firms.  Every diagnostic in the</span>
+<span id="cb3-212"><a href="#cb3-212" aria-hidden="true" tabindex="-1"></a>table passes.  The estimate is still not credible.</span>
 <span id="cb3-213"><a href="#cb3-213" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a>A lagged dependent variable is correlated with the unit effect, so pooled OLS and random effects are inconsistent. Fixed effects is inconsistent too when $T$ is small, because the demeaned lag is correlated with the demeaned error. This is the Nickell bias, roughly $-(1+\gamma)/(T-1)$. Anderson-Hsiao first-differences the model and instruments the lagged difference with earlier levels. Arellano-Bond difference GMM uses all available lags as instruments. Blundell-Bond system GMM adds moments in levels, which helps when the series is persistent but needs an initial-condition restriction.</span>
-<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>On Arellano and Bond's UK firm data, every diagnostic passes for all three instrument sets. Capping the instruments at three lags moves the employment coefficient from about 0.65 to 0.44 and nearly doubles its standard error. System GMM returns a first-lag coefficient above 1 with a small standard error. With both lags, the larger root of the lag polynomial is 1.017, so the point estimate implies an explosive process, which is not credible. Report the AR(2) test, the Sargan or Hansen statistic with its degrees of freedom, and the instrument count against the number of groups. Also report the estimate under a narrower instrument set.</span>
+<span id="cb3-214"><a href="#cb3-214" aria-hidden="true" tabindex="-1"></a>So what to report: the AR(2) test, the Sargan or Hansen statistic with its degrees</span>
+<span id="cb3-215"><a href="#cb3-215" aria-hidden="true" tabindex="-1"></a>of freedom, the instrument count next to the number of groups, and the estimate</span>
+<span id="cb3-216"><a href="#cb3-216" aria-hidden="true" tabindex="-1"></a>under at least one narrower instrument set.  The last of those does most of the</span>
+<span id="cb3-217"><a href="#cb3-217" aria-hidden="true" tabindex="-1"></a>work, because it is the one thing in the list that a flexible instrument set cannot</span>
+<span id="cb3-218"><a href="#cb3-218" aria-hidden="true" tabindex="-1"></a>make look good.</span>
+<span id="cb3-219"><a href="#cb3-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-220"><a href="#cb3-220" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb3-221"><a href="#cb3-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-222"><a href="#cb3-222" aria-hidden="true" tabindex="-1"></a>A lagged dependent variable is correlated with the unit effect, so pooled OLS and random effects are inconsistent. Fixed effects is inconsistent too when $T$ is small, because the demeaned lag is correlated with the demeaned error. This is the Nickell bias, roughly $-(1+\gamma)/(T-1)$. Anderson-Hsiao first-differences the model and instruments the lagged difference with earlier levels. Arellano-Bond difference GMM uses all available lags as instruments. Blundell-Bond system GMM adds moments in levels, which helps when the series is persistent but needs an initial-condition restriction.</span>
+<span id="cb3-223"><a href="#cb3-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-224"><a href="#cb3-224" aria-hidden="true" tabindex="-1"></a>On Arellano and Bond's UK firm data, every diagnostic passes for all three instrument sets. Capping the instruments at three lags moves the employment coefficient from about 0.65 to 0.44 and nearly doubles its standard error. System GMM returns a first-lag coefficient above 1 with a small standard error. With both lags, the larger root of the lag polynomial is 1.017, so the point estimate implies an explosive process, which is not credible. Report the AR(2) test, the Sargan or Hansen statistic with its degrees of freedom, and the instrument count against the number of groups. Also report the estimate under a narrower instrument set.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

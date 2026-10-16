@@ -223,7 +223,7 @@ $$
 {{\mathrm{E}}} {\symbf{(\hat \beta | X)=\beta + (X'X)^{-1}X'{E} (u|X).
 }}$$ {#eq-ols-18}
 
-The condition that makes the OLS estimator unbiased is:
+The standard sufficient condition for unbiasedness is:
 $$
 {{\mathrm{E}}} {\symbf{(u|X)=0,
 }}$$ {#eq-ols-19}
@@ -237,8 +237,9 @@ In the context of cross-sectional data, this assumption is plausible.
 However, when we have time series data, the assumption becomes strong,
 because it assumes that the entire series of ${\symbf{X}}$ has no
 relationship with the error term.  In a time series context, this is
-hard to satisfy.  The OLS estimator is biased if this condition
-is not satisfied.
+hard to satisfy.  Strictly, unbiasedness needs only $X'E(u \mid X) = 0$, so a
+failure of @eq-ols-19 does not by itself prove bias, but in time series it
+typically produces it.
 
 For example, suppose we have a model
 
@@ -247,8 +248,11 @@ $$ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \s
 In this simple model, even if we assume that $y_{t-1}$ and $u_t$ are
 uncorrelated, OLS estimator is still biased.  That is because
 ${{\mathrm{E}}} {\symbf{(u|X)=0}}$
-is not satisfied: $y_{t-1}$ depends on $u_{t-1}$,
-$u_{t-2}$ and so on.
+is not satisfied.  The problem is not that $y_{t-1}$ contains the older errors
+$u_{t-1}, u_{t-2}, \ldots$; those are uncorrelated with $u_t$.  It is that $u_t$
+enters $y_t$, and $y_t$ is the regressor in the next row.  Conditioning on the
+whole regressor matrix $X$ means conditioning on future rows, and those depend on
+$u_t$, so $E(u_t \mid X) \neq 0$.
 
 
 There is a weaker condition -- weaker than the strict exogeneity above, and in fact

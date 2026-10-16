@@ -492,9 +492,9 @@ p_i(1-\hat p_i)\hat\beta\)</span>, which is what software reports.</p>
 p =\frac{\exp( X_i' \beta)}{1+\exp(X_i'
 \beta)}=\Lambda( X_i' \beta)
 \tag{8.29}\]</span></span></p>
-<p>Often times we have discrete valued predictors, such as gender, or other dummy variables. In that case, it makes more sense to ask what’s the effect of gender being 1 vs.&nbsp;0 (female vs.&nbsp;male). What this question is can be formulated as:</p>
-<p><span id="eq-count-data-30"><span class="math display">\[ E(p | x_1=1) - E(p | x_1=0).  \tag{8.30}\]</span></span></p>
-<p>In empirical analysis, it’s often calculated by calculating the predicted probability by setting <span class="math inline">\(x_1\)</span> to 1 and by setting <span class="math inline">\(x_1\)</span> to 0. Then calculate the difference.</p>
+<p>Often times we have discrete valued predictors, such as gender, or other dummy variables. In that case, it makes more sense to ask what’s the effect of gender being 1 vs.&nbsp;0 (female vs.&nbsp;male). Write <span class="math inline">\(x_{1i}\)</span> for the dummy and <span class="math inline">\(\beta_1\)</span> for its coefficient, <span class="math inline">\(X_{-1,i}\)</span> for unit <span class="math inline">\(i\)</span>’s other covariates and <span class="math inline">\(\beta_{-1}\)</span> for their coefficients, with the intercept included in <span class="math inline">\(X_{-1,i}\)</span>. The average discrete change sets the dummy to 1 and then to 0 for every unit, holding the other covariates at their observed values, and averages the difference over the <span class="math inline">\(n\)</span> units:</p>
+<p><span id="eq-count-data-30"><span class="math display">\[ \frac{1}{n}\sum_{i=1}^n \left[ \Lambda(\beta_1 + X_{-1,i}'\beta_{-1}) - \Lambda(X_{-1,i}'\beta_{-1}) \right].  \tag{8.30}\]</span></span></p>
+<p>This is what software computes when it predicts with <span class="math inline">\(x_1\)</span> set to 1, then to 0, and takes the mean difference. It is not the group comparison <span class="math inline">\(E(p \mid x_1=1) - E(p \mid x_1=0)\)</span>, which averages over two different covariate distributions.</p>
 </section>
 <section id="count-data-models" class="level3" data-number="8.9.3">
 <h3 data-number="8.9.3" class="anchored" data-anchor-id="count-data-models"><span class="header-section-number">8.9.3</span> Count Data Models</h3>
@@ -1365,11 +1365,11 @@ Wooldridge, Jeffrey M. 1999. <span>“Distribution-Free Estimation of Some Nonli
 <span id="cb1-353"><a href="#cb1-353" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-354"><a href="#cb1-354" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-355"><a href="#cb1-355" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  What this question is can be formulated as:</span>
+<span id="cb1-356"><a href="#cb1-356" aria-hidden="true" tabindex="-1"></a>Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  Write $x_{1i}$ for the dummy and $\beta_1$ for its coefficient, $X_{-1,i}$ for unit $i$'s other covariates and $\beta_{-1}$ for their coefficients, with the intercept included in $X_{-1,i}$.  The average discrete change sets the dummy to 1 and then to 0 for every unit, holding the other covariates at their observed values, and averages the difference over the $n$ units:</span>
 <span id="cb1-357"><a href="#cb1-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>$$ E(p | x_1=1) - E(p | x_1=0). $$ {#eq-count-data-30}</span>
+<span id="cb1-358"><a href="#cb1-358" aria-hidden="true" tabindex="-1"></a>$$ \frac{1}{n}\sum_{i=1}^n \left<span class="co">[</span><span class="ot"> \Lambda(\beta_1 + X_{-1,i}'\beta_{-1}) - \Lambda(X_{-1,i}'\beta_{-1}) \right</span><span class="co">]</span>. $$ {#eq-count-data-30}</span>
 <span id="cb1-359"><a href="#cb1-359" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>In empirical analysis, it's often calculated by calculating the predicted probability by setting $x_1$ to 1 and by setting $x_1$ to 0.  Then calculate the difference.</span>
+<span id="cb1-360"><a href="#cb1-360" aria-hidden="true" tabindex="-1"></a>This is what software computes when it predicts with $x_1$ set to 1, then to 0, and takes the mean difference.  It is not the group comparison $E(p \mid x_1=1) - E(p \mid x_1=0)$, which averages over two different covariate distributions.</span>
 <span id="cb1-361"><a href="#cb1-361" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-362"><a href="#cb1-362" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-363"><a href="#cb1-363" aria-hidden="true" tabindex="-1"></a><span class="fu">### Count Data Models</span></span>

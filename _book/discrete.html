@@ -379,7 +379,7 @@ y_t = 2 &amp; \mbox{if} \ y_t^0 \geq \gamma_2.
 \gamma_1- {{\symbf{X}}}_t \beta )
 \tag{7.12}\]</span></span></p>
 <p>These probabilities depend solely on the value of the index function and on the two threshold parameters.</p>
-<p>Two normalizations are needed before any of this can be estimated, and they are easy to pass over. First, the <em>location</em>: an intercept in <span class="math inline">\({{\symbf{X}}}_t \beta\)</span> and both thresholds cannot be identified together, since adding a constant to the index and the same constant to <span class="math inline">\(\gamma_1\)</span> and <span class="math inline">\(\gamma_2\)</span> leaves every probability unchanged. Software resolves this by dropping the intercept or by fixing <span class="math inline">\(\gamma_1 = 0\)</span>. Second, the <em>scale</em>: that is what setting <span class="math inline">\(\mbox{Var}(u_t) = 1\)</span> above does, since multiplying the index, the thresholds and <span class="math inline">\(u_t\)</span> by any positive constant is likewise unobservable. The analogous restriction for the multinomial logit below is <span class="math inline">\(\beta^0 = 0\)</span>.</p>
+<p>Two normalizations are needed before any of this can be estimated, and they are easy to pass over. First, the <em>location</em>: an intercept in <span class="math inline">\({{\symbf{X}}}_t \beta\)</span> and both thresholds cannot be identified together, since adding a constant to the index and the same constant to <span class="math inline">\(\gamma_1\)</span> and <span class="math inline">\(\gamma_2\)</span> leaves every probability unchanged. Software resolves this by dropping the intercept or by fixing <span class="math inline">\(\gamma_1 = 0\)</span>. Second, the <em>scale</em>: that is what setting <span class="math inline">\(\mbox{Var}(u_t) = 1\)</span> above does, since multiplying the index, the thresholds and <span class="math inline">\(u_t\)</span> by any positive constant is likewise unobservable. The multinomial logit below needs a location normalization of its own, <span class="math inline">\(\beta^0 = 0\)</span>: adding the same vector to every alternative’s coefficients leaves all choice probabilities unchanged. Its scale is fixed by the extreme-value error distribution, much as <span class="math inline">\(\mbox{Var}(u_t) = 1\)</span> fixes it here.</p>
 <p>The loglikelihood function is <span id="eq-discrete-13"><span class="math display">\[
 \ell (\beta, \gamma_1, \gamma_2) = \sum_{y_t=0} \log(\Phi
 (\gamma_1 - {{\symbf{X}}}_t \beta)) + \sum_{y_t=2} \log(\Phi ( {{\symbf{X}}}_t
@@ -1019,92 +1019,95 @@ y_t = 2 &amp; \mbox{if} \ y_t^0 \geq \gamma_2.
 <span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>unchanged.  Software resolves this by dropping the intercept or by fixing</span>
 <span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a>$\gamma_1 = 0$.  Second, the *scale*: that is what setting</span>
 <span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a>$\mbox{Var}(u_t) = 1$ above does, since multiplying the index, the thresholds and</span>
-<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$u_t$ by any positive constant is likewise unobservable.  The analogous</span>
-<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>restriction for the multinomial logit below is $\beta^0 = 0$.</span>
-<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>The loglikelihood function is</span>
-<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a>\ell (\beta, \gamma_1, \gamma_2) = \sum_{y_t=0} \log(\Phi</span>
-<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>(\gamma_1 - {{\symbf{X}}}_t \beta)) + \sum_{y_t=2} \log(\Phi ( {{\symbf{X}}}_t</span>
-<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>\beta - \gamma_2)) +  \sum_{y_t=1} \log(\Phi ( \gamma_2  - {{\symbf{X}}}_t \beta ) -\Phi ( \gamma_1  - {{\symbf{X}}}_t \beta ))</span>
-<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-13}</span>
-<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Multinomial Logit</span></span>
-<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a>When responses are unordered, two popular choices are multinomial logit and conditional logit. They are easy to conflate because they share the same softmax form, but they differ in what varies across the $J+1$ alternatives $l=0,\dots,J$: in multinomial logit the *regressors* are individual-specific and only the *coefficients* vary by alternative; in conditional logit it's the reverse.</span>
-<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a>**Multinomial logit.** Here the regressor vector ${\symbf{X_t}}$ (individual-specific characteristics, e.g. age, income) is the same for every alternative, and it is the coefficient vector that is alternative-specific:</span>
-<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({{\symbf{X}}}_t</span>
-<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a>\beta^l)}{\sum_{j=0}^J\exp({{\symbf{X}}}_t \beta^j)} \quad \mbox{for}</span>
-<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
-<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-14}</span>
-<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>Here ${\symbf{X_t}}$ is a row vector of length $k$ of individual-specific covariates, and $\beta^l$ is a $k$-vector of alternative-specific parameters. For identification one category is taken as the base with $\beta^0=0$ (so its numerator is $1$).</span>
-<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a>**Conditional logit.** Here it is the regressors that vary by alternative (e.g. the price or characteristics of choice $j$ itself), while the coefficient vector is common across alternatives:</span>
-<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({{\symbf{W}}}_{tl}</span>
-<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a>\beta)}{\sum_{j=0}^J\exp({{\symbf{W}}}_{tj} \beta)} \quad \mbox{for}</span>
-<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
-<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-15}</span>
-<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>Here ${{\symbf{W}}}_{tj}$ is a row vector of length $k$ of alternative-$j$-specific</span>
-<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>variables, and $\beta$ is a single $k$-vector of parameters shared across</span>
-<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a>all alternatives $j=0,\dots,J$.</span>
-<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>For binary and multinomial models alike, the coefficients $\beta$ do</span>
-<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>not directly measure the effect of a unit change in $X$ on the</span>
-<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a>probability.  That effect depends on where in the distribution the</span>
-<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>change occurs.  The average marginal effect (AME) --- averaging the</span>
-<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>partial effect over the observed distribution of covariates --- is the</span>
-<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>standard summary.  The full treatment of AME vs.\ marginal effects at</span>
-<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>the mean, including fixed-effects models, is in the</span>
-<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Blog Book</span><span class="co">](https://xiangao.github.io/blog_book/marginal-effects-fe.html)</span>.</span>
-<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>Writing *both* choice-varying regressors ${{\symbf{W}}}_{tl}$ *and* choice-specific coefficients $\beta^l$ into the same formula, as some treatments do, conflates the two models.  It is worth being precise about what that costs, because the usual complaint -- that such a specification is not identified -- is not true.  Choice probabilities depend only on utility *differences*, so $\Pr(y_t=l)$ is governed by ${{\symbf{W}}}_{tj}\beta^j - {{\symbf{W}}}_{tl}\beta^l$; when the ${{\symbf{W}}}_{tj}$ vary independently across alternatives, those differences pin down each $\beta^j$ separately, with no normalization required.  It is a perfectly estimable model -- it is what Stata's <span class="in">`asclogit`</span> fits when alternative-specific coefficients are requested.</span>
-<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a>What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  One caveat on "no normalization required" above: it concerns the slope coefficients $\beta^j$.  If the specification also carries alternative-specific intercepts, those are identified only up to a location shift and one of them still has to be fixed.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.</span>
-<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence of Irrelevant Alternatives</span></span>
-<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a>Both logit forms carry a restriction that comes from the softmax itself.  Take the</span>
-<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a>ratio of two choice probabilities.  With individual-specific regressors,</span>
+<span id="cb1-128"><a href="#cb1-128" aria-hidden="true" tabindex="-1"></a>$u_t$ by any positive constant is likewise unobservable.  The multinomial</span>
+<span id="cb1-129"><a href="#cb1-129" aria-hidden="true" tabindex="-1"></a>logit below needs a location normalization of its own, $\beta^0 = 0$: adding the</span>
+<span id="cb1-130"><a href="#cb1-130" aria-hidden="true" tabindex="-1"></a>same vector to every alternative's coefficients leaves all choice probabilities</span>
+<span id="cb1-131"><a href="#cb1-131" aria-hidden="true" tabindex="-1"></a>unchanged.  Its scale is fixed by the extreme-value error distribution, much as</span>
+<span id="cb1-132"><a href="#cb1-132" aria-hidden="true" tabindex="-1"></a>$\mbox{Var}(u_t) = 1$ fixes it here.</span>
+<span id="cb1-133"><a href="#cb1-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-134"><a href="#cb1-134" aria-hidden="true" tabindex="-1"></a>The loglikelihood function is</span>
+<span id="cb1-135"><a href="#cb1-135" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-136"><a href="#cb1-136" aria-hidden="true" tabindex="-1"></a>\ell (\beta, \gamma_1, \gamma_2) = \sum_{y_t=0} \log(\Phi</span>
+<span id="cb1-137"><a href="#cb1-137" aria-hidden="true" tabindex="-1"></a>(\gamma_1 - {{\symbf{X}}}_t \beta)) + \sum_{y_t=2} \log(\Phi ( {{\symbf{X}}}_t</span>
+<span id="cb1-138"><a href="#cb1-138" aria-hidden="true" tabindex="-1"></a>\beta - \gamma_2)) +  \sum_{y_t=1} \log(\Phi ( \gamma_2  - {{\symbf{X}}}_t \beta ) -\Phi ( \gamma_1  - {{\symbf{X}}}_t \beta ))</span>
+<span id="cb1-139"><a href="#cb1-139" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-13}</span>
+<span id="cb1-140"><a href="#cb1-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-141"><a href="#cb1-141" aria-hidden="true" tabindex="-1"></a><span class="fu">### The Multinomial Logit</span></span>
+<span id="cb1-142"><a href="#cb1-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-143"><a href="#cb1-143" aria-hidden="true" tabindex="-1"></a>When responses are unordered, two popular choices are multinomial logit and conditional logit. They are easy to conflate because they share the same softmax form, but they differ in what varies across the $J+1$ alternatives $l=0,\dots,J$: in multinomial logit the *regressors* are individual-specific and only the *coefficients* vary by alternative; in conditional logit it's the reverse.</span>
+<span id="cb1-144"><a href="#cb1-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-145"><a href="#cb1-145" aria-hidden="true" tabindex="-1"></a>**Multinomial logit.** Here the regressor vector ${\symbf{X_t}}$ (individual-specific characteristics, e.g. age, income) is the same for every alternative, and it is the coefficient vector that is alternative-specific:</span>
+<span id="cb1-146"><a href="#cb1-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-147"><a href="#cb1-147" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-148"><a href="#cb1-148" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({{\symbf{X}}}_t</span>
+<span id="cb1-149"><a href="#cb1-149" aria-hidden="true" tabindex="-1"></a>\beta^l)}{\sum_{j=0}^J\exp({{\symbf{X}}}_t \beta^j)} \quad \mbox{for}</span>
+<span id="cb1-150"><a href="#cb1-150" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
+<span id="cb1-151"><a href="#cb1-151" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-14}</span>
+<span id="cb1-152"><a href="#cb1-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-153"><a href="#cb1-153" aria-hidden="true" tabindex="-1"></a>Here ${\symbf{X_t}}$ is a row vector of length $k$ of individual-specific covariates, and $\beta^l$ is a $k$-vector of alternative-specific parameters. For identification one category is taken as the base with $\beta^0=0$ (so its numerator is $1$).</span>
+<span id="cb1-154"><a href="#cb1-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-155"><a href="#cb1-155" aria-hidden="true" tabindex="-1"></a>**Conditional logit.** Here it is the regressors that vary by alternative (e.g. the price or characteristics of choice $j$ itself), while the coefficient vector is common across alternatives:</span>
+<span id="cb1-156"><a href="#cb1-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-157"><a href="#cb1-157" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-158"><a href="#cb1-158" aria-hidden="true" tabindex="-1"></a>\mbox{Pr}(y_t=l)=\frac{\exp({{\symbf{W}}}_{tl}</span>
+<span id="cb1-159"><a href="#cb1-159" aria-hidden="true" tabindex="-1"></a>\beta)}{\sum_{j=0}^J\exp({{\symbf{W}}}_{tj} \beta)} \quad \mbox{for}</span>
+<span id="cb1-160"><a href="#cb1-160" aria-hidden="true" tabindex="-1"></a>\ l=0, \dots, J,</span>
+<span id="cb1-161"><a href="#cb1-161" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-15}</span>
+<span id="cb1-162"><a href="#cb1-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-163"><a href="#cb1-163" aria-hidden="true" tabindex="-1"></a>Here ${{\symbf{W}}}_{tj}$ is a row vector of length $k$ of alternative-$j$-specific</span>
+<span id="cb1-164"><a href="#cb1-164" aria-hidden="true" tabindex="-1"></a>variables, and $\beta$ is a single $k$-vector of parameters shared across</span>
+<span id="cb1-165"><a href="#cb1-165" aria-hidden="true" tabindex="-1"></a>all alternatives $j=0,\dots,J$.</span>
+<span id="cb1-166"><a href="#cb1-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-167"><a href="#cb1-167" aria-hidden="true" tabindex="-1"></a>For binary and multinomial models alike, the coefficients $\beta$ do</span>
+<span id="cb1-168"><a href="#cb1-168" aria-hidden="true" tabindex="-1"></a>not directly measure the effect of a unit change in $X$ on the</span>
+<span id="cb1-169"><a href="#cb1-169" aria-hidden="true" tabindex="-1"></a>probability.  That effect depends on where in the distribution the</span>
+<span id="cb1-170"><a href="#cb1-170" aria-hidden="true" tabindex="-1"></a>change occurs.  The average marginal effect (AME) --- averaging the</span>
+<span id="cb1-171"><a href="#cb1-171" aria-hidden="true" tabindex="-1"></a>partial effect over the observed distribution of covariates --- is the</span>
+<span id="cb1-172"><a href="#cb1-172" aria-hidden="true" tabindex="-1"></a>standard summary.  The full treatment of AME vs.\ marginal effects at</span>
+<span id="cb1-173"><a href="#cb1-173" aria-hidden="true" tabindex="-1"></a>the mean, including fixed-effects models, is in the</span>
+<span id="cb1-174"><a href="#cb1-174" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Blog Book</span><span class="co">](https://xiangao.github.io/blog_book/marginal-effects-fe.html)</span>.</span>
+<span id="cb1-175"><a href="#cb1-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-176"><a href="#cb1-176" aria-hidden="true" tabindex="-1"></a>Writing *both* choice-varying regressors ${{\symbf{W}}}_{tl}$ *and* choice-specific coefficients $\beta^l$ into the same formula, as some treatments do, conflates the two models.  It is worth being precise about what that costs, because the usual complaint -- that such a specification is not identified -- is not true.  Choice probabilities depend only on utility *differences*, so $\Pr(y_t=l)$ is governed by ${{\symbf{W}}}_{tj}\beta^j - {{\symbf{W}}}_{tl}\beta^l$; when the ${{\symbf{W}}}_{tj}$ vary independently across alternatives, those differences pin down each $\beta^j$ separately, with no normalization required.  It is a perfectly estimable model -- it is what Stata's <span class="in">`asclogit`</span> fits when alternative-specific coefficients are requested.</span>
+<span id="cb1-177"><a href="#cb1-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-178"><a href="#cb1-178" aria-hidden="true" tabindex="-1"></a>What the ambiguous formula really costs is clarity about *which normalization is in force*.  Individual-specific regressors require one alternative's coefficients to be fixed ($\beta^0=0$), since only differences across alternatives are identified; alternative-specific regressors entering with a common coefficient require no such restriction.  One caveat on "no normalization required" above: it concerns the slope coefficients $\beta^j$.  If the specification also carries alternative-specific intercepts, those are identified only up to a location shift and one of them still has to be fixed.  A formula that does not say which of the two it means leaves the reader unable to tell what has been normalized, and therefore unable to interpret the coefficients.</span>
+<span id="cb1-179"><a href="#cb1-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-180"><a href="#cb1-180" aria-hidden="true" tabindex="-1"></a><span class="fu">### Independence of Irrelevant Alternatives</span></span>
 <span id="cb1-181"><a href="#cb1-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>\frac{\Pr(y_t = j)}{\Pr(y_t = l)} = \exp \bigl( {{\symbf{X}}}_t (\beta^j - \beta^l) \bigr),</span>
-<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-iia}</span>
-<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>and with alternative-specific regressors and a common coefficient the ratio is</span>
-<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>$\exp \bigl( ({{\symbf{W}}}_{tj} - {{\symbf{W}}}_{tl}) \beta \bigr)$.  Either way everything to</span>
-<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a>do with the other alternatives cancels.  The relative odds of $j$ against $l$ do not</span>
-<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>depend on what else is on the menu, or on the attributes of any third alternative.</span>
-<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>That is **independence of irrelevant alternatives**, or IIA.</span>
-<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>Sometimes it is harmless.  Often it is not.  The standard illustration is travel</span>
-<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>mode.  Suppose commuters split evenly between a car and a red bus, so the odds are</span>
-<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a>1:1 and each share is $1/2$.  Now add a blue bus, identical to the red one in</span>
-<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>everything but colour.  IIA holds the car-to-red-bus odds at 1:1, and the two buses</span>
-<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>are interchangeable, so the model predicts three shares of $1/3$.  What we would</span>
-<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>expect is that the blue bus draws almost entirely from the red bus, leaving the car</span>
-<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>near $1/2$.  The model has no way to know that the two buses are close substitutes,</span>
-<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>because the softmax gives it no way to express that.</span>
-<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>There are two standard escapes.  **Nested logit** groups alternatives into nests --</span>
-<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>the two buses in one, the car in another -- and allows correlation within a nest, so</span>
-<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a>IIA holds inside nests but not across them.  **Mixed logit**, also called</span>
-<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>random-coefficients logit, lets $\beta$ vary across individuals; shared taste</span>
-<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>parameters then induce correlation across alternatives and IIA goes away, at the</span>
-<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>cost of simulation-based estimation.  Which one to reach for depends on whether the</span>
-<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>substitution pattern you are worried about can be described by a grouping.</span>
-<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a>A binary outcome's conditional mean is a probability, so probit and logit pass a linear index through a CDF to keep it between 0 and 1. Both are fitted by maximum likelihood with a globally concave log-likelihood. The estimate exists and is finite only with full-rank regressors and no separation. Ordered probit adds thresholds on a latent index, with location and scale fixed by normalization. Multinomial logit lets coefficients vary by alternative for individual characteristics. Conditional logit uses one coefficient vector for characteristics that vary by alternative. In every case the coefficients are not effects on probabilities, and the average marginal effect is the usual summary.</span>
-<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a>Both logit forms impose independence of irrelevant alternatives: the odds between two choices do not depend on the rest of the menu. The red-bus/blue-bus example shows why that can fail. Nested logit relaxes it across groups of close substitutes, and mixed logit removes it through random coefficients.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-182"><a href="#cb1-182" aria-hidden="true" tabindex="-1"></a>Both logit forms carry a restriction that comes from the softmax itself.  Take the</span>
+<span id="cb1-183"><a href="#cb1-183" aria-hidden="true" tabindex="-1"></a>ratio of two choice probabilities.  With individual-specific regressors,</span>
+<span id="cb1-184"><a href="#cb1-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-185"><a href="#cb1-185" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb1-186"><a href="#cb1-186" aria-hidden="true" tabindex="-1"></a>\frac{\Pr(y_t = j)}{\Pr(y_t = l)} = \exp \bigl( {{\symbf{X}}}_t (\beta^j - \beta^l) \bigr),</span>
+<span id="cb1-187"><a href="#cb1-187" aria-hidden="true" tabindex="-1"></a>$$ {#eq-discrete-iia}</span>
+<span id="cb1-188"><a href="#cb1-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-189"><a href="#cb1-189" aria-hidden="true" tabindex="-1"></a>and with alternative-specific regressors and a common coefficient the ratio is</span>
+<span id="cb1-190"><a href="#cb1-190" aria-hidden="true" tabindex="-1"></a>$\exp \bigl( ({{\symbf{W}}}_{tj} - {{\symbf{W}}}_{tl}) \beta \bigr)$.  Either way everything to</span>
+<span id="cb1-191"><a href="#cb1-191" aria-hidden="true" tabindex="-1"></a>do with the other alternatives cancels.  The relative odds of $j$ against $l$ do not</span>
+<span id="cb1-192"><a href="#cb1-192" aria-hidden="true" tabindex="-1"></a>depend on what else is on the menu, or on the attributes of any third alternative.</span>
+<span id="cb1-193"><a href="#cb1-193" aria-hidden="true" tabindex="-1"></a>That is **independence of irrelevant alternatives**, or IIA.</span>
+<span id="cb1-194"><a href="#cb1-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-195"><a href="#cb1-195" aria-hidden="true" tabindex="-1"></a>Sometimes it is harmless.  Often it is not.  The standard illustration is travel</span>
+<span id="cb1-196"><a href="#cb1-196" aria-hidden="true" tabindex="-1"></a>mode.  Suppose commuters split evenly between a car and a red bus, so the odds are</span>
+<span id="cb1-197"><a href="#cb1-197" aria-hidden="true" tabindex="-1"></a>1:1 and each share is $1/2$.  Now add a blue bus, identical to the red one in</span>
+<span id="cb1-198"><a href="#cb1-198" aria-hidden="true" tabindex="-1"></a>everything but colour.  IIA holds the car-to-red-bus odds at 1:1, and the two buses</span>
+<span id="cb1-199"><a href="#cb1-199" aria-hidden="true" tabindex="-1"></a>are interchangeable, so the model predicts three shares of $1/3$.  What we would</span>
+<span id="cb1-200"><a href="#cb1-200" aria-hidden="true" tabindex="-1"></a>expect is that the blue bus draws almost entirely from the red bus, leaving the car</span>
+<span id="cb1-201"><a href="#cb1-201" aria-hidden="true" tabindex="-1"></a>near $1/2$.  The model has no way to know that the two buses are close substitutes,</span>
+<span id="cb1-202"><a href="#cb1-202" aria-hidden="true" tabindex="-1"></a>because the softmax gives it no way to express that.</span>
+<span id="cb1-203"><a href="#cb1-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-204"><a href="#cb1-204" aria-hidden="true" tabindex="-1"></a>There are two standard escapes.  **Nested logit** groups alternatives into nests --</span>
+<span id="cb1-205"><a href="#cb1-205" aria-hidden="true" tabindex="-1"></a>the two buses in one, the car in another -- and allows correlation within a nest, so</span>
+<span id="cb1-206"><a href="#cb1-206" aria-hidden="true" tabindex="-1"></a>IIA holds inside nests but not across them.  **Mixed logit**, also called</span>
+<span id="cb1-207"><a href="#cb1-207" aria-hidden="true" tabindex="-1"></a>random-coefficients logit, lets $\beta$ vary across individuals; shared taste</span>
+<span id="cb1-208"><a href="#cb1-208" aria-hidden="true" tabindex="-1"></a>parameters then induce correlation across alternatives and IIA goes away, at the</span>
+<span id="cb1-209"><a href="#cb1-209" aria-hidden="true" tabindex="-1"></a>cost of simulation-based estimation.  Which one to reach for depends on whether the</span>
+<span id="cb1-210"><a href="#cb1-210" aria-hidden="true" tabindex="-1"></a>substitution pattern you are worried about can be described by a grouping.</span>
+<span id="cb1-211"><a href="#cb1-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-212"><a href="#cb1-212" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb1-213"><a href="#cb1-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-214"><a href="#cb1-214" aria-hidden="true" tabindex="-1"></a>A binary outcome's conditional mean is a probability, so probit and logit pass a linear index through a CDF to keep it between 0 and 1. Both are fitted by maximum likelihood with a globally concave log-likelihood. The estimate exists and is finite only with full-rank regressors and no separation. Ordered probit adds thresholds on a latent index, with location and scale fixed by normalization. Multinomial logit lets coefficients vary by alternative for individual characteristics. Conditional logit uses one coefficient vector for characteristics that vary by alternative. In every case the coefficients are not effects on probabilities, and the average marginal effect is the usual summary.</span>
+<span id="cb1-215"><a href="#cb1-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-216"><a href="#cb1-216" aria-hidden="true" tabindex="-1"></a>Both logit forms impose independence of irrelevant alternatives: the odds between two choices do not depend on the rest of the menu. The red-bus/blue-bus example shows why that can fail. Nested logit relaxes it across groups of close substitutes, and mixed logit removes it through random coefficients.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
