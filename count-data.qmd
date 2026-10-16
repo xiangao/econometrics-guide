@@ -115,9 +115,14 @@ You can also calculate standard errors with the other commands, using
 clustered standard errors, or bootstrapped standard errors.
 
 
-Conditional fixed effect negative binomial model is also possible to
-be consistent for some specifications.  But Poisson fixed effect is
-more popular since it is QMLE.
+A conditional fixed-effects negative binomial model also exists, from
+@hausman-hall-griliches-1984 and implemented as `xtnbreg, fe` in Stata. It is
+not the negative binomial analogue of fixed-effects Poisson. It puts the unit
+effect in the dispersion parameter, not in the conditional mean, so it does not
+condition out an arbitrary multiplicative effect on the mean, and time-invariant
+regressors stay identified, which a true fixed-effects model would not allow
+[@allison-waterman-2002; @guimaraes-2008]. Fixed-effects Poisson needs only the
+conditional mean to be right, since it is a QMLE, which is why it is preferred.
 
 ## Negative Binomial model
 
@@ -220,7 +225,11 @@ $$ {#eq-count-data-14}
 In stata, there are commands such as "hplogit", which is a hurdle
 model with first equation logit, and second equation truncated
 poisson.  It is the same as two separate estimations; namely "logit"
-first, then "ztp" on positive counts.
+first, then "ztp" on positive counts.  Mind the direction of the first step.
+@eq-count-data-13 models the probability of a zero, $\pi$. A `logit` on the
+indicator $1(y > 0)$ models the probability of crossing the hurdle, $1 - \pi$,
+and its coefficients are $-\gamma$. Before plugging fitted probabilities into
+@eq-count-data-14, check which outcome the first step models.
 
 The difference between a hurdle model and a Heckman selection model is
 that in a Heckman model the two equations are jointly estimated and

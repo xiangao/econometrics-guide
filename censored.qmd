@@ -155,6 +155,15 @@ $$ {#eq-censored-9}
 This can be estimated by MLE. In Stata, tobit or intreg can be used
 for censoring models.
 
+Both this likelihood and the truncated one in @eq-censored-4 lean on the
+normal, homoskedastic latent error far more than a linear regression does.
+The slope $\beta$ and the scale $\sigma$ enter together through
+$\Phi({\symbf{X}}_t\beta/\sigma)$ and the Mills-ratio terms, so if $u_t$ is
+heteroskedastic or not normal, the MLE of $\beta$ is inconsistent. This is not
+like linear OLS or Poisson QMLE, where a correct conditional mean is enough and a
+sandwich variance repairs the standard errors: `vce(robust)` after `tobit` or
+`truncreg` fixes nothing about the point estimates.
+
 ## Sample Selection
 
 The sample selection models differ from censored model in that it
@@ -249,10 +258,24 @@ $$
 y_t={{\symbf{X}}}_t \beta + \rho\sigma \hat \lambda_t + e_t
 $$ {#eq-censored-18}
 
-(Strictly, conditional on selection the error also contains
-$\rho\sigma(v_t-\lambda_t)$, which is why the second-step OLS standard
-errors require correction; the coefficient $\rho\sigma$ on $\hat
-\lambda_t$ is unaffected.)
+Strictly, @eq-censored-18 hides two parts of the error. Write
+$\lambda_t = \phi({\symbf{W}}_t\gamma)/\Phi({\symbf{W}}_t\gamma)$ for the inverse Mills
+ratio at the true $\gamma$. Conditional on selection, the second-step error is
+
+$$
+u_t^* = e_t + \rho\sigma(v_t - \lambda_t) + \rho\sigma(\lambda_t - \hat\lambda_t).
+$$ {#eq-censored-18b}
+
+The middle term makes the error heteroskedastic even with $\gamma$ known. Among
+selected units, $\text{Var}(v_t \mid z_t = 1, {\symbf{W}}_t) = 1 - \lambda_t(\lambda_t + {\symbf{W}}_t\gamma)$,
+so the error variance is $\sigma^2[1 - \rho^2\lambda_t(\lambda_t + {\symbf{W}}_t\gamma)]$,
+which changes from unit to unit. The last term comes from estimating $\gamma$:
+$\hat\lambda_t$ is a generated regressor, as in the control-function discussion of
+the [Endogeneity](endogeneity.qmd) chapter. A robust (sandwich) variance in the
+second-step OLS handles the first problem but not the second. Heckman's two-step
+covariance matrix, or a bootstrap over both steps, handles both. Neither term
+biases the coefficients: $\rho\sigma$ on $\hat\lambda_t$ and $\beta$ remain
+consistent.
 
 One thing to note in Heckman model is that in many situations, $\hat \lambda$ is believed to be highly collinear with ${\symbf{X_t}}$, if ${\symbf{W_t}}$ is the same as ${\symbf{X_t}}$.  However, the model can still be estimated due to the nonlinearity of the model.  Nevertheless, it becomes a regular practice to require ${\symbf{W_t}}$ contains at least one extra variable than ${\symbf{X_t}}$, which is sometimes called exclusion restriction.  In many situations, ${\symbf{W_t}}$ contains all ${\symbf{X_t}}$ variables, and at least one more variable.  The reason to include all the ${\symbf{X_t}}$ variables is more mundane than it is often made to sound: whatever plausibly affects selection belongs in the selection equation, and the determinants of the outcome usually do.  What identification turns on is the other direction -- at least one variable in ${\symbf{W_t}}$ kept *out* of ${\symbf{X_t}}$, affecting selection but not the outcome.  Without such an exclusion, $\hat\lambda$ is a nonlinear function of the same ${\symbf{X_t}}$'s and identification rests entirely on that nonlinearity.
 

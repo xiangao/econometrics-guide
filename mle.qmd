@@ -486,7 +486,7 @@ $$ {#eq-mle-30}
 
 Here $d$ is a dummy variable for postwar period.  The Chow test is
 simply a test on the hypothesis that all the coefficients involving
-$d$ are zero.  A regression of the above model with $n+m$ observations
+$d$ are zero.  A regression of the above model with $n_1+n_2$ observations
 and a $F$ test are easy to do.
 
 $$
@@ -525,7 +525,11 @@ summary(fm1)
 In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${{\mathrm{var}}} {\symbf{(\hat \beta) = {E}[(\hat \beta-\beta)(\hat \beta -\beta)']
 = {E}[(X'X)^{-1}X'uu'X(X'X)^{-1}] = \sigma^2 (X'X)^{-1} }}$$ {#eq-mle-32}
 
- if $${{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}$$ {#eq-mle-33}.
+ if
+
+$$
+{{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}.
+$$ {#eq-mle-33}
 
 That is, the error term has mean zero and constant variance
 (homoscedasticity). The pairwise correlation between error terms

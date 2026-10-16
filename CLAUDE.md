@@ -1164,3 +1164,28 @@ change moves the D(1-D) weights too.
 **Not changed, on purpose:** interpreting-ols:289 `V_between = 0` is correct —
 @eq-pooled's $V_{between}$ is $\text{Var}(E[x|G])$; Codex's 0.75 is the variance of
 sample unit means. Full render (HTML + PDF) clean; no unresolved refs.
+
+## Google Research review fixes (2026-10-16)
+
+Review pasted by xao; verified in `~/projects/books/_review6/VERIFY_GOOGLE_20261016.md` (16 confirmed,
+0 refuted). Fixed: dependence-concepts order (gmm); Stock-Yogo bias vs size tables; linear
+control-function OLS SE (0.026) is not the IV SE (0.030), v-hat for endogenous columns only;
+E(X'u) transposes, exogeneity vs correct specification; Tobit/truncated MLE inconsistent under
+heteroskedasticity/non-normality; Heckman two-step error = e + rho sigma(v-lambda) +
+rho sigma(lambda - lambda-hat) (eq-censored-18b), heteroskedastic + generated regressor; hurdle
+logit direction; xtnbreg fe puts the unit effect in the dispersion (HHG 1984, Allison-Waterman
+2002, Guimaraes 2008 added to bib from Crossref). outcome-weights: panel "wrong-sign" untreated
+cells are control baselines (+,-,-,+) — the 551 are never-treated t<=5 (345) and late cohort t<=2
+(206); staggered DGP has constant effects, so the gap from the ATT is variance weighting, not
+the forbidden comparison; SDiD "no control pre-period cell is subtracted"; DR-DiD's 151 flags are
+all controls; PLR treated-weight sum is D~'(I-S)D/D~'D~ = 1 iff S D = e-hat (separate forests in
+OutcomeWeights) — my same-day idempotence explanation was wrong; PLR nuisance m-hat = E[Y|X], not
+the baseline g(X). interpreting-ols: w_i = V~_i^2 + V~_i V-hat_i; eq-angrist derived directly from the
+FWL numerator; why controls (w_i = 0) still give the ATU weight; Słoczyński residual terms vanish by
+projection orthogonality; prose numbers 99.8% / -0.002; raw `\\max\\lvert` string removed.
+mle: `{#eq-mle-33}` literal, n+m -> n1+n2. Setup chunks made visible (packages, N/T, vtab/mtab,
+colours). PDF: five captions were printed twice — Quarto repeats fig-cap after a second output in
+the same chunk, so each figure+table chunk is now split; long code/output lines now wrap via fvextra
+in `_quarto.yml` (`code-overflow: wrap` is HTML-only). Outputs unchanged except the two new rows.
+Not done (xao's choice): Tobit/Heckman marginal effects, new code examples for ch. 6-8, the reviewer's
+typo list.

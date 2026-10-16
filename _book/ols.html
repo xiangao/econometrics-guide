@@ -410,9 +410,9 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <p><span id="eq-ols-20"><span class="math display">\[ y_t = \beta_1 + \beta_2 y_{t-1} + u_t, \quad u_t \sim {{\mathrm{IID}}} (0, \sigma^2).  \tag{1.32}\]</span></span></p>
 <p>In this simple model, even if we assume that <span class="math inline">\(y_{t-1}\)</span> and <span class="math inline">\(u_t\)</span> are uncorrelated, OLS estimator is still biased. That is because <span class="math inline">\({{\mathrm{E}}} {\symbf{(u|X)=0}}\)</span> is not satisfied. The problem is not that <span class="math inline">\(y_{t-1}\)</span> contains the older errors <span class="math inline">\(u_{t-1}, u_{t-2}, \ldots\)</span>; those are uncorrelated with <span class="math inline">\(u_t\)</span>. It is that <span class="math inline">\(u_t\)</span> enters <span class="math inline">\(y_t\)</span>, and <span class="math inline">\(y_t\)</span> is the regressor in the next row. Conditioning on the whole regressor matrix <span class="math inline">\(X\)</span> means conditioning on future rows, and those depend on <span class="math inline">\(u_t\)</span>, so <span class="math inline">\(E(u_t \mid X) \neq 0\)</span>.</p>
 <p>There is a weaker condition – weaker than the strict exogeneity above, and in fact the weakest of the conditions in this chapter: <span id="eq-ols-21"><span class="math display">\[
-{{\mathrm{E}}} {\symbf{(X u)=0,
+{{\mathrm{E}}} {\symbf{(X' u)=0,
 }} \tag{1.33}\]</span></span></p>
-<p>This is a moment condition, and it is what GMM estimators are built on. It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have <span class="math inline">\(E({\symbf{Xu}}) \neq 0\)</span>, which is exactly the endogeneity problem of a later chapter.</p>
+<p>This is a moment condition, and it is what GMM estimators are built on. It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have <span class="math inline">\(E({\symbf{X'u}}) \neq 0\)</span>, which is exactly the endogeneity problem of a later chapter.</p>
 </section><section id="consistency" class="level3" data-number="1.5.2"><h3 data-number="1.5.2" class="anchored" data-anchor-id="consistency">
 <span class="header-section-number">1.5.2</span> Consistency</h3>
 <p>Consistency does not need strict exogeneity. A much weaker condition suffices: <span id="eq-ols-22"><span class="math display">\[
@@ -427,7 +427,7 @@ F-statistic: 44.57 on 3 and 28 DF,  p-value: 8.65e-11</code></pre>
 <li>
 <strong>Contemporaneous exogeneity</strong>, <span class="math inline">\(E[u_t \mid X_t]=0\)</span>.</li>
 <li>
-<strong>Contemporaneous orthogonality</strong>, <span class="math inline">\(E[X_t u_t]=0\)</span> – mere zero correlation. This is weakest of all, and it is what consistency actually needs: together with a rank condition and a law of large numbers – which for dependent data needs the weak-dependence conditions of the <a href="./mle.html">MLE chapter</a> – it gives <span class="math inline">\(\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}\)</span> and hence <span class="math inline">\(\mathrm{plim}\, \hat\beta = \beta\)</span>. Contemporaneous <em>exogeneity</em> is a strictly stronger, sufficient condition – it constrains the whole conditional mean rather than a single covariance – so the <span class="math inline">\(E[{\symbf{Xu]=0}}\)</span> introduced under unbiasedness above sits at the <em>bottom</em> of this ladder, not between the others.</li>
+<strong>Contemporaneous orthogonality</strong>, <span class="math inline">\(E[X_t u_t]=0\)</span> – mere zero correlation. This is weakest of all, and it is what consistency actually needs: together with a rank condition and a law of large numbers – which for dependent data needs the weak-dependence conditions of the <a href="./mle.html">MLE chapter</a> – it gives <span class="math inline">\(\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}\)</span> and hence <span class="math inline">\(\mathrm{plim}\, \hat\beta = \beta\)</span>. Contemporaneous <em>exogeneity</em> is a strictly stronger, sufficient condition – it constrains the whole conditional mean rather than a single covariance – so the <span class="math inline">\(E[{\symbf{X'u}}]=0\)</span> introduced under unbiasedness above sits at the <em>bottom</em> of this ladder, not between the others.</li>
 </ul>
 <p>Each condition implies the next, because conditioning on a larger information set is a more restrictive requirement, not a less restrictive one. The ladder needs the information sets to be nested, which is why <span class="math inline">\(\mathcal F_t\)</span> is defined above as regressor history: <span class="math inline">\(\sigma(X_t) \subseteq \sigma(X_1,\dots,X_t) \subseteq \sigma(X_1,\dots,X_n)\)</span>. Widen <span class="math inline">\(\mathcal F_t\)</span> to include past errors or other series and strict exogeneity no longer implies predeterminedness, because then neither information set contains the other. By the law of iterated expectations, <span id="eq-ols-23"><span class="math display">\[
 E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
@@ -1162,10 +1162,10 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
 <span id="cb3-260"><a href="#cb3-260" aria-hidden="true" tabindex="-1"></a>There is a weaker condition -- weaker than the strict exogeneity above, and in fact</span>
 <span id="cb3-261"><a href="#cb3-261" aria-hidden="true" tabindex="-1"></a>the weakest of the conditions in this chapter:</span>
 <span id="cb3-262"><a href="#cb3-262" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(X u)=0,</span>
+<span id="cb3-263"><a href="#cb3-263" aria-hidden="true" tabindex="-1"></a>{{\mathrm{E}}} {\symbf{(X' u)=0,</span>
 <span id="cb3-264"><a href="#cb3-264" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-ols-21}</span>
 <span id="cb3-265"><a href="#cb3-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>This is a moment condition, and it is what GMM estimators are built on.  It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have $E({\symbf{Xu}}) \neq 0$, which is exactly the endogeneity problem of a later chapter.</span>
+<span id="cb3-266"><a href="#cb3-266" aria-hidden="true" tabindex="-1"></a>This is a moment condition, and it is what GMM estimators are built on.  It is a separate assumption from getting the functional form right: a correctly specified linear equation can still have $E({\symbf{X'u}}) \neq 0$, which is exactly the endogeneity problem of a later chapter.</span>
 <span id="cb3-267"><a href="#cb3-267" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-268"><a href="#cb3-268" aria-hidden="true" tabindex="-1"></a><span class="fu">### Consistency</span></span>
 <span id="cb3-269"><a href="#cb3-269" aria-hidden="true" tabindex="-1"></a></span>
@@ -1197,7 +1197,7 @@ E[u_t \mid X_t] = E \bigl[ E[u_t \mid \mathcal F_t] \;\big|\; X_t \bigr] = 0,
 <span id="cb3-295"><a href="#cb3-295" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, n^{-1}{\symbf{X'u = 0}}$ and hence</span>
 <span id="cb3-296"><a href="#cb3-296" aria-hidden="true" tabindex="-1"></a>  $\mathrm{plim}\, \hat\beta = \beta$. Contemporaneous *exogeneity* is a</span>
 <span id="cb3-297"><a href="#cb3-297" aria-hidden="true" tabindex="-1"></a>  strictly stronger, sufficient condition -- it constrains the whole conditional</span>
-<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{Xu</span><span class="co">]</span>=0}}$ introduced under</span>
+<span id="cb3-298"><a href="#cb3-298" aria-hidden="true" tabindex="-1"></a>  mean rather than a single covariance -- so the $E<span class="co">[</span><span class="ot">{\symbf{X'u}}</span><span class="co">]</span>=0$ introduced under</span>
 <span id="cb3-299"><a href="#cb3-299" aria-hidden="true" tabindex="-1"></a>  unbiasedness above sits at the *bottom* of this ladder, not between the others.</span>
 <span id="cb3-300"><a href="#cb3-300" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-301"><a href="#cb3-301" aria-hidden="true" tabindex="-1"></a>Each condition implies the next, because conditioning on a larger information set</span>

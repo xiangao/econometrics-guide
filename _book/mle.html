@@ -603,7 +603,7 @@ SSR_U = SSR_1 + SSR_2
 y=\alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \eta_0 d + \eta_1 x_1 d + \eta_2
 x_2 d
 \tag{2.36}\]</span></span></p>
-<p>Here <span class="math inline">\(d\)</span> is a dummy variable for postwar period. The Chow test is simply a test on the hypothesis that all the coefficients involving <span class="math inline">\(d\)</span> are zero. A regression of the above model with <span class="math inline">\(n+m\)</span> observations and a <span class="math inline">\(F\)</span> test are easy to do.</p>
+<p>Here <span class="math inline">\(d\)</span> is a dummy variable for postwar period. The Chow test is simply a test on the hypothesis that all the coefficients involving <span class="math inline">\(d\)</span> are zero. A regression of the above model with <span class="math inline">\(n_1+n_2\)</span> observations and a <span class="math inline">\(F\)</span> test are easy to do.</p>
 <p><span id="eq-mle-31"><span class="math display">\[
 {\symbf{H_0: \ \ \eta_0 = \eta_1 = \eta_2 = 0.
 }} \tag{2.37}\]</span></span></p>
@@ -706,21 +706,24 @@ F-statistic: 106.9 on 9 and 6 DF,  p-value: 6.28e-06</code></pre>
 <span class="header-section-number">2.8.1</span> Variance estimator under homoscedasticity</h3>
 <p>In OLS regression, the variance-covariance matrix of <span class="math inline">\(\hat \beta\)</span> is <span id="eq-mle-32"><span class="math display">\[{{\mathrm{var}}} {\symbf{(\hat \beta) = {E}[(\hat \beta-\beta)(\hat \beta -\beta)']
 = {E}[(X'X)^{-1}X'uu'X(X'X)^{-1}] = \sigma^2 (X'X)^{-1} }} \tag{2.38}\]</span></span></p>
-<p>if <span class="math display">\[{{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}\]</span> {#eq-mle-33}.</p>
+<p>if</p>
+<p><span id="eq-mle-33"><span class="math display">\[
+{{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}.
+\tag{2.39}\]</span></span></p>
 <p>That is, the error term has mean zero and constant variance (homoscedasticity). The pairwise correlation between error terms is always zero (no serial correlation).</p>
 <p>The estimation of <span class="math inline">\(\sigma^2\)</span>:</p>
 <p><span id="eq-mle-34"><span class="math display">\[
 s^2=\frac{ {\symbf{\hat u' \hat u}}}{n-k}
-\tag{2.39}\]</span></span> is an unbiased estimator of <span class="math inline">\(\sigma^2\)</span> (proof omitted).</p>
+\tag{2.40}\]</span></span> is an unbiased estimator of <span class="math inline">\(\sigma^2\)</span> (proof omitted).</p>
 <p>The standard estimate of the variance-covariance matrix of the OLS parameter estimates under the assumption of IID errors is <span id="eq-mle-35"><span class="math display">\[
 {{\mathrm{\hat {Var}}}}(\hat \beta)=s^2 {\symbf{(X'X)^{-1}
-}} \tag{2.40}\]</span></span></p>
+}} \tag{2.41}\]</span></span></p>
 </section><section id="whites-estimator" class="level3" data-number="2.8.2"><h3 data-number="2.8.2" class="anchored" data-anchor-id="whites-estimator">
 <span class="header-section-number">2.8.2</span> White’s estimator</h3>
 <p>We made strong assumption that the error terms of the regression model are IID when we estimate the variance-covariance matrix of OLS estimator. Under this assumption, the usual estimator of variance-covariance matrix of <span class="math inline">\({\symbf{\hat \beta}}\)</span> is consistent. Now let’s relax this assumption to only independent but not identically distributed. Again, the linear regression models is</p>
 <p><span id="eq-mle-36"><span class="math display">\[
 {\symbf{y=X\beta+u, \quad {E} (u)=0, \quad {E} (u u')=\Omega,
-}} \tag{2.41}\]</span></span> where <span class="math inline">\({\symbf{\Omega}}\)</span> is the error variance-covariance matrix with diagonal elements being <span class="math inline">\(\sigma_t^2\)</span> for <span class="math inline">\(t^{th}\)</span> element, off-diagonal elements being zero. In other words, the error terms are heteroscedastic.</p>
+}} \tag{2.42}\]</span></span> where <span class="math inline">\({\symbf{\Omega}}\)</span> is the error variance-covariance matrix with diagonal elements being <span class="math inline">\(\sigma_t^2\)</span> for <span class="math inline">\(t^{th}\)</span> element, off-diagonal elements being zero. In other words, the error terms are heteroscedastic.</p>
 <p>The variance-covariance matrix of the OLS estimator <span class="math inline">\({\symbf{\hat
 \beta}}\)</span> is equal to <span id="eq-mle-37"><span class="math display">\[
 \begin{aligned}
@@ -730,15 +733,15 @@ s^2=\frac{ {\symbf{\hat u' \hat u}}}{n-k}
 }}&amp;{\symbf{= [(X'X)^{-1}X'({E}(uu'))X(X'X)^{-1}] }}\\{\symbf{
 }}&amp;{\symbf{=  (X'X)^{-1} X' \Omega X (X'X)^{-1}
 }}\end{aligned}
-\tag{2.42}\]</span></span></p>
+\tag{2.43}\]</span></span></p>
 <p>If we know <span class="math inline">\(\sigma_t^2\)</span>, then we would be able to estimate this “sandwich covariance matrix”. But we don’t. <span id="eq-mle-38"><span class="math display">\[
 {{\mathrm{Var}}} {\symbf{(\hat \beta) = \frac{1}{n}
 [\frac{1}{n}(X'X)]^{-1}[\frac{1}{n}X'\Omega
 X][\frac{1}{n}(X'X)]^{-1}
-}} \tag{2.43}\]</span></span></p>
+}} \tag{2.44}\]</span></span></p>
 <p>Let <span class="math inline">\(y_t\)</span> denote the <span class="math inline">\(t\)</span>th observation on the dependent variable, and <span class="math inline">\(x_t'=[1 x_{2t} \cdots x_{kt}]\)</span> denote the <span class="math inline">\(t\)</span>th row of the <span class="math inline">\({\symbf{X}}\)</span> matrix. Then <span id="eq-mle-39"><span class="math display">\[
 {\symbf{X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'
-}} \tag{2.44}\]</span></span></p>
+}} \tag{2.45}\]</span></span></p>
 <p>The White estimator replaces the unknown <span class="math inline">\(\sigma_t^2\)</span> by <span class="math inline">\(\hat u_t^2\)</span>, the estimated OLS residuals. This provides a consistent estimator of the variance matrix for the OLS coefficient vector and is particularly useful since it does not require any specific assumptions about the form of the heteroscedasticity.</p>
 <p>Therefore, <span id="eq-mle-40"><span class="math display">\[
 \begin{aligned}
@@ -748,32 +751,32 @@ X][\frac{1}{n}(X'X)]^{-1}}}\\{\symbf{
 \hat \Omega }}&amp;{\symbf{= {diag}  ({\hat u_1^2, \hat u_2^2, \cdots,
 \hat u_n^2})
 }}\end{aligned}
-\tag{2.45}\]</span></span></p>
+\tag{2.46}\]</span></span></p>
 </section><section id="newey-west-estimator" class="level3" data-number="2.8.3"><h3 data-number="2.8.3" class="anchored" data-anchor-id="newey-west-estimator">
 <span class="header-section-number">2.8.3</span> Newey-West estimator</h3>
 <p>White’s estimator deals with the situation that we have heteroskedasticity (a diagonal <span class="math inline">\(\Omega\)</span>) of unknown form. When we have serial correlation of unknown form (a non-diagonal <span class="math inline">\(\Omega\)</span>), we can estimate the variance-covariance matrix by a heteroskedasticity and autocorrelation consistent, or HAC, estimator. Newey-West estimator is the most popular HAC estimator.</p>
 <p>Given a time series data set, suppose we are interested in estimating the mean vector (suppose we have more than one variable) and its variance. We know that given IID data, we can apply central limit theorem: sample mean is a consistent estimator of the population mean and it’s variance can be calculated since asymptotically the sample mean conforms to a normal distribution and the variance can be estimated, relatively easily. However, in the case of time series data, autocorrelation usually exists. We may be concerned the CLT may not work in this case.</p>
 <p>Fortunately, autocorrelation does not by itself defeat inference, though the conditions need care. Suppose <span class="math inline">\({\symbf{y_t}}\)</span> is covariance-stationary (the covariance is not a function of time) <em>and</em> its autocovariances are absolutely summable, <span class="math inline">\(\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty\)</span>. Then, as in <span class="citation" data-cites="hamilton-1994">Hamilton (<a href="references.html#ref-hamilton-1994" role="doc-biblioref">1994</a>)</span>, the sample mean satisfies:</p>
-<p><span id="eq-mle-41"><span class="math display">\[{\symbf{\bar y_T \to \mu , }} \tag{2.46}\]</span></span> <span id="eq-mle-42"><span class="math display">\[ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }} \tag{2.47}\]</span></span> where <span class="math inline">\({\symbf{\Gamma_v}}\)</span> is the variance-covariance matrix for <span class="math inline">\({\symbf{y_t}}\)</span> and <span class="math inline">\({\symbf{y_{t-v}}}\)</span>.</p>
+<p><span id="eq-mle-41"><span class="math display">\[{\symbf{\bar y_T \to \mu , }} \tag{2.47}\]</span></span> <span id="eq-mle-42"><span class="math display">\[ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E[(\bar y_T - \mu)(\bar y_T -\mu)' ]} = \sum_{v=-\infty}^{\infty} \Gamma_v . }} \tag{2.48}\]</span></span> where <span class="math inline">\({\symbf{\Gamma_v}}\)</span> is the variance-covariance matrix for <span class="math inline">\({\symbf{y_t}}\)</span> and <span class="math inline">\({\symbf{y_{t-v}}}\)</span>.</p>
 <p>The first one says the law of large numbers still holds. The second gives the long-run variance used for the standard error, and absolute summability is what makes that sum exist.</p>
 <p>Covariance stationarity on its own is not enough for either statement. It can fail even the law of large numbers. Let <span class="math inline">\(y_t = z + \varepsilon_t\)</span>, where <span class="math inline">\(z\)</span> is drawn once and then held fixed and <span class="math inline">\(\varepsilon_t\)</span> is white noise. Every autocovariance equals <span class="math inline">\(\mathrm{Var}(z)\)</span>, so the process is covariance-stationary, the autocovariances are not summable, and <span class="math inline">\(\bar y_T\)</span> converges to <span class="math inline">\(z\)</span> rather than to <span class="math inline">\(\mu\)</span>. Asymptotic normality asks for more again: a mixing, near-epoch dependence, or martingale-difference condition, together with moment restrictions. Covariance stationarity gives the variance formula, not the central limit theorem.</p>
 <p>If the data were generated by a vector MA(q) process, then</p>
-<p><span id="eq-mle-43"><span class="math display">\[ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v .  \tag{2.48}\]</span></span></p>
+<p><span id="eq-mle-43"><span class="math display">\[ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v .  \tag{2.49}\]</span></span></p>
 <p>A natural estimate is</p>
-<p><span id="eq-mle-44"><span class="math display">\[ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}} \tag{2.49}\]</span></span></p>
-<p>where <span id="eq-mle-45"><span class="math display">\[ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }} \tag{2.50}\]</span></span></p>
+<p><span id="eq-mle-44"><span class="math display">\[ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}} \tag{2.50}\]</span></span></p>
+<p>where <span id="eq-mle-45"><span class="math display">\[ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }} \tag{2.51}\]</span></span></p>
 <p>This gives a consistent estimate of <span class="math inline">\({\symbf{S}}\)</span>; however, it sometimes is not positive semidefinite.</p>
 <p><span class="citation" data-cites="newey-west-1987">Whitney K. Newey and West (<a href="references.html#ref-newey-west-1987" role="doc-biblioref">1987</a>)</span> suggested putting in a weight:</p>
-<p><span id="eq-mle-46"><span class="math display">\[ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }} \tag{2.51}\]</span></span> Here <span class="math inline">\(q\)</span> is a truncation bandwidth, not a true MA order. For an MA(<span class="math inline">\(q\)</span>) process the two coincide, but the Newey-West estimator is used precisely when the dependence has no known finite order: the Bartlett weights <span class="math inline">\(1 - v/(q+1)\)</span> downweight higher lags and keep <span class="math inline">\(\hat S\)</span> positive semidefinite, and consistency comes from letting <span class="math inline">\(q\)</span> grow with <span class="math inline">\(T\)</span>, slowly enough that the poorly estimated high-order autocovariances do not dominate.</p>
-<p>Consider a linear regression model: <span id="eq-mle-47"><span class="math display">\[ y_t={ {\symbf{x_t' \beta}}} + u_t  \tag{2.52}\]</span></span></p>
+<p><span id="eq-mle-46"><span class="math display">\[ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }} \tag{2.52}\]</span></span> Here <span class="math inline">\(q\)</span> is a truncation bandwidth, not a true MA order. For an MA(<span class="math inline">\(q\)</span>) process the two coincide, but the Newey-West estimator is used precisely when the dependence has no known finite order: the Bartlett weights <span class="math inline">\(1 - v/(q+1)\)</span> downweight higher lags and keep <span class="math inline">\(\hat S\)</span> positive semidefinite, and consistency comes from letting <span class="math inline">\(q\)</span> grow with <span class="math inline">\(T\)</span>, slowly enough that the poorly estimated high-order autocovariances do not dominate.</p>
+<p>Consider a linear regression model: <span id="eq-mle-47"><span class="math display">\[ y_t={ {\symbf{x_t' \beta}}} + u_t  \tag{2.53}\]</span></span></p>
 <p>Suppose we have the OLS estimator <span class="math inline">\({\symbf{b_T}}\)</span>, then <span id="eq-mle-48"><span class="math display">\[ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t
-  x_t'}}}]^{-1} [(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}]  \tag{2.53}\]</span></span></p>
+  x_t'}}}]^{-1} [(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}]  \tag{2.54}\]</span></span></p>
 <p>The first term converges in probability to some constant. The second term is <span class="math inline">\(\sqrt{T}\)</span> times the sample mean of the vector <span class="math inline">\({\symbf{x_t u_t}}\)</span>, which is exactly the form to which a central limit theorem applies.</p>
 <p>Under general conditions,</p>
-<p><span id="eq-mle-49"><span class="math display">\[ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1})  \tag{2.54}\]</span></span></p>
-<p>where <span class="math inline">\(Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}[{{\symbf{x_t x_t'}}}]\)</span>, and <span class="math inline">\(S\)</span> can be estimated by <span id="eq-mle-50"><span class="math display">\[ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }} \tag{2.55}\]</span></span> where <span id="eq-mle-51"><span class="math display">\[ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'),  \tag{2.56}\]</span></span> where <span class="math inline">\(\hat u_{t,T}\)</span> is the OLS residual for data <span class="math inline">\(t\)</span> in a sample of size <span class="math inline">\(T\)</span>.</p>
+<p><span id="eq-mle-49"><span class="math display">\[ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1})  \tag{2.55}\]</span></span></p>
+<p>where <span class="math inline">\(Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}[{{\symbf{x_t x_t'}}}]\)</span>, and <span class="math inline">\(S\)</span> can be estimated by <span id="eq-mle-50"><span class="math display">\[ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }} \tag{2.56}\]</span></span> where <span id="eq-mle-51"><span class="math display">\[ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'),  \tag{2.57}\]</span></span> where <span class="math inline">\(\hat u_{t,T}\)</span> is the OLS residual for data <span class="math inline">\(t\)</span> in a sample of size <span class="math inline">\(T\)</span>.</p>
 <p>Overall, the variance of <span class="math inline">\({\symbf{b_T}}\)</span> is approximated by</p>
-<p><span id="eq-mle-52"><span class="math display">\[\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1}  \tag{2.57}\]</span></span></p>
+<p><span id="eq-mle-52"><span class="math display">\[\hat \Sigma_{NW} = [\sum_{t=1}^T x_t x_t']^{-1} [ \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') ] [\sum_{t=1}^T x_t x_t']^{-1}  \tag{2.58}\]</span></span></p>
 <p>This estimation obviously depends on the selection of <span class="math inline">\(q\)</span>, the lag length beyond which the autocorrelation of <span class="math inline">\(x_t u_t\)</span> and <span class="math inline">\(x_{t-v} u_{t-v}\)</span> is treated as negligible. One common rule of thumb sets <span class="math inline">\(q = 0.75 \cdot T^{\frac{1}{3}}\)</span>; it is a convention rather than a theorem, and other growth rates are in use. <span class="citation" data-cites="newey-west-1994">W. K. Newey and West (<a href="references.html#ref-newey-west-1994" role="doc-biblioref">1994</a>)</span> has suggested a way to automatically select the bandwidth <span class="math inline">\(q\)</span>. Here we omitted the discussion. Both Stata and R now also implement the <span class="citation" data-cites="newey-west-1994">W. K. Newey and West (<a href="references.html#ref-newey-west-1994" role="doc-biblioref">1994</a>)</span> estimator, with no need to specify <span class="math inline">\(q\)</span>.</p>
 </section></section><section id="summary" class="level2" data-number="2.9"><h2 data-number="2.9" class="anchored" data-anchor-id="summary">
 <span class="header-section-number">2.9</span> Summary</h2>
@@ -1743,7 +1746,7 @@ Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-D
 <span id="cb13-488"><a href="#cb13-488" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-489"><a href="#cb13-489" aria-hidden="true" tabindex="-1"></a>Here $d$ is a dummy variable for postwar period.  The Chow test is</span>
 <span id="cb13-490"><a href="#cb13-490" aria-hidden="true" tabindex="-1"></a>simply a test on the hypothesis that all the coefficients involving</span>
-<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>$d$ are zero.  A regression of the above model with $n+m$ observations</span>
+<span id="cb13-491"><a href="#cb13-491" aria-hidden="true" tabindex="-1"></a>$d$ are zero.  A regression of the above model with $n_1+n_2$ observations</span>
 <span id="cb13-492"><a href="#cb13-492" aria-hidden="true" tabindex="-1"></a>and a $F$ test are easy to do.</span>
 <span id="cb13-493"><a href="#cb13-493" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-494"><a href="#cb13-494" aria-hidden="true" tabindex="-1"></a>$$</span>
@@ -1782,193 +1785,197 @@ Newey, Whitney K., and Kenneth D. West. 1987. <span>“A Simple, Positive Semi-D
 <span id="cb13-529"><a href="#cb13-529" aria-hidden="true" tabindex="-1"></a>In OLS regression, the variance-covariance matrix of $\hat \beta$ is $${{\mathrm{var}}} {\symbf{(\hat \beta) = {E}<span class="co">[</span><span class="ot">(\hat \beta-\beta)(\hat \beta -\beta)'</span><span class="co">]</span></span>
 <span id="cb13-530"><a href="#cb13-530" aria-hidden="true" tabindex="-1"></a>= {E}<span class="co">[</span><span class="ot">(X'X)^{-1}X'uu'X(X'X)^{-1}</span><span class="co">]</span> = \sigma^2 (X'X)^{-1} }}$$ {#eq-mle-32}</span>
 <span id="cb13-531"><a href="#cb13-531" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-532"><a href="#cb13-532" aria-hidden="true" tabindex="-1"></a> if $${{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}$$ {#eq-mle-33}.</span>
+<span id="cb13-532"><a href="#cb13-532" aria-hidden="true" tabindex="-1"></a> if</span>
 <span id="cb13-533"><a href="#cb13-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-534"><a href="#cb13-534" aria-hidden="true" tabindex="-1"></a>That is, the error term has mean zero and constant variance</span>
-<span id="cb13-535"><a href="#cb13-535" aria-hidden="true" tabindex="-1"></a>(homoscedasticity). The pairwise correlation between error terms</span>
-<span id="cb13-536"><a href="#cb13-536" aria-hidden="true" tabindex="-1"></a>is always zero (no serial correlation).</span>
+<span id="cb13-534"><a href="#cb13-534" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-535"><a href="#cb13-535" aria-hidden="true" tabindex="-1"></a>{{\mathrm{var}}} {\symbf{(u)=\sigma^2 I}}.</span>
+<span id="cb13-536"><a href="#cb13-536" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-33}</span>
 <span id="cb13-537"><a href="#cb13-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-538"><a href="#cb13-538" aria-hidden="true" tabindex="-1"></a>The estimation of $\sigma^2$:</span>
-<span id="cb13-539"><a href="#cb13-539" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-540"><a href="#cb13-540" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-541"><a href="#cb13-541" aria-hidden="true" tabindex="-1"></a>s^2=\frac{ {\symbf{\hat u' \hat u}}}{n-k}</span>
-<span id="cb13-542"><a href="#cb13-542" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-34}</span>
-<span id="cb13-543"><a href="#cb13-543" aria-hidden="true" tabindex="-1"></a>is an unbiased estimator of $\sigma^2$ (proof omitted).</span>
-<span id="cb13-544"><a href="#cb13-544" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-545"><a href="#cb13-545" aria-hidden="true" tabindex="-1"></a>The standard estimate of the variance-covariance matrix of the OLS</span>
-<span id="cb13-546"><a href="#cb13-546" aria-hidden="true" tabindex="-1"></a>parameter estimates under the assumption of IID errors is</span>
-<span id="cb13-547"><a href="#cb13-547" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-548"><a href="#cb13-548" aria-hidden="true" tabindex="-1"></a>{{\mathrm{\hat {Var}}}}(\hat \beta)=s^2 {\symbf{(X'X)^{-1}</span>
-<span id="cb13-549"><a href="#cb13-549" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-35}</span>
-<span id="cb13-550"><a href="#cb13-550" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-551"><a href="#cb13-551" aria-hidden="true" tabindex="-1"></a><span class="fu">### White’s estimator</span></span>
-<span id="cb13-552"><a href="#cb13-552" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-553"><a href="#cb13-553" aria-hidden="true" tabindex="-1"></a>We made strong assumption that the error terms of the regression</span>
-<span id="cb13-554"><a href="#cb13-554" aria-hidden="true" tabindex="-1"></a>model are IID when we estimate the variance-covariance matrix of</span>
-<span id="cb13-555"><a href="#cb13-555" aria-hidden="true" tabindex="-1"></a>OLS estimator.  Under this assumption, the usual estimator of</span>
-<span id="cb13-556"><a href="#cb13-556" aria-hidden="true" tabindex="-1"></a>variance-covariance matrix of ${\symbf{\hat \beta}}$ is consistent.  Now</span>
-<span id="cb13-557"><a href="#cb13-557" aria-hidden="true" tabindex="-1"></a>let's relax this assumption to only independent but not</span>
-<span id="cb13-558"><a href="#cb13-558" aria-hidden="true" tabindex="-1"></a>identically distributed.  Again, the linear regression models is</span>
-<span id="cb13-559"><a href="#cb13-559" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-560"><a href="#cb13-560" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-561"><a href="#cb13-561" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u)=0, \quad {E} (u u')=\Omega,</span>
-<span id="cb13-562"><a href="#cb13-562" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-36}</span>
-<span id="cb13-563"><a href="#cb13-563" aria-hidden="true" tabindex="-1"></a>where ${\symbf{\Omega}}$ is the error variance-covariance matrix with</span>
-<span id="cb13-564"><a href="#cb13-564" aria-hidden="true" tabindex="-1"></a>diagonal elements being $\sigma_t^2$ for $t^{th}$ element,</span>
-<span id="cb13-565"><a href="#cb13-565" aria-hidden="true" tabindex="-1"></a>off-diagonal elements being zero.  In other words, the error terms</span>
-<span id="cb13-566"><a href="#cb13-566" aria-hidden="true" tabindex="-1"></a>are heteroscedastic.</span>
-<span id="cb13-567"><a href="#cb13-567" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-568"><a href="#cb13-568" aria-hidden="true" tabindex="-1"></a>The variance-covariance matrix of the OLS estimator ${\symbf{\hat</span>
-<span id="cb13-569"><a href="#cb13-569" aria-hidden="true" tabindex="-1"></a>\beta}}$ is equal to</span>
-<span id="cb13-570"><a href="#cb13-570" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-571"><a href="#cb13-571" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb13-572"><a href="#cb13-572" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Var}}} {\symbf{(\hat \beta) }}&amp;{\symbf{= {E}[(\hat \beta</span>
-<span id="cb13-573"><a href="#cb13-573" aria-hidden="true" tabindex="-1"></a>-\beta)(\hat</span>
-<span id="cb13-574"><a href="#cb13-574" aria-hidden="true" tabindex="-1"></a>\beta -\beta)'] }}<span class="sc">\\</span>{\symbf{</span>
-<span id="cb13-575"><a href="#cb13-575" aria-hidden="true" tabindex="-1"></a>}}&amp;{\symbf{= <span class="co">[</span><span class="ot">(X'X)^{-1}X'({E}(uu'))X(X'X)^{-1}</span><span class="co">]</span> }}<span class="sc">\\</span>{\symbf{</span>
-<span id="cb13-576"><a href="#cb13-576" aria-hidden="true" tabindex="-1"></a>}}&amp;{\symbf{=  (X'X)^{-1} X' \Omega X (X'X)^{-1}</span>
-<span id="cb13-577"><a href="#cb13-577" aria-hidden="true" tabindex="-1"></a>}}\end{aligned}</span>
-<span id="cb13-578"><a href="#cb13-578" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-37}</span>
-<span id="cb13-579"><a href="#cb13-579" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-580"><a href="#cb13-580" aria-hidden="true" tabindex="-1"></a>If we know $\sigma_t^2$, then we would be able to estimate this</span>
-<span id="cb13-581"><a href="#cb13-581" aria-hidden="true" tabindex="-1"></a>"sandwich covariance matrix".  But we don't.</span>
-<span id="cb13-582"><a href="#cb13-582" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-583"><a href="#cb13-583" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Var}}} {\symbf{(\hat \beta) = \frac{1}{n}</span>
-<span id="cb13-584"><a href="#cb13-584" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X'\Omega</span>
-<span id="cb13-585"><a href="#cb13-585" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}</span>
-<span id="cb13-586"><a href="#cb13-586" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-38}</span>
-<span id="cb13-587"><a href="#cb13-587" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-588"><a href="#cb13-588" aria-hidden="true" tabindex="-1"></a>Let $y_t$ denote the $t$th observation on the dependent variable,</span>
-<span id="cb13-589"><a href="#cb13-589" aria-hidden="true" tabindex="-1"></a>and $x_t'=<span class="co">[</span><span class="ot">1 x_{2t} \cdots x_{kt}</span><span class="co">]</span>$ denote the $t$th row of the</span>
-<span id="cb13-590"><a href="#cb13-590" aria-hidden="true" tabindex="-1"></a>${\symbf{X}}$ matrix.  Then</span>
-<span id="cb13-591"><a href="#cb13-591" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-592"><a href="#cb13-592" aria-hidden="true" tabindex="-1"></a>{\symbf{X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'</span>
-<span id="cb13-593"><a href="#cb13-593" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-39}</span>
-<span id="cb13-594"><a href="#cb13-594" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-595"><a href="#cb13-595" aria-hidden="true" tabindex="-1"></a>The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,</span>
-<span id="cb13-596"><a href="#cb13-596" aria-hidden="true" tabindex="-1"></a>the estimated OLS residuals.  This provides a consistent estimator of</span>
-<span id="cb13-597"><a href="#cb13-597" aria-hidden="true" tabindex="-1"></a>the variance matrix for the OLS coefficient vector and is particularly</span>
-<span id="cb13-598"><a href="#cb13-598" aria-hidden="true" tabindex="-1"></a>useful since it does not require any specific assumptions about the</span>
-<span id="cb13-599"><a href="#cb13-599" aria-hidden="true" tabindex="-1"></a>form of the heteroscedasticity.</span>
-<span id="cb13-600"><a href="#cb13-600" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-601"><a href="#cb13-601" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
-<span id="cb13-602"><a href="#cb13-602" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb13-603"><a href="#cb13-603" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
-<span id="cb13-604"><a href="#cb13-604" aria-hidden="true" tabindex="-1"></a>\hat {{\mathrm{Var}}} {\symbf{(\hat \beta) }}&amp;{\symbf{= \frac{1}{n}</span>
-<span id="cb13-605"><a href="#cb13-605" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X' \hat \Omega</span>
-<span id="cb13-606"><a href="#cb13-606" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}}}<span class="sc">\\</span>{\symbf{</span>
-<span id="cb13-607"><a href="#cb13-607" aria-hidden="true" tabindex="-1"></a>\hat \Omega }}&amp;{\symbf{= {diag}  ({\hat u_1^2, \hat u_2^2, \cdots,</span>
-<span id="cb13-608"><a href="#cb13-608" aria-hidden="true" tabindex="-1"></a>\hat u_n^2})</span>
-<span id="cb13-609"><a href="#cb13-609" aria-hidden="true" tabindex="-1"></a>}}\end{aligned}</span>
-<span id="cb13-610"><a href="#cb13-610" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-40}</span>
-<span id="cb13-611"><a href="#cb13-611" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-612"><a href="#cb13-612" aria-hidden="true" tabindex="-1"></a><span class="fu">### Newey-West estimator</span></span>
-<span id="cb13-613"><a href="#cb13-613" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-614"><a href="#cb13-614" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-615"><a href="#cb13-615" aria-hidden="true" tabindex="-1"></a>White's estimator deals with the situation that we have</span>
-<span id="cb13-616"><a href="#cb13-616" aria-hidden="true" tabindex="-1"></a>heteroskedasticity (a diagonal $\Omega$) of unknown form.  When we</span>
-<span id="cb13-617"><a href="#cb13-617" aria-hidden="true" tabindex="-1"></a>have serial correlation of unknown form (a non-diagonal $\Omega$), we</span>
-<span id="cb13-618"><a href="#cb13-618" aria-hidden="true" tabindex="-1"></a>can estimate the variance-covariance matrix by a heteroskedasticity</span>
-<span id="cb13-619"><a href="#cb13-619" aria-hidden="true" tabindex="-1"></a>and autocorrelation consistent, or HAC, estimator.  Newey-West</span>
-<span id="cb13-620"><a href="#cb13-620" aria-hidden="true" tabindex="-1"></a>estimator is the most popular HAC estimator.</span>
-<span id="cb13-621"><a href="#cb13-621" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-622"><a href="#cb13-622" aria-hidden="true" tabindex="-1"></a>Given a time series data set, suppose we are interested in estimating</span>
-<span id="cb13-623"><a href="#cb13-623" aria-hidden="true" tabindex="-1"></a>the mean vector (suppose we have more than one variable) and its</span>
-<span id="cb13-624"><a href="#cb13-624" aria-hidden="true" tabindex="-1"></a>variance.  We know that given IID data, we can apply central limit</span>
-<span id="cb13-625"><a href="#cb13-625" aria-hidden="true" tabindex="-1"></a>theorem: sample mean is a consistent estimator of the population mean</span>
-<span id="cb13-626"><a href="#cb13-626" aria-hidden="true" tabindex="-1"></a>and it's variance can be calculated since asymptotically the sample</span>
-<span id="cb13-627"><a href="#cb13-627" aria-hidden="true" tabindex="-1"></a>mean conforms to a normal distribution and the variance can be</span>
-<span id="cb13-628"><a href="#cb13-628" aria-hidden="true" tabindex="-1"></a>estimated, relatively easily.  However, in the case of time series</span>
-<span id="cb13-629"><a href="#cb13-629" aria-hidden="true" tabindex="-1"></a>data, autocorrelation usually exists.  We may be concerned the CLT may</span>
-<span id="cb13-630"><a href="#cb13-630" aria-hidden="true" tabindex="-1"></a>not work in this case.</span>
-<span id="cb13-631"><a href="#cb13-631" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-632"><a href="#cb13-632" aria-hidden="true" tabindex="-1"></a>Fortunately, autocorrelation does not by itself defeat inference, though the</span>
-<span id="cb13-633"><a href="#cb13-633" aria-hidden="true" tabindex="-1"></a>conditions need care.  Suppose ${\symbf{y_t}}$ is covariance-stationary (the</span>
-<span id="cb13-634"><a href="#cb13-634" aria-hidden="true" tabindex="-1"></a>covariance is not a function of time) *and* its autocovariances are absolutely</span>
-<span id="cb13-635"><a href="#cb13-635" aria-hidden="true" tabindex="-1"></a>summable, $\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty$.  Then, as in</span>
-<span id="cb13-636"><a href="#cb13-636" aria-hidden="true" tabindex="-1"></a>@hamilton-1994, the sample mean satisfies:</span>
-<span id="cb13-637"><a href="#cb13-637" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-638"><a href="#cb13-638" aria-hidden="true" tabindex="-1"></a>$${\symbf{\bar y_T \to \mu , }}$$ {#eq-mle-41}</span>
-<span id="cb13-639"><a href="#cb13-639" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}</span>
-<span id="cb13-640"><a href="#cb13-640" aria-hidden="true" tabindex="-1"></a>where ${\symbf{\Gamma_v}}$ is the variance-covariance matrix for ${\symbf{y_t}}$ and ${\symbf{y_{t-v}}}$.</span>
+<span id="cb13-538"><a href="#cb13-538" aria-hidden="true" tabindex="-1"></a>That is, the error term has mean zero and constant variance</span>
+<span id="cb13-539"><a href="#cb13-539" aria-hidden="true" tabindex="-1"></a>(homoscedasticity). The pairwise correlation between error terms</span>
+<span id="cb13-540"><a href="#cb13-540" aria-hidden="true" tabindex="-1"></a>is always zero (no serial correlation).</span>
+<span id="cb13-541"><a href="#cb13-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-542"><a href="#cb13-542" aria-hidden="true" tabindex="-1"></a>The estimation of $\sigma^2$:</span>
+<span id="cb13-543"><a href="#cb13-543" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-544"><a href="#cb13-544" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-545"><a href="#cb13-545" aria-hidden="true" tabindex="-1"></a>s^2=\frac{ {\symbf{\hat u' \hat u}}}{n-k}</span>
+<span id="cb13-546"><a href="#cb13-546" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-34}</span>
+<span id="cb13-547"><a href="#cb13-547" aria-hidden="true" tabindex="-1"></a>is an unbiased estimator of $\sigma^2$ (proof omitted).</span>
+<span id="cb13-548"><a href="#cb13-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-549"><a href="#cb13-549" aria-hidden="true" tabindex="-1"></a>The standard estimate of the variance-covariance matrix of the OLS</span>
+<span id="cb13-550"><a href="#cb13-550" aria-hidden="true" tabindex="-1"></a>parameter estimates under the assumption of IID errors is</span>
+<span id="cb13-551"><a href="#cb13-551" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-552"><a href="#cb13-552" aria-hidden="true" tabindex="-1"></a>{{\mathrm{\hat {Var}}}}(\hat \beta)=s^2 {\symbf{(X'X)^{-1}</span>
+<span id="cb13-553"><a href="#cb13-553" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-35}</span>
+<span id="cb13-554"><a href="#cb13-554" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-555"><a href="#cb13-555" aria-hidden="true" tabindex="-1"></a><span class="fu">### White’s estimator</span></span>
+<span id="cb13-556"><a href="#cb13-556" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-557"><a href="#cb13-557" aria-hidden="true" tabindex="-1"></a>We made strong assumption that the error terms of the regression</span>
+<span id="cb13-558"><a href="#cb13-558" aria-hidden="true" tabindex="-1"></a>model are IID when we estimate the variance-covariance matrix of</span>
+<span id="cb13-559"><a href="#cb13-559" aria-hidden="true" tabindex="-1"></a>OLS estimator.  Under this assumption, the usual estimator of</span>
+<span id="cb13-560"><a href="#cb13-560" aria-hidden="true" tabindex="-1"></a>variance-covariance matrix of ${\symbf{\hat \beta}}$ is consistent.  Now</span>
+<span id="cb13-561"><a href="#cb13-561" aria-hidden="true" tabindex="-1"></a>let's relax this assumption to only independent but not</span>
+<span id="cb13-562"><a href="#cb13-562" aria-hidden="true" tabindex="-1"></a>identically distributed.  Again, the linear regression models is</span>
+<span id="cb13-563"><a href="#cb13-563" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-564"><a href="#cb13-564" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-565"><a href="#cb13-565" aria-hidden="true" tabindex="-1"></a>{\symbf{y=X\beta+u, \quad {E} (u)=0, \quad {E} (u u')=\Omega,</span>
+<span id="cb13-566"><a href="#cb13-566" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-36}</span>
+<span id="cb13-567"><a href="#cb13-567" aria-hidden="true" tabindex="-1"></a>where ${\symbf{\Omega}}$ is the error variance-covariance matrix with</span>
+<span id="cb13-568"><a href="#cb13-568" aria-hidden="true" tabindex="-1"></a>diagonal elements being $\sigma_t^2$ for $t^{th}$ element,</span>
+<span id="cb13-569"><a href="#cb13-569" aria-hidden="true" tabindex="-1"></a>off-diagonal elements being zero.  In other words, the error terms</span>
+<span id="cb13-570"><a href="#cb13-570" aria-hidden="true" tabindex="-1"></a>are heteroscedastic.</span>
+<span id="cb13-571"><a href="#cb13-571" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-572"><a href="#cb13-572" aria-hidden="true" tabindex="-1"></a>The variance-covariance matrix of the OLS estimator ${\symbf{\hat</span>
+<span id="cb13-573"><a href="#cb13-573" aria-hidden="true" tabindex="-1"></a>\beta}}$ is equal to</span>
+<span id="cb13-574"><a href="#cb13-574" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-575"><a href="#cb13-575" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb13-576"><a href="#cb13-576" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Var}}} {\symbf{(\hat \beta) }}&amp;{\symbf{= {E}[(\hat \beta</span>
+<span id="cb13-577"><a href="#cb13-577" aria-hidden="true" tabindex="-1"></a>-\beta)(\hat</span>
+<span id="cb13-578"><a href="#cb13-578" aria-hidden="true" tabindex="-1"></a>\beta -\beta)'] }}<span class="sc">\\</span>{\symbf{</span>
+<span id="cb13-579"><a href="#cb13-579" aria-hidden="true" tabindex="-1"></a>}}&amp;{\symbf{= <span class="co">[</span><span class="ot">(X'X)^{-1}X'({E}(uu'))X(X'X)^{-1}</span><span class="co">]</span> }}<span class="sc">\\</span>{\symbf{</span>
+<span id="cb13-580"><a href="#cb13-580" aria-hidden="true" tabindex="-1"></a>}}&amp;{\symbf{=  (X'X)^{-1} X' \Omega X (X'X)^{-1}</span>
+<span id="cb13-581"><a href="#cb13-581" aria-hidden="true" tabindex="-1"></a>}}\end{aligned}</span>
+<span id="cb13-582"><a href="#cb13-582" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-37}</span>
+<span id="cb13-583"><a href="#cb13-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-584"><a href="#cb13-584" aria-hidden="true" tabindex="-1"></a>If we know $\sigma_t^2$, then we would be able to estimate this</span>
+<span id="cb13-585"><a href="#cb13-585" aria-hidden="true" tabindex="-1"></a>"sandwich covariance matrix".  But we don't.</span>
+<span id="cb13-586"><a href="#cb13-586" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-587"><a href="#cb13-587" aria-hidden="true" tabindex="-1"></a>{{\mathrm{Var}}} {\symbf{(\hat \beta) = \frac{1}{n}</span>
+<span id="cb13-588"><a href="#cb13-588" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X'\Omega</span>
+<span id="cb13-589"><a href="#cb13-589" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}</span>
+<span id="cb13-590"><a href="#cb13-590" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-38}</span>
+<span id="cb13-591"><a href="#cb13-591" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-592"><a href="#cb13-592" aria-hidden="true" tabindex="-1"></a>Let $y_t$ denote the $t$th observation on the dependent variable,</span>
+<span id="cb13-593"><a href="#cb13-593" aria-hidden="true" tabindex="-1"></a>and $x_t'=<span class="co">[</span><span class="ot">1 x_{2t} \cdots x_{kt}</span><span class="co">]</span>$ denote the $t$th row of the</span>
+<span id="cb13-594"><a href="#cb13-594" aria-hidden="true" tabindex="-1"></a>${\symbf{X}}$ matrix.  Then</span>
+<span id="cb13-595"><a href="#cb13-595" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-596"><a href="#cb13-596" aria-hidden="true" tabindex="-1"></a>{\symbf{X' \Omega X=\sum_{t=1}^n \sigma_t^2 x_t x_t'</span>
+<span id="cb13-597"><a href="#cb13-597" aria-hidden="true" tabindex="-1"></a>}}$$ {#eq-mle-39}</span>
+<span id="cb13-598"><a href="#cb13-598" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-599"><a href="#cb13-599" aria-hidden="true" tabindex="-1"></a>The White estimator replaces the unknown $\sigma_t^2$ by $\hat u_t^2$,</span>
+<span id="cb13-600"><a href="#cb13-600" aria-hidden="true" tabindex="-1"></a>the estimated OLS residuals.  This provides a consistent estimator of</span>
+<span id="cb13-601"><a href="#cb13-601" aria-hidden="true" tabindex="-1"></a>the variance matrix for the OLS coefficient vector and is particularly</span>
+<span id="cb13-602"><a href="#cb13-602" aria-hidden="true" tabindex="-1"></a>useful since it does not require any specific assumptions about the</span>
+<span id="cb13-603"><a href="#cb13-603" aria-hidden="true" tabindex="-1"></a>form of the heteroscedasticity.</span>
+<span id="cb13-604"><a href="#cb13-604" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-605"><a href="#cb13-605" aria-hidden="true" tabindex="-1"></a>Therefore,</span>
+<span id="cb13-606"><a href="#cb13-606" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-607"><a href="#cb13-607" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb13-608"><a href="#cb13-608" aria-hidden="true" tabindex="-1"></a>\hat {{\mathrm{Var}}} {\symbf{(\hat \beta) }}&amp;{\symbf{= \frac{1}{n}</span>
+<span id="cb13-609"><a href="#cb13-609" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}[\frac{1}{n}X' \hat \Omega</span>
+<span id="cb13-610"><a href="#cb13-610" aria-hidden="true" tabindex="-1"></a>X]<span class="co">[</span><span class="ot">\frac{1}{n}(X'X)</span><span class="co">]</span>^{-1}}}<span class="sc">\\</span>{\symbf{</span>
+<span id="cb13-611"><a href="#cb13-611" aria-hidden="true" tabindex="-1"></a>\hat \Omega }}&amp;{\symbf{= {diag}  ({\hat u_1^2, \hat u_2^2, \cdots,</span>
+<span id="cb13-612"><a href="#cb13-612" aria-hidden="true" tabindex="-1"></a>\hat u_n^2})</span>
+<span id="cb13-613"><a href="#cb13-613" aria-hidden="true" tabindex="-1"></a>}}\end{aligned}</span>
+<span id="cb13-614"><a href="#cb13-614" aria-hidden="true" tabindex="-1"></a>$$ {#eq-mle-40}</span>
+<span id="cb13-615"><a href="#cb13-615" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-616"><a href="#cb13-616" aria-hidden="true" tabindex="-1"></a><span class="fu">### Newey-West estimator</span></span>
+<span id="cb13-617"><a href="#cb13-617" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-618"><a href="#cb13-618" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-619"><a href="#cb13-619" aria-hidden="true" tabindex="-1"></a>White's estimator deals with the situation that we have</span>
+<span id="cb13-620"><a href="#cb13-620" aria-hidden="true" tabindex="-1"></a>heteroskedasticity (a diagonal $\Omega$) of unknown form.  When we</span>
+<span id="cb13-621"><a href="#cb13-621" aria-hidden="true" tabindex="-1"></a>have serial correlation of unknown form (a non-diagonal $\Omega$), we</span>
+<span id="cb13-622"><a href="#cb13-622" aria-hidden="true" tabindex="-1"></a>can estimate the variance-covariance matrix by a heteroskedasticity</span>
+<span id="cb13-623"><a href="#cb13-623" aria-hidden="true" tabindex="-1"></a>and autocorrelation consistent, or HAC, estimator.  Newey-West</span>
+<span id="cb13-624"><a href="#cb13-624" aria-hidden="true" tabindex="-1"></a>estimator is the most popular HAC estimator.</span>
+<span id="cb13-625"><a href="#cb13-625" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-626"><a href="#cb13-626" aria-hidden="true" tabindex="-1"></a>Given a time series data set, suppose we are interested in estimating</span>
+<span id="cb13-627"><a href="#cb13-627" aria-hidden="true" tabindex="-1"></a>the mean vector (suppose we have more than one variable) and its</span>
+<span id="cb13-628"><a href="#cb13-628" aria-hidden="true" tabindex="-1"></a>variance.  We know that given IID data, we can apply central limit</span>
+<span id="cb13-629"><a href="#cb13-629" aria-hidden="true" tabindex="-1"></a>theorem: sample mean is a consistent estimator of the population mean</span>
+<span id="cb13-630"><a href="#cb13-630" aria-hidden="true" tabindex="-1"></a>and it's variance can be calculated since asymptotically the sample</span>
+<span id="cb13-631"><a href="#cb13-631" aria-hidden="true" tabindex="-1"></a>mean conforms to a normal distribution and the variance can be</span>
+<span id="cb13-632"><a href="#cb13-632" aria-hidden="true" tabindex="-1"></a>estimated, relatively easily.  However, in the case of time series</span>
+<span id="cb13-633"><a href="#cb13-633" aria-hidden="true" tabindex="-1"></a>data, autocorrelation usually exists.  We may be concerned the CLT may</span>
+<span id="cb13-634"><a href="#cb13-634" aria-hidden="true" tabindex="-1"></a>not work in this case.</span>
+<span id="cb13-635"><a href="#cb13-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-636"><a href="#cb13-636" aria-hidden="true" tabindex="-1"></a>Fortunately, autocorrelation does not by itself defeat inference, though the</span>
+<span id="cb13-637"><a href="#cb13-637" aria-hidden="true" tabindex="-1"></a>conditions need care.  Suppose ${\symbf{y_t}}$ is covariance-stationary (the</span>
+<span id="cb13-638"><a href="#cb13-638" aria-hidden="true" tabindex="-1"></a>covariance is not a function of time) *and* its autocovariances are absolutely</span>
+<span id="cb13-639"><a href="#cb13-639" aria-hidden="true" tabindex="-1"></a>summable, $\sum_{v=-\infty}^{\infty} \lVert \Gamma_v \rVert &lt; \infty$.  Then, as in</span>
+<span id="cb13-640"><a href="#cb13-640" aria-hidden="true" tabindex="-1"></a>@hamilton-1994, the sample mean satisfies:</span>
 <span id="cb13-641"><a href="#cb13-641" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-642"><a href="#cb13-642" aria-hidden="true" tabindex="-1"></a>The first one says the law of large numbers still holds.  The second gives the</span>
-<span id="cb13-643"><a href="#cb13-643" aria-hidden="true" tabindex="-1"></a>long-run variance used for the standard error, and absolute summability is what</span>
-<span id="cb13-644"><a href="#cb13-644" aria-hidden="true" tabindex="-1"></a>makes that sum exist.</span>
+<span id="cb13-642"><a href="#cb13-642" aria-hidden="true" tabindex="-1"></a>$${\symbf{\bar y_T \to \mu , }}$$ {#eq-mle-41}</span>
+<span id="cb13-643"><a href="#cb13-643" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \lim_{T \to \infty} {\symbf{ {T \cdot E<span class="co">[</span><span class="ot">(\bar y_T - \mu)(\bar y_T -\mu)' </span><span class="co">]</span>} = \sum_{v=-\infty}^{\infty} \Gamma_v . }}$$ {#eq-mle-42}</span>
+<span id="cb13-644"><a href="#cb13-644" aria-hidden="true" tabindex="-1"></a>where ${\symbf{\Gamma_v}}$ is the variance-covariance matrix for ${\symbf{y_t}}$ and ${\symbf{y_{t-v}}}$.</span>
 <span id="cb13-645"><a href="#cb13-645" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-646"><a href="#cb13-646" aria-hidden="true" tabindex="-1"></a>Covariance stationarity on its own is not enough for either statement.  It can</span>
-<span id="cb13-647"><a href="#cb13-647" aria-hidden="true" tabindex="-1"></a>fail even the law of large numbers.  Let $y_t = z + \varepsilon_t$, where $z$ is</span>
-<span id="cb13-648"><a href="#cb13-648" aria-hidden="true" tabindex="-1"></a>drawn once and then held fixed and $\varepsilon_t$ is white noise.  Every</span>
-<span id="cb13-649"><a href="#cb13-649" aria-hidden="true" tabindex="-1"></a>autocovariance equals $\mathrm{Var}(z)$, so the process is covariance-stationary,</span>
-<span id="cb13-650"><a href="#cb13-650" aria-hidden="true" tabindex="-1"></a>the autocovariances are not summable, and $\bar y_T$ converges to $z$ rather than</span>
-<span id="cb13-651"><a href="#cb13-651" aria-hidden="true" tabindex="-1"></a>to $\mu$.  Asymptotic normality asks for more again: a mixing, near-epoch</span>
-<span id="cb13-652"><a href="#cb13-652" aria-hidden="true" tabindex="-1"></a>dependence, or martingale-difference condition, together with moment</span>
-<span id="cb13-653"><a href="#cb13-653" aria-hidden="true" tabindex="-1"></a>restrictions.  Covariance stationarity gives the variance formula, not the central limit theorem.</span>
-<span id="cb13-654"><a href="#cb13-654" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-655"><a href="#cb13-655" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
-<span id="cb13-656"><a href="#cb13-656" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-657"><a href="#cb13-657" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v . $$ {#eq-mle-43}</span>
+<span id="cb13-646"><a href="#cb13-646" aria-hidden="true" tabindex="-1"></a>The first one says the law of large numbers still holds.  The second gives the</span>
+<span id="cb13-647"><a href="#cb13-647" aria-hidden="true" tabindex="-1"></a>long-run variance used for the standard error, and absolute summability is what</span>
+<span id="cb13-648"><a href="#cb13-648" aria-hidden="true" tabindex="-1"></a>makes that sum exist.</span>
+<span id="cb13-649"><a href="#cb13-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-650"><a href="#cb13-650" aria-hidden="true" tabindex="-1"></a>Covariance stationarity on its own is not enough for either statement.  It can</span>
+<span id="cb13-651"><a href="#cb13-651" aria-hidden="true" tabindex="-1"></a>fail even the law of large numbers.  Let $y_t = z + \varepsilon_t$, where $z$ is</span>
+<span id="cb13-652"><a href="#cb13-652" aria-hidden="true" tabindex="-1"></a>drawn once and then held fixed and $\varepsilon_t$ is white noise.  Every</span>
+<span id="cb13-653"><a href="#cb13-653" aria-hidden="true" tabindex="-1"></a>autocovariance equals $\mathrm{Var}(z)$, so the process is covariance-stationary,</span>
+<span id="cb13-654"><a href="#cb13-654" aria-hidden="true" tabindex="-1"></a>the autocovariances are not summable, and $\bar y_T$ converges to $z$ rather than</span>
+<span id="cb13-655"><a href="#cb13-655" aria-hidden="true" tabindex="-1"></a>to $\mu$.  Asymptotic normality asks for more again: a mixing, near-epoch</span>
+<span id="cb13-656"><a href="#cb13-656" aria-hidden="true" tabindex="-1"></a>dependence, or martingale-difference condition, together with moment</span>
+<span id="cb13-657"><a href="#cb13-657" aria-hidden="true" tabindex="-1"></a>restrictions.  Covariance stationarity gives the variance formula, not the central limit theorem.</span>
 <span id="cb13-658"><a href="#cb13-658" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-659"><a href="#cb13-659" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
+<span id="cb13-659"><a href="#cb13-659" aria-hidden="true" tabindex="-1"></a>If the data were generated by a vector MA(q) process, then</span>
 <span id="cb13-660"><a href="#cb13-660" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-661"><a href="#cb13-661" aria-hidden="true" tabindex="-1"></a>$$ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}}$$ {#eq-mle-44}</span>
+<span id="cb13-661"><a href="#cb13-661" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{S}}} = \sum_{v=-q}^{q} \Gamma_v . $$ {#eq-mle-43}</span>
 <span id="cb13-662"><a href="#cb13-662" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-663"><a href="#cb13-663" aria-hidden="true" tabindex="-1"></a>where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }}$$ {#eq-mle-45}</span>
+<span id="cb13-663"><a href="#cb13-663" aria-hidden="true" tabindex="-1"></a>A natural estimate is</span>
 <span id="cb13-664"><a href="#cb13-664" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-665"><a href="#cb13-665" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is</span>
-<span id="cb13-666"><a href="#cb13-666" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
-<span id="cb13-667"><a href="#cb13-667" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-668"><a href="#cb13-668" aria-hidden="true" tabindex="-1"></a>@newey-west-1987 suggested putting in a weight:</span>
-<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-670"><a href="#cb13-670" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}</span>
-<span id="cb13-671"><a href="#cb13-671" aria-hidden="true" tabindex="-1"></a>Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two</span>
-<span id="cb13-672"><a href="#cb13-672" aria-hidden="true" tabindex="-1"></a>coincide, but the Newey-West estimator is used precisely when the dependence has no known</span>
-<span id="cb13-673"><a href="#cb13-673" aria-hidden="true" tabindex="-1"></a>finite order: the Bartlett weights $1 - v/(q+1)$ downweight higher lags and keep</span>
-<span id="cb13-674"><a href="#cb13-674" aria-hidden="true" tabindex="-1"></a>$\hat S$ positive semidefinite, and consistency comes from letting $q$ grow with $T$,</span>
-<span id="cb13-675"><a href="#cb13-675" aria-hidden="true" tabindex="-1"></a>slowly enough that the poorly estimated high-order autocovariances do not dominate.</span>
-<span id="cb13-676"><a href="#cb13-676" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-677"><a href="#cb13-677" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-678"><a href="#cb13-678" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
-<span id="cb13-679"><a href="#cb13-679" aria-hidden="true" tabindex="-1"></a>$$ y_t={ {\symbf{x_t' \beta}}} + u_t $$ {#eq-mle-47}</span>
+<span id="cb13-665"><a href="#cb13-665" aria-hidden="true" tabindex="-1"></a>$$ {\symbf{\hat S = \hat \Gamma_0 + \sum_{v=1}^{q} (\hat \Gamma_v + \hat \Gamma_v' ),}}$$ {#eq-mle-44}</span>
+<span id="cb13-666"><a href="#cb13-666" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-667"><a href="#cb13-667" aria-hidden="true" tabindex="-1"></a>where  $$ {\symbf{\hat \Gamma_v = (1/T)  \sum_{t=v+1}^{T} (y_t- \bar y)(y_{t-v} - \bar y)'. }}$$ {#eq-mle-45}</span>
+<span id="cb13-668"><a href="#cb13-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-669"><a href="#cb13-669" aria-hidden="true" tabindex="-1"></a>This gives a consistent estimate of ${\symbf{S}}$; however, it sometimes is</span>
+<span id="cb13-670"><a href="#cb13-670" aria-hidden="true" tabindex="-1"></a>not positive semidefinite.</span>
+<span id="cb13-671"><a href="#cb13-671" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-672"><a href="#cb13-672" aria-hidden="true" tabindex="-1"></a>@newey-west-1987 suggested putting in a weight:</span>
+<span id="cb13-673"><a href="#cb13-673" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-674"><a href="#cb13-674" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S = \hat \Gamma_0}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_v + \hat \Gamma_v' ), }}$$ {#eq-mle-46}</span>
+<span id="cb13-675"><a href="#cb13-675" aria-hidden="true" tabindex="-1"></a>Here $q$ is a truncation bandwidth, not a true MA order.  For an MA($q$) process the two</span>
+<span id="cb13-676"><a href="#cb13-676" aria-hidden="true" tabindex="-1"></a>coincide, but the Newey-West estimator is used precisely when the dependence has no known</span>
+<span id="cb13-677"><a href="#cb13-677" aria-hidden="true" tabindex="-1"></a>finite order: the Bartlett weights $1 - v/(q+1)$ downweight higher lags and keep</span>
+<span id="cb13-678"><a href="#cb13-678" aria-hidden="true" tabindex="-1"></a>$\hat S$ positive semidefinite, and consistency comes from letting $q$ grow with $T$,</span>
+<span id="cb13-679"><a href="#cb13-679" aria-hidden="true" tabindex="-1"></a>slowly enough that the poorly estimated high-order autocovariances do not dominate.</span>
 <span id="cb13-680"><a href="#cb13-680" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-681"><a href="#cb13-681" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator ${\symbf{b_T}}$, then</span>
-<span id="cb13-682"><a href="#cb13-682" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t</span>
-<span id="cb13-683"><a href="#cb13-683" aria-hidden="true" tabindex="-1"></a>  x_t'}}}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}</span><span class="co">]</span> $$ {#eq-mle-48}</span>
+<span id="cb13-681"><a href="#cb13-681" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-682"><a href="#cb13-682" aria-hidden="true" tabindex="-1"></a>Consider a linear regression model:</span>
+<span id="cb13-683"><a href="#cb13-683" aria-hidden="true" tabindex="-1"></a>$$ y_t={ {\symbf{x_t' \beta}}} + u_t $$ {#eq-mle-47}</span>
 <span id="cb13-684"><a href="#cb13-684" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-685"><a href="#cb13-685" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
-<span id="cb13-686"><a href="#cb13-686" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector ${\symbf{x_t u_t}}$,</span>
-<span id="cb13-687"><a href="#cb13-687" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
+<span id="cb13-685"><a href="#cb13-685" aria-hidden="true" tabindex="-1"></a>Suppose we have the OLS estimator ${\symbf{b_T}}$, then</span>
+<span id="cb13-686"><a href="#cb13-686" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) = [(1/T) {\sum_{t=1}^T {\symbf{x_t</span>
+<span id="cb13-687"><a href="#cb13-687" aria-hidden="true" tabindex="-1"></a>  x_t'}}}]^{-1} <span class="co">[</span><span class="ot">(1/{\sqrt{T}}) {\sum_{t=1}^{T} {\symbf{x_t u_t}}}</span><span class="co">]</span> $$ {#eq-mle-48}</span>
 <span id="cb13-688"><a href="#cb13-688" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-689"><a href="#cb13-689" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
-<span id="cb13-690"><a href="#cb13-690" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-691"><a href="#cb13-691" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$ {#eq-mle-49}</span>
+<span id="cb13-689"><a href="#cb13-689" aria-hidden="true" tabindex="-1"></a>The first term converges in probability to some constant.  The second</span>
+<span id="cb13-690"><a href="#cb13-690" aria-hidden="true" tabindex="-1"></a>term is $\sqrt{T}$ times the sample mean of the vector ${\symbf{x_t u_t}}$,</span>
+<span id="cb13-691"><a href="#cb13-691" aria-hidden="true" tabindex="-1"></a>which is exactly the form to which a central limit theorem applies.</span>
 <span id="cb13-692"><a href="#cb13-692" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-693"><a href="#cb13-693" aria-hidden="true" tabindex="-1"></a>where $Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}<span class="co">[</span><span class="ot">{{\symbf{x_t x_t'}}}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
-<span id="cb13-694"><a href="#cb13-694" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }}$$ {#eq-mle-50}</span>
-<span id="cb13-695"><a href="#cb13-695" aria-hidden="true" tabindex="-1"></a>where</span>
-<span id="cb13-696"><a href="#cb13-696" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$ {#eq-mle-51}</span>
-<span id="cb13-697"><a href="#cb13-697" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
-<span id="cb13-698"><a href="#cb13-698" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-699"><a href="#cb13-699" aria-hidden="true" tabindex="-1"></a>Overall, the variance of ${\symbf{b_T}}$ is approximated by</span>
-<span id="cb13-700"><a href="#cb13-700" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-701"><a href="#cb13-701" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$ {#eq-mle-52}</span>
+<span id="cb13-693"><a href="#cb13-693" aria-hidden="true" tabindex="-1"></a>Under general conditions,</span>
+<span id="cb13-694"><a href="#cb13-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-695"><a href="#cb13-695" aria-hidden="true" tabindex="-1"></a>$$ \sqrt{T} ({{\symbf{b_T - \beta}}}) \rightarrow^L N(0, Q^{-1}SQ^{-1}) $$ {#eq-mle-49}</span>
+<span id="cb13-696"><a href="#cb13-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-697"><a href="#cb13-697" aria-hidden="true" tabindex="-1"></a>where $Q = {{\mathrm{plim}}} \, (1/T)\sum_{t=1}^T {{\symbf{x_t x_t'}}} = {{\mathrm{E}}}<span class="co">[</span><span class="ot">{{\symbf{x_t x_t'}}}</span><span class="co">]</span>$, and $S$ can be estimated by</span>
+<span id="cb13-698"><a href="#cb13-698" aria-hidden="true" tabindex="-1"></a>$$ {{\symbf{\hat S_T = \hat \Gamma_{0T}}}} + \sum_{v=1}^{q} {(1- \frac{v}{q+1})} ({\symbf{\hat \Gamma_{v,T} + \hat \Gamma_{v,T}' ), }}$$ {#eq-mle-50}</span>
+<span id="cb13-699"><a href="#cb13-699" aria-hidden="true" tabindex="-1"></a>where</span>
+<span id="cb13-700"><a href="#cb13-700" aria-hidden="true" tabindex="-1"></a>$$ \hat \Gamma_{v,T}= (1/T) \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}'), $$ {#eq-mle-51}</span>
+<span id="cb13-701"><a href="#cb13-701" aria-hidden="true" tabindex="-1"></a>where $\hat u_{t,T}$ is the OLS residual for data $t$ in a sample of size $T$.</span>
 <span id="cb13-702"><a href="#cb13-702" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-703"><a href="#cb13-703" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-704"><a href="#cb13-704" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
-<span id="cb13-705"><a href="#cb13-705" aria-hidden="true" tabindex="-1"></a>length beyond which the autocorrelation of $x_t u_t$ and $x_{t-v} u_{t-v}$ is</span>
-<span id="cb13-706"><a href="#cb13-706" aria-hidden="true" tabindex="-1"></a>treated as negligible.  One common rule of thumb sets</span>
-<span id="cb13-707"><a href="#cb13-707" aria-hidden="true" tabindex="-1"></a>$q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and</span>
-<span id="cb13-708"><a href="#cb13-708" aria-hidden="true" tabindex="-1"></a>other growth rates are in use.</span>
-<span id="cb13-709"><a href="#cb13-709" aria-hidden="true" tabindex="-1"></a>@newey-west-1994 has suggested a way to automatically select the</span>
-<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
-<span id="cb13-711"><a href="#cb13-711" aria-hidden="true" tabindex="-1"></a>also implement the @newey-west-1994 estimator, with no need to specify</span>
-<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>$q$.</span>
-<span id="cb13-713"><a href="#cb13-713" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-714"><a href="#cb13-714" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
-<span id="cb13-715"><a href="#cb13-715" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-716"><a href="#cb13-716" aria-hidden="true" tabindex="-1"></a>Maximum likelihood picks the parameters that make the observed sample most likely under the assumed model. With normal errors in a linear model it gives the OLS coefficients. Under correct specification the MLE is consistent, asymptotically normal with variance equal to the inverse information, efficient among regular estimators, and invariant to reparameterization. When the model is wrong, the MLE converges to the pseudo-true value closest to the truth in Kullback-Leibler divergence, and the variance becomes a sandwich. Poisson QMLE is the leading case: it is consistent whenever the conditional mean is right. OLS, MLE, QMLE and GMM are all M-estimators with the same sandwich variance.</span>
+<span id="cb13-703"><a href="#cb13-703" aria-hidden="true" tabindex="-1"></a>Overall, the variance of ${\symbf{b_T}}$ is approximated by</span>
+<span id="cb13-704"><a href="#cb13-704" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-705"><a href="#cb13-705" aria-hidden="true" tabindex="-1"></a>$$\hat \Sigma_{NW} = <span class="co">[</span><span class="ot">\sum_{t=1}^T x_t x_t'</span><span class="co">]</span>^{-1} <span class="co">[</span><span class="ot"> \sum_{t=1}^T \hat u_t^2 x_t x_t' +  \sum_{v=1}^{q} {(1- \frac{v}{q+1})} \sum_{t=v+1}^T (x_t \hat u_{t, T} \hat u_{t-v, T} x_{t-v}' + x_{t-v} \hat u_{t-v, T} \hat u_{t, T} x_{t}') </span><span class="co">] [\sum_{t=1}^T x_t x_t']</span>^{-1} $$ {#eq-mle-52}</span>
+<span id="cb13-706"><a href="#cb13-706" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-707"><a href="#cb13-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-708"><a href="#cb13-708" aria-hidden="true" tabindex="-1"></a>This estimation obviously depends on the selection of $q$, the lag</span>
+<span id="cb13-709"><a href="#cb13-709" aria-hidden="true" tabindex="-1"></a>length beyond which the autocorrelation of $x_t u_t$ and $x_{t-v} u_{t-v}$ is</span>
+<span id="cb13-710"><a href="#cb13-710" aria-hidden="true" tabindex="-1"></a>treated as negligible.  One common rule of thumb sets</span>
+<span id="cb13-711"><a href="#cb13-711" aria-hidden="true" tabindex="-1"></a>$q = 0.75 \cdot T^{\frac{1}{3}}$; it is a convention rather than a theorem, and</span>
+<span id="cb13-712"><a href="#cb13-712" aria-hidden="true" tabindex="-1"></a>other growth rates are in use.</span>
+<span id="cb13-713"><a href="#cb13-713" aria-hidden="true" tabindex="-1"></a>@newey-west-1994 has suggested a way to automatically select the</span>
+<span id="cb13-714"><a href="#cb13-714" aria-hidden="true" tabindex="-1"></a>bandwidth $q$.  Here we omitted the discussion.  Both Stata and R now</span>
+<span id="cb13-715"><a href="#cb13-715" aria-hidden="true" tabindex="-1"></a>also implement the @newey-west-1994 estimator, with no need to specify</span>
+<span id="cb13-716"><a href="#cb13-716" aria-hidden="true" tabindex="-1"></a>$q$.</span>
 <span id="cb13-717"><a href="#cb13-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-718"><a href="#cb13-718" aria-hidden="true" tabindex="-1"></a>The rest of the chapter is about testing. The $F$ test handles linear restrictions under normal errors. The likelihood-ratio, Wald and LM tests do the same in general and agree asymptotically. The Chow test checks for a structural break. White and Newey-West standard errors keep inference valid under heteroskedasticity and autocorrelation.</span>
+<span id="cb13-718"><a href="#cb13-718" aria-hidden="true" tabindex="-1"></a><span class="fu">## Summary</span></span>
+<span id="cb13-719"><a href="#cb13-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-720"><a href="#cb13-720" aria-hidden="true" tabindex="-1"></a>Maximum likelihood picks the parameters that make the observed sample most likely under the assumed model. With normal errors in a linear model it gives the OLS coefficients. Under correct specification the MLE is consistent, asymptotically normal with variance equal to the inverse information, efficient among regular estimators, and invariant to reparameterization. When the model is wrong, the MLE converges to the pseudo-true value closest to the truth in Kullback-Leibler divergence, and the variance becomes a sandwich. Poisson QMLE is the leading case: it is consistent whenever the conditional mean is right. OLS, MLE, QMLE and GMM are all M-estimators with the same sandwich variance.</span>
+<span id="cb13-721"><a href="#cb13-721" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-722"><a href="#cb13-722" aria-hidden="true" tabindex="-1"></a>The rest of the chapter is about testing. The $F$ test handles linear restrictions under normal errors. The likelihood-ratio, Wald and LM tests do the same in general and agree asymptotically. The Chow test checks for a structural break. White and Newey-West standard errors keep inference valid under heteroskedasticity and autocorrelation.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
