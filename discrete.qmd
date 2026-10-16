@@ -125,8 +125,11 @@ index and the same constant to $\gamma_1$ and $\gamma_2$ leaves every probabilit
 unchanged.  Software resolves this by dropping the intercept or by fixing
 $\gamma_1 = 0$.  Second, the *scale*: that is what setting
 $\mbox{Var}(u_t) = 1$ above does, since multiplying the index, the thresholds and
-$u_t$ by any positive constant is likewise unobservable.  The analogous
-restriction for the multinomial logit below is $\beta^0 = 0$.
+$u_t$ by any positive constant is likewise unobservable.  The multinomial
+logit below needs a location normalization of its own, $\beta^0 = 0$: adding the
+same vector to every alternative's coefficients leaves all choice probabilities
+unchanged.  Its scale is fixed by the extreme-value error distribution, much as
+$\mbox{Var}(u_t) = 1$ fixes it here.
 
 The loglikelihood function is
 $$

@@ -191,12 +191,12 @@ sufficient here either.
     local continuous "CulturalDist_KS5D_ctr tight_ctr targ_tight_ctr user_country_opennessValue_ctr targetcntropennes2010_ctr"
 
     mi register imputed `continuous'
-    mi impute chained  (regress) `continuous' , add(10) rseed(1)
+    mi impute chained  (regress) `continuous' = has_won has_submitted gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count log_cash_000 ave_numConcurrentContest, add(10) rseed(1)
 
     mi estimate, cmdok: heckprob has_won c.CulturalDist_KS5D_ctr##c.tight_ctr targ_tight_ctr gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count, select (has_submitted = c.CulturalDist_KS5D_ctr##c.tight_ctr log_cash_000 gender_code expert_cat2 expert_cat3 expert_cat4 submissions_count ave_numConcurrentContest) vce (cluster user_id) difficult nonrtol
 
 
-This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Then the imputation will take all variables you registered (imputed or regular) in the prediction model unless you specify otherwise.  Then do "mi estimate".
+This is a sample code.  In stata, you have to do "mi set", then "mi register" to register variables you need to impute.  Then "mi impute chained" if you have multiple variables to impute.  Each imputed variable is then predicted from the other imputed variables in the chain and from whatever complete variables are listed after `=`.  Registering a variable as regular does not put it in the imputation model; only listing it after `=` does.  The command above lists the outcomes and the complete analysis covariates there, so the imputations respect the relationships the analysis estimates.  Then do "mi estimate".
 
 ## Summary
 

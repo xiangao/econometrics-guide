@@ -353,11 +353,11 @@ $$ {#eq-count-data-29}
 
 
 
-Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  What this question is can be formulated as:
+Often times we have discrete valued predictors, such as gender, or other dummy variables.  In that case, it makes more sense to ask what's the effect of gender being 1 vs. 0 (female vs. male).  Write $x_{1i}$ for the dummy and $\beta_1$ for its coefficient, $X_{-1,i}$ for unit $i$'s other covariates and $\beta_{-1}$ for their coefficients, with the intercept included in $X_{-1,i}$.  The average discrete change sets the dummy to 1 and then to 0 for every unit, holding the other covariates at their observed values, and averages the difference over the $n$ units:
 
-$$ E(p | x_1=1) - E(p | x_1=0). $$ {#eq-count-data-30}
+$$ \frac{1}{n}\sum_{i=1}^n \left[ \Lambda(\beta_1 + X_{-1,i}'\beta_{-1}) - \Lambda(X_{-1,i}'\beta_{-1}) \right]. $$ {#eq-count-data-30}
 
-In empirical analysis, it's often calculated by calculating the predicted probability by setting $x_1$ to 1 and by setting $x_1$ to 0.  Then calculate the difference.
+This is what software computes when it predicts with $x_1$ set to 1, then to 0, and takes the mean difference.  It is not the group comparison $E(p \mid x_1=1) - E(p \mid x_1=0)$, which averages over two different covariate distributions.
 
 
 ### Count Data Models

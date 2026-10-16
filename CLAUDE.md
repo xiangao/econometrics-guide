@@ -1142,3 +1142,25 @@ general textbooks in a sentence on the References page. (2) Crossref BibTeX give
 online-first year (Li et al. 2017, Chattopadhyay-Zubizarreta 2022); use the print year.
 (3) A markdown link inside a bracketed citation (`[@a; see [x](y.qmd)]`) stops pandoc
 parsing it; keep links outside the brackets. Code chunks verified byte-identical to HEAD.
+
+## Codex expert review fixes (2026-10-16)
+
+Codex's `~/projects/books/report/EXPERT_REVIEW_20261016.qmd` was verified item by item
+(`~/projects/books/_review6/VERIFY_20261016.md`) and the confirmed findings fixed.
+Code: `outcome-weights.qmd` DR-DiD table now reports balance for the preliminary weights
+$a$ (0.086) and the augmented $\omega$ (0.000, exact because $S X = X$); before, the row
+labelled "wtd" used $a$. Prose: normality vs homoskedasticity (mle 45, 294); AR(1)
+errors invalidate every finite lag, with the derived covariance
+@eq-dynamic-panel-ar-cov (MA errors are the case where deeper lags help); pooled vs
+collapsed inference is the Moulton factor $1+(T-1)\rho$, not just df; FE permits rather
+than requires correlation; $E(u|X)=0$ is sufficient, not necessary, and the AR(1) bias
+comes from $u_t$ entering the next row's regressor; MNL $\beta^0=0$ is a location
+normalization; average discrete change vs group difference (count-data); GLS consistency
+needs a correct mean and (with serial correlation) strict exogeneity, weighting changes
+a BLP target; censoring changes the observed mean; Stata `mi impute chained` uses only
+predictors listed after `=`; AIPW weights sum to one when the smoother reproduces
+constants, idempotence not needed (PLR's ratio does need it); propensity schedule
+change moves the D(1-D) weights too.
+**Not changed, on purpose:** interpreting-ols:289 `V_between = 0` is correct —
+@eq-pooled's $V_{between}$ is $\text{Var}(E[x|G])$; Codex's 0.75 is the variance of
+sample unit means. Full render (HTML + PDF) clean; no unresolved refs.

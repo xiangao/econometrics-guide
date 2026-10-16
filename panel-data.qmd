@@ -60,17 +60,21 @@ time-invariant $z_i$ here --- see the
 Comparing to regular cross-sectional models, there is an extra term
 $c_i$.  $c_i$ can be treated as a random effect or fixed effect.
 Traditionally it is distinguished by whether it is estimated as a
-random variable or a parameter.  Modern econometrics tends to
-distinguish by the correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$.
-If there is no correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$,
-then it's a random effect; otherwise, it's a fixed effect.
+random variable or a parameter.  Modern econometrics distinguishes the
+estimators by what they assume about $c_i$ and ${{\symbf{{x_{it}}}}}$.
+Fixed effects permits any dependence between $c_i$ and the regressor
+history; it does not require that dependence to exist.  Conventional
+random effects imposes that $c_i$ is uncorrelated with the regressors in
+every period.  Both still need the remaining disturbance $u_{it}$ to be
+strictly exogenous.
 
 It is true that in some cases it is hard to justify that there is
 no correlation between $c_i$ and ${{\symbf{{x_{it}}}}}$, which is one reason
 that people in economics tend to use fixed-effect models.  However,
-fixed-effect models have its own limitations.  One of them is: It is
-hard to justify that ALL the cross-sectional units' characteristics
-other than those already in the model do not change over time.
+fixed-effect models have their own limitations.  One of them is that
+removing $c_i$ handles only omitted factors that are constant over time.
+Omitted factors that change over time stay in $u_{it}$, and they must be
+uncorrelated with the regressors in every period.
 
 ## Random Effect Methods
 
@@ -195,8 +199,16 @@ effect we only have $N$ useful pieces of information.  Averaging
 discards nothing, because ${{\symbf{z}}}_i$ was already constant over $t$ and
 the within variation was never available to $\gamma$ in the first place.
 
-What does differ is the degrees of freedom.  The unit-mean regression
-uses $N-k$; pooled OLS reports $NT-k$, and that is the mistake.  @moulton-1990
+What does differ is the inference.  The coefficients coincide, but the
+naive pooled standard error treats the $NT$ rows as independent, while
+the $T$ rows of a unit share $c_i$.  In the balanced error-components
+model, write $\sigma^2_c$ and $\sigma^2_u$ for the variances of $c_i$ and
+$u_{it}$, and $\rho = \sigma^2_c/(\sigma^2_c + \sigma^2_u)$ for the share of
+error variance due to $c_i$.  Then the true variance of the pooled coefficient
+on ${{\symbf{z}}}_i$ is $1 + (T-1)\rho$ times the naive one; at $T = 6$ and
+$\rho = 0.5$ that factor is 3.5.  A change of degrees of freedom cannot fix
+that.  The degrees of freedom matter as well: the unit-mean regression
+uses $N-k$, pooled OLS reports $NT-k$.  @moulton-1990
 is the classic illustration, and @donald-lang-2007 show that
 $t_{N-k}$ is the reference distribution that keeps the size right here -- an exact
 result resting on the distributional and design assumptions of the group-level
