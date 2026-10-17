@@ -177,10 +177,17 @@ zero as possible.
 More generally, $\hat \theta_{GMM}$ is chosen to minimize $\bar
 m(\theta)'W \bar m(\theta)$ for some weighting matrix $W$.
 
-The choice of $W$ matters only under overidentification.  With as many moment
-conditions as parameters, all sample moments can be driven to zero exactly and
-$W$ drops out -- which is why the just-identified IV estimator above did not
-need one.  When there are more moments than parameters, the efficient choice is
+The choice of $W$ matters only under overidentification, provided the
+just-identified system has a unique zero.  With as many moment conditions as
+parameters, if $\bar m(\theta) = 0$ has exactly one solution, that solution
+minimizes $\bar m(\theta)'W \bar m(\theta)$ for every positive-definite $W$, so
+$W$ drops out.  The linear IV system above has this property when its square
+sample matrix is nonsingular, which is why the just-identified IV estimator did
+not need a weighting matrix.  Counting moments does not guarantee a unique zero
+in a nonlinear problem.  The moment $E[Y] - \theta^2 = 0$ with $E[Y] = 1$ has two
+roots, $\theta = 1$ and $\theta = -1$, and a sample with $\bar y < 0$ has none.
+Nonlinear moments need their own argument for existence and identification,
+such as the sign restriction $\theta > 0$ here.  When there are more moments than parameters, the efficient choice is
 $W = S^{-1}$, where $S$ is the asymptotic variance of the sample moments,
 $S = \lim_{n \to \infty} \mbox{Var} \bigl( \sqrt n \, \bar m (\theta_0) \bigr)$.
 With that weighting,
