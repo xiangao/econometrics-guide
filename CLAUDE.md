@@ -1189,3 +1189,9 @@ the same chunk, so each figure+table chunk is now split; long code/output lines 
 in `_quarto.yml` (`code-overflow: wrap` is HTML-only). Outputs unchanged except the two new rows.
 Not done (xao's choice): Tobit/Heckman marginal effects, new code examples for ch. 6-8, the reviewer's
 typo list.
+
+## Codex continued review (2026-10-17, branch `continued-review-fixes`)
+
+Log `~/projects/books/_review6/VERIFY_CONTINUED_20261017.md`. G1: gmm.qmd now says W drops out
+only when the just-identified system has a unique zero (nonsingular linear IV does), with the
+nonlinear counterexample E[Y] - theta^2 = 0 (two roots, none when ybar < 0).
